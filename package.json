@@ -10,13 +10,13 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@earendil-works/pi-coding-agent": "*",
-    "yahoo-finance2": "*",
-    "zod": "*"
+    "@earendil-works/pi-coding-agent": "latest",
+    "yahoo-finance2": "latest",
+    "zod": "latest"
   },
   "devDependencies": {
-    "@types/node": "*",
-    "typescript": "*"
+    "@types/bun": "latest",
+    "typescript": "^5.7.2"
   },
   "engines": {
     "bun": ">=1.0.0"
