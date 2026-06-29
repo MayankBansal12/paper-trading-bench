@@ -1,0 +1,18 @@
+node_modules/
+.bun/
+
+# Runtime artifacts — these ARE the benchmark output, not source
+results/portfolio-state.json
+results/transactions.txt
+results/.price-cache.json
+results/summaries/*.md
+
+# Keep the directory structure tracked via .gitkeep
+!results/.gitkeep
+!results/summaries/.gitkeep
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+*.log
