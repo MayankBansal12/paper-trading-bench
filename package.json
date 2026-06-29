@@ -11,8 +11,8 @@
   },
   "dependencies": {
     "@earendil-works/pi-coding-agent": "latest",
-    "yahoo-finance2": "latest",
-    "zod": "latest"
+    "typebox": "^1.1.0",
+    "yahoo-finance2": "latest"
   },
   "devDependencies": {
     "@types/bun": "latest",
