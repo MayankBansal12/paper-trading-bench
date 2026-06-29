@@ -6,6 +6,10 @@
 //
 // Persistence to disk is the CLI's job (Phase 7). This function returns
 // the in-memory artifacts: updated portfolio, daily summary markdown.
+//
+// IMPORTANT: the tools mutate `ctx.portfolio` in place. We read it back
+// from ctx at the end so the caller sees the post-trade state, not the
+// pre-trade initial portfolio we passed in.
 
 import type { AgentSession } from "@earendil-works/pi-coding-agent";
 import { recalculateHoldingsValue } from "../state/valuation.ts";
@@ -14,6 +18,7 @@ import { buildWrapUpPrompt } from "../prompts/wrapup.ts";
 import { buildSystemPrompt } from "./session.ts";
 import { shouldTerminate } from "./termination.ts";
 import type { PortfolioState } from "../types.ts";
+import type { TradingContext } from "../tools/registry.ts";
 
 export interface RunTradingDayResult {
   portfolio: PortfolioState;
@@ -23,7 +28,7 @@ export interface RunTradingDayResult {
 
 export async function runTradingDay(
   session: AgentSession,
-  date: string,
+  ctx: TradingContext,
   initialPortfolio: PortfolioState,
 ): Promise<RunTradingDayResult> {
   // Pre-flight: already terminated → exit immediately.
@@ -41,24 +46,25 @@ export async function runTradingDay(
   session.state.systemPrompt = buildSystemPrompt();
 
   // Phase A: opening prompt with portfolio + memory.
-  const opening = await buildOpeningPrompt(date, initialPortfolio);
+  const opening = await buildOpeningPrompt(ctx.date, initialPortfolio);
   await session.prompt(opening);
 
   // Phase B: wrap-up. Tools are closed; ask for the daily summary.
-  const wrapUp = buildWrapUpPrompt(date, initialPortfolio);
+  const wrapUp = buildWrapUpPrompt(ctx.date, ctx.portfolio);
   await session.prompt(wrapUp);
 
   // The final assistant message should be the daily summary markdown.
+  // Some models wrap it in ```markdown ... ``` fences — strip those so the
+  // saved file is clean markdown (not markdown-inside-a-code-block).
   const messages = session.state.messages;
   const lastAssistant = [...messages].reverse().find((m) => m.role === "assistant");
-  const dailySummary = extractText(lastAssistant);
+  const dailySummary = stripCodeFences(extractText(lastAssistant));
 
-  // Recompute holdings with last_traded_price (no live fetch — this is the
-  // final state for the day). The CLI may pass actual EOD prices when
-  // persisting; here we just use the cached prices already in the portfolio.
+  // Recompute net worth one more time using the (possibly mutated) ctx.portfolio
+  // so the saved state is consistent with the last_traded_price cache.
   const finalPortfolio = recalculateHoldingsValue(
-    initialPortfolio,
-    (ticker) => initialPortfolio.holdings[ticker]?.last_traded_price,
+    ctx.portfolio,
+    (ticker) => ctx.portfolio.holdings[ticker]?.last_traded_price,
   );
 
   const terminated = shouldTerminate(finalPortfolio);
@@ -83,4 +89,12 @@ function extractText(msg: unknown): string | null {
   }
   const out = parts.join("\n").trim();
   return out.length > 0 ? out : null;
+}
+
+/** If the summary is wrapped in a single ```markdown ... ``` fence, strip it. */
+function stripCodeFences(s: string | null): string | null {
+  if (!s) return s;
+  // Match a single fenced block with optional language tag at the start.
+  const m = /^```(?:markdown|md)?\s*\n([\s\S]*?)\n```\s*$/.exec(s);
+  return m ? (m[1] ?? s).trim() : s;
 }

@@ -5,7 +5,7 @@
 import { resolve } from "node:path";
 
 /** Project root — directory containing package.json. */
-export const PROJECT_ROOT = resolve(import.meta.dir, "..");
+export const PROJECT_ROOT = resolve(import.meta.dir, "..", "..");
 
 /** Where the benchmark reads/writes all runtime state. */
 export const RESULTS_DIR = resolve(PROJECT_ROOT, "results");

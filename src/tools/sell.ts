@@ -96,13 +96,16 @@ export function buildSellTool(
         };
       }
 
+      const candidate: typeof ctx.portfolio = {
+        ...ctx.portfolio,
+        current_balance: round2(ctx.portfolio.current_balance + proceeds),
+        holdings: newHoldings,
+      };
+
+      // Same pattern as buy: only the just-sold ticker gets the fresh price.
       ctx.portfolio = recalculateHoldingsValue(
-        {
-          ...ctx.portfolio,
-          current_balance: round2(ctx.portfolio.current_balance + proceeds),
-          holdings: newHoldings,
-        },
-        () => price,
+        candidate,
+        (t) => (t === ticker ? price : candidate.holdings[t]?.last_traded_price),
       );
 
       const cashRemaining = ctx.portfolio.current_balance;

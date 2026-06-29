@@ -81,28 +81,38 @@ export function buildBuyTool(
           },
         };
       }
-
+      // Mutate holdings: bump units, weighted avg_cost, last_traded_price, value.
       const existing = ctx.portfolio.holdings[ticker];
       const newUnits = (existing?.units ?? 0) + units;
       const newAvgCost = existing
         ? (existing.units * existing.avg_cost + units * price) / newUnits
         : price;
 
-      ctx.portfolio = recalculateHoldingsValue(
-        {
-          ...ctx.portfolio,
-          current_balance: round2(ctx.portfolio.current_balance - cost),
-          holdings: {
-            ...ctx.portfolio.holdings,
-            [ticker]: {
-              units: newUnits,
-              avg_cost: round2(newAvgCost),
-              last_traded_price: price,
-              value: round2(price * newUnits),
-            },
+      // Build the candidate portfolio for THIS buy. We use the new buy's price
+      // for the just-bought ticker, but keep existing last_traded_price for
+      // other tickers (we don't have fresh prices for them in this handler).
+      // recalculateHoldingsValue is called WITHOUT a priceLookup, so it falls
+      // back to last_traded_price for any ticker not given an override.
+      const candidate: typeof ctx.portfolio = {
+        ...ctx.portfolio,
+        current_balance: round2(ctx.portfolio.current_balance - cost),
+        holdings: {
+          ...ctx.portfolio.holdings,
+          [ticker]: {
+            units: newUnits,
+            avg_cost: round2(newAvgCost),
+            last_traded_price: price,
+            value: round2(price * newUnits),
           },
         },
-        () => price,
+      };
+
+      // Provide price lookup that returns the new buy's price for the just-bought
+      // ticker and falls back to the candidate's last_traded_price for everything
+      // else (preserves existing tickers' last prices).
+      ctx.portfolio = recalculateHoldingsValue(
+        candidate,
+        (t) => (t === ticker ? price : candidate.holdings[t]?.last_traded_price),
       );
 
       const cashRemaining = ctx.portfolio.current_balance;
