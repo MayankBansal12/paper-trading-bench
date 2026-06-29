@@ -11,6 +11,8 @@ import { buildBuyTool } from "./buy.ts";
 import { buildSellTool } from "./sell.ts";
 import { buildGetWeeklySummaryTool } from "./summary.ts";
 
+export type { TradingContext };
+
 /** Build the array of all 7 tool definitions bound to the given context. */
 export function buildAllTools(ctx: TradingContext): ToolDefinition[] {
   return [
