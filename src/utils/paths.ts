@@ -14,3 +14,4 @@ export const PORTFOLIO_FILE = resolve(RESULTS_DIR, "portfolio-state.json");
 export const TRANSACTIONS_FILE = resolve(RESULTS_DIR, "transactions.txt");
 export const PRICE_CACHE_FILE = resolve(RESULTS_DIR, ".price-cache.json");
 export const SUMMARIES_DIR = resolve(RESULTS_DIR, "summaries");
+export const TRACES_DIR = resolve(RESULTS_DIR, "traces");

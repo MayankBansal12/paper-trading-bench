@@ -6,10 +6,12 @@ results/portfolio-state.json
 results/transactions.txt
 results/.price-cache.json
 results/summaries/*.md
+results/traces/*
 
 # Keep the directory structure tracked via .gitkeep
 !results/.gitkeep
 !results/summaries/.gitkeep
+!results/traces/.gitkeep
 
 # Editor / OS
 .DS_Store

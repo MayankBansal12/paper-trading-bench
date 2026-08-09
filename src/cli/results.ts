@@ -103,14 +103,12 @@ export async function runResults(): Promise<void> {
     console.log();
   }
 
-  // Persist refreshed prices back so the JSON state reflects the latest.
-  if (refreshed !== portfolio) {
-    try {
-      await savePortfolio(refreshed);
-    } catch {
-      // Non-fatal — we still printed the report.
-    }
-  }
+  // Read-only by default: do NOT persist refreshed prices back to the
+  // portfolio state file. A "results" command should never mutate state —
+  // that would silently change `updated_at` and confuse any subsequent run.
+  // The displayed per-ticker `last $` is the saved `last_traded_price` (which
+  // is the execution price anyway). The recomputed `net_worth` above uses
+  // the fetched prices for display accuracy but isn't persisted.
   // round2/fmtUsd retained for possible future use without unused-import warnings.
   void round2;
 }

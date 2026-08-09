@@ -20,6 +20,7 @@ import { getToday } from "../utils/dates.ts";
 import { createTradingSession } from "../agent/session.ts";
 import { runTradingDay } from "../agent/loop.ts";
 import { shouldTerminate } from "../agent/termination.ts";
+import { SessionRecorder, saveTrace } from "../trace/recorder.ts";
 import type { TradingContext } from "../tools/registry.ts";
 
 export async function runStart(modelId: string): Promise<void> {
@@ -48,6 +49,10 @@ export async function runStart(modelId: string): Promise<void> {
   console.error(`[start] Starting trading day ${date} with model ${modelId}...`);
   const session = await createTradingSession(modelId, ctx);
 
+  // Attach a trace recorder before the day starts so we capture every event.
+  const recorder = new SessionRecorder(date, modelId);
+  recorder.attach(session);
+
   try {
     // 5. Run the day. Tools mutate ctx.portfolio in place; we pass ctx
     //    so runTradingDay reads back the post-trade state.
@@ -69,6 +74,15 @@ export async function runStart(modelId: string): Promise<void> {
 
     if (result.terminated) {
       console.error(`[start] Portfolio terminated (net worth < $10). Subsequent runs will exit immediately.`);
+    }
+
+    // Persist the session trace (JSON + Markdown). Failure here must not mask
+    // a successful trading day, so we log only.
+    try {
+      await saveTrace(recorder.finalize());
+      console.error(`[start] Trace written to results/traces/${date}.${modelId}.{json,md}`);
+    } catch (traceErr) {
+      console.error(`[start] WARNING: failed to save trace: ${traceErr instanceof Error ? traceErr.message : traceErr}`);
     }
   } finally {
     session.dispose();
