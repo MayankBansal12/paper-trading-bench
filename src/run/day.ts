@@ -70,14 +70,14 @@ export function validateDecisionEvidence(decision: AgentDecision, contextHash: s
   for (const failure of decision.failedOrders) if (!failure || failure.date !== date || typeof failure.ticker !== "string" || !["BUY", "SELL"].includes(failure.side) || typeof failure.reason !== "string") throw new Error(`Invalid rejected order schema for ${date}`);
   const protocol = decision.trace?.find((event): event is Record<string, unknown> => !!event && typeof event === "object" && (event as Record<string, unknown>).type === "protocol");
   if (protocol) {
-    const basePrompt = buildSystemPrompt(config.limits);
+    const basePrompt = buildSystemPrompt(config.limits, config.protocolVersion);
     const expectedPrompt = config.agent === "opencode"
       ? `${basePrompt}\nTrading tool names use the trading_ prefix (for example trading_get_indicators and trading_buy).`
       : basePrompt;
     if (decision.effectiveSystemPrompt !== expectedPrompt) throw new Error(`Decision system prompt does not match benchmark protocol for ${date}`);
     if (protocol.contextHash !== contextHash || protocol.model !== config.model || protocol.provider !== (config.provider ?? "opencode")) throw new Error(`Decision protocol context/model/provider mismatch for ${date}`);
     if (typeof decision.effectiveSystemPrompt !== "string" || decision.promptHash !== textHash(decision.effectiveSystemPrompt) || protocol.systemPrompt !== decision.effectiveSystemPrompt || protocol.promptHash !== decision.promptHash) throw new Error(`Decision effective prompt mismatch for ${date}`);
-    if (context && protocol.dailyPrompt !== buildDailyPrompt(context)) throw new Error(`Decision daily prompt does not match causal context for ${date}`);
+    if (context && protocol.dailyPrompt !== buildDailyPrompt(context, config.protocolVersion)) throw new Error(`Decision daily prompt does not match causal context for ${date}`);
     if (protocol.dailyPromptHash !== undefined && (typeof protocol.dailyPrompt !== "string" || protocol.dailyPromptHash !== textHash(protocol.dailyPrompt))) throw new Error(`Decision daily prompt checksum mismatch for ${date}`);
   } else if (config.agent !== "fake" && config.experiment) throw new Error(`Missing live protocol evidence for ${date}`);
 }

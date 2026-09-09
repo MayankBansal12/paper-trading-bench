@@ -13,6 +13,7 @@ export interface ComparisonRow {
   cacheWriteTokens: number; costUsd: number; finalPortfolio: PortfolioState;
 }
 export interface ComparisonCohort {
+  comparisonProfile?: string;
   cohortKey: string; universeVersion: string; fixtureVersion: string;
   executionConvention: string; protocolVersion: string; startDate: string | null;
   endDate: string | null; startingCapital: number; limits: RunConfig["limits"];
@@ -40,7 +41,8 @@ export function cohortKeyOf(config: RunConfig): string {
   return JSON.stringify({universe:config.universeVersion,data:config.fixtureVersion,execution:config.executionConvention,
     protocol:config.protocolVersion,start:config.startDate,end:config.endDate,capital:config.startingCapital,
     contributions:config.contributions??[],limits:config.limits,warmup:config.warmupBars??0,
-    experiment:config.experiment??"legacy",agent:config.agent});
+    experiment:config.experiment??"legacy",agent:config.agent,
+    ...(config.comparisonProfile ? { comparisonProfile:config.comparisonProfile } : {})});
 }
 export function toRow(dir: string, summary: RunSummary): ComparisonRow {
   if (!summary.finalPortfolio || summary.totalContributions===undefined || summary.netProfit===undefined) throw new Error("Missing validated final portfolio or contribution accounting");
@@ -62,7 +64,7 @@ export async function buildComparison(dirs: readonly string[], options: { strict
     try { summary=await loadSummary(dir); }
     catch(error) { if(options.strict) throw error; console.error(`[report] Excluded ${dir}: ${error instanceof Error?error.message:error}`); continue; }
     const key=cohortKeyOf(summary.config);const config=summary.config;
-    const cohort=cohorts.get(key)??{cohortKey:key,universeVersion:config.universeVersion,fixtureVersion:config.fixtureVersion,
+    const cohort=cohorts.get(key)??{...(config.comparisonProfile ? {comparisonProfile:config.comparisonProfile} : {}),cohortKey:key,universeVersion:config.universeVersion,fixtureVersion:config.fixtureVersion,
       executionConvention:config.executionConvention,protocolVersion:config.protocolVersion,startDate:config.startDate,
       endDate:config.endDate,startingCapital:config.startingCapital,limits:config.limits,experiment:config.experiment??"legacy",rows:[]};
     cohort.rows.push(toRow(dir,summary));cohorts.set(key,cohort);
@@ -75,6 +77,7 @@ export function renderMarkdownTable(cohorts: readonly ComparisonCohort[], relati
     const lines=[`### ${cohort.experiment}: ${cohort.startDate} through ${cohort.endDate}`,"",
       `Dataset: \`${cohort.fixtureVersion}\`; universe: \`${cohort.universeVersion}\`; protocol: \`${cohort.protocolVersion}\`.`,"",
       `Adapter: ${cohort.rows[0]?.agent ?? "unknown"}. Daily limits: ${cohort.limits.maxTurns} turns, ${cohort.limits.maxToolCalls} attempted tools, ${cohort.limits.timeoutMs} ms. Execution: ${cohort.executionConvention}.`,"",
+      ...(cohort.comparisonProfile ? [`Comparison profile: \`${cohort.comparisonProfile}\`.`, ""] : []),
       "Returns exclude contributions. Failed/incomplete runs are not qualified benchmark results.","",
       "| Model / provider | Seed | Status | Days | Principal | Final value | P&L | TWR % | Max DD % | Trades | Rejected | Failed attempts | B&H % | Tokens in / out | Cost USD |",
       "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"];

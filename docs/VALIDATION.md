@@ -5,7 +5,7 @@ This branch implements the contract in PRODUCT.md. It is a benchmark harness val
 ## Automated verification
 
 - Bun 1.3.14; TypeScript 5.9.3; Pi SDK 0.80.2; official OpenCode client 1.18.29.
-- `pnpm test`: **278 passed, 0 failed, 3,925 assertions**, across 22 files.
+- Original v5 qualification: `pnpm test` **278 passed, 0 failed, 3,925 assertions**, across 22 files.
 - `pnpm typecheck`: passed.
 - `git diff --check`: passed.
 - CI installs pinned dependencies and runs the offline suite; model credentials are not needed.
@@ -73,3 +73,18 @@ pnpm report -- --dirs=results/runs/mimo-v2.5-free/seed-1/qualified-mimo-v4-20260
 ```
 
 These figures establish that the full experiment ran and reconciled under its declared assumptions. A single historical model run is not evidence of general trading ability; retain the universe/data-selection, ex-date dividend, missing execution-cost, and historical-memory limitations in PRODUCT.md.
+
+## v6 comparison preparation — 2026-09-09
+
+New decisions use protocol `v6-explicit-timing-bounded-memory`: exact observation/execution dates, an unknown-opening-price warning for dependent orders, four requested rationale fields, and a hard 1,200-character cap on each remembered rationale. The authoritative response is preserved in full. Market data, trading freedom, five-day memory window, contributions and accounting are unchanged.
+
+The `202606-202608-v6` comparison preset pins the qualified dataset hash, dates, universe, funding, history depth, execution convention, protocol, and daily budgets (12 turns / 20 attempts / 300,000 ms). CLI and API preflight reject mismatches; `--preflight` performs dataset/configuration validation without agent startup. Model/provider availability still requires separate qualification.
+
+Validation for this update:
+
+- Full offline suite: **291 passed, 0 failed, 3,994 assertions**, across 24 files. Typecheck and diff checks pass.
+- Regression tests cover explicit dates across weekends/holidays, bounded memory with full artifact preservation, original v5 prompt hashes, protocol separation, immutable preset settings, and rejection of old-protocol live runs before inference.
+- The actual retained historical snapshot passes the v6 preset's no-call preflight with 64 sessions and $1,500 scheduled principal.
+- The original **v5** MiMo run still passes strict 64-day ledger replay at **$1,746.15**; SHA-256 checks confirm all **70 run artifacts are byte-for-byte unchanged**.
+
+No v6 live model run has been performed. The prior MiMo performance validates the original v5 experiment; it is not a v6 score and must not be pooled into the new protocol's cohort.

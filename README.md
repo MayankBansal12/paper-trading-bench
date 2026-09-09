@@ -34,6 +34,28 @@ pnpm data:import -- --from-snapshot=datasets/historical/202606_202608 --out=data
 
 The supported default universe is versioned separately from the original 50-stock universe. Honeywell is excluded because its 2025/2026 spin-offs cannot be represented faithfully by the split/dividend accounting implemented here. Unsupported corporate actions cause a data-validation error. See [PRODUCT.md](PRODUCT.md) for the selection and accounting limitations.
 
+## Frozen model comparisons
+
+Use the named `202606-202608-v6` preset for the next comparison series. It locks the exact retained historical snapshot (SHA-256), June–August dates, 49-stock universe, $500 monthly funding, 100-bar history, v6 prompt/memory protocol, execution convention, and daily limits of 12 turns, 20 attempted tools, and 300,000 ms. Model/provider, adapter, replicate label, output run ID, and snapshot location remain selectable.
+
+Validate the preset and local dataset **without starting an agent or making a model call**:
+
+```sh
+pnpm run run -- --comparison=202606-202608-v6 --preflight
+```
+
+When ready to run a model:
+
+```sh
+pnpm run run -- --comparison=202606-202608-v6 --agent=opencode --model=mimo-v2.5-free --seed=1
+```
+
+Locked flags cannot be overridden with `--comparison`; use a separate unprofiled experiment for different settings. A re-downloaded Yahoo snapshot may have a different hash and will be rejected. Use the retained snapshot, rather than editing the preset to accept revised data. `--preflight` verifies experiment configuration and data; it does not check credentials or provider/model availability.
+
+New runs use explicit observation-close and execution-open dates. The model is asked for four short rationale lines (Decision, Evidence, Risk, Invalidation), totaling at most 1,200 characters. Each of the previous five days contributes at most 1,200 rationale characters to memory, with a visible truncation marker if needed. Full responses, fills, rejections, and usage remain in the audit record. Response format/length is an instruction, not a new reason to reject an otherwise valid trading decision; the memory excerpt limit is enforced.
+
+The completed MiMo qualification used **v5**, not v6. Its frozen prompts remain available for strict historical report replay; old live runs cannot resume with the new prompt. Reports separate protocols and adapters into distinct cohorts. See [comparison policy](docs/COMPARISONS.md) before interpreting model or harness differences.
+
 ## Smoke tests and other adapters
 
 Short or synthetic runs must be explicitly marked as smoke tests:

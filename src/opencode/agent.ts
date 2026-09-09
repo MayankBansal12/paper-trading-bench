@@ -1,3 +1,4 @@
+import { AGENT_PROTOCOL_VERSION } from "../agent/protocolVersion.ts";
 import { mkdtemp, rm, readFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -68,7 +69,7 @@ export class OpenCodeAgent implements AgentPort {
       const setup = await makeClientConfig(dir, `${this.provider}/${this.modelId}`, decision.effectiveSystemPrompt, mcp.url, clientVersion);
       decision.effectiveSystemPrompt = setup.effectiveSystemPrompt;
       decision.promptHash = hashText(setup.effectiveSystemPrompt);
-      decision.trace = [{ type: "protocol", adapter: "official-opencode-client", provider: this.provider, model: this.modelId,
+      decision.trace = [{ type: "protocol", version: AGENT_PROTOCOL_VERSION, adapter: "official-opencode-client", provider: this.provider, model: this.modelId,
         systemPrompt: decision.effectiveSystemPrompt, promptHash: decision.promptHash,
         dailyPrompt: buildDailyPrompt(ctx), contextHash: hashText(JSON.stringify(ctx)), config: setup.config }];
       const apiKey = process.env.OPENCODE_API_KEY ?? await AuthStorage.create().getApiKey("opencode");

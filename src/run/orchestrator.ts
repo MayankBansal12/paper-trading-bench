@@ -1,3 +1,5 @@
+import { validateComparisonConfig } from "../config/comparison.ts";
+import { AGENT_PROTOCOL_VERSION, RECENT_DAY_LIMIT } from "../agent/protocolVersion.ts";
 import { readFile, readdir } from "node:fs/promises";
 import { join } from "node:path";
 import { loadDataset, validateDatasetWindow, type MarketDataset } from "../data/dataset.ts";
@@ -23,6 +25,7 @@ function sumUsage(usages: readonly UsageStats[]): UsageStats {
 }
 
 async function preflight(config: RunConfig) {
+  validateComparisonConfig(config);
   const market = await loadDataset(config.dataDir);
   const universe = getUniverse(config.universeVersion);
   if (config.dataDir && config.fixtureVersion !== market.version) throw new Error("Dataset content identity does not match config.fixtureVersion");
@@ -76,7 +79,7 @@ async function reconstruct(dir: string, state: RunState, config: RunConfig, date
     const record = await loadDailyRecord(dir, date);
     if (!record) throw new Error(`Run state lists ${date} as completed but daily/${date}.json is missing in ${dir}`);
     if (records.at(-1)?.terminated) throw new Error("Daily artifact exists after portfolio termination");
-    const replayed = replayDecision(config, date, universe, portfolio, record.decision!, market, records.slice(-5), record.priorAttemptHashes!);
+    const replayed = replayDecision(config, date, universe, portfolio, record.decision!, market, records.slice(-RECENT_DAY_LIMIT), record.priorAttemptHashes!);
     if (JSON.stringify(replayed) !== JSON.stringify(record)) throw new Error(`Daily portfolio/order ledger is inconsistent for ${date}`);
     records.push(record);
     portfolio = record.portfolioAfter;
@@ -137,12 +140,12 @@ async function processRun(dir: string, config: RunConfig, prepared: Awaited<Retu
   for (const attempt of attempts) {
     const index = dates.indexOf(attempt.date);
     const prior = index ? records[index - 1]!.portfolioAfter : createInitialPortfolio(config.startingCapital);
-    const expectedContext = buildDecisionContext(config, attempt.date, universe, prior, records.slice(Math.max(0, index - 5), index), market);
+    const expectedContext = buildDecisionContext(config, attempt.date, universe, prior, records.slice(Math.max(0, index - RECENT_DAY_LIMIT), index), market);
     const expectedHash = contentHash(expectedContext);
     if (attempt.contextHash !== expectedHash) throw new Error(`Attempt context mismatch for ${attempt.date}`);
     if (attempt.decision && attempt.failurePhase) {
       let observed: unknown;
-      try { replayDecision(config, attempt.date, universe, prior, attempt.decision, market, records.slice(Math.max(0, index - 5), index)); }
+      try { replayDecision(config, attempt.date, universe, prior, attempt.decision, market, records.slice(Math.max(0, index - RECENT_DAY_LIMIT), index)); }
       catch (error) { observed = error; }
       if (!(observed instanceof DecisionAttemptError) || observed.failurePhase !== attempt.failurePhase || observed.message !== attempt.reason) throw new Error(`Returned-decision failure evidence does not reproduce for ${attempt.date}`);
     } else if (attempt.decision) validateDecisionEvidence(attempt.decision, expectedHash, config, attempt.date, expectedContext);
@@ -164,10 +167,10 @@ async function processRun(dir: string, config: RunConfig, prepared: Awaited<Retu
   if (agent && state.status === "active") {
     for (const date of dates.slice(records.length)) {
       let record: DailyRecord;
-      try { record = await runOneDay(agent, config, date, universe, records.at(-1)?.portfolioAfter ?? createInitialPortfolio(config.startingCapital), records.slice(-5), market, state.attemptHashes); }
+      try { record = await runOneDay(agent, config, date, universe, records.at(-1)?.portfolioAfter ?? createInitialPortfolio(config.startingCapital), records.slice(-RECENT_DAY_LIMIT), market, state.attemptHashes); }
       catch (error) {
         const decision = error instanceof DecisionAttemptError ? error.decision : undefined;
-        const attempt: AttemptRecord = { artifactVersion: ARTIFACT_VERSION, date, contextHash: contentHash(buildDecisionContext(config, date, universe, records.at(-1)?.portfolioAfter ?? createInitialPortfolio(config.startingCapital), records.slice(-5), market)), attempt: attempts.filter((a) => a.date === date).length + 1,
+        const attempt: AttemptRecord = { artifactVersion: ARTIFACT_VERSION, date, contextHash: contentHash(buildDecisionContext(config, date, universe, records.at(-1)?.portfolioAfter ?? createInitialPortfolio(config.startingCapital), records.slice(-RECENT_DAY_LIMIT), market)), attempt: attempts.filter((a) => a.date === date).length + 1,
           outcome: error instanceof DecisionAttemptError && error.failurePhase ? "harness_error" : decision?.outcome && decision.outcome !== "completed" ? decision.outcome : decision?.boundedStop ? "budget_cutoff" : "harness_error",
           ...(error instanceof DecisionAttemptError && error.failurePhase ? { failurePhase: error.failurePhase } : {}),
           reason: error instanceof Error ? error.message : String(error), ...(decision ? { decision } : {}), usage: decision ? decisionUsage(decision.usage) : zeroUsage() };
@@ -186,6 +189,9 @@ async function processRun(dir: string, config: RunConfig, prepared: Awaited<Retu
 }
 
 export async function runBatch(configInput: RunConfig, agent: AgentPort): Promise<{ runId: string; dir: string; summary: RunSummary }> {
+  if (configInput.agent !== "fake" && configInput.protocolVersion !== AGENT_PROTOCOL_VERSION) {
+    throw new Error(`Live runs require protocol ${AGENT_PROTOCOL_VERSION}; historical protocols are available for report replay only. Start a new run.`);
+  }
   const { runId, dir } = resolveRunDir(configInput);
   const config = { ...configInput, runId };
   const prepared = await preflight(config);

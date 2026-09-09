@@ -1,3 +1,4 @@
+import { applyComparisonFlags, getComparisonProfile, validateComparisonConfig } from "../config/comparison.ts";
 import { resolve } from "node:path";
 import { parseFlags } from "./args.ts";
 import { assertInRange, assertKnownFlags, assertNoPositionals, parseDateFlag, parseIntFlag, parsePositiveFinite, parsePositiveInt } from "./validate.ts";
@@ -6,12 +7,13 @@ import type { AgentPort, RunConfig } from "../domain/types.ts";
 
 const DEFAULT_LIMITS = { maxTurns: 12, maxToolCalls: 20, timeoutMs: 120_000 };
 export const BENCHMARK_STARTING_CAPITAL = MONTHLY_CONTRIBUTION;
-const KNOWN_FLAGS = ["model", "provider", "agent", "seed", "start", "end", "starting-capital", "universe-version", "max-turns", "max-tool-calls", "timeout-ms", "run-id", "data-dir", "warmup-bars", "smoke", "free-only", "help"] as const;
+const KNOWN_FLAGS = ["model", "provider", "agent", "seed", "start", "end", "starting-capital", "universe-version", "max-turns", "max-tool-calls", "timeout-ms", "run-id", "data-dir", "warmup-bars", "smoke", "free-only", "comparison", "preflight", "help"] as const;
 
 function printRunUsage(): void {
   console.error("Usage: pnpm run run -- [--provider=opencode] [--model=mimo-v2.5-free] [--agent=opencode|pi|fake]");
   console.error("  --data-dir=<snapshot> --start=YYYY-MM-DD --end=YYYY-MM-DD [--seed=1] [--run-id=<id>]");
   console.error("  [--max-turns=12] [--max-tool-calls=20] [--timeout-ms=120000] [--free-only=true]");
+  console.error("  [--comparison=202606-202608-v6] [--preflight]  # frozen settings; validate without a model call");
   console.error("Default: last three completed UTC calendar months; $500 initially and $500 at the start of months 2 and 3.");
   console.error("Historical data with at least 60 warm-up bars is required for a benchmark. Download a snapshot first with data:import.");
   console.error("--smoke permits shorter/synthetic qualification windows. --warmup-bars=0 is allowed only for smoke tests.");
@@ -23,6 +25,8 @@ export async function runRun(argv: string[]): Promise<void> {
   const { flags, positionals } = parseFlags(argv);
   assertKnownFlags(flags, KNOWN_FLAGS, "run");
   assertNoPositionals(positionals, "run");
+  applyComparisonFlags(flags);
+  const preflightOnly = parseBooleanFlag("preflight", flags.get("preflight"));
   const agentKind = flags.get("agent") ?? "opencode";
   if (agentKind !== "fake" && agentKind !== "pi" && agentKind !== "opencode") throw new Error(`--agent must be "fake", "pi", or "opencode", got "${agentKind}"`);
   const smoke = parseBooleanFlag("smoke", flags.get("smoke"));
@@ -64,7 +68,14 @@ export async function runRun(argv: string[]): Promise<void> {
   const config: RunConfig = { model, provider, freeOnly, agent: agentKind, seed, startDate: start, endDate: end, startingCapital: capital,
     universeVersion, limits, executionConvention: EXECUTION_CONVENTION, fixtureVersion: dataset.version,
     protocolVersion: AGENT_PROTOCOL_VERSION, runId: flags.get("run-id"), dataDir, contributions, warmupBars,
-    experiment: smoke ? "smoke" : "three-month" };
+    experiment: smoke ? "smoke" : "three-month",
+    ...(flags.has("comparison") ? { comparisonProfile: flags.get("comparison") } : {}) };
+  validateComparisonConfig(config);
+  if (preflightOnly) {
+    console.log(JSON.stringify({ config, sessions: dates.length, ...(config.comparisonProfile ? { memory: getComparisonProfile(config.comparisonProfile).memory } : {}) }, null, 2));
+    console.error("[preflight] Configuration and dataset validated. No agent started or run artifacts written.");
+    return;
+  }
   const { FakeAgent } = await import("../agent/fakeAgent.ts");
   const { PiAgent } = await import("../agent/piAgent.ts");
   const { OpenCodeAgent } = await import("../opencode/agent.ts");

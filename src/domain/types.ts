@@ -174,6 +174,8 @@ export interface DailyRecord {
 }
 
 export interface RunConfig {
+  /** Named, immutable comparison preset; pinned settings are checked during preflight. */
+  comparisonProfile?: string;
   provider?: string;
   freeOnly?: boolean;
   dataDir?: string;
