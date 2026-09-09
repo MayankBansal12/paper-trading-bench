@@ -45,4 +45,31 @@ Preliminary MiMo testing completed one day with two buys, eight tool calls, six 
 
 The first final-v4 MiMo day also completed successfully: two fills, eight audited tool attempts, five fully metered requests, 93,603 total tokens (61,184 cache-read tokens), 240,924 ms elapsed, and reported cost **$0**. Every runtime audit matched the exact prompt, model, six-tool permissions, and isolated working directory.
 
-Final full-window qualification is tracked under `results/runs/mimo-v2.5-free/seed-1/qualified-mimo-v4-202606-202608`; its completion and validated metrics will be recorded after the run terminates. Do not treat a running or failed partial portfolio as a completed three-month score.
+## Completed free-model historical run
+
+The final run `results/runs/mimo-v2.5-free/seed-1/qualified-mimo-v4-202606-202608` completed **64/64 sessions** through August 31. `loadValidatedSummary` independently replayed the complete v4 ledger successfully. The immutable configuration used free MiMo, OpenCode 1.18.29, 12 turns, 20 attempted tools, and a 300,000 ms deadline per daily decision.
+
+| Measurement | Validated result |
+|---|---:|
+| Contributed principal | $1,500.00 |
+| Final portfolio value | $1,746.15 |
+| Dollar profit | $246.15 |
+| Time-weighted return | 18.5855% |
+| Maximum drawdown | -10.8619% |
+| Cash | $12.84 |
+| Fills / rejected orders | 30 / 3 |
+| Completed decisions / failed attempts | 64 / 2 |
+| Reported total tokens, including failed attempts | 8,444,670 |
+| Reported API cost | $0.00 |
+
+Final holdings: IBM 1.813966 shares ($424.23), TSLA 1.899358 shares ($698.87), and QCOM 3.579376 shares ($610.21). Holdings total $1,733.31; adding $12.84 cash reconciles to final equity.
+
+The July 1 and August 3 deposits were each exactly $500. Provider errors on July 9 and August 28 each recovered on one retry using the unchanged configuration. All failed-attempt evidence and reported usage remain included; no date was skipped and no failed decision executed orders. Cash control ended at $1,500; the equally funded buy-and-hold baseline ended at $1,555.63 (3.098% time-weighted return).
+
+Revalidate and render the final report without calling a model:
+
+```sh
+pnpm report -- --dirs=results/runs/mimo-v2.5-free/seed-1/qualified-mimo-v4-202606-202608
+```
+
+These figures establish that the full experiment ran and reconciled under its declared assumptions. A single historical model run is not evidence of general trading ability; retain the universe/data-selection, ex-date dividend, missing execution-cost, and historical-memory limitations in PRODUCT.md.
