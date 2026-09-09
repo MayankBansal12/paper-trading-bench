@@ -43,7 +43,9 @@ export class FakeAgent implements AgentPort {
     }
 
     return {
-      orders,
+      orders: boundedStop ? [] : orders,
+      submittedOrders: orders,
+      outcome: boundedStop ? "budget_cutoff" : "completed",
       failedOrders: [],
       rationale: `SMA(20/50) crossover: ${orders.length} order(s) on ${ctx.date}.`,
       usage: {

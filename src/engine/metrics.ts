@@ -25,7 +25,7 @@ function seedWithStartingCapital(curve: readonly EquityPoint[], startingCapital:
 function dailyReturns(curve: readonly EquityPoint[]): number[] {
   const out: number[] = [];
   for (let i = 1; i < curve.length; i++) {
-    const prev = curve[i - 1]!.netWorth;
+    const prev = curve[i - 1]!.netWorth + (curve[i]!.contribution ?? 0);
     const cur = curve[i]!.netWorth;
     out.push(prev === 0 ? 0 : cur / prev - 1);
   }
@@ -57,9 +57,15 @@ export function computeMetrics(
   boundedStopCount: number,
   turnoverPctSeries: readonly number[],
 ): Metrics {
+  if (!Number.isFinite(startingCapital) || startingCapital <= 0) throw new RangeError("Starting capital must be finite and positive");
+  for (const p of curve) if (!Number.isFinite(p.netWorth) || p.netWorth < 0 || !Number.isFinite(p.contribution ?? 0) || (p.contribution ?? 0) < 0) throw new RangeError("Invalid equity or cash flow");
   const ending = curve.length > 0 ? curve[curve.length - 1]!.netWorth : startingCapital;
   const seeded = seedWithStartingCapital(curve, startingCapital);
   const rets = dailyReturns(seeded);
+  const totalContributions = round2(startingCapital + curve.reduce((sum, p) => sum + (p.contribution ?? 0), 0));
+  let index = 1;
+  const performanceCurve = [{ date: "(start)", netWorth: index }, ...rets.map((r, i) => ({ date: curve[i]!.date, netWorth: index *= 1 + r }))];
+  const timeWeightedReturnPct = round4((index - 1) * 100);
   const dailyVol = stdev(rets);
   const meanRet = rets.length > 0 ? rets.reduce((a, b) => a + b, 0) / rets.length : 0;
   const sharpe = dailyVol > 0 ? round4((meanRet / dailyVol) * Math.sqrt(TRADING_DAYS_PER_YEAR)) : null;
@@ -71,8 +77,11 @@ export function computeMetrics(
   return {
     startingCapital: round2(startingCapital),
     endingNetWorth: round2(ending),
-    totalReturnPct: round4((ending / startingCapital - 1) * 100),
-    maxDrawdownPct: maxDrawdownPct(seeded),
+    totalContributions,
+    netProfit: round2(ending - totalContributions),
+    timeWeightedReturnPct,
+    totalReturnPct: timeWeightedReturnPct,
+    maxDrawdownPct: maxDrawdownPct(performanceCurve),
     dailyVolatilityPct: round4(dailyVol * 100),
     annualizedVolatilityPct: round4(dailyVol * Math.sqrt(TRADING_DAYS_PER_YEAR) * 100),
     sharpe,

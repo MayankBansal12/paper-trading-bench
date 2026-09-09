@@ -22,3 +22,6 @@ results/reports/*
 # Secrets — never commit
 .env
 .env.*
+
+# Downloaded market snapshots (may include redistribution-restricted source data)
+datasets/

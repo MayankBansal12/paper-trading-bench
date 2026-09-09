@@ -1,102 +1,86 @@
-// `run` subcommand: runs (or resumes) a batch for one model/seed over a
-// configurable date range against the fixed universe.
-
+import { resolve } from "node:path";
 import { parseFlags } from "./args.ts";
 import { assertInRange, assertKnownFlags, assertNoPositionals, parseDateFlag, parseIntFlag, parsePositiveFinite, parsePositiveInt } from "./validate.ts";
-import { UNIVERSE_VERSION } from "../config/universe.ts";
-import { EXECUTION_CONVENTION } from "../engine/execution.ts";
-import { MAX_MONEY_USD, MIN_MONEY_USD } from "../engine/money.ts";
-import { round2 } from "../engine/portfolio.ts";
-import { FIXTURE_VERSION } from "../data/ohlcv.ts";
-import { AGENT_PROTOCOL_VERSION } from "../agent/protocolVersion.ts";
-import { runBatch } from "../run/orchestrator.ts";
-import { FakeAgent } from "../agent/fakeAgent.ts";
-import { PiAgent, DEFAULT_MODEL } from "../agent/piAgent.ts";
+import { defaultDataDir, defaultWindow, isThreeMonthWindow, MONTHLY_CONTRIBUTION, monthlyDeposits, parseBooleanFlag } from "./experiment.ts";
 import type { AgentPort, RunConfig } from "../domain/types.ts";
 
-const DEFAULT_LIMITS = { maxTurns: 8, maxToolCalls: 20, timeoutMs: 60_000 };
-export const BENCHMARK_STARTING_CAPITAL = 1000;
-
-const KNOWN_FLAGS = [
-  "model", "agent", "seed", "start", "end", "starting-capital",
-  "universe-version", "max-turns", "max-tool-calls", "timeout-ms", "run-id", "help",
-] as const;
+const DEFAULT_LIMITS = { maxTurns: 12, maxToolCalls: 20, timeoutMs: 120_000 };
+export const BENCHMARK_STARTING_CAPITAL = MONTHLY_CONTRIBUTION;
+const KNOWN_FLAGS = ["model", "provider", "agent", "seed", "start", "end", "starting-capital", "universe-version", "max-turns", "max-tool-calls", "timeout-ms", "run-id", "data-dir", "warmup-bars", "smoke", "free-only", "help"] as const;
 
 function printRunUsage(): void {
-  console.error("Usage: pnpm run run -- --model=minimax-m3 [--agent=pi|fake] [--seed=1]");
-  console.error("                        [--start=YYYY-MM-DD] [--end=YYYY-MM-DD] [--run-id=<id>]");
-  console.error("                        [--starting-capital=1000] [--universe-version=v1]");
-  console.error("                        [--max-turns=8] [--max-tool-calls=20] [--timeout-ms=60000]");
-  console.error("");
-  console.error(`The comparable benchmark uses --starting-capital=${BENCHMARK_STARTING_CAPITAL} (the default). A`);
-  console.error("different value still runs, but \`report\` will not cohort it against $1,000 runs.");
-  console.error(`--starting-capital must be between $${MIN_MONEY_USD} and $${MAX_MONEY_USD} once rounded to cents.`);
-  console.error("opencode-go models: minimax-m3, deepseek-v4-pro, ... (any id Pi's catalog resolves)");
+  console.error("Usage: pnpm run run -- [--provider=opencode] [--model=mimo-v2.5-free] [--agent=opencode|pi|fake]");
+  console.error("  --data-dir=<snapshot> --start=YYYY-MM-DD --end=YYYY-MM-DD [--seed=1] [--run-id=<id>]");
+  console.error("  [--max-turns=12] [--max-tool-calls=20] [--timeout-ms=120000] [--free-only=true]");
+  console.error("Default: last three completed UTC calendar months; $500 initially and $500 at the start of months 2 and 3.");
+  console.error("Historical data with at least 60 warm-up bars is required for a benchmark. Download a snapshot first with data:import.");
+  console.error("--smoke permits shorter/synthetic qualification windows. --warmup-bars=0 is allowed only for smoke tests.");
+  console.error("--seed is a replicate label, not a model sampling seed. --free-only=false explicitly permits a paid model.");
 }
 
 export async function runRun(argv: string[]): Promise<void> {
-  if (argv.includes("--help") || argv.includes("-h")) {
-    printRunUsage();
-    return;
-  }
-
+  if (argv.includes("--help") || argv.includes("-h")) { printRunUsage(); return; }
   const { flags, positionals } = parseFlags(argv);
   assertKnownFlags(flags, KNOWN_FLAGS, "run");
   assertNoPositionals(positionals, "run");
-
-  const agentKind = flags.get("agent") ?? "pi";
-  if (agentKind !== "fake" && agentKind !== "pi") {
-    throw new Error(`--agent must be "fake" or "pi", got "${agentKind}"`);
+  const agentKind = flags.get("agent") ?? "opencode";
+  if (agentKind !== "fake" && agentKind !== "pi" && agentKind !== "opencode") throw new Error(`--agent must be "fake", "pi", or "opencode", got "${agentKind}"`);
+  const smoke = parseBooleanFlag("smoke", flags.get("smoke"));
+  const freeOnly = parseBooleanFlag("free-only", flags.get("free-only"), true);
+  const defaults = defaultWindow();
+  const start = parseDateFlag("start", flags.get("start")) ?? defaults.start;
+  const end = parseDateFlag("end", flags.get("end")) ?? defaults.end;
+  if (start > end) throw new Error(`--start (${start}) must be <= --end (${end})`);
+  const rawCapital = parsePositiveFinite("starting-capital", flags.get("starting-capital"), MONTHLY_CONTRIBUTION);
+  const capital = Math.round(rawCapital * 100) / 100;
+  assertInRange("starting-capital", capital, 0.01, 1e9);
+  const warmupBars = parseIntFlag("warmup-bars", flags.get("warmup-bars"), 100);
+  if (!Number.isSafeInteger(warmupBars) || warmupBars < 0) throw new Error("--warmup-bars must be a nonnegative safe integer");
+  if (!smoke && (!isThreeMonthWindow(start, end) || capital !== MONTHLY_CONTRIBUTION || warmupBars < 60)) {
+    throw new Error("A benchmark requires three complete calendar months, $500 initial capital, and at least 60 warm-up bars. Use --smoke for qualification runs.");
   }
-  const model = flags.get("model") ?? (agentKind === "fake" ? "fake" : DEFAULT_MODEL);
-  const runId = flags.get("run-id");
-
-  // Rounded to 2dp BEFORE bound-checking: cash always rounds to 2dp (see
-  // engine/portfolio.ts createInitialPortfolio), so the stored config's
-  // startingCapital must match the actual opening cash exactly — a sub-cent
-  // --starting-capital could otherwise diverge from createInitialPortfolio's
-  // rounded value and from isTerminated()'s threshold check, which both use
-  // this field verbatim. Checking the RAW pre-round value against [MIN, MAX]
-  // isn't enough either: "0.001" is positive/finite raw but rounds to $0
-  // (NaN metrics downstream), and "1e307" is finite raw but round2(1e307)
-  // overflows to Infinity — both must be caught on the NORMALIZED value.
-  const startingCapital = round2(parsePositiveFinite("starting-capital", flags.get("starting-capital"), BENCHMARK_STARTING_CAPITAL));
-  assertInRange("starting-capital", startingCapital, MIN_MONEY_USD, MAX_MONEY_USD);
-
-  const config: RunConfig = {
-    model,
-    seed: parseIntFlag("seed", flags.get("seed"), 1),
-    agent: agentKind,
-    startDate: parseDateFlag("start", flags.get("start")),
-    endDate: parseDateFlag("end", flags.get("end")),
-    startingCapital,
-    universeVersion: flags.get("universe-version") ?? UNIVERSE_VERSION,
-    limits: {
-      maxTurns: parsePositiveInt("max-turns", flags.get("max-turns"), DEFAULT_LIMITS.maxTurns),
-      maxToolCalls: parsePositiveInt("max-tool-calls", flags.get("max-tool-calls"), DEFAULT_LIMITS.maxToolCalls),
-      timeoutMs: parsePositiveInt("timeout-ms", flags.get("timeout-ms"), DEFAULT_LIMITS.timeoutMs),
-    },
-    executionConvention: EXECUTION_CONVENTION,
-    fixtureVersion: FIXTURE_VERSION,
-    protocolVersion: AGENT_PROTOCOL_VERSION,
-    runId,
+  const provider = flags.get("provider") ?? "opencode";
+  const model = flags.get("model") ?? (agentKind === "fake" ? "fake" : "mimo-v2.5-free");
+  const limits = {
+    maxTurns: parsePositiveInt("max-turns", flags.get("max-turns"), DEFAULT_LIMITS.maxTurns),
+    maxToolCalls: parsePositiveInt("max-tool-calls", flags.get("max-tool-calls"), DEFAULT_LIMITS.maxToolCalls),
+    timeoutMs: parsePositiveInt("timeout-ms", flags.get("timeout-ms"), DEFAULT_LIMITS.timeoutMs),
   };
-
-  if (config.startDate && config.endDate && config.startDate > config.endDate) {
-    throw new Error(`--start (${config.startDate}) must be <= --end (${config.endDate})`);
-  }
-  if (config.startingCapital !== BENCHMARK_STARTING_CAPITAL) {
-    console.error(
-      `[run] WARNING: --starting-capital=${config.startingCapital} differs from the $${BENCHMARK_STARTING_CAPITAL} benchmark default — this run will not be cohorted against $${BENCHMARK_STARTING_CAPITAL} runs by \`report\`.`,
-    );
-  }
-
-  const agent: AgentPort = agentKind === "fake" ? new FakeAgent() : new PiAgent(model);
-
-  console.error(`[run] agent=${agent.name} seed=${config.seed} range=${config.startDate ?? "earliest"}..${config.endDate ?? "latest"}`);
-  const { runId: resolvedRunId, dir, summary } = await runBatch(config, agent);
-  console.error(`[run] runId=${resolvedRunId} dir=${dir}`);
-  console.error(
-    `[run] status=${summary.status} days=${summary.metrics.daysRun} netWorth=$${summary.metrics.endingNetWorth.toFixed(2)} return=${summary.metrics.totalReturnPct.toFixed(2)}% maxDD=${summary.metrics.maxDrawdownPct.toFixed(2)}% sharpe=${summary.metrics.sharpe ?? "n/a"} trades=${summary.metrics.tradeCount} failed=${summary.metrics.failedOrderCount}`,
-  );
+  const seed = parseIntFlag("seed", flags.get("seed"), 1);
+  if (![seed, ...Object.values(limits)].every(Number.isSafeInteger) || limits.timeoutMs > 2_147_483_647) throw new Error("Seed and limits must be safe integers; timeout must fit a 32-bit timer.");
+  const dataDir = resolve(flags.get("data-dir") ?? defaultDataDir(start, end));
+  // Delayed imports keep --help and malformed flags independent of fixtures/SDK.
+  const { loadDataset, validateDatasetWindow } = await import("../data/dataset.ts");
+  const { UNIVERSE_VERSION, getUniverse } = await import("../config/universe.ts");
+  const dataset = await loadDataset(dataDir).catch((error) => {
+    throw new Error(`Cannot load dataset ${dataDir}. Download it with: pnpm run data:import -- --start=${start} --end=${end} --out=${dataDir}`, { cause: error });
+  });
+  if (!smoke && dataset.kind !== "historical") throw new Error("A benchmark requires historical data; use --smoke for synthetic fixtures.");
+  const universeVersion = flags.get("universe-version") ?? UNIVERSE_VERSION;
+  const dates = validateDatasetWindow(dataset, start, end, warmupBars, getUniverse(universeVersion));
+  const contributions = monthlyDeposits(dates);
+  const { EXECUTION_CONVENTION } = await import("../engine/execution.ts");
+  const { AGENT_PROTOCOL_VERSION } = await import("../agent/protocolVersion.ts");
+  const config: RunConfig = { model, provider, freeOnly, agent: agentKind, seed, startDate: start, endDate: end, startingCapital: capital,
+    universeVersion, limits, executionConvention: EXECUTION_CONVENTION, fixtureVersion: dataset.version,
+    protocolVersion: AGENT_PROTOCOL_VERSION, runId: flags.get("run-id"), dataDir, contributions, warmupBars,
+    experiment: smoke ? "smoke" : "three-month" };
+  const { FakeAgent } = await import("../agent/fakeAgent.ts");
+  const { PiAgent } = await import("../agent/piAgent.ts");
+  const { OpenCodeAgent } = await import("../opencode/agent.ts");
+  const agent: AgentPort = agentKind === "fake" ? new FakeAgent() : agentKind === "opencode" ? new OpenCodeAgent(model, provider, { freeOnly }) : new PiAgent(model, provider, { freeOnly });
+  const { runBatch } = await import("../run/orchestrator.ts");
+  console.error(`[run] ${config.experiment} agent=${agent.name} seed=${seed} range=${start}..${end} days=${dates.length} principal=$${capital + contributions.reduce((sum, c) => sum + c.amount, 0)}`);
+  const { runId, dir, summary } = await runBatch(config, {
+    name: agent.name,
+    async decide(context) {
+      console.error(`[decision] ${context.date} starting; cash=$${context.portfolio.cash.toFixed(2)} netWorth=$${context.portfolio.netWorth.toFixed(2)}`);
+      const decision = await agent.decide(context);
+      console.error(`[decision] ${context.date} ${decision.outcome ?? (decision.boundedStop ? "budget_cutoff" : "completed")} tools=${decision.usage.toolCalls} elapsedMs=${decision.elapsedMs ?? 0}`);
+      return decision;
+    },
+  });
+  console.error(`[run] runId=${runId} dir=${dir}`);
+  if (summary.status !== "completed") process.exitCode = 1;
+  console.error(`[run] status=${summary.status} days=${summary.metrics.daysRun} netWorth=$${summary.metrics.endingNetWorth.toFixed(2)} return=${summary.metrics.totalReturnPct.toFixed(2)}% trades=${summary.metrics.tradeCount} failed=${summary.metrics.failedOrderCount}`);
 }

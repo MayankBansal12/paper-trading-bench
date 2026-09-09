@@ -38,12 +38,14 @@ export interface PiWorkingState {
   decidedOrders: OrderRequest[];
   failedOrders: FailedOrder[];
   budget: TurnBudget;
+  /** Live SDK accounts attempts/results before validation; direct unit tools use local counters. */
+  externalAccounting?: boolean;
 }
 
 const err = (text: string, details: Record<string, unknown> = {}) => ({
   content: [{ type: "text" as const, text }],
   isError: true,
-  details,
+  details: { ...details, rejected: true },
 });
 const ok = (data: unknown, details: Record<string, unknown> = {}) => ({
   content: [{ type: "text" as const, text: JSON.stringify(data, null, 2) }],
@@ -55,6 +57,7 @@ const ok = (data: unknown, details: Record<string, unknown> = {}) => ({
  * non-cooperative agent hammering tools after being told to stop must never
  * push usage.toolCalls past the advertised cap. */
 function budgetGate(state: PiWorkingState) {
+  if (state.externalAccounting) return null;
   const reason = state.budget.exceeded(Date.now());
   if (reason) {
     state.budget.recordRefusal(reason);
@@ -69,18 +72,22 @@ function budgetGate(state: PiWorkingState) {
  * synchronous feedback and every rejected attempt must be visible in the
  * day's failedOrderCount, per PRODUCT.md. */
 function rejectTradeCall(state: PiWorkingState, side: "BUY" | "SELL", ticker: string, reason: string) {
-  state.budget.recordToolCall(true);
+  recordToolCall(state, true);
   state.failedOrders.push({ date: state.date, ticker, side, reason });
   return err(reason, { ticker, side });
+}
+
+function recordToolCall(state: PiWorkingState, failed: boolean) {
+  if (!state.externalAccounting) state.budget.recordToolCall(failed);
 }
 
 function sizeOf(params: { notionalUsd?: number; units?: number }): OrderRequest["sizing"] | null {
   if (params.notionalUsd !== undefined && params.units !== undefined) return null;
   if (params.notionalUsd !== undefined) {
-    return params.notionalUsd > 0 ? { kind: "notional", usd: params.notionalUsd } : null;
+    return Number.isFinite(params.notionalUsd) && params.notionalUsd > 0 ? { kind: "notional", usd: params.notionalUsd } : null;
   }
   if (params.units !== undefined) {
-    return params.units > 0 ? { kind: "units", units: params.units } : null;
+    return Number.isFinite(params.units) && params.units > 0 ? { kind: "units", units: params.units } : null;
   }
   return null;
 }
@@ -97,8 +104,8 @@ function tradeTool(state: PiWorkingState, side: "BUY" | "SELL"): ToolDefinition 
     description:
       `Queue a ${side === "BUY" ? "buy" : "sell"} order for today. Provide exactly one of notionalUsd or units. ` +
       "You will NOT see today's open price, a fill, or an updated portfolio during this session — every order you " +
-      "queue today (across every buy/sell call) executes together, at today's open, only after you finish with your " +
-      "final rationale. get_portfolio always reflects yesterday's close, never anything queued this session. An order " +
+      "queue today (across every buy/sell call) executes in queue order at today's open, only after you finish with your " +
+      "final rationale. Later sells cannot fund earlier buys. Failed or bounded decisions execute no orders. get_portfolio always reflects yesterday's close, never anything queued this session. An order " +
       "can still fail at execution time (e.g. insufficient cash) — that is reported in the run's failed-order count, " +
       "not visible to you mid-session.",
     parameters: Schema,
@@ -117,7 +124,7 @@ function tradeTool(state: PiWorkingState, side: "BUY" | "SELL"): ToolDefinition 
       }
 
       state.decidedOrders.push({ ticker, side, sizing });
-      state.budget.recordToolCall(false);
+      recordToolCall(state, false);
       return ok({ queued: true, ticker, side, sizing });
     },
   };
@@ -133,7 +140,7 @@ export function buildTradingTools(state: PiWorkingState): ToolDefinition[] {
       execute: async () => {
         const gated = budgetGate(state);
         if (gated) return gated;
-        state.budget.recordToolCall(false);
+        recordToolCall(state, false);
         return ok(state.portfolio);
       },
     },
@@ -145,7 +152,7 @@ export function buildTradingTools(state: PiWorkingState): ToolDefinition[] {
       execute: async () => {
         const gated = budgetGate(state);
         if (gated) return gated;
-        state.budget.recordToolCall(false);
+        recordToolCall(state, false);
         return ok(state.universe);
       },
     },
@@ -162,10 +169,10 @@ export function buildTradingTools(state: PiWorkingState): ToolDefinition[] {
         if (gated) return gated;
         const bars = state.bars[params.ticker];
         if (!bars) {
-          state.budget.recordToolCall(true);
+          recordToolCall(state, true);
           return err(`"${params.ticker}" is not in the trading universe.`, { ticker: params.ticker });
         }
-        state.budget.recordToolCall(false);
+        recordToolCall(state, false);
         const slice = params.lookback ? bars.slice(Math.max(0, bars.length - params.lookback)) : bars;
         return ok(slice);
       },
@@ -184,14 +191,14 @@ export function buildTradingTools(state: PiWorkingState): ToolDefinition[] {
           return { ...state.indicators[ticker], lastClose: last?.close ?? null, lastDate: last?.date ?? null };
         };
         if (params.ticker === undefined) {
-          state.budget.recordToolCall(false);
+          recordToolCall(state, false);
           return ok(Object.fromEntries(state.universe.map((ticker) => [ticker, snapshot(ticker)])));
         }
         if (!state.indicators[params.ticker]) {
-          state.budget.recordToolCall(true);
+          recordToolCall(state, true);
           return err(`"${params.ticker}" is not in the trading universe.`, { ticker: params.ticker });
         }
-        state.budget.recordToolCall(false);
+        recordToolCall(state, false);
         return ok(snapshot(params.ticker));
       },
     },

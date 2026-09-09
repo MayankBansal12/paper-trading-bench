@@ -27,8 +27,9 @@ export async function runReport(argv: string[]): Promise<void> {
   assertKnownFlags(flags, KNOWN_FLAGS, "report");
   assertNoPositionals(positionals, "report");
   const dirsFlag = flags.get("dirs");
+  if (dirsFlag !== undefined && dirsFlag.split(",").some((d) => !d.trim() || d === "true")) throw new Error("--dirs requires a comma-separated list of nonempty run directories");
   const dirs = dirsFlag
-    ? dirsFlag.split(",").map((d) => resolve(d))
+    ? dirsFlag.split(",").map((d) => resolve(d.trim()))
     : await discoverRunDirs(RUNS_DIR);
 
   if (dirs.length === 0) {
@@ -36,7 +37,7 @@ export async function runReport(argv: string[]): Promise<void> {
     return;
   }
 
-  const cohorts = await buildComparison(dirs);
+  const cohorts = await buildComparison(dirs, { strict: dirsFlag !== undefined });
   const markdown = renderMarkdownTable(cohorts, RUNS_DIR);
   console.log(markdown);
 

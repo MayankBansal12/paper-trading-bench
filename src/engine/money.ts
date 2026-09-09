@@ -196,6 +196,7 @@ function exactRational(x: number): { num: bigint; den: bigint } {
  * behavior on the non-negative values this ledger only ever deals in (no
  * shorting, no negative prices). */
 export function positionValueCents(units: number, price: number): bigint {
+  if (!Number.isFinite(units) || units < 0 || !Number.isFinite(price) || price <= 0) throw new RangeError("Position valuation requires nonnegative finite units and a positive finite price");
   const unitsMicros = BigInt(Math.round(units * 10 ** UNIT_DECIMALS));
   const p = exactRational(price);
   const numerator = unitsMicros * p.num * 100n;

@@ -32,12 +32,16 @@ export interface HermeticSessionOptions {
    * can additionally inject a simulated ambient/malicious extension and
    * prove it never becomes active. */
   extensionFactories: ExtensionFactory[];
+  systemPrompt?: string;
+  /** Offline transport tests use in-memory auth; production reads configured auth. */
+  offline?: boolean;
 }
 
 export async function createHermeticAgentSession(opts: HermeticSessionOptions): Promise<CreateAgentSessionResult> {
-  const authStorage = AuthStorage.create();
+  const authStorage = opts.offline ? AuthStorage.inMemory() : AuthStorage.create();
+  if (opts.offline && opts.model) authStorage.setRuntimeApiKey(opts.model.provider, "offline-test-key");
   const modelRegistry = ModelRegistry.create(authStorage);
-  const settingsManager = SettingsManager.inMemory({ compaction: { enabled: false }, retry: { enabled: true, maxRetries: 2 } });
+  const settingsManager = SettingsManager.inMemory({ compaction: { enabled: false }, retry: { enabled: false } });
 
   const resourceLoader = new DefaultResourceLoader({
     cwd: PROJECT_ROOT,
@@ -52,7 +56,16 @@ export async function createHermeticAgentSession(opts: HermeticSessionOptions): 
     noPromptTemplates: true,
     noThemes: true,
     noContextFiles: true,
-    extensionFactories: opts.extensionFactories,
+    systemPrompt: opts.systemPrompt,
+    extensionFactories: [
+      ...opts.extensionFactories,
+      // The SDK appends the host date/cwd even to a custom base prompt.
+      // Its supported before_agent_start hook supplies the exact historical
+      // benchmark prompt after that construction, avoiding live-date leakage.
+      ...(opts.systemPrompt === undefined ? [] : [(pi: Parameters<ExtensionFactory>[0]) => {
+        pi.on("before_agent_start", async () => ({ systemPrompt: opts.systemPrompt }));
+      }]),
+    ],
   });
   await resourceLoader.reload();
 

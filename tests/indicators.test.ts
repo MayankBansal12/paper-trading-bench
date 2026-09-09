@@ -44,3 +44,29 @@ describe("data/indicators", () => {
     expect(a.rsi14).not.toBeNull();
   });
 });
+
+describe("Wilder reference regressions", () => {
+  test("seed plus 14 declining bars retains recursively smoothed gains", () => {
+    const closes = [...Array.from({ length: 15 }, (_, i) => 100 + i), ...Array.from({ length: 14 }, (_, i) => 113 - i)];
+    const result = rsi(closes.map((close, i) => bar(String(i), close)), 14)!;
+    // Seed is avg gain 1, avg loss 0; after 14 losses, gain=(13/14)^14.
+    expect(result).toBeCloseTo(100 * (13 / 14) ** 14, 10);
+    expect(result).toBeCloseTo(35.433531021986, 10);
+    expect(result).not.toBe(0);
+  });
+  test("classic Wilder example matches independent published rounded values", () => {
+    const closes = [44.34,44.09,44.15,43.61,44.33,44.83,45.10,45.42,45.84,46.08,45.89,46.03,45.61,46.28,46.28,46.00,46.03,46.41,46.22,45.64,46.21];
+    expect(rsi(closes.slice(0,15).map((c,i) => bar(String(i),c)),14)).toBeCloseTo(70.4641350211, 8);
+    expect(rsi(closes.map((c,i) => bar(String(i),c)),14)).toBeCloseTo(62.88071831, 7);
+  });
+  test("flat prices are neutral and calculations retain precision", () => {
+    expect(rsi(Array.from({length:30},(_,i)=>bar(String(i),20)),14)).toBe(50);
+    expect(sma([bar("a",1),bar("b",1),bar("c",2)],3)).toBe(4/3);
+    expect(() => sma([],0)).toThrow(); expect(() => rsi([],1.5)).toThrow();
+  });
+  test("full-prefix initialization differs from sliding window reseeding", () => {
+    const closes = Array.from({length:130},(_,i)=>100 + i/10 + 5*Math.sin(i/5));
+    const bars = closes.map((c,i)=>bar(String(i),c));
+    expect(rsi(bars,14)).not.toBe(rsi(bars.slice(-60),14));
+  });
+});

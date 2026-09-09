@@ -84,6 +84,16 @@ export interface UsageStats {
   failedToolCalls: number;
   promptTokens: number;
   completionTokens: number;
+  cacheReadTokens?: number;
+  cacheWriteTokens?: number;
+  totalTokens?: number;
+  costUsd?: number;
+  inputTokens?: number;
+  attemptedToolCalls?: number;
+  admittedToolCalls?: number;
+  refusedToolCalls?: number;
+  successfulToolCalls?: number;
+  pendingToolCalls?: number;
 }
 
 export interface DecisionContext {
@@ -100,9 +110,25 @@ export interface DecisionContext {
    * order's fill within the same decision. */
   recentDays: DailyRecord[]; // most recent N days of this run, oldest first
   limits: RunLimits;
+  horizon?: { startDate: string | null; endDate: string | null };
+  contributions?: Contribution[];
 }
 
+export type DecisionOutcome = "completed" | "budget_cutoff" | "provider_error" | "harness_error";
+
+export interface Contribution { date: string; amount: number }
+export type CorporateActionEvent =
+  | { type: "split"; date: string; ticker: string; ratio: number }
+  | { type: "dividend"; date: string; ticker: string; amount: number };
+
 export interface AgentDecision {
+  submittedOrders?: OrderRequest[];
+  outcome?: DecisionOutcome;
+  terminalReason?: string | null;
+  elapsedMs?: number;
+  trace?: unknown[];
+  effectiveSystemPrompt?: string;
+  promptHash?: string;
   /** Orders the agent wants placed for `date`, in the order it queued them.
    * Sizing is exactly as requested — execution (price, cash/holdings
    * sufficiency, fill units) happens entirely in run/day.ts after decide()
@@ -125,6 +151,15 @@ export interface AgentPort {
 }
 
 export interface DailyRecord {
+  priorAttemptHashes?: string[];
+  contextHash?: string;
+  artifactVersion?: string;
+  outcome?: DecisionOutcome;
+  contribution?: number;
+  corporateActions?: CorporateActionEvent[];
+  submittedOrders?: OrderRequest[];
+  decision?: AgentDecision;
+  integrityHash?: string;
   date: string;
   portfolioBefore: PortfolioState;
   portfolioAfter: PortfolioState;
@@ -139,13 +174,19 @@ export interface DailyRecord {
 }
 
 export interface RunConfig {
+  provider?: string;
+  freeOnly?: boolean;
+  dataDir?: string;
+  contributions?: Contribution[];
+  warmupBars?: number;
+  experiment?: "three-month" | "smoke";
   model: string;
   /** Replicate label, NOT a model-sampling seed — the Pi SDK exposes no seed
    * parameter, so this only distinguishes repeated runs of the same
    * model/config on disk (results/runs/.../seed-<seed>/...). It does not make
    * model output deterministic. */
   seed: number;
-  agent: "fake" | "pi";
+  agent: "fake" | "pi" | "opencode";
   startDate: string | null; // inclusive; null = earliest fixture date
   endDate: string | null; // inclusive; null = latest fixture date
   startingCapital: number;
@@ -168,9 +209,13 @@ export interface RunConfig {
   runId?: string; // explicit override; otherwise derived deterministically
 }
 
-export type RunStatus = "active" | "terminated" | "completed";
+export type RunStatus = "active" | "terminated" | "completed" | "failed";
 
 export interface RunState {
+  attemptHashes?: string[];
+  datasetVersion?: string;
+  artifactVersion?: string;
+  failure?: { date: string; reason: string };
   config: RunConfig;
   status: RunStatus;
   completedDates: string[]; // ascending, dates fully persisted so far
@@ -180,11 +225,15 @@ export interface RunState {
 }
 
 export interface EquityPoint {
+  contribution?: number;
   date: string;
   netWorth: number;
 }
 
 export interface Metrics {
+  totalContributions?: number;
+  netProfit?: number;
+  timeWeightedReturnPct?: number;
   startingCapital: number;
   endingNetWorth: number;
   totalReturnPct: number;
@@ -200,6 +249,17 @@ export interface Metrics {
 }
 
 export interface RunSummary {
+  datasetVersion?: string;
+  artifactVersion?: string;
+  datasetKind?: "historical" | "synthetic";
+  finalPortfolio?: PortfolioState;
+  totalContributions?: number;
+  netProfit?: number;
+  timeWeightedReturnPct?: number;
+  attemptCount?: number;
+  failedAttemptCount?: number;
+  integrityHash?: string;
+  resolvedCoverage?: { firstDate: string; lastDate: string; tradingDays: number };
   config: RunConfig;
   status: RunStatus;
   equityCurve: EquityPoint[];
@@ -209,4 +269,16 @@ export interface RunSummary {
     cash: { equityCurve: EquityPoint[]; metrics: Metrics };
     buyAndHold: { equityCurve: EquityPoint[]; metrics: Metrics };
   };
+}
+
+export interface AttemptRecord {
+  failurePhase?: "validation" | "execution";
+  contextHash: string;
+  artifactVersion: string;
+  date: string;
+  attempt: number;
+  outcome: DecisionOutcome;
+  reason: string | null;
+  decision?: AgentDecision;
+  usage: UsageStats;
 }

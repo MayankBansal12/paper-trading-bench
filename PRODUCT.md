@@ -1,457 +1,48 @@
-# PaperTrader v0 — Product Spec
+# Benchmark contract
 
-A deterministic, offline-reproducible batch benchmark for evaluating LLMs on
-financial decision-making over a fixed universe of US large-cap equities.
+## Objective
 
----
+Measure how a specified model makes sequential technical-analysis decisions while managing a funded portfolio. A single command simulates three completed calendar months, one US equity trading session at a time. It is a historical experiment, not a live brokerage or a forecast of future returns.
 
-## What changed from the original baseline
+- Initial cash is $500. Deposit another $500 before the first trading session of months two and three. Total contributed principal for a completed benchmark is $1,500.
+- Default dates are the last three completed UTC calendar months. Explicit three-month periods are supported. Shorter windows and synthetic data require a `smoke` experiment label.
+- Portfolio positions, cash, recent decisions, execution rejections, and contribution schedule carry across sessions. Each model decision has a fresh bounded context; no hidden provider conversation persists between days.
+- End results include cash, each holding's shares, average cost, last close, value and portfolio weight, total contributions, final equity, and dollar profit.
 
-The first implementation (see `git log` for the phase-by-phase history) ran a
-single live session per `pnpm run start` invocation: one model, "today's"
-real EOD price from `yahoo-finance2`, a news-search tool, and one shared
-`results/portfolio-state.json`. That validated the Pi SDK plumbing but isn't
-a benchmark — it can't compare models against each other, isn't
-reproducible, isn't testable without network + paid tokens, and mixes all
-models' state in one file.
+## Information and execution timing
 
-v0 replaces the run model with a **batch**: a model+seed is simulated over a
-configurable range of historical trading days, entirely from local fixture
-data, into an isolated results directory, and produces the same kind of
-artifact (equity curve, metrics, transaction log) for every model so runs are
-directly comparable.
+For session D, market observations stop at the close before D. SMA20 and SMA50 use closing prices; RSI14 uses Wilder smoothing initialized from the full available historical prefix. At least 60 earlier trading bars per ticker are required; the default warm-up requirement is 100. Prompt bars can be truncated independently of indicator initialization.
 
----
+The only tools are `get_portfolio`, `get_universe`, `get_ohlcv`, `get_indicators`, `buy`, and `sell` (prefixed `trading_` in OpenCode MCP). No news, web search, shell, filesystem, delegation, or extra connector tools are available to the trading model. The harness may obtain historical snapshots before the run.
 
-## Stack
+Orders are requests, not immediate fills. They execute in submitted order at D's open after a completed decision. A later sell cannot fund an earlier buy. The model cannot observe D's open or infer it from an intradecision fill. Actual rejections become available in subsequent daily context.
 
-- **Language:** TypeScript (strict mode, `noUncheckedIndexedAccess`)
-- **Runtime:** Bun
-- **Package manager:** pnpm (canonical lockfile — see `pnpm-lock.yaml`; all
-  dependency versions are pinned exactly, no `latest`/`^` ranges)
-- **Agent harness:** Pi SDK — `@earendil-works/pi-coding-agent`
-- **Market data:** local, deterministic, synthetic OHLCV fixtures (see
-  `fixtures/ohlcv/README.md`) — no network calls at run time
+Fractional long-only shares are permitted. Units round down to six decimal places; cash uses the engine's cent ledger. No margin, short positions, fees, spread, slippage, market impact, or taxes. The entire universe is assumed tradable at the reported open. These assumptions must accompany any interpretation of returns.
 
----
+## Data and universe
 
-## Fixed universe
+Historical datasets contain validated OHLCV bars, exchange sessions, actions, coverage/evaluation bounds, source snapshots, provenance, and content hashes. Missing, duplicate, invalid, or incomplete observations fail preflight. Synthetic fixtures remain useful for deterministic tests and are excluded from historical benchmark cohorts.
 
-`src/config/universe.ts` defines `UNIVERSE_V1`: exactly 50 liquid US
-large-cap tickers, frozen and versioned. A model can only trade tickers in
-this list. Changing the universe means adding `UNIVERSE_V2`, not editing
-`UNIVERSE_V1` in place — old runs must remain reproducible against the
-universe they were run with.
+Yahoo's historical price series is retrospectively split-adjusted. Import reconstructs as-traded OHLCV and cash dividends using every subsequent supported split through the retrieval date, including splits after the evaluation period. Indicators use prices consistently adjusted for splits already effective by the decision date. Adjusted close is not substituted for tradable open/close prices. Splits change held shares and basis; dividends credit cash to pre-session holders on the ex-date. Crediting on ex-date rather than payment date is an explicit approximation that permits early reinvestment.
 
-## Market data & no look-ahead
+The original `v1` universe is frozen at 50 large-cap tickers. The supported default `v2` excludes Honeywell, retaining 49 tickers. Its 2025 Solstice and 2026 Aerospace spin-offs appear as combined nonstandard Yahoo split factors; treating those factors as share ratios would corrupt holdings. This version rejects unsupported actions instead of inventing prices or share entitlements. The exclusion is a data-support choice, not a return-based selection rule, but remains a restriction on the evaluated universe.
 
-`src/data/ohlcv.ts` is the single choke point for price data, even though the
-full fixture file is loaded into memory — every consumer goes through one of
-its three date-scoped accessors, never the raw series:
+The universe is a fixed basket, not a historical constituent database: survivorship and selection bias remain. Source snapshots can contain later corrections and are not a point-in-time market-data archive. No news access does not erase historical facts from a pretrained model; prompting cannot guarantee absence of memorized future events.
 
-- **`asOfBefore(ticker, D)`** — bars with `date < D` only. This is what
-  decision context (bars/indicators) is built from (`src/run/day.ts`): D's
-  own bar does not exist yet from the agent's point of view.
-- **`openOn(ticker, D)` / `closeOn(ticker, D)`** — the single exact bar on
-  `D`, used only for execution (open) and end-of-day valuation (close) —
-  never for anything the agent observes before deciding.
-- **`asOf(ticker, D)`** — bars with `date <= D` (D's own bar included). Not
-  used by any decision or execution path; kept only as the look-ahead-capable
-  comparator `tests/day.test.ts`'s sentinel test uses to prove
-  `asOfBefore()` really withholds D's own bar.
+## Contributions, baselines, and metrics
 
-`src/data/indicators.ts` computes SMA(20), SMA(50), and RSI(14) purely from
-whatever window it's given, so look-ahead safety reduces to "did the caller
-slice correctly," which is unit tested directly (`tests/ohlcv.test.ts`).
+Deposits are external cash flows, not trading profit. Dollar profit is final equity minus contributed capital. Time-weighted returns, drawdown, volatility, and Sharpe use a flow-adjusted return series. Risk-free return is assumed zero; short-window annualized statistics are descriptive and unstable.
 
-The v0 fixtures (`fixtures/ohlcv/*.json`) are **synthetic**, generated by a
-seeded PRNG (`scripts/generate-fixtures.ts`), not real market history — see
-the fixtures README for why, and how to swap in a real dataset later without
-touching any loader code.
+Cash and equal-weight buy-and-hold controls receive the same cash flows and corporate actions as the model over the same evaluated sessions. Buy-and-hold invests each contribution equally across the permitted universe. Identical snapshots, execution rules, date ranges, adapter/protocol versions, warm-up, funding, and limits define a comparison cohort.
 
-## Execution price convention
+## Failures and durable evidence
 
-A single, strictly causal convention applies everywhere — agent context,
-execution, valuation, termination, and the buy-and-hold baseline
-(`EXECUTION_CONVENTION` in `src/engine/execution.ts`, stored in every run's
-`config.json` as part of its identity):
+A provider error, exceeded budget, malformed terminal response, or harness failure is an unsuccessful attempt. Orders from that attempt never execute, and its daily contribution/action state is not committed. The run stops as `failed`; resume retries the same date from the prior committed portfolio. Failed-attempt usage and diagnostic evidence remain recorded.
 
-- **Observation**: decisions for day D use bars with `date < D` only
-  (`src/data/ohlcv.ts` — `asOfBefore()`). D's own open/high/low/close/volume
-  do not exist yet from the agent's point of view.
-- **Execution**: orders decided going into day D fill **at D's OPEN** — the
-  first price actually observable once D exists. No slippage, no fees, no
-  partial fills beyond rounding.
-- **Valuation**: end-of-day mark-to-market (net worth, the equity curve
-  point, and the termination check) uses D's **CLOSE**.
+Successful days are committed in calendar order. State cannot skip dates or silently switch data, budgets, funding, model, prompt protocol, or horizon. A contiguous validated daily artifact left by an interrupted commit can be adopted. Reports reconstruct decisions and accounting, validate causal context and hashes, and rebuild derived summary/transaction outputs. Legacy or inconsistent authoritative artifacts are excluded. Hashes detect inconsistency and accidental corruption; they are not signed attestations against an adversary rewriting all evidence.
 
-D's own open price is never exposed to the agent, including indirectly. The
-real Pi agent's `buy()`/`sell()` tools only QUEUE an `OrderRequest` — they
-validate ticker membership and sizing shape (both knowable without D's
-price), but never compute a fill, never return a price, and never mutate
-what `get_portfolio()` reports for the rest of the session
-(`src/agent/tools.ts`). Every queued order (fake or real agent) is executed
-— against D's open, all orders together — entirely in `src/run/day.ts`,
-strictly AFTER `decide()` returns for the whole day. This means a later
-order in the same session can never condition on D's open inferred from an
-earlier order's "fill," because there is no in-session fill at all. Orders
-for a ticker outside the frozen universe, or with no price on D, become a
-`FailedOrder` — they never throw and abort the batch.
+## Model runtime
 
-## Fractional shares & the cent ledger
+The OpenCode adapter uses the official client to access permitted Zen models, with isolated configuration and the six trading tools. The Pi adapter runs the real SDK in a disposable process. Both retain effective prompts, context identity, traces, submitted orders, terminal outcomes, timing, and model/tool/cache/cost usage when reported. Hard deadlines terminate the worker/client process. Neither adapter silently switches models.
 
-Order sizing is either a notional USD amount or an explicit unit count.
-Share counts always round to 6 decimal places (`UNIT_DECIMALS` in
-`engine/portfolio.ts`) and cash/prices always round to 2dp — the ledger only
-ever deals in whole cents, so it never accumulates floating point drift
-across a multi-month run.
-
-A fill's cash transfer is defined as **the change in the position's own
-value at the fill price**, computed EXACTLY: `positionValueCents(newUnits,
-price) - positionValueCents(existingUnits, price)` for a BUY (the mirror for
-a SELL), subtracted in integer cents BEFORE ever becoming a floating-point
-`number` (`engine/money.ts` — `positionValueCents`; `engine/sizing.ts` —
-`valueDelta`). Subtracting two independently-`round2`-ed dollar values in
-plain doubles — the pre-`_v4` rule — suffers catastrophic cancellation once
-a position's value approaches double precision's ~15-17 significant-digit
-ceiling (e.g. 50,000,000 units at $20 could return a fractional-cent
-notional like $0.019999980926513672 for a true $0.02 move); computing both
-position values in BigInt cents avoids this at any magnitude the engine's
-documented bounds allow. `applyFill` (`engine/portfolio.ts`) stores a
-position's `.value` with that same exact helper (`positionValue`), so a
-fill's cash movement and the resulting holdings-value movement are always
-the identical number — **every accepted fill conserves cash + holdings value
-at its own fill price exactly, to the cent, not just approximately**
-(`tests/execution.test.ts` asserts this as a hard equality, including a
-constant-price property test, a full day-one-baseline reconstruction from
-fixtures, and the `$1e9`-position cent-exactness regressions added for
-`_v4`).
-
-**Correction (round 10, `_v5`):** the exactness claim above only ever
-covered the DELTA a fill moves, not the resulting position's own absolute
-marked value or a SELL's cash proceeds — those aren't bounded by pre-fill
-cash the way a BUY's transfer is, so a large enough position (near
-`MAX_UNITS`) marked or sold at a large enough price (near `MAX_MONEY_USD`)
-could still convert to a `number` lossily, silently drifting the ledger. The
-closed `$0`-`$MAX_MONEY_USD` domain this engine enforces
-(`MAX_MONEY_CENTS`, `engine/money.ts`) applies PER SCALAR VALUE, not to
-every aggregate: a single position's marked value and a fill's own resulting
-cash must each individually stay inside it — `valuePortfolio`/`applyFill`
-gate each position's mark against it (throwing rather than silently
-rounding a value that can't be represented safely — never triggered by this
-benchmark's real, modest fixture prices) — but the AGGREGATE (a portfolio's
-total `holdingsValue`/`netWorth` across several positions) is deliberately
-NOT re-gated against that same ceiling: several positions can each be a
-modest, cent-exact value while their sum legitimately exceeds
-`MAX_MONEY_USD`, and that's a real portfolio value, not a corrupted one (see
-`valuePortfolio`'s comment in `engine/portfolio.ts`). `executeOrder` rejects
-a SELL outright if its exact post-fill cash would leave the per-scalar
-domain, instead of accepting a fill whose own cash figure the engine's next
-precondition check would then reject as corrupted (`tests/execution.test.ts`,
-"money domain closed under valuation and SELL transitions").
-`EXECUTION_CONVENTION` was bumped to `_v5` for this — the reachable
-BUY-at-`MIN_PRICE_USD`, sell-at-`MAX_MONEY_USD` boundary now fails
-differently (cleanly, instead of silently).
-
-**Correction (round 11, `_v6`):** round 10's post-fill check only ever
-covered a SELL's resulting CASH, not the RESULTING POSITION a fill leaves
-behind — so a partial SELL that left cash safely in-domain but a remaining
-position (still marked near `MAX_UNITS` at an extreme price) out of it was
-still accepted by `executeOrder`, and a BUY's resulting position was never
-checked at all. Both let `executeOrder` return a "fill" that `applyFill`
-would then throw on, which — since `applyFill` treats every fill it's
-handed as already-validated — turned a single order's rejection into an
-exception that aborted the entire day's remaining orders (`run/day.ts`).
-Every accepted fill must be immediately, unconditionally applicable: both
-BUY and SELL now compute the fill's exact RESULTING position value (in
-BigInt cents, before ever converting to a `number`) and reject the order as
-a `FailedOrder` if that persisted position would leave the per-scalar
-domain, in addition to the existing SELL cash check. `EXECUTION_CONVENTION`
-bumped to `_v6` — the accepted/rejected set at this boundary changes again.
-
-**Correction (round 12, `_v7`):** `floorUnits`/`floorCents`
-(`engine/portfolio.ts`) added a FIXED `1e-7` epsilon before flooring to
-absorb IEEE-754 representation noise near a tick boundary (e.g.
-`0.000249 * 1e6` evaluating to `248.99999999999997`) — but a fixed epsilon
-is swamped by float noise once the scaled value's own ULP exceeds it: at
-large enough units/cents, `floorUnits`/`floorCents` were no longer
-idempotent on an already-quantized value (e.g.
-`floorUnits(277359992.498531)` silently shaved a micro-share off an exact
-6dp value; `floorCents(608501453.42)` silently under-budgeted a large BUY by
-$0.01). The same fixed-epsilon pattern affected `FULL_POSITION_DUST_TOLERANCE`
-(`engine/sizing.ts`), which could misclassify an intended full-position exit
-as a rejected oversell once `existingUnits` neared `MAX_UNITS`. Round 12 used
-a scale-aware noise bound (`NOISE_ULPS * scaled * Number.EPSILON`) in an
-attempt to preserve idempotence. Round 13 showed that this heuristic could
-also snap genuine sub-tick input upward, so it is historical and superseded
-by the canonical-decimal rule below. `EXECUTION_CONVENTION`
-bumped to `_v7` — the accepted BUY budget/SELL full-exit classification at
-the extreme end of the supported price/units domain changes again.
-
-**Correction (round 13, `_v8`):** round 12's ULP-near snap was
-not a true floor: provenance cannot be inferred from a `number`, so a
-legitimate raw request immediately below a tick could be snapped upward.
-Raw unit and USD sizes are now floored by parsing `Number#toString()`'s
-canonical decimal into integer ticks. This preserves canonical grid values
-such as `277359992.498531` while `277359992.4985309` floors to the prior
-micro-share, and it guarantees an accepted fill never exceeds the raw units
-or notional requested. Persisted/internal quantities retain their separate
-nearest-tick normalization. Tolerance-based full exits were removed for the
-same ambiguity: only an exact persisted unit count is a full exit, and any
-raw oversell is rejected. `EXECUTION_CONVENTION` is `_v8`.
-
-A notional-sized order's requested USD is first reduced to a whole-cent
-budget (`floorCents`) and the order is filled with the MOST units that
-budget can afford under the cent-ledger rule above — never more, so a fill
-can never cost more than requested even after the aggregate position's own
-rounding is accounted for. (Earlier versions floored each fill's own
-notional to cents while the aggregate position value rounded to nearest —
-two different rounding boundaries that could each drift the ledger by a cent
-per fill and, summed across many fills, by tens of cents — see
-`EXECUTION_CONVENTION`'s `_v2` suffix (superseded by `_v4`'s exact-BigInt
-arithmetic above, which fixes a separate large-magnitude cancellation bug in
-the same `valueDelta` rule).) A units-sized order's units are taken
-as given (floored to `UNIT_DECIMALS`) and costed by the same rule; since
-there is no USD budget to size down to, it is rejected instead if cash is
-insufficient. Selling exactly 100% of a held
-position is exempt from a notional sell request's own whole-cent budget —
-exiting a position converts exactly the units held to cash at the fill
-price, so it can never manufacture value, only realize it
-It is NOT exempt from the money-domain
-checks every other fill is subject to: a full exit's remaining position is
-always exactly `0` (so the resulting-position check above can never reject
-it), but its cash proceeds can still leave the domain on a large enough
-appreciated position, in which case it's rejected like any other SELL — see
-round 10's correction above.
-
-A fill whose cash transfer would round to below $0.01 is rejected
-(`MIN_NOTIONAL_USD` in `engine/execution.ts`) rather than silently moving
-units for near-zero cash. This applies uniformly to sub-cent `notionalUsd`
-tool calls (accepted at the tool boundary — see "Trading tools" below — and
-resolved to a fill or a `FailedOrder` at replay) and to a starting capital
-below $1: `--starting-capital` is rounded to 2dp immediately at the CLI
-boundary so it always matches the actual (also-rounded) opening cash and the
-termination threshold computed from it.
-
-A single position's unit count may never exceed `MAX_UNITS` (`1e9` —
-`engine/money.ts`), enforced twice: as a precondition on a held
-position's existing units before either sizing path runs, and — since
-`EXECUTION_CONVENTION`'s `_v3` suffix — as an invariant on the RESULTING
-holding of every accepted BUY. Capital/price bounds alone don't imply the
-second check: a notional BUY's cent-rounding slack could otherwise size a
-fill up to ~$0.01 past what the ceiling allows, so `maxBuyTicks`' binary
-search is bounded by the position's remaining `MAX_UNITS` headroom (capping
-a notional BUY at the ceiling instead of overshooting it) and a units-sized
-BUY is rejected outright if it would cross the ceiling (it has no search to
-size down within).
-
-`positionValueCents` also does not assume `price` itself is cent-quantized:
-`price` is read via its exact IEEE754 bit value (not `Math.round(price *
-100)`), because `executeOrder`'s price convention is agnostic to how many
-decimal digits a caller's price has. `units`, by contrast, IS snapped to its
-exact intended micro-unit tick count (`Math.round(units * 1e6)`, an exact
-integer at any unit count up to `MAX_UNITS`) rather than read bit-exactly —
-`units` is always a value already snapped to the 6dp tick grid, but the
-double a tick-grid division actually returns can carry a representational
-error (~1e-7 near `MAX_UNITS`) that reading it bit-exactly would faithfully
-reproduce instead of recovering the intended tick count.
-
-## Starting capital, seed, & termination
-
-Every run starts with **$1,000** — this is the comparable benchmark's fixed
-starting capital. `--starting-capital` can override it for a one-off
-experiment, but `report` only cohorts runs that share the same starting
-capital (among other identity fields), so a non-$1,000 run is never silently
-compared against the benchmark. `--seed` is a **replicate label**, not a
-model-sampling seed: the Pi SDK exposes no seed parameter for opencode-go
-models, so `--seed` only isolates repeated runs of the same config on disk
-(`results/runs/.../seed-<seed>/...`) — it does not make model output
-deterministic. A run terminates the moment net worth falls below 1% of
-starting capital (`engine/portfolio.ts` — `isTerminated`), checked
-immediately after each day's mark-to-market and before the agent is ever
-asked to decide the next day; the run's `status` becomes `"terminated"` and
-it will not resume even with an extended `--end` date.
-
-## Bounded full-universe screening
-
-The six-tool live protocol keeps research comparable without forcing 50
-single-ticker calls. `get_indicators()` with no ticker returns the full
-fixed universe's SMA20/SMA50/RSI14 plus the last observable close/date in one
-budgeted call; a ticker argument still returns one stock. Prompts require
-models to reserve order calls and use OHLCV only for finalists. All values
-remain strictly through D-1. This is agent protocol
-`v4-bulk-indicator-screen`, included in run identity.
-
-## Isolated state per model/seed/run
-
-Every run lives at `results/runs/<model>/seed-<seed>/<runId>/` — a distinct
-model or seed is a distinct directory tree, never a shared file. `runId`
-defaults to a deterministic hash of the run's **full canonical identity**:
-model, seed, agent, dates, starting capital, universe version, all three
-`RunLimits` fields, the execution convention, the fixture snapshot version,
-and the agent protocol version — so re-invoking the exact same command always resolves to the same
-directory, and changing any of those (including just the limits) resolves to
-a different one instead of silently reinterpreting an existing run's data.
-Passing `--run-id` overrides the directory name explicitly, but the same
-identity fields are still validated against whatever is already stored
-there. `--run-id` is restricted to a safe path segment (alphanumeric plus
-`_`/`-`, no separators) and the resolved directory is asserted to stay under
-`results/runs/`, so a malformed or malicious id can't resolve outside it.
-See `src/run/state.ts` and `src/utils/paths.ts`.
-
-A run directory is otherwise **immutable**: the only mutation ever allowed
-is extending `--end` to a later date on an existing `--run-id`. That
-extension rewrites `config.json` (and the `config` embedded in `state.json`)
-so neither is ever left stale; shrinking or otherwise changing `endDate`, or
-changing anything else, is rejected outright rather than silently applied.
-
-## Resume, idempotency & crash safety
-
-Only one process may write a given run directory at a time
-(`src/run/lock.ts` — a second concurrent `run` on the same directory fails
-immediately with a clear error). Each day commits in two steps: write
-`daily/<date>.json`, then append the date to `state.completedDates` and save
-`state.json`. If a crash happens between those two steps, the next
-invocation adopts the orphaned `daily/<date>.json` as-is (instead of
-re-simulating the day, which would mean either replaying a deterministic
-agent for no reason or — for a real Pi agent — re-spending a paid model call
-on an already-decided day) and commits it. `transactions.jsonl` is a
-**derived** artifact, fully rebuilt from the committed daily records on
-every invocation rather than appended, so a crash can never leave duplicated
-or orphaned fills in it (`src/run/persist.ts`). A no-op rerun of an
-already-`"completed"` run touches **no** artifact — not `state.json`
-(`updatedAt` is byte-stable), not `transactions.jsonl`, not `summary.json`:
-`runBatch` detects that every requested date is already in
-`state.completedDates` and returns the existing `summary.json` verbatim
-instead of re-deriving and rewriting it (`src/run/orchestrator.ts`). See
-`tests/orchestrator.test.ts` for the resume, crash-recovery, locking,
-endDate-extension, mismatched-config-guard, and no-op-mtime tests.
-
-## Bounded turns / tool calls / time
-
-Every day's agent decision runs under a `RunLimits` budget
-(`--max-turns`, `--max-tool-calls`, `--timeout-ms`; defaults 8/20/60000),
-bounded against a SINGLE deadline (`TurnBudget.deadlineAt()`) that covers
-BOTH hermetic session setup and `session.prompt()` — a slow setup eats into
-the day's time budget instead of getting a fresh, unbounded allowance per
-phase. `maxTurns` and `maxToolCalls` are inclusive caps ("at most N"): the
-Nth turn or tool call is still allowed, only the (N+1)th is refused — and a
-non-cooperative agent that keeps calling tools (or starting turns) after
-being told to stop never pushes the reported `usage.toolCalls` or
-`usage.turns` past their advertised caps, since a budget-gated rejection
-isn't counted as a call or a turn (`TurnBudget.admitTurn()` gates BEFORE
-incrementing, the same check-before-record pattern `agent/tools.ts`'s
-`budgetGate` uses for tool calls). Reaching the tool-call cap
-specifically does NOT abort the session mid-turn: the model is still
-entitled to finish that turn with its final rationale (only the next actual
-tool call attempt is refused, at the tool boundary) — only `maxTurns` and the
-wall-clock timeout justify cutting the whole session off outright
-(`TurnBudget.exceededExcludingToolCalls()`). A day that hits a bound is
-marked `boundedStop: true` with a reason, and the run's aggregate
-`boundedStopCount` metric surfaces how often a model got cut off. A refused
-(N+1)th tool-call attempt durably marks the day bounded even when it doesn't
-abort the session mid-turn (`TurnBudget.recordRefusal()`/`wasRefused()`,
-consulted by `agent/piAgent.ts` when assembling its `AgentDecision`) — so a
-model that keeps calling tools past the cap but still finishes with a
-rationale is correctly reported as bounded, not as a normal, unbounded day.
-See `src/agent/limits.ts` and `tests/limits.test.ts`.
-
-Only an actual budget/timeout abort counts as a bounded stop. Any other
-`session.prompt()` failure — bad auth, an unrecognized provider/model, an
-unexpected SDK error — propagates and aborts the batch instead of being
-recorded as a normal, successful day. The Pi session is always disposed: a
-session that was actually returned to `decide()` is disposed in a `finally`
-block regardless of which path was taken, and a session whose SETUP didn't
-finish before the day's timeout — so `decide()` already returned a bounded
-result without ever receiving it — is disposed by a late-resolve hook
-instead (`withTimeoutAndLateCleanup`, `src/agent/limits.ts`) so it's never
-leaked. See `src/agent/piAgent.ts`.
-
-## Offline fixtures & the fake/live agent boundary
-
-`src/agent/boundary.ts` defines `AgentPort` — the only interface the
-orchestrator depends on. `src/agent/fakeAgent.ts` is a deterministic,
-zero-token, offline implementation (a simple SMA crossover rule) used by
-every automated test and available via `--agent=fake`. `src/agent/piAgent.ts`
-wraps the real Pi SDK + opencode-go models and is never imported by tests —
-this is what lets the whole pipeline (data, execution, metrics, resume,
-crash-recovery, bounds) be developed and tested with zero network calls and
-zero token spend, per the "no live paid model calls while developing or
-testing" constraint. Limit/error-handling behavior itself (budget boundaries,
-non-cooperative agents, failure propagation) is exercised offline via a
-mocked `PiWorkingState`/tool harness (`tests/limits.test.ts`) — it is real
-robustness under test, not out of scope; only actual live model calls are
-excluded from CI.
-
-## Tools (agent-facing, real Pi agent only)
-
-Six tools — **no news/web search tool exists in v0**:
-
-| Tool | Description |
-|---|---|
-| `get_portfolio()` | Cash, holdings, net worth as of yesterday's close — NEVER reflects orders queued this session |
-| `get_universe()` | The 50 tradable tickers |
-| `get_ohlcv(ticker, lookback?)` | OHLCV bars strictly before today, oldest first |
-| `get_indicators(ticker)` | SMA20/SMA50/RSI14 strictly before today |
-| `buy(ticker, notionalUsd \| units)` | QUEUES a buy order for today — no price, no fill, no portfolio change in-session |
-| `sell(ticker, notionalUsd \| units)` | QUEUES a sell order for today — no shorting, validated at replay, not in-session |
-
-Every queued order across the whole session executes together, at today's
-open, only after the model finishes with its final rationale — see
-"Execution price convention" above. Rejections at the tool boundary
-(unknown ticker, malformed sizing) are the only synchronous feedback the
-model gets; everything price-dependent (insufficient cash, oversized sell,
-sub-cent notional) is decided later, during replay, and never visible
-mid-session.
-
-The session itself is hermetic: `agent/piSession.ts` disables ALL ambient
-resource discovery (project/user extensions, skills, prompt templates,
-context files) and passes an explicit allowlist of exactly these 6 tool
-names to `createAgentSession({ tools })`, so a host machine with an
-installed web-search/shell/custom extension can never smuggle an extra tool
-into a benchmark session. See `tests/piSessionBoundary.test.ts`.
-
-Error responses at every rejection point — unknown ticker or malformed
-sizing at the tool boundary, insufficient cash/oversized sell/sub-cent
-notional at replay — return enough context for the model to replan (in
-`recentDays`, next session), same philosophy as the original baseline. Every
-rejection, from either point, is recorded as a `FailedOrder` and merged into
-the day's `DailyRecord`, so `failedOrderCount` reflects rejections the real
-agent's own tool calls produced too, not just ones the orchestrator produces
-on replay.
-
-## Metrics & baselines
-
-Each run's `summary.json` (`src/domain/types.ts` — `RunSummary`) reports:
-
-- **Equity curve** — net worth per simulated day
-- **Total return %**, **max drawdown %**
-- **Daily & annualized volatility %**, **Sharpe** (rf = 0, 252-day annualization)
-- **Average turnover %**, **trade count**, **failed order count**,
-  **bounded-stop count**
-- **Token/tool usage totals** (turns, tool calls, failed tool calls, prompt/completion tokens)
-- Two baselines computed over the **same requested date range**: a flat
-  **cash** baseline and an equal-weight **buy-and-hold** across the full
-  universe, bought once on day one
-
-`pnpm run report` aggregates one or more runs' `summary.json` files into a
-single JSON array + markdown comparison table (`src/report/compare.ts`),
-including per-run tool-call and **failed-tool-call** totals so a reader can
-see how often a model's own tool calls were rejected, not just how many
-orders ultimately failed at replay.
-
-## Assumptions & exclusions (unchanged from the original baseline)
-
-- No transaction fees, brokerage charges, or other charges
-- No slippage. The execution convention does not exclude overnight gap risk
-  by construction — orders decided from D-1's close fill at D's own open (see
-  "Execution price convention" above), which could differ from D-1's close —
-  but the committed v0 synthetic fixtures do not currently model any such
-  gap: every ticker's D open is generated equal to D-1's close, so gap risk
-  is not actually observable in v0 runs. A future fixture/data-source swap
-  that models real overnight gaps would surface it without any code change.
-- No short selling, no margin, no options
-- No dividends or stock splits
-- Models may only trade tickers in the frozen universe (this IS a change
-  from the original "any publicly traded stock" — necessary for a
-  comparable, fixture-backed benchmark)
+Free-only qualification requires an explicit free-model allowlist and zero listed cost; provider availability and pricing can change. A replicate seed is a label, not a sampling guarantee. Replaying a stored decision ledger is deterministic; rerunning an LLM is not.

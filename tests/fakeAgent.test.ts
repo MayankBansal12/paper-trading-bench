@@ -48,7 +48,8 @@ describe("agent/fakeAgent", () => {
       universe.map((t) => [t, { sma20: 110, sma50: 100, rsi14: 60 }]),
     );
     const decision = await agent.decide(ctx({ universe, indicators, limits: { maxTurns: 8, maxToolCalls: 2, timeoutMs: 5000 } }));
-    expect(decision.orders.length).toBe(2);
+    expect(decision.orders).toEqual([]);
+    expect(decision.submittedOrders?.length).toBe(2);
     expect(decision.boundedStop).toBe(true);
     expect(decision.boundedReason).toMatch(/max tool calls/);
   });

@@ -61,9 +61,8 @@ describe("engine/metrics", () => {
     expect(m.maxDrawdownPct).toBe(0);
   });
 
-  test("a $0 starting capital (unreachable via the CLI — cli/run.ts rejects it post-normalization) would produce NaN, documenting why that bound exists", () => {
-    const m = computeMetrics(curve([0, 0]), 0, 0, 0, 0, [0, 0]);
-    expect(Number.isNaN(m.totalReturnPct)).toBe(true); // 0/0 — exactly the failure the CLI-level bound prevents
+  test("zero starting capital is rejected at the metric boundary", () => {
+    expect(() => computeMetrics(curve([0, 0]), 0, 0, 0, 0, [0, 0])).toThrow(/Starting capital/);
   });
 
   test("every persisted metric stays finite at the MIN_MONEY_USD boundary", () => {

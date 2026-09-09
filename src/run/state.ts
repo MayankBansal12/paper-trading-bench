@@ -19,6 +19,7 @@ import type { RunConfig, RunState } from "../domain/types.ts";
 const RIGID_FIELDS = [
   "model", "seed", "agent", "startDate", "startingCapital", "universeVersion",
   "executionConvention", "fixtureVersion", "protocolVersion",
+  "provider", "freeOnly", "dataDir", "contributions", "warmupBars", "experiment",
 ] as const;
 
 /** FNV-1a over the config's full canonical identity -> short hex id. Same config, same id, always. */
@@ -37,6 +38,8 @@ export function deriveRunId(config: RunConfig): string {
     config.executionConvention,
     config.fixtureVersion,
     config.protocolVersion,
+    config.provider ?? "", config.freeOnly ?? false, config.dataDir ?? "", JSON.stringify(config.contributions ?? []), config.warmupBars ?? "", config.experiment ?? "",
+    "accounting-artifacts-v4",
   ].join("|");
   let h = 0x811c9dc5;
   for (let i = 0; i < key.length; i++) {
@@ -87,7 +90,7 @@ export async function ensureConfig(dir: string, config: RunConfig): Promise<RunC
     return config;
   }
 
-  const mismatched = RIGID_FIELDS.filter((k) => existing[k] !== config[k]);
+  const mismatched = RIGID_FIELDS.filter((k) => JSON.stringify(existing[k]) !== JSON.stringify(config[k]));
   if (!limitsEqual(existing.limits, config.limits)) mismatched.push("limits" as (typeof RIGID_FIELDS)[number]);
   if (mismatched.length > 0) {
     throw new Error(
@@ -96,6 +99,8 @@ export async function ensureConfig(dir: string, config: RunConfig): Promise<RunC
   }
 
   if (existing.endDate === config.endDate) return existing;
+
+  if (existing.experiment !== undefined) throw new Error("Experiment horizon is immutable; use a new run-id for a different endDate");
 
   const isMonotonicExtension = existing.endDate !== null && config.endDate !== null && config.endDate > existing.endDate;
   if (!isMonotonicExtension) {

@@ -70,6 +70,7 @@ export function isTerminated(portfolio: PortfolioState, startingCapital: number)
 }
 
 export function createInitialPortfolio(startingCapital: number): PortfolioState {
+  if (!Number.isFinite(startingCapital) || startingCapital <= 0) throw new RangeError("Starting capital must be finite and positive");
   return {
     cash: round2(startingCapital),
     holdings: {},
@@ -102,6 +103,7 @@ export function valuePortfolio(
   const holdings: Holdings = {};
   for (const [ticker, h] of Object.entries(portfolio.holdings)) {
     const price = priceLookup(ticker);
+    if (!Number.isFinite(price) || price <= 0 || !Number.isFinite(h.units) || h.units < 0) throw new RangeError(`Invalid valuation input for ${ticker}`);
     const cents = positionValueCents(h.units, price);
     assertWithinMoneyDomain(cents, `Marking ${ticker} at $${price}`);
     holdings[ticker] = { ...h, lastClose: price, value: centsToDollars(cents) };

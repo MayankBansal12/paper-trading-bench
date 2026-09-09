@@ -1,170 +1,94 @@
-// Aggregates one or more run summary.json files into a single comparison —
-// JSON for tooling, a markdown table for humans. Runs are grouped into
-// COHORTS by every field that affects comparability (universe, fixture
-// snapshot, execution convention, date range, starting capital, limits); a
-// model's return is never presented next to another run's unless everything
-// but the model/seed/agent actually matches, so a reader can't mistake two
-// non-comparable experiments for a head-to-head result.
-
-import { readFile, readdir } from "node:fs/promises";
+import { readdir } from "node:fs/promises";
 import { join, relative } from "node:path";
-import { runSummaryFile } from "../utils/paths.ts";
-import type { RunConfig, RunSummary } from "../domain/types.ts";
+import type { RunConfig, RunSummary, PortfolioState } from "../domain/types.ts";
 
 export interface ComparisonRow {
-  runDir: string;
-  model: string;
-  seed: number;
-  agent: string;
-  status: string;
-  daysRun: number;
-  endingNetWorth: number;
-  totalReturnPct: number;
-  maxDrawdownPct: number;
-  dailyVolatilityPct: number;
-  annualizedVolatilityPct: number;
-  sharpe: number | null;
-  avgTurnoverPct: number;
-  tradeCount: number;
-  failedOrderCount: number;
-  boundedStopCount: number;
-  cashReturnPct: number;
-  buyAndHoldReturnPct: number;
-  usageTurns: number;
-  usageToolCalls: number;
-  usageFailedToolCalls: number;
-  usagePromptTokens: number;
-  usageCompletionTokens: number;
+  runDir: string; model: string; provider: string; seed: number; agent: string;
+  status: string; experiment: string; daysRun: number; endingNetWorth: number;
+  totalContributions: number; netProfit: number; totalReturnPct: number;
+  maxDrawdownPct: number; annualizedVolatilityPct: number; sharpe: number | null;
+  tradeCount: number; failedOrderCount: number; boundedStopCount: number;
+  failedAttemptCount: number; cashReturnPct: number; buyAndHoldReturnPct: number;
+  usagePromptTokens: number; usageCompletionTokens: number; cacheReadTokens: number;
+  cacheWriteTokens: number; costUsd: number; finalPortfolio: PortfolioState;
 }
-
 export interface ComparisonCohort {
-  cohortKey: string;
-  universeVersion: string;
-  fixtureVersion: string;
-  executionConvention: string;
-  protocolVersion: string;
-  startDate: string | null;
-  endDate: string | null;
-  startingCapital: number;
-  limits: RunConfig["limits"];
-  rows: ComparisonRow[];
+  cohortKey: string; universeVersion: string; fixtureVersion: string;
+  executionConvention: string; protocolVersion: string; startDate: string | null;
+  endDate: string | null; startingCapital: number; limits: RunConfig["limits"];
+  experiment: string; rows: ComparisonRow[];
 }
 
-export async function loadSummary(dir: string): Promise<RunSummary | null> {
-  try {
-    return JSON.parse(await readFile(runSummaryFile(dir), "utf8")) as RunSummary;
-  } catch (err) {
-    if ((err as NodeJS.ErrnoException).code === "ENOENT") return null;
-    throw err;
-  }
+/** Reporting replays and validates committed artifacts; summary.json is never trusted alone. */
+export async function loadSummary(dir: string): Promise<RunSummary> {
+  const { loadValidatedSummary } = await import("../run/orchestrator.ts");
+  return loadValidatedSummary(dir);
 }
-
-/** Recursively find every directory under `runsRoot` containing a summary.json. */
-export async function discoverRunDirs(runsRoot: string): Promise<string[]> {
+export async function discoverRunDirs(root: string): Promise<string[]> {
   const found: string[] = [];
   async function walk(dir: string): Promise<void> {
     let entries;
-    try {
-      entries = await readdir(dir, { withFileTypes: true });
-    } catch {
-      return;
-    }
-    if (entries.some((e) => e.isFile() && e.name === "summary.json")) {
-      found.push(dir);
-      return;
-    }
-    for (const e of entries) {
-      if (e.isDirectory()) await walk(join(dir, e.name));
-    }
+    try { entries = await readdir(dir, { withFileTypes: true }); }
+    catch (error) { if ((error as NodeJS.ErrnoException).code === "ENOENT") return; throw error; }
+    if (entries.some(e => e.isFile() && e.name === "config.json")) { found.push(dir); return; }
+    for (const entry of entries) if (entry.isDirectory()) await walk(join(dir, entry.name));
   }
-  await walk(runsRoot);
-  return found;
+  await walk(root);
+  return found.sort();
 }
-
 export function cohortKeyOf(config: RunConfig): string {
-  return [
-    config.universeVersion,
-    config.fixtureVersion,
-    config.executionConvention,
-    config.protocolVersion,
-    config.startDate ?? "earliest",
-    config.endDate ?? "latest",
-    config.startingCapital,
-    config.limits.maxTurns,
-    config.limits.maxToolCalls,
-    config.limits.timeoutMs,
-  ].join("|");
+  return JSON.stringify({universe:config.universeVersion,data:config.fixtureVersion,execution:config.executionConvention,
+    protocol:config.protocolVersion,start:config.startDate,end:config.endDate,capital:config.startingCapital,
+    contributions:config.contributions??[],limits:config.limits,warmup:config.warmupBars??0,
+    experiment:config.experiment??"legacy",agent:config.agent});
 }
-
 export function toRow(dir: string, summary: RunSummary): ComparisonRow {
-  return {
-    runDir: dir,
-    model: summary.config.model,
-    seed: summary.config.seed,
-    agent: summary.config.agent,
-    status: summary.status,
-    daysRun: summary.metrics.daysRun,
-    endingNetWorth: summary.metrics.endingNetWorth,
-    totalReturnPct: summary.metrics.totalReturnPct,
-    maxDrawdownPct: summary.metrics.maxDrawdownPct,
-    dailyVolatilityPct: summary.metrics.dailyVolatilityPct,
-    annualizedVolatilityPct: summary.metrics.annualizedVolatilityPct,
-    sharpe: summary.metrics.sharpe,
-    avgTurnoverPct: summary.metrics.avgTurnoverPct,
-    tradeCount: summary.metrics.tradeCount,
-    failedOrderCount: summary.metrics.failedOrderCount,
-    boundedStopCount: summary.metrics.boundedStopCount,
-    cashReturnPct: summary.baselines.cash.metrics.totalReturnPct,
-    buyAndHoldReturnPct: summary.baselines.buyAndHold.metrics.totalReturnPct,
-    usageTurns: summary.usageTotals.turns,
-    usageToolCalls: summary.usageTotals.toolCalls,
-    usageFailedToolCalls: summary.usageTotals.failedToolCalls,
-    usagePromptTokens: summary.usageTotals.promptTokens,
-    usageCompletionTokens: summary.usageTotals.completionTokens,
-  };
+  if (!summary.finalPortfolio || summary.totalContributions===undefined || summary.netProfit===undefined) throw new Error("Missing validated final portfolio or contribution accounting");
+  return {runDir:dir,model:summary.config.model,provider:summary.config.provider??"legacy",seed:summary.config.seed,
+    agent:summary.config.agent,status:summary.status,experiment:summary.config.experiment??"legacy",daysRun:summary.metrics.daysRun,
+    endingNetWorth:summary.metrics.endingNetWorth,totalContributions:summary.totalContributions,netProfit:summary.netProfit,
+    totalReturnPct:summary.timeWeightedReturnPct??summary.metrics.totalReturnPct,maxDrawdownPct:summary.metrics.maxDrawdownPct,
+    annualizedVolatilityPct:summary.metrics.annualizedVolatilityPct,sharpe:summary.metrics.sharpe,tradeCount:summary.metrics.tradeCount,
+    failedOrderCount:summary.metrics.failedOrderCount,boundedStopCount:summary.metrics.boundedStopCount,
+    failedAttemptCount:summary.failedAttemptCount??0,cashReturnPct:summary.baselines.cash.metrics.totalReturnPct,
+    buyAndHoldReturnPct:summary.baselines.buyAndHold.metrics.totalReturnPct,usagePromptTokens:summary.usageTotals.promptTokens,
+    usageCompletionTokens:summary.usageTotals.completionTokens,cacheReadTokens:summary.usageTotals.cacheReadTokens??0,
+    cacheWriteTokens:summary.usageTotals.cacheWriteTokens??0,costUsd:summary.usageTotals.costUsd??0,finalPortfolio:summary.finalPortfolio};
 }
-
-export async function buildComparison(runDirs: readonly string[]): Promise<ComparisonCohort[]> {
-  const cohorts = new Map<string, ComparisonCohort>();
-  for (const dir of runDirs) {
-    const summary = await loadSummary(dir);
-    if (!summary) {
-      console.error(`[report] WARNING: no summary.json in ${dir}, skipping`);
-      continue;
-    }
-    const key = cohortKeyOf(summary.config);
-    let cohort = cohorts.get(key);
-    if (!cohort) {
-      cohort = {
-        cohortKey: key,
-        universeVersion: summary.config.universeVersion,
-        fixtureVersion: summary.config.fixtureVersion,
-        executionConvention: summary.config.executionConvention,
-        protocolVersion: summary.config.protocolVersion,
-        startDate: summary.config.startDate,
-        endDate: summary.config.endDate,
-        startingCapital: summary.config.startingCapital,
-        limits: summary.config.limits,
-        rows: [],
-      };
-      cohorts.set(key, cohort);
-    }
-    cohort.rows.push(toRow(dir, summary));
+export async function buildComparison(dirs: readonly string[], options: { strict?: boolean } = {}): Promise<ComparisonCohort[]> {
+  const cohorts=new Map<string,ComparisonCohort>();
+  for (const dir of [...new Set(dirs)]) {
+    let summary:RunSummary;
+    try { summary=await loadSummary(dir); }
+    catch(error) { if(options.strict) throw error; console.error(`[report] Excluded ${dir}: ${error instanceof Error?error.message:error}`); continue; }
+    const key=cohortKeyOf(summary.config);const config=summary.config;
+    const cohort=cohorts.get(key)??{cohortKey:key,universeVersion:config.universeVersion,fixtureVersion:config.fixtureVersion,
+      executionConvention:config.executionConvention,protocolVersion:config.protocolVersion,startDate:config.startDate,
+      endDate:config.endDate,startingCapital:config.startingCapital,limits:config.limits,experiment:config.experiment??"legacy",rows:[]};
+    cohort.rows.push(toRow(dir,summary));cohorts.set(key,cohort);
   }
   return [...cohorts.values()];
 }
-
-export function renderMarkdownTable(cohorts: readonly ComparisonCohort[], relativeTo?: string): string {
-  const header =
-    "| Model | Seed | Agent | Status | Days | Net Worth | Return % | Max DD % | Ann.Vol % | Sharpe | Turnover % | Trades | Failed | Bounded | Cash % | B&H % | Turns | Tool Calls | Failed Calls | Prompt Tok | Compl Tok |";
-  const sep = "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|";
-  const sections = cohorts.map((cohort) => {
-    const title = `### Cohort: universe=${cohort.universeVersion} fixture=${cohort.fixtureVersion} exec=${cohort.executionConvention} protocol=${cohort.protocolVersion} range=${cohort.startDate ?? "earliest"}..${cohort.endDate ?? "latest"} capital=$${cohort.startingCapital} limits=${cohort.limits.maxTurns}/${cohort.limits.maxToolCalls}/${cohort.limits.timeoutMs}ms`;
-    const lines = cohort.rows.map((r) => {
-      const dirLabel = relativeTo ? relative(relativeTo, r.runDir) : r.runDir;
-      return `| ${r.model} (\`${dirLabel}\`) | ${r.seed} | ${r.agent} | ${r.status} | ${r.daysRun} | $${r.endingNetWorth.toFixed(2)} | ${r.totalReturnPct.toFixed(2)} | ${r.maxDrawdownPct.toFixed(2)} | ${r.annualizedVolatilityPct.toFixed(2)} | ${r.sharpe === null ? "n/a" : r.sharpe.toFixed(2)} | ${r.avgTurnoverPct.toFixed(2)} | ${r.tradeCount} | ${r.failedOrderCount} | ${r.boundedStopCount} | ${r.cashReturnPct.toFixed(2)} | ${r.buyAndHoldReturnPct.toFixed(2)} | ${r.usageTurns} | ${r.usageToolCalls} | ${r.usageFailedToolCalls} | ${r.usagePromptTokens} | ${r.usageCompletionTokens} |`;
-    });
-    return [title, "", header, sep, ...lines].join("\n");
-  });
-  return sections.join("\n\n");
+const cell=(value:string)=>value.replace(/\|/g,"\\|").replace(/[\r\n]/g," ");
+export function renderMarkdownTable(cohorts: readonly ComparisonCohort[], relativeTo?:string): string {
+  return cohorts.map(cohort=>{
+    const lines=[`### ${cohort.experiment}: ${cohort.startDate} through ${cohort.endDate}`,"",
+      `Dataset: \`${cohort.fixtureVersion}\`; universe: \`${cohort.universeVersion}\`; protocol: \`${cohort.protocolVersion}\`.`,"",
+      `Adapter: ${cohort.rows[0]?.agent ?? "unknown"}. Daily limits: ${cohort.limits.maxTurns} turns, ${cohort.limits.maxToolCalls} attempted tools, ${cohort.limits.timeoutMs} ms. Execution: ${cohort.executionConvention}.`,"",
+      "Returns exclude contributions. Failed/incomplete runs are not qualified benchmark results.","",
+      "| Model / provider | Seed | Status | Days | Principal | Final value | P&L | TWR % | Max DD % | Trades | Rejected | Failed attempts | B&H % | Tokens in / out | Cost USD |",
+      "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"];
+    for(const row of cohort.rows){
+      lines.push(`| ${cell(row.model)} / ${cell(row.provider)} | ${row.seed} | ${row.status} | ${row.daysRun} | $${row.totalContributions.toFixed(2)} | $${row.endingNetWorth.toFixed(2)} | $${row.netProfit.toFixed(2)} | ${row.totalReturnPct.toFixed(2)} | ${row.maxDrawdownPct.toFixed(2)} | ${row.tradeCount} | ${row.failedOrderCount} | ${row.failedAttemptCount} | ${row.buyAndHoldReturnPct.toFixed(2)} | ${row.usagePromptTokens} / ${row.usageCompletionTokens} | ${row.costUsd.toFixed(6)} |`);
+    }
+    for(const row of cohort.rows){
+      lines.push("",`#### Holdings: ${cell(row.model)} · seed ${row.seed}`,"",`Cash: **$${row.finalPortfolio.cash.toFixed(2)}**. Run: \`${cell(relativeTo?relative(relativeTo,row.runDir):row.runDir)}\`.`,"",
+        "| Ticker | Shares | Average cost | Last close | Market value | Portfolio weight |","|---|---|---|---|---|---|");
+      for(const [ticker,h] of Object.entries(row.finalPortfolio.holdings).sort(([a],[b])=>a.localeCompare(b))){
+        lines.push(`| ${ticker} | ${h.units} | $${h.avgCost.toFixed(2)} | $${h.lastClose.toFixed(2)} | $${h.value.toFixed(2)} | ${(row.endingNetWorth>0?h.value/row.endingNetWorth*100:0).toFixed(2)}% |`);
+      }
+      if(Object.keys(row.finalPortfolio.holdings).length===0)lines.push("| — | 0 | — | — | $0.00 | 0.00% |");
+    }
+    return lines.join("\n");
+  }).join("\n\n");
 }

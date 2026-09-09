@@ -5,11 +5,11 @@
 //   - agent/fakeAgent.ts   — deterministic, no network, no tokens. Used by
 //                            every automated test and available via
 //                            `--agent=fake` for dry runs.
-//   - agent/piAgent.ts     — wraps the real Pi SDK + opencode-go models
+//   - agent/piAgent.ts     — wraps the real Pi SDK + an explicit provider/model
 //                            (minimax-m3, deepseek-v4-pro, ...). Only
 //                            constructed by the CLI when `--agent=pi`
 //                            (the default for real benchmark runs). Tests
-//                            MUST NOT import piAgent.ts.
+//                            may use its isolated offline transport.
 //
 // Re-exported from domain/types.ts to keep the type definitions dependency-
 // free while giving this boundary a dedicated, discoverable module.

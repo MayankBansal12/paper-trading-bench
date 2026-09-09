@@ -291,6 +291,7 @@ describe("run/orchestrator", () => {
     expect(orphanRecord).not.toBeNull();
     state!.completedDates = state!.completedDates.filter((d) => d !== dates[2]);
     state!.status = "active";
+    state!.lastNetWorth = (await loadDailyRecord(dir, dates[1]!))!.portfolioAfter.netWorth;
     const { saveRunState } = await import("../src/run/state.ts");
     await saveRunState(dir, state!);
 
@@ -345,7 +346,10 @@ describe("run/orchestrator", () => {
     await cleanRun(config);
     const { summary } = await runBatch(config, new FakeAgent());
     expect(summary.metrics.boundedStopCount).toBe(1);
-    expect(summary.metrics.tradeCount).toBe(1);
+    expect(summary.status).toBe("failed");
+    expect(summary.metrics.tradeCount).toBe(0);
+    expect(summary.metrics.daysRun).toBe(0);
+    expect(summary.failedAttemptCount).toBe(1);
     await cleanRun(config);
   });
 
