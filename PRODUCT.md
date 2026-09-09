@@ -1,180 +1,48 @@
-# PaperTrader — Product Spec
+# Benchmark contract
 
-A paper trading benchmark for evaluating open source LLMs on financial decision-making and long-term memory across a simulated investment portfolio.
+## Objective
 
----
+Measure how a specified model makes sequential technical-analysis decisions while managing a funded portfolio. A single command simulates three completed calendar months, one US equity trading session at a time. It is a historical experiment, not a live brokerage or a forecast of future returns.
 
-## What It Is
+- Initial cash is $500. Deposit another $500 before the first trading session of months two and three. Total contributed principal for a completed benchmark is $1,500.
+- Default dates are the last three completed UTC calendar months. Explicit three-month periods are supported. Shorter windows and synthetic data require a `smoke` experiment label.
+- Portfolio positions, cash, recent decisions, execution rejections, and contribution schedule carry across sessions. Each model decision has a fresh bounded context; no hidden provider conversation persists between days.
+- End results include cash, each holding's shares, average cost, last close, value and portfolio weight, total contributions, final equity, and dollar profit.
 
-Each model is given $1,000 and runs autonomously every market working day for up to 60 days (or until its networth becomes <1%). It can buy and sell any stocks it wants using real end-of-day prices. The goal is to grow the portfolio and maximize the net worth.
+## Information and execution timing
 
----
+For session D, market observations stop at the close before D. SMA20 and SMA50 use closing prices; RSI14 uses Wilder smoothing initialized from the full available historical prefix. At least 60 earlier trading bars per ticker are required; the default warm-up requirement is 100. Prompt bars can be truncated independently of indicator initialization.
 
-## Stack
+The only tools are `get_portfolio`, `get_universe`, `get_ohlcv`, `get_indicators`, `buy`, and `sell` (prefixed `trading_` in OpenCode MCP). No news, web search, shell, filesystem, delegation, or extra connector tools are available to the trading model. The harness may obtain historical snapshots before the run.
 
-- **Language:** TypeScript
-- **Runtime:** Bun
-- **Package manager:** pnpm
-- **Agent harness:** Pi SDK — `@earendil-works/pi-coding-agent` (single package, exports `createAgentSession`, `AuthStorage`, `ModelRegistry`, `SessionManager`)
-- **After market prices:** `yahoo-finance2`
+Orders are requests, not immediate fills. They execute in submitted order at D's open after a completed decision. A later sell cannot fund an earlier buy. The model cannot observe D's open or infer it from an intradecision fill. Actual rejections become available in subsequent daily context.
 
----
+Fractional long-only shares are permitted. Units round down to six decimal places; cash uses the engine's cent ledger. No margin, short positions, fees, spread, slippage, market impact, or taxes. The entire universe is assumed tradable at the reported open. These assumptions must accompany any interpretation of returns.
 
-## Models
+## Data and universe
 
-Open source models with opencode-go integration. Each model must support tool calling. Provider endpoints vary (OpenAI-compatible or Anthropic-compatible) — Pi's unified `pi-ai` layer (bundled inside `pi-coding-agent`) handles normalization.
+Historical datasets contain validated OHLCV bars, exchange sessions, actions, coverage/evaluation bounds, source snapshots, provenance, and content hashes. Missing, duplicate, invalid, or incomplete observations fail preflight. Synthetic fixtures remain useful for deterministic tests and are excluded from historical benchmark cohorts.
 
----
+Yahoo's historical price series is retrospectively split-adjusted. Import reconstructs as-traded OHLCV and cash dividends using every subsequent supported split through the retrieval date, including splits after the evaluation period. Indicators use prices consistently adjusted for splits already effective by the decision date. Adjusted close is not substituted for tradable open/close prices. Splits change held shares and basis; dividends credit cash to pre-session holders on the ex-date. Crediting on ex-date rather than payment date is an explicit approximation that permits early reinvestment.
 
-## CLI Entry Point
+The original `v1` universe is frozen at 50 large-cap tickers. The supported default `v2` excludes Honeywell, retaining 49 tickers. Its 2025 Solstice and 2026 Aerospace spin-offs appear as combined nonstandard Yahoo split factors; treating those factors as share ratios would corrupt holdings. This version rejects unsupported actions instead of inventing prices or share entitlements. The exclusion is a data-support choice, not a return-based selection rule, but remains a restriction on the evaluated universe.
 
-```
-pnpm run start --model="minimax-m2.7" // use that model for the session run
-pnpm run results  // present the portfolio state in a detailed human-readable format
-```
+The universe is a fixed basket, not a historical constituent database: survivorship and selection bias remain. Source snapshots can contain later corrections and are not a point-in-time market-data archive. No news access does not erase historical facts from a pretrained model; prompting cannot guarantee absence of memorized future events.
 
-Starts or continues the session for the given model. Reads from and writes to `results/`.
+## Contributions, baselines, and metrics
 
----
+Deposits are external cash flows, not trading profit. Dollar profit is final equity minus contributed capital. Time-weighted returns, drawdown, volatility, and Sharpe use a flow-adjusted return series. Risk-free return is assumed zero; short-window annualized statistics are descriptive and unstable.
 
-## Structure for benchmark and results
-All source code for benchmark- cli commands, agentic loop, tool implementations, and portfolio management — lives in `src/`. All results and artifacts live in `results/`.
-Keep the src/ dir clean, organized and modular...no single file should contain majority of logic. 200 loc is a soft limit and 300 loc is hard limit for a single file. 
+Cash and equal-weight buy-and-hold controls receive the same cash flows and corporate actions as the model over the same evaluated sessions. Buy-and-hold invests each contribution equally across the permitted universe. Identical snapshots, execution rules, date ranges, adapter/protocol versions, warm-up, funding, and limits define a comparison cohort.
 
-```
-papertrader/
-├── results/
-│   ├── portfolio-state.json        # Live state — machine readable
-│   ├── transactions.txt            # Append-only audit log
-│   └── summaries/
-│       └── YYYY-MM-DD.md           # One file per trading day
-└── src/
-    ├── index.ts                    # entrypoint
-    and other files...
-```
+## Failures and durable evidence
 
----
+A provider error, exceeded budget, malformed terminal response, or harness failure is an unsuccessful attempt. Orders from that attempt never execute, and its daily contribution/action state is not committed. The run stops as `failed`; resume retries the same date from the prior committed portfolio. Failed-attempt usage and diagnostic evidence remain recorded.
 
-## Portfolio State (`results/portfolio-state.json`)
+Successful days are committed in calendar order. State cannot skip dates or silently switch data, budgets, funding, model, prompt protocol, or horizon. A contiguous validated daily artifact left by an interrupted commit can be adopted. Reports reconstruct decisions and accounting, validate causal context and hashes, and rebuild derived summary/transaction outputs. Legacy or inconsistent authoritative artifacts are excluded. Hashes detect inconsistency and accidental corruption; they are not signed attestations against an adversary rewriting all evidence.
 
-```json
-{
-  "start_date": "2026-07-01",
-  "created_at": "2026-07-01T16:00:00Z",
-  "updated_at": "2026-07-03T16:00:00Z",
-  "opening_balance": 1000.00,
-  "current_balance": 423.50,
-  "holdings_value": 608.20,
-  "holdings": {
-    "NVDA": { "units": 2, "avg_cost": 131.20, "last_traded_price": 138.90, "value": 277.80 },
-  },
-  "net_worth": 1031.70,
-  "net_pnl": 31.70,
-  "status": "active"
-}
-```
+## Model runtime
 
-`status` is `active` or `terminated`. Portfolio state is only written after a fully successful session.
+The OpenCode adapter uses the official client to access permitted Zen models, with isolated configuration and the six trading tools. The Pi adapter runs the real SDK in a disposable process. Both retain effective prompts, context identity, traces, submitted orders, terminal outcomes, timing, and model/tool/cache/cost usage when reported. Hard deadlines terminate the worker/client process. Neither adapter silently switches models.
 
----
-
-## Transaction Log (`results/transactions.txt`)
-
-Append-only. One line per trade.
-
-```
-2026-07-01 | BUY  | NVDA | 2 units @ $131.20 | cash remaining: $737.60
-2026-07-03 | SELL | NVDA | 2 units @ $138.90 | cash remaining: $1015.40
-```
-
----
-
-## Daily Summary (`results/summaries/YYYY-MM-DD.md`)
-
-Written by the model at the end of each session. Serves as both the memory unit for the next session and the artifact for human analysis.
-
-```markdown
-# 2026-07-01
-
-## Decisions
-...
-
-## Reasoning
-...
-
-## Portfolio Snapshot
-...
-
-## Watchlist
-...
-
-## Outlook
-...
-```
-
----
-
-## Tools
-
-Seven tools. Only `buy` and `sell` mutate state.
-
-| Tool | Description |
-|---|---|
-| `get_portfolio()` | Returns current cash, holdings, total value, P&L |
-| `get_price(stock)` | Returns today's EOD price from cache |
-| `search_news(query)` | Web search scoped to financial news |
-| `buy(stock, units)` | Validates cash → executes → updates portfolio |
-| `sell(stock, units)` | Validates holdings → executes → updates portfolio |
-| `get_weekly_summary()` | Returns last 7 daily summary `.md` files as a block |
-
-
-<!--| `get_stock_info(ticker)` | Sector, 52w high/low, market cap, P/E |  // deferred tool  -->
-
-**Error responses are part of the feedback loop:**
-- Insufficient cash → return current cash + current holdings so model knows what to sell
-- Selling more units than held → return actual units held
-- Invalid stock → say so explicitly
-
----
-
-## What the Model Sees Each Session
-
-- System prompt (role, rules, goal, starting conditions)
-- Current portfolio state injected as context
-- Last 7 daily summaries via `get_weekly_summary()`
-- No raw transaction log — summaries are the memory layer
-
----
-
-## Session Flow
-
-```
-1. Parse --model flag
-3. Initialize Pi agent session (SessionManager.inMemory())
-4. Register all 7 tools
-5. Inject opening prompt with portfolio state + role context
-6. Agentic loop runs — model calls tools freely
-7. Inject wrap-up prompt → model writes daily summary in required format
-8. Save summary to results/summaries/YYYY-MM-DD.md
-9. Persist updated portfolio-state.json
-```
-
----
-
-## Termination Conditions
-
-A session marks `status: terminated` if total portfolio value (cash + holdings at current prices) reaches <$10. 
-Subsequent runs on a terminated portfolio exit immediately.
-
-The model must sell existing holdings to free cash before buying — the insufficient cash error surfaces current holdings so it knows what to liquidate.
-
----
-
-## Assumptions & Exclusions
-
-- No transaction fees, brokerage charges or other charges accounted for
-- EOD price = execution price (no slippage, no overnight gap)
-- No short selling, no margin, no options
-- No dividends or stock splits accounted for
-- Models pick any publicly traded stock — no restricted universe
-- Models can go with any strategy they want — no restrictions on risk, diversification, or sector allocation
+Free-only qualification requires an explicit free-model allowlist and zero listed cost; provider availability and pricing can change. A replicate seed is a label, not a sampling guarantee. Replaying a stored decision ledger is deterministic; rerunning an LLM is not.
