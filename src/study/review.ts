@@ -1,3 +1,4 @@
+import { literalText } from "../report/text.ts";
 import type { StudyRecord } from "../core/types.ts";
 import type { StudyAttempt } from "./agent.ts";
 import type { MarketDataset } from "../data/dataset.ts";
@@ -59,11 +60,11 @@ export function renderJournalReview(
       "",
       "Previous original note:",
       "",
-      safe(accepted[i - 1]?.journalEntries[0]?.text ?? "First day; none."),
+      literalText(accepted[i - 1]?.journalEntries[0]?.text ?? "First day; none."),
       "",
       "Committed original note:",
       "",
-      safe(note.text),
+      literalText(note.text),
       "",
       `Ticker tags: ${note.tickers.join(", ") || "none"}. Explicit citations: ${note.evidenceRefs.join(", ") || "none"}.`,
       "",
