@@ -4,7 +4,6 @@ import { executeAccepted } from "../src/core/execute.ts";
 import { initialStudyDecision } from "../src/study/agent.ts";
 import { scopeFor } from "../src/study/protocol.ts";
 import { createInitialPortfolio } from "../src/engine/portfolio.ts";
-import { monthlyDeposits } from "../src/core/funding.ts";
 import type { MarketDataset } from "../src/data/dataset.ts";
 import { tradeAnalysis } from "../src/study/review.ts";
 const limits = {
@@ -24,7 +23,10 @@ test("all 64 archived v10 ledger days reproduce exactly under extracted accounti
     end: frozen.days.at(-1)!.date,
     history: 100,
     limits,
-    contributions: monthlyDeposits(frozen.days.map((d) => d.date)),
+    // The archived v10 ledger was funded at $500/month; reproduce its own contributions.
+    contributions: frozen.days
+      .map((d) => ({ date: d.date, amount: d.record.contribution as number }))
+      .filter((c) => c.amount > 0),
   };
   let portfolio = createInitialPortfolio(500),
     fills = 0;

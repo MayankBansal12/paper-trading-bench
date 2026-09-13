@@ -8,7 +8,7 @@ import {
 import { getUniverse } from "../config/universe.ts";
 import { contentHash } from "../core/hash.ts";
 import { buildDecisionContext, type ContextConfig } from "../core/context.ts";
-import { monthlyDeposits } from "../core/funding.ts";
+import { monthlyDeposits, STARTING_CAPITAL } from "../core/funding.ts";
 import { executeAccepted, executeInvalidDay } from "../core/execute.ts";
 import type { StudyRecord, StudyLimits } from "../core/types.ts";
 import { createInitialPortfolio } from "../engine/portfolio.ts";
@@ -118,7 +118,7 @@ export async function prepareStudyData(c: StudyConfig) {
       config,
       dates[0]!,
       universe,
-      createInitialPortfolio(500),
+      createInitialPortfolio(STARTING_CAPITAL),
       [],
       market,
     ),
@@ -205,7 +205,7 @@ export async function runStudy(
     const past: JournalEntry[] = [],
       days: Day[] = [],
       attempts: StudyAttempt[] = [];
-    let portfolio = createInitialPortfolio(500),
+    let portfolio = createInitialPortfolio(STARTING_CAPITAL),
       failure: string | undefined;
     let consecutiveInvalidDays = 0, maxConsecutiveInvalidDays = 0;
     const files = existsSync(join(dir, "days"))

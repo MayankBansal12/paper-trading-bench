@@ -2,15 +2,29 @@
 
 Current contract: `v11-portfolio-journal-submit`. The four-tool interface and atomic persistence replace v10. A direct inference adapter remains deferred. See [validation and known limitations](VALIDATION.md). Source/evidence for older cohorts remain archived. Never resume them under v11.
 
+## Record availability
+
+| Record or capability | Current status |
+|---|---|
+| Host audit log | Implemented: `events.jsonl` retains context, provider traffic, tool requests/results, submissions and failures. |
+| Original model journal | Implemented: one note per valid committed decision, previous note preloaded, older own notes searchable with `journal`. |
+| Actual fills, rejections and portfolio accounting | Implemented in atomic day commits and evaluator reports. Opening context supplies the resulting portfolio. |
+| Model-facing `action_log` tool and detailed adjustment receipts | Planned: the model cannot currently query its execution ledger or retrieve a structured fill/rejection receipt. |
+| Annual orchestration and additional model adapters | Planned. |
+
 ## Session contract
 
 Each fresh attempt preloads:
 
 1. Simulated date, previous trading-session close cutoff, and supplied date range.
 2. Cash, holdings (units, average cost, observable close and value), holdings value and net worth, after due contributions/actions.
-3. Known funding schedule: $500 initially and $500 on the first represented session of each later month.
+3. Known funding schedule: $50,000 initially and $50,000 on the first represented session of each later month.
 4. Eligible canonical tickers.
 5. The last committed original journal note verbatim, with its identity/date/tags, or an explicit first-day marker.
+
+The investment mandate uses an ongoing horizon. The supplied date range bounds evaluation and reporting; the prompt asks the model to keep assessing opportunities through the final session and forbids using the approaching quarter/end date alone as a reason to sell, build cash or avoid new positions. Cash remains a valid allocation for investment reasons. Performance uses cash plus holdings marked at the daily close, including on the final date; there is no forced liquidation or cash-only terminal valuation. This clarification changes the implementation identity and requires a new cohort. Earlier runs must be inspected/replayed with their original source and prompt; no existing evidence is rewritten. The prompt does not promise additional simulated dates beyond the supplied range.
+
+Eligible tickers are supplied on every session as the complete allowed universe, with no ranking or recommended subset. This defines the available action space; it is not a stock recommendation. `market_snapshot` defaults to that same universe and orders outside it are rejected. Scored quarterly studies separately require membership evidence predating the quarter. A retrospectively filtered supported-data run remains an environment study.
 
 No failed-attempt note, foreign run, future note, conversation transcript, evaluator outcome or model-generated summary is memory. A note is stated reasons, not private internal reasoning. Original free text remains searchable. Frozen source security names normalize to ticker aliases; ambiguous issuer names can match multiple eligible share classes. Ticker tags remain canonical symbols.
 
@@ -36,6 +50,8 @@ Turns and attempted tool calls have no count ceiling. Calls are counted. Each at
 The previous-close/next-open gap is an **environment constraint**, documented in the study rather than eliminated. Market context and all market replies end at the previous trading session close. The execution-day open remains unknown until the complete decision is submitted and authorized. Orders execute in the supplied order at that open, then the host marks the portfolio at that day's close.
 
 A sell funds only later buys. Long-only fractional shares and existing cent-ledger rounding apply; no leverage, shorts, fees, modeled slippage or target-weight execution. Dollar orders express requested amounts, while realized shares depend on the unknown open. Fixed-share buys may fail the cash check after an upward gap. Other fills in a valid ordered batch follow the deterministic engine's existing rejection policy. Schema-invalid or partial submissions execute nothing.
+
+Share quantities support six decimal places. For example, a $100 order at a $1,000 opening price buys approximately 0.1 shares under the cent-ledger sizing rules. The $50,000 starting balance therefore does not exclude high-priced eligible stocks. A whole-share-only experiment would require explicit order/sizing rules and a new funding policy/cohort; increasing cash alone would not disable fractional orders.
 
 On a split morning, prior observations and holdings use post-split share units. Evaluator `tradeAnalysis` recomputes each ordered fill/rejection and reports observed close, actual execution open and gap in those same units. `review --gaps=true` derives a full dataset security-day gap calculation with dataset identity and its formula; those observations are not actual model fills or independently verified market-wide estimates. Nothing from these reports is served during the same decision.
 
@@ -80,3 +96,15 @@ The existing Bubblewrap/systemd boundary retains separate namespaces, no capabil
 `run --preflight=true` validates without inference. `run --control=true` runs the unchanged mechanical v10 order policy. `run --smoke=true` limits a live qualification to at most five sessions. `review --analysis=true --gaps=true` derives behavior, fills and gaps offline; `--comparisons=true` adds cash, equal-weight, risk/return metrics and an optional `--ndx-data-dir` reference. These descriptive calculations do not assert scored-study eligibility. `qualify --data-dir … --ndx-data-dir … --start … --end …` separately enforces complete calendar-quarter coverage, original pre-quarter membership evidence, supported securities/actions without exclusions, and frozen NDX reference data. The core does not claim a supplied ordinary date range qualifies for comparison. Annual launchers and legacy comparative CLI are archived; offline NDX/equal-weight/metric helpers remain outside the core.
 
 The retained 99-security June–August 2026 archive (hash `abc104ae3f2cb258e1c9c9bc996a9f46c14ca83771da5c9acbeb7eaab23b2de7`) supports environment smoke/control. It is not a full calendar quarter. Adding a new adapter/model/data track requires separate qualification and a new cohort.
+
+## Remaining planned work
+
+The former standalone action-log/quarterly plan is consolidated here. These additions have not been implemented:
+
+- Add read-only `action_log(date?, ticker?, cursor?)`, derived from committed day files and their referenced submissions. Default to the previous committed day; return at most 32 typed entries per page with stable order and an explicit next cursor. Each order receipt should include its host identity, requested dollars/shares, actual units/price/cash movement and filled/rejected status with the exact reason. Preserve repeated orders and execution order. Distinguish explicit holds, invalid days, deposits, dividends and splits.
+- Preload a bounded previous-day execution summary and a pointer to that tool. Separately expose today's already-effective deposit/dividend/split adjustments from the same portfolio preparation used by opening context, including pre/post-split shares and the ex-date dividend convention. Expose no current-day fills, prices or future actions.
+- Restrict ledger retrieval to this run's committed dates before the decision date. Exclude future, foreign and uncommitted submissions and failed-attempt notes. Keep original journals unchanged and the existing ledger authoritative. Update tool allowlists, gateway/client audits, replay verification and implementation identity together.
+- Validate gap-induced rejection, ordered sells funding buys, mixed/repeated orders, hold/invalid days, corporate actions, same-morning adjustments, pagination, isolation and exact-once recovery before qualifying that tool.
+- Build four independent quarterly runs and an annual report. Each quarter starts with $50,000, no positions and empty memory; months two and three add $50,000 each. Freeze dates, membership/data/reference evidence and policies before model runs, and validate complete membership coverage. Resets are experiment setup; they do not require the model to liquidate at the preceding reporting boundary.
+
+Annual reporting should retain per-quarter completion/retry/invalid-day coverage, deposit-adjusted returns, drawdown, cash allocation, concentration, turnover, buy/sell activity, rejections and stated strategy changes. Four fully funded independent quarters receive $600,000 total; their reset dollar balances cannot be concatenated into a continuous portfolio growth curve. Additional model routes need separate qualification.

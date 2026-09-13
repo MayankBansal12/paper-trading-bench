@@ -1,5 +1,29 @@
 # Benchmark validation
 
+## Latest completed Muse Spark run (2026-09-13)
+
+The Q2 environment run `muse-spark-free-2026q2-d03db5b`, source `d03db5bd04a2b5e9936368e72600cad1fc94ce84`, completed April 1–June 30, 2026. `bun src/index.ts verify --dir results/studies/muse-spark-free-2026q2-d03db5b` successfully verified its event/commit chain and replayed its accounting on the original source before the ongoing-horizon prompt change.
+
+| Verified record | Result |
+|---|---|
+| Decisions and accounting | 62/62 valid days; no retries, invalid days or failed attempts |
+| Orders | 26 fills; no rejected orders |
+| Original journal | 62 committed notes |
+| Audit records | 6,092 audit events, including 222 tool attempts/results and 210 inference requests/responses |
+| Funding | $500 initially plus $500 on May 1 and June 1; $1,500 total |
+| Final cash / holdings value / net worth | $1,415.31 / $0 / $1,415.31 |
+| Derived performance | −$84.69 net profit; −1.5314% time-weighted return |
+
+The model sold all remaining 2.367672 NVDA shares on June 25 for $473.72 and submitted empty order batches on June 26, 29 and 30. Its notes cited both price deterioration and the approaching horizon; the final note explicitly said there was “no time to recover.” This supports an end-date influence on its stated decisions, without proving the same trades would differ under another prompt. It had previously moved entirely to cash on June 8 and reinvested on June 16 and June 22, so it did not simply stop investing for all of June. The engine applied no automatic liquidation.
+
+Local evidence: [original notes and fills](../results/studies/muse-spark-free-2026q2-d03db5b/review.md), [final day ledger](../results/studies/muse-spark-free-2026q2-d03db5b/days/2026-06-30.json), [analysis](../results/studies/muse-spark-free-2026q2-d03db5b/analysis.json) and [descriptive comparisons](../results/studies/muse-spark-free-2026q2-d03db5b/comparisons.json). These generated artifacts remain local and ignored by Git.
+
+The current prompt explicitly treats the end date as a reporting boundary, keeps final holdings in total net worth and discourages end-date-only liquidation or avoidance of new investments. It requires a new cohort; no live run has yet tested its behavioral effect. Typecheck and the existing offline suite pass after the prompt/documentation change: 220 tests, 0 failures, 1,468 assertions. Original Q2 artifacts remain bound to `d03db5b` and must be replayed with that source.
+
+Funding changed after the Q2 run: new cohorts start with $50,000 and receive $50,000 on the first represented session of each later month (previously $500/$500). The Q2 figures above document the historical $500 funding and are not comparable to new-cohort dollar results.
+
+Audit logging and model journal memory are implemented. Only the separate model-facing execution-history tool remains planned; see the [current record availability and backlog](STUDY_ENVIRONMENT.md). This completed run exercises live monthly funding boundaries on `d03db5b`; the earlier qualification limits below describe their own historical cohorts. The Q2 run's `environment` profile and supported-security dataset do not establish full-membership scored-quarter eligibility.
+
 ## Session recovery and streaming qualification (PR #6)
 
 The host gateway's default Bun idle timeout could truncate inference streams after a ten-second pause even with a sixty-minute attempt watchdog. A real OpenCode/sandbox fixture with a twelve-second pause reproduced the failure before the fix (four provider requests, no submission, then watchdog cutoff). Setting the gateway server's `idleTimeout: 0` made the same fixture complete in one provider request. The host attempt deadline remains authoritative. Reproduce without remote inference with `bun scripts/qualify-submission.ts --slow-stream-fixture`; the separate `--watchdog-fixture` verifies hard cancellation.

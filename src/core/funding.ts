@@ -1,4 +1,5 @@
-const MONTHLY_CONTRIBUTION = 500;
+export const STARTING_CAPITAL = 50000;
+export const MONTHLY_CONTRIBUTION = 50000;
 export function monthlyDeposits(
   dates: readonly string[],
 ): Array<{ date: string; amount: number }> {

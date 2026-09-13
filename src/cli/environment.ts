@@ -28,7 +28,7 @@ export const HELP = `Paper portfolio environment (${STUDY_PROTOCOL})
   pnpm bench sandbox-check
 
 Fresh context, four tools and one final submission per day. Unlimited turns/tools.
-Starts with $500; each later represented month receives $500. Future opens remain unknown.
+Starts with $50,000; each later represented month receives $50,000. Future opens remain unknown.
 Control/smoke qualify the environment, not scored model comparisons.
 Historical protocols require their frozen archived source.`;
 export async function environmentCLI(command: string, argv: string[]) {

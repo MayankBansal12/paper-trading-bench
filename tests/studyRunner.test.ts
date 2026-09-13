@@ -78,7 +78,7 @@ for (const phase of ["after-result", "after-commit"] as const)
     });
     expect(replay.summary.committedDays).toBe(2);
     expect(replay.summary.fills).toBe(2);
-    expect(replay.days.map((d) => d.record.contribution)).toEqual([0, 500]);
+    expect(replay.days.map((d) => d.record.contribution)).toEqual([0, 50000]);
     expect((await runStudy(cfg, { readOnly: true })).summary).toEqual(
       replay.summary,
     );
@@ -102,7 +102,7 @@ test("crash after durable submission but before integrity completion executes no
   const result = await runStudy(cfg, {
     control: async (view, journal, past) => {
       expect(view.scope.attempt).toBe(2);
-      expect(view.portfolio.cash).toBe(500);
+      expect(view.portfolio.cash).toBe(50000);
       expect(past).toEqual([]);
       return deterministicControl(view, journal, past);
     },
@@ -173,7 +173,7 @@ test("next-day prompt includes exact original note and changed cash/holdings; fo
   const result = await runStudy(cfg, {
     control: async (view, journal, past) => {
       if (past.length) {
-        expect(view.portfolio.cash).toBe(900);
+        expect(view.portfolio.cash).toBe(99900);
         expect(view.portfolio.holdings.AAPL!.units).toBeGreaterThan(0);
       }
       return deterministicControl(view, journal, past);
@@ -302,13 +302,13 @@ test("automatic retry uses fresh committed memory and applies funding/fills only
       return deterministicControl(view, journal, past);
     },
   });
-  expect(openingCash).toEqual([900, 900]);
+  expect(openingCash).toEqual([99900, 99900]);
   expect(result.summary).toMatchObject({
     status: "completed", committedDays: 2, totalDays: 2, attemptedDays: 2,
     retriedDays: 1, invalidDays: 0, unattemptedDays: 0, attempts: 3, failures: 1, fills: 2,
   });
-  expect(result.days.map(d => d.record.contribution)).toEqual([0, 500]);
-  expect(result.summary.portfolio.cash).toBe(800);
+  expect(result.days.map(d => d.record.contribution)).toEqual([0, 50000]);
+  expect(result.summary.portfolio.cash).toBe(99800);
   expect(result.attempts.map(a => a.scope.attempt)).toEqual([1, 2]);
   expect((await runStudy(cfg, { readOnly: true })).summary).toEqual(result.summary);
 });
@@ -364,7 +364,7 @@ test("invalid days retain daily valuation and deposits; valid days reset the fai
       if (invalid.has(view.scope.date)) return timedOutAfterSubmission(view, journal, past);
       if (view.scope.date === "2024-05-02") {
         expect(past.map(e => e.date)).toEqual(["2024-04-29"]);
-        expect(view.portfolio.cash).toBe(900);
+        expect(view.portfolio.cash).toBe(99900);
         expect(view.portfolio.holdings.AAPL!.lastClose).toBe(p.market.closeOn("AAPL", "2024-05-01"));
       }
       return deterministicControl(view, journal, past);
@@ -375,8 +375,8 @@ test("invalid days retain daily valuation and deposits; valid days reset the fai
     invalidDays: 3, maxConsecutiveInvalidDays: 2, consecutiveInvalidDays: 1,
     attempts: 8, failures: 6, retriedDays: 3, fills: 2, unattemptedDays: 0,
   });
-  expect(result.days.map(d => d.record.contribution)).toEqual([0, 0, 500, 0, 0]);
-  expect(result.summary.portfolio.cash).toBe(800);
+  expect(result.days.map(d => d.record.contribution)).toEqual([0, 0, 50000, 0, 0]);
+  expect(result.summary.portfolio.cash).toBe(99800);
   expect(result.attempts.map(a => a.scope.date)).toEqual(["2024-04-29", "2024-05-02"]);
   expect((await runStudy(cfg, { readOnly: true })).summary).toEqual(result.summary);
   const { writeStudyReview } = await import("../src/study/report.ts");
@@ -390,7 +390,7 @@ test("invalid days retain daily valuation and deposits; valid days reset the fai
   expect(analysis.portfolioObservationDays).toBe(5);
   const comparison = JSON.parse(readFileSync(join(result.dir, "comparisons.json"), "utf8"));
   expect(comparison.metrics.daysRun).toBe(5);
-  expect(comparison.metrics.totalContributions).toBe(1000);
+  expect(comparison.metrics.totalContributions).toBe(100000);
   expect(comparison.invalidDays).toBe(3);
 });
 
@@ -419,7 +419,7 @@ for (const phase of ["after-result", "after-commit"] as const)
     });
     expect(result.summary).toMatchObject({ status: "completed", validDays: 2, invalidDays: 1, failures: 2, attempts: 4 });
     expect(result.days.map(d => d.status)).toEqual(["completed", "invalid", "completed"]);
-    expect(result.days.map(d => d.record.contribution)).toEqual([0, 500, 0]);
-    expect(result.summary.portfolio.cash).toBe(800);
+    expect(result.days.map(d => d.record.contribution)).toEqual([0, 50000, 0]);
+    expect(result.summary.portfolio.cash).toBe(99800);
     expect((await runStudy(cfg, { readOnly: true })).summary).toEqual(result.summary);
   });

@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { resolve } from "node:path";
-import { defaultWindow, defaultDataDir, isThreeMonthWindow, monthlyDeposits, parseBooleanFlag } from "../src/cli/experiment.ts";
+import { defaultWindow, defaultDataDir, isThreeMonthWindow, parseBooleanFlag } from "../src/cli/experiment.ts";
+import { monthlyDeposits, MONTHLY_CONTRIBUTION } from "../src/core/funding.ts";
 import { PROJECT_ROOT } from "../src/utils/paths.ts";
 
 function cli(args: string[]) {
@@ -24,8 +25,8 @@ describe("three-month experiment contract", () => {
   });
   test("deposits occur on first represented session of months two and three, including holidays/weekends", () => {
     const dates = ["2024-08-01", "2024-08-02", "2024-08-30", "2024-09-03", "2024-09-04", "2024-09-30", "2024-10-01", "2024-10-02"];
-    expect(monthlyDeposits(dates)).toEqual([{ date: "2024-09-03", amount: 500 }, { date: "2024-10-01", amount: 500 }]);
-    expect(monthlyDeposits(["2024-12-31", "2025-01-02"])).toEqual([{ date: "2025-01-02", amount: 500 }]);
+    expect(monthlyDeposits(dates)).toEqual([{ date: "2024-09-03", amount: MONTHLY_CONTRIBUTION }, { date: "2024-10-01", amount: MONTHLY_CONTRIBUTION }]);
+    expect(monthlyDeposits(["2024-12-31", "2025-01-02"])).toEqual([{ date: "2025-01-02", amount: MONTHLY_CONTRIBUTION }]);
     expect(monthlyDeposits(["2024-01-02", "2024-01-03"])).toEqual([]);
     expect(monthlyDeposits([])).toEqual([]);
   });

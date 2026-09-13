@@ -1,6 +1,10 @@
 import { resolve } from "node:path";
 
-export const MONTHLY_CONTRIBUTION = 500;
+export {
+  STARTING_CAPITAL,
+  MONTHLY_CONTRIBUTION,
+  monthlyDeposits,
+} from "../core/funding.ts";
 
 /** Three complete calendar months preceding the current UTC month. */
 export function defaultWindow(now = new Date()): { start: string; end: string } {
@@ -18,19 +22,6 @@ export function isThreeMonthWindow(start: string, end: string): boolean {
 
 export function defaultDataDir(start: string, end: string): string {
   return resolve("datasets", "historical", `${start.slice(0, 7).replace("-", "")}_${end.slice(0, 7).replace("-", "")}`);
-}
-
-/** Initial capital funds the first represented month; later months receive one deposit each. */
-export function monthlyDeposits(dates: readonly string[]): Array<{ date: string; amount: number }> {
-  const months = new Set<string>();
-  const deposits: Array<{ date: string; amount: number }> = [];
-  for (const date of dates) {
-    const month = date.slice(0, 7);
-    if (months.has(month)) continue;
-    if (months.size > 0) deposits.push({ date, amount: MONTHLY_CONTRIBUTION });
-    months.add(month);
-  }
-  return deposits;
 }
 
 export function parseBooleanFlag(name: string, raw: string | undefined, fallback = false): boolean {

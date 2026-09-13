@@ -42,14 +42,14 @@ function record(date: string, equity: number, contribution = 0): DailyRecord {
 test("NDX comparison aligns actual contribution opens and separates price return from funded return", async () => {
   const result = await compareNDX(
     market,
-    [record(dates[0]!, 550.01), record(dates[1]!, 1210.02, 500)],
-    [{ date: dates[1]!, amount: 500 }],
+    [record(dates[0]!, 55000.01), record(dates[1]!, 121000.02, 50000)],
+    [{ date: dates[1]!, amount: 50000 }],
   );
-  expect(result.metrics.endingNetWorth).toBe(1210.02);
-  expect(result.metrics.totalContributions).toBe(1000);
+  expect(result.metrics.endingNetWorth).toBe(121000.02);
+  expect(result.metrics.totalContributions).toBe(100000);
   expect(result.openToFinalClosePct).toBeCloseTo(32, 6);
   expect(result.metrics.timeWeightedReturnPct).toBeCloseTo(
-    ((550.01 / 500) * (1210.02 / 1050.01) - 1) * 100,
+    ((55000.01 / 50000) * (121000.02 / 105000.01) - 1) * 100,
     4,
   );
   expect(result.activeReturnPercentagePoints).toBe(0);

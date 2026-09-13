@@ -10,7 +10,7 @@ import {
 import { analyzeStudy, summarizeAttempts } from "./analysis.ts";
 import { JournalStore } from "./journal.ts";
 import { literalText } from "../report/text.ts";
-import { monthlyDeposits } from "../core/funding.ts";
+import { monthlyDeposits, STARTING_CAPITAL } from "../core/funding.ts";
 import { computeMetrics } from "../engine/metrics.ts";
 import { cashBaseline, buyAndHoldBaseline } from "../engine/baselines.ts";
 import { loadNDX, compareNDX } from "./reference.ts";
@@ -91,15 +91,15 @@ export async function writeStudyReview(
     }));
     const metrics = computeMetrics(
       curve,
-      500,
+      STARTING_CAPITAL,
       result.summary.fills,
       result.summary.rejectedOrders,
       0,
       records.map((r) => r.turnoverPct),
     );
-    const cash = cashBaseline(500, dates, contributions),
+    const cash = cashBaseline(STARTING_CAPITAL, dates, contributions),
       buyAndHold = await buyAndHoldBaseline(
-        500,
+        STARTING_CAPITAL,
         market.universe,
         dates,
         contributions,
