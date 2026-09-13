@@ -1,5 +1,32 @@
 # Benchmark validation
 
+## Stack review for PRs #3 and #4 (2026-09-13)
+
+Reviewed the session/tool and provider boundaries, journal-to-order binding, failure handling, deterministic cash/accounting, atomic recovery, reporting, CI and repository contents. PR #3's reviewed head is `37d77b8`; PR #4's reviewed implementation is `6add2eb` and includes that parent commit.
+
+Corrections made during review:
+
+- Model journal text renders literally, so Markdown links/images, HTML and fence escapes cannot become active report content.
+- Provider requests must contain exactly the expected user context and an unambiguous system context; extra user messages or competing message/instruction fields are rejected. Non-object gateway requests are rejected and audited.
+- A failed `resume` exits nonzero. Offline inspection can validate an incomplete prefix, with its incompleteness explicitly reported.
+- Reviews and analysis show every failed/interrupted attempt separately from committed-day portfolio metrics. Failed provider requests count toward turns even when no SDK completion arrives.
+- Local scripted-provider qualification uses a dummy key and needs no real inference credential.
+
+| Final review check | Result |
+|---|---|
+| PR #3 typecheck and complete suite | 343 passed, 0 failed, 4,554 assertions |
+| PR #4 typecheck and complete suite | 206 passed, 0 failed, 1,260 assertions |
+| Final 64-session deterministic control | 56 fills, 0 rejects, $1,540.08 ending equity; identical replay and all 64 archived daily ledgers match |
+| Actual official client and sandbox, scripted provider | Successful submission uses one request; watchdog case records both requests and one tool, with no orders |
+| Archived provider-context compatibility | All 44 previously valid requests still pass; both already-invalid development requests remain rejected |
+| Cleanup integrity | 40 redundant retired files matched the retained source archive byte-for-byte; historical evidence unchanged; active document links resolve |
+
+The control uses implementation `6add2eb`, run ID `stack-review-final-control-20260913`, and the unchanged frozen June–August dataset. Reproduce with `pnpm typecheck`, `pnpm test`, the README control/verify commands, and `bun scripts/qualify-submission.ts` (also `--watchdog-fixture`). The latter requires the qualified Linux sandbox and official client, but performs no remote inference.
+
+Obsolete product/planning documents, the one-off agent workflow and the partial copied retired tree were removed. The current contract, this validation record, data/fixture guides, frozen runnable archives and raw qualification evidence remain. Historical evidence below describes its original source; it is not relabeled as a live result for the reviewed implementation.
+
+No new live-model cohort was run during this review. The earlier live smoke still completed only two of three days: successful live contribution-boundary completion remains unqualified, and the configurable watchdog can still end an attempt. These are documented experiment limits, not evidence of a completed live run or model superiority. Neither PR was merged during review.
+
 ## Initial v11 qualification
 
 The initially qualified implementation is `9254544`, based on `7f077b6` / parent PR #3. The live smoke is frozen at `c94d997`; it was not resumed after the final failed-attempt accounting fix. Direct-provider phase 5 remains deferred.
