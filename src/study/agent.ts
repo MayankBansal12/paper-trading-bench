@@ -364,6 +364,9 @@ export async function decideStudy(
   // observed broker/SDK call counts anyway; reconciliation errors keep this
   // attempt invalid and never turn missing instrumentation into a valid day.
   if (decision.outcome !== "completed") {
+    // A request can reach the provider without a terminal SDK step. Count the
+    // independently observed requests, including the one interrupted by the watchdog.
+    decision.usage.turns = gateway?.count() ?? decision.usage.turns;
     reconcileClientTools(decision.trace, decision.usage, null, STUDY_TOOLS);
     audit(decision.trace.at(-1));
   }

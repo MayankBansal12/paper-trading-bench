@@ -33,6 +33,8 @@ const view = makeView(
   ),
   scopeFor("adapter-fixture", config.start, 1),
 );
+// Provider traffic is intercepted below; this fixture must not need a genuine credential.
+process.env.OPENCODE_API_KEY = "offline-fixture-only";
 const runtime = await prepareModelRuntime(),
   originalFetch = globalThis.fetch;
 const dir = mkdtempSync(join(tmpdir(), "v11-offline-adapter-")),
@@ -154,6 +156,7 @@ try {
     if (
       result.outcome !== "budget_cutoff" ||
       result.decision.usage.toolCalls !== 1 ||
+      result.decision.usage.turns !== requests ||
       result.submission ||
       result.decision.orders.length
     )
