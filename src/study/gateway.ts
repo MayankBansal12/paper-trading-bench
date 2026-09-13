@@ -25,9 +25,10 @@ export async function serveGateway(
     audit({ type: "gateway_denied", reason });
     return new Response("Request denied", { status });
   };
-  // Bun 1.3.14 honors this for Unix sockets, but its Unix option type omits it.
-  // A server-wide setting is needed: per-request timeout(0) still truncates streams.
-  const socketOptions = { unix: socket, idleTimeout: 0 };
+  // Bun 1.3.14 honors idleTimeout on Unix sockets but its types forbid the key.
+  // Narrow only the socket-option type; keep the verified runtime property.
+  // Per-request timeout(0) alone still truncates streams in the slow-stream fixture.
+  const socketOptions: { unix: string } = Object.assign({ unix: socket }, { idleTimeout: 0 });
   const server = Bun.serve({
     ...socketOptions,
     maxRequestBodySize: 2 * 1024 * 1024,
