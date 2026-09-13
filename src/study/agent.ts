@@ -360,6 +360,13 @@ export async function decideStudy(
     for (const k of TOKEN_FIELDS) decision.usage[k] = null;
     decision.usage.costUsd = null;
   }
+  // A watchdog can prevent collection of terminal client audits. Preserve the
+  // observed broker/SDK call counts anyway; reconciliation errors keep this
+  // attempt invalid and never turn missing instrumentation into a valid day.
+  if (decision.outcome !== "completed") {
+    reconcileClientTools(decision.trace, decision.usage, null, STUDY_TOOLS);
+    audit(decision.trace.at(-1));
+  }
   decision.submittedOrders = tools.orders();
   decision.elapsedMs = Date.now() - started;
   decision.boundedStop = decision.outcome === "budget_cutoff";

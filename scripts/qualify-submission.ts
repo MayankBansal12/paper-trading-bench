@@ -9,11 +9,16 @@ import { buildDecisionContext } from "../src/core/context.ts";
 import { createInitialPortfolio } from "../src/engine/portfolio.ts";
 import { makeView, scopeFor } from "../src/study/protocol.ts";
 import { JournalStore } from "../src/study/journal.ts";
+const watchdogFixture = process.argv.includes("--watchdog-fixture");
 const config = {
   start: "2024-04-02",
   end: "2024-04-02",
   history: 60,
-  limits: { maxTurns: null, maxToolCalls: null, timeoutMs: 30000 },
+  limits: {
+    maxTurns: null,
+    maxToolCalls: null,
+    timeoutMs: watchdogFixture ? 8000 : 30000,
+  },
   contributions: [],
 } as const;
 const market = await loadDataset();
@@ -39,19 +44,31 @@ try {
     if (String(url) !== "https://opencode.ai/zen/v1/responses")
       throw new Error("Unexpected offline provider route");
     requests++;
+    if (watchdogFixture && requests === 2)
+      return await new Promise<Response>((_resolve, reject) =>
+        init.signal.addEventListener(
+          "abort",
+          () =>
+            reject(new Error("Scripted provider wait interrupted by watchdog")),
+          { once: true },
+        ),
+      );
     if (requests > 1) throw new Error("Extra inference after final submission");
-    const args = JSON.stringify({
+    const submissionArgs = JSON.stringify({
       orders: [],
       journal: {
         text: "Offline scripted hold tests explicit completion without another inference turn.",
         tickers: [],
       },
     });
+    const args = watchdogFixture
+      ? JSON.stringify({ tickers: ["AAPL"] })
+      : submissionArgs;
     const item = {
       id: "fc_offline",
       type: "function_call",
       call_id: "call_offline_final",
-      name: "trading_submit_day",
+      name: watchdogFixture ? "trading_market_snapshot" : "trading_submit_day",
       arguments: args,
       status: "completed",
     };
@@ -133,8 +150,17 @@ try {
     usage: result.decision.usage,
   };
   console.log(JSON.stringify(evidence, null, 2));
-  validateAccepted(result, view, false, [], view.horizon);
-  if (requests !== 1) throw new Error("Submission required an extra inference");
+  if (watchdogFixture) {
+    if (
+      result.outcome !== "budget_cutoff" ||
+      result.decision.usage.toolCalls !== 1 ||
+      result.submission ||
+      result.decision.orders.length
+    )
+      throw new Error("Failed-attempt tool accounting or atomicity differs");
+  } else validateAccepted(result, view, false, [], view.horizon);
+  if (!watchdogFixture && requests !== 1)
+    throw new Error("Submission required an extra inference");
 } finally {
   globalThis.fetch = originalFetch;
   await runtime.dispose();
