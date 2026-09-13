@@ -25,7 +25,6 @@ export const STUDY_TOOLS = [
 export const POLICY = Object.freeze({
   version: STUDY_PROTOCOL,
   maxHistory: 252,
-  maxHistoryTickers: 8,
   maxOrders: 128,
   maxAttemptsPerDay: 2,
   maxConsecutiveInvalidDays: 3,
@@ -185,13 +184,14 @@ export function openingPortfolio(view: SessionView) {
 }
 export function systemPrompt(limits: StudyLimits): string {
   return [
-    "Manage a long-only fractional-share simulated portfolio. Choose securities, sizing, cash, concentration, diversification and turnover freely. Buy, sell, hold and all-cash are permitted; no preferred strategy or indicator.",
-    "Prices end at the PREVIOUS trading session close. The execution-day opening price is UNKNOWN until every decision is finished. submit_day orders execute in their supplied order at that open, then the host values holdings at the close. This overnight gap is an environment constraint: dollar orders specify amounts, resulting shares depend on the unknown open; fixed-share buys can fail for insufficient cash after an upward gap. Sells can fund later buys only. No leverage, shorts, fees or modeled slippage.",
-    "The opening context preloads date/cutoff, cash/holdings/previous-close values after due contributions/actions, the known funding schedule, eligible tickers and your previous committed journal verbatim. No prior conversation is carried forward. Market tools accept no end dates. Only the supplied historical observations are eligible; no browsing, shell, filesystem, external data, reports, news or recalled future information.",
-    "Use market_snapshot for compact previous closes; price_history batches OHLCV; journal combines ticker (or frozen company name), date and text filters with pagination over your own committed past. Receipt IDs identify supplied observations; they do not prove a stated claim.",
-    "Finish by calling submit_day once with your ordered trade batch and a short journal {text, tickers, evidence_refs?}. An empty orders array means hold. Give your stated reasons, material changes since the previous note, sizing/cash considerations and conditions for reconsideration. Write free text, not private internal reasoning. Ticker tags are canonical eligible symbols (empty is valid for a general cash note); optional evidence_refs must be exact receipts supplied this session. All supplied context and successful read responses are retained separately from explicitly cited evidence. No prescribed prose sections or analytical scoring gate.",
-    `Model turns and tool calls are unlimited. Host watchdog: ${limits.timeoutMs}ms per attempt. Journal text: ${POLICY.maxEntryChars} characters; request/response/history bounds still apply.`,
-    "A complete validated submit_day ends model work immediately; no extra response or confirmation turn. Partial or invalid submissions execute nothing. Unknown tools or failed context/model/tool integrity checks invalidate the attempt. Trading tools have the trading_ prefix.",
+    "Manage a long-only fractional-share paper portfolio. Choose any strategy, including holding cash.",
+    "Trade eligible tickers only. No borrowing, shorting, fees or slippage.",
+    "Prices stop at the previous trading session close; today's opening price is UNKNOWN. Orders execute in order at that open, then holdings are valued at today's close.",
+    "Buys cannot exceed available cash; sells cannot exceed holdings. Earlier sells can fund later buys. Dollar orders fix spending; share orders may fail after price gaps.",
+    "Opening balances include due deposits, dividends and splits. Only committed journals carry between sessions; the previous note is preloaded and older notes are available through journal.",
+    "Use only supplied historical data and tools, not external or future information. Follow tool schemas and limits.",
+    "Finish once with submit_day: ordered trades and a brief journal explaining your choices and when you would reconsider. Empty orders means hold. A valid submission ends the session.",
+    `Turns and tool calls are unlimited; the attempt deadline is ${limits.timeoutMs / 1000} seconds.`,
   ].join("\n");
 }
 export function openingContext(
@@ -205,7 +205,11 @@ export function openingContext(
     horizon,
     portfolio: openingPortfolio(view),
     eligibleTickers: view.universe,
-    priceHistory: { maxLookback: availableHistoryBars(view) },
+    priceHistory: {
+      maxLookback: availableHistoryBars(view),
+      maxTickers: view.universe.length,
+      maxResponseBytes: POLICY.maxResponseBytes,
+    },
     previousJournal: past.at(-1) ?? null,
     committedJournalEntries: past.length,
   };

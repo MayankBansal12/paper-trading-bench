@@ -5,7 +5,7 @@ A small, repeatable simulation for studying LLM portfolio decisions, stated reas
 Every trading day starts a fresh session with its date and observation cutoff, available cash, holdings and previous-close values, known funding schedule, eligible tickers, and previous committed journal **verbatim**. The model has four tools:
 
 - `market_snapshot(tickers?)`: compact previous closes.
-- `price_history(tickers, lookback)`: exactly the requested OHLCV bars through the host cutoff, bounded by the advertised session limit (`--history`, default 100). Larger requests are rejected.
+- `price_history(tickers, lookback)`: exactly the requested OHLCV bars through the host cutoff, bounded by the advertised session limit (`--history`, default 100). Any eligible ticker batch is allowed if its complete response fits 512 KiB; oversized requests are rejected with guidance to split the batch.
 - `journal(ticker?, date?, query?, cursor?)`: original committed notes, with combined filters and frozen company-name aliases.
 - `submit_day(orders, journal)`: one ordered batch and a short free-text note. Empty orders means hold. No extra inference turn confirms it.
 

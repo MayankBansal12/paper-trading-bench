@@ -54,3 +54,39 @@ for (const limit of [100, 120]) {
     }
   });
 }
+
+test("history accepts broad eligible batches within the byte budget and rejects oversized responses without truncation", async () => {
+  const c = { ...await config("2024-06-28", "2024-06-28"), history: 120 };
+  const prepared = await prepareStudyData(c);
+  const view = makeView(
+    buildDecisionContext(prepared.config, c.start, prepared.universe, createInitialPortfolio(500), [], prepared.market),
+    scopeFor(c.runId, c.start, 1),
+  );
+  const dir = mkdtempSync(join(tmpdir(), "history-batch-"));
+  try {
+    const store = new JournalStore(dir);
+    store.begin(view.scope);
+    const tools = new SessionTools(view, store, [], Date.now() + 10000);
+    const context = openingContext(view, view.horizon, []);
+    expect(view.universe.length).toBeGreaterThan(8);
+    expect(context.data.priceHistory.maxTickers).toBe(view.universe.length);
+    expect(tools.definitions.find(t => t.name === "price_history")!
+      .inputSchema.properties.tickers.maxItems).toBe(view.universe.length);
+    const broad = tools.call("price_history", { tickers: [...view.universe], lookback: 5 });
+    expect(broad.isError).toBeUndefined();
+    const bars = JSON.parse(broad.content[0].text).data.securities;
+    expect(Object.keys(bars)).toEqual([...view.universe]);
+    for (const ticker of view.universe)
+      expect(bars[ticker]).toEqual(prepared.market.asOfBefore(ticker, c.start, 5));
+    const oversized = tools.call("price_history", { tickers: [...view.universe], lookback: 120 });
+    expect(oversized.isError).toBe(true);
+    expect(oversized.content[0].text).toContain("fewer tickers or a shorter lookback");
+    expect(oversized.content[0].text).toContain("No partial history");
+    const retry = tools.call("price_history", { tickers: view.universe.slice(0, 12), lookback: 120 });
+    expect(retry.isError).toBeUndefined();
+    const retriedBars = JSON.parse(retry.content[0].text).data.securities;
+    for (const ticker of view.universe.slice(0, 12)) expect(retriedBars[ticker]).toHaveLength(120);
+    expect(tools.call("price_history", { tickers: [view.universe[0], "OUTSIDE"], lookback: 1 }).isError).toBe(true);
+    expect(tools.integrityError).toBeUndefined();
+  } finally { rmSync(dir, { recursive: true, force: true }); }
+});

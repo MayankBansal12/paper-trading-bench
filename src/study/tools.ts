@@ -17,11 +17,11 @@ import { journalSchema, assertJournalNote } from "./memo.ts";
 const obj = (p: Record<string, any>) =>
   Type.Object(p, { additionalProperties: false });
 const ticker = Type.String({ pattern: "^[A-Z][A-Z0-9.-]{0,15}$" });
-const tickers = (max: number) =>
-  Type.Array(ticker, { minItems: 1, maxItems: max, uniqueItems: true });
+const tickers = (max?: number) =>
+  Type.Array(ticker, { minItems: 1, ...(max === undefined ? {} : { maxItems: max }), uniqueItems: true });
 const positive = Type.Number({ exclusiveMinimum: 0, maximum: 1e9 });
-const priceHistorySchema = (maximum: number) => obj({
-  tickers: tickers(POLICY.maxHistoryTickers),
+const priceHistorySchema = (maximum: number, maximumTickers?: number) => obj({
+  tickers: tickers(maximumTickers),
   lookback: Type.Integer({ minimum: 1, maximum }),
 });
 export const toolDefinitions = [
@@ -34,7 +34,7 @@ export const toolDefinitions = [
   {
     name: "price_history",
     description:
-      "Batched OHLCV ending at the host observation cutoff. Returns exactly lookback bars per ticker; requests above the session's advertised maximum are rejected. Choose depth, never an end date.",
+      "OHLCV through the previous session close. Request any eligible ticker batch and exactly lookback bars per ticker, within the advertised history limit. Responses are limited to 512 KiB; split oversized requests into smaller batches or use fewer bars. No end-date input.",
     inputSchema: priceHistorySchema(POLICY.maxHistory),
   },
   {
@@ -88,7 +88,7 @@ export class SessionTools {
   ) {
     this.definitions = deepFreeze(toolDefinitions.map((tool) =>
       tool.name === "price_history"
-        ? { ...tool, inputSchema: priceHistorySchema(availableHistoryBars(view)) }
+        ? { ...tool, inputSchema: priceHistorySchema(availableHistoryBars(view), view.universe.length) }
         : tool,
     ));
     this.past = deepFreeze(structuredClone(past));
@@ -293,7 +293,9 @@ export class SessionTools {
         content: [{ type: "text", text: JSON.stringify({ receipt, data }) }],
       };
       if (Buffer.byteLength(JSON.stringify(result)) > POLICY.maxResponseBytes)
-        throw new Error("Response size limit exceeded");
+        throw new Error(name === "price_history"
+          ? "History response exceeds 512 KiB; request fewer tickers or a shorter lookback. No partial history was returned."
+          : "Response size limit exceeded");
       if (name !== "submit_day") this.receipts.add(callId);
     } catch (e) {
       result = {
