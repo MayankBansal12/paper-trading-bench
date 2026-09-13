@@ -18,9 +18,9 @@ HON is excluded because the June 29 distribution/reverse-split combination is un
 
 Loading verifies the manifest schema and SHA, every transformed bar file, every source snapshot, membership record/definition/exclusions, exchange calendar, coverage/evaluation bounds, one bar per security/session, finite OHLCV domains, and action policy. Any mismatch fails before inference.
 
-`validateDatasetWindow(dataset, start, end, warmupBars, universe)` rejects missing universe members, insufficient history, truncated periods, and out-of-range dates. Historical runs must explicitly identify the loaded manifest hash in `RunConfig.fixtureVersion`.
+`validateDatasetWindow(dataset, start, end, warmupBars, universe)` rejects missing universe members, insufficient history, truncated periods, and out-of-range dates. Runs identify the loaded manifest hash in `StudyConfig.datasetHash`.
 
-Yahoo quote OHLCV is retrospectively split-adjusted. Import reconstructs raw as-traded OHLCV using every supported split on or after the retained coverage start, including events after evaluation when present. A pre-coverage split cannot affect a retained raw bar or holding and is discarded. Adjusted close is ignored. Indicators normalize history only for splits already effective by the decision date, preventing future-action leakage.
+Yahoo quote OHLCV is retrospectively split-adjusted. Import reconstructs raw as-traded OHLCV using every supported split on or after the retained coverage start, including events after evaluation when present. A pre-coverage split cannot affect a retained raw bar or holding and is discarded. Adjusted close is ignored. The session normalizes history only for splits already effective by the decision date, preventing future-action leakage.
 
 Splits alter held units and basis before orders on the effective session. Dividends credit cash to ex-date holders before that session’s orders. Capital-gain distributions, exotic split factors, spin-offs, rights, mergers, cash-in-lieu, missing bars, duplicate events, or unsupported domains fail closed.
 

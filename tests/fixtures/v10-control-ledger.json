@@ -1,0 +1,4145 @@
+{
+  "source": "v10-control-64-session-20260913",
+  "datasetHash": "abc104ae3f2cb258e1c9c9bc996a9f46c14ca83771da5c9acbeb7eaab23b2de7",
+  "days": [
+    {
+      "date": "2026-06-01",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 500,
+          "holdings": {},
+          "holdingsValue": 0,
+          "netWorth": 500
+        },
+        "portfolioAfter": {
+          "cash": 400,
+          "holdings": {
+            "AAPL": {
+              "units": 0.322982,
+              "avgCost": 309.63,
+              "lastClose": 306.30999755859375,
+              "value": 98.93
+            }
+          },
+          "holdingsValue": 98.93,
+          "netWorth": 498.93
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-06-01",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.322982,
+            "price": 309.6300048828125,
+            "notional": 100,
+            "cashAfter": 400
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "8107f15db851d8e0b763145b882c41d540177ed421fbcd33f08546ff7b7eb4a1",
+      "market": {
+        "open": 309.6300048828125,
+        "close": 306.30999755859375,
+        "observedClose": 312.05999755859375
+      }
+    },
+    {
+      "date": "2026-06-02",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 400,
+          "holdings": {
+            "AAPL": {
+              "units": 0.322982,
+              "avgCost": 309.63,
+              "lastClose": 306.30999755859375,
+              "value": 98.93
+            }
+          },
+          "holdingsValue": 98.93,
+          "netWorth": 498.93
+        },
+        "portfolioAfter": {
+          "cash": 300,
+          "holdings": {
+            "AAPL": {
+              "units": 0.64823,
+              "avgCost": 308.54,
+              "lastClose": 315.20001220703125,
+              "value": 204.32
+            }
+          },
+          "holdingsValue": 204.32,
+          "netWorth": 504.32
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "ADI",
+            "date": "2026-06-02",
+            "amount": 1.1
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-06-02",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.325248,
+            "price": 307.4599914550781,
+            "notional": 100,
+            "cashAfter": 300
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "255d229750cb513b7235f166966bec76afa26309123408feadbcb5e9174c6be6",
+      "market": {
+        "open": 307.4599914550781,
+        "close": 315.20001220703125,
+        "observedClose": 306.30999755859375
+      }
+    },
+    {
+      "date": "2026-06-03",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 300,
+          "holdings": {
+            "AAPL": {
+              "units": 0.64823,
+              "avgCost": 308.54,
+              "lastClose": 315.20001220703125,
+              "value": 204.32
+            }
+          },
+          "holdingsValue": 204.32,
+          "netWorth": 504.32
+        },
+        "portfolioAfter": {
+          "cash": 200,
+          "holdings": {
+            "AAPL": {
+              "units": 0.966531,
+              "avgCost": 310.4,
+              "lastClose": 310.260009765625,
+              "value": 299.88
+            }
+          },
+          "holdingsValue": 299.88,
+          "netWorth": 499.88
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "ODFL",
+            "date": "2026-06-03",
+            "amount": 0.29
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-06-03",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.318301,
+            "price": 314.17999267578125,
+            "notional": 100,
+            "cashAfter": 200
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "f6f10e04d9a2835ede8de461ff1ea353f6800199054b0d2b7e531d0d30b7cd14",
+      "market": {
+        "open": 314.17999267578125,
+        "close": 310.260009765625,
+        "observedClose": 315.20001220703125
+      }
+    },
+    {
+      "date": "2026-06-04",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 200,
+          "holdings": {
+            "AAPL": {
+              "units": 0.966531,
+              "avgCost": 310.4,
+              "lastClose": 310.260009765625,
+              "value": 299.88
+            }
+          },
+          "holdingsValue": 299.88,
+          "netWorth": 499.88
+        },
+        "portfolioAfter": {
+          "cash": 100,
+          "holdings": {
+            "AAPL": {
+              "units": 1.285812,
+              "avgCost": 311.1,
+              "lastClose": 311.2300109863281,
+              "value": 400.18
+            }
+          },
+          "holdingsValue": 400.18,
+          "netWorth": 500.18
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "EXC",
+            "date": "2026-06-04",
+            "amount": 0.42
+          },
+          {
+            "type": "dividend",
+            "ticker": "LIN",
+            "date": "2026-06-04",
+            "amount": 1.6
+          },
+          {
+            "type": "dividend",
+            "ticker": "NVDA",
+            "date": "2026-06-04",
+            "amount": 0.25
+          },
+          {
+            "type": "dividend",
+            "ticker": "PYPL",
+            "date": "2026-06-04",
+            "amount": 0.14
+          },
+          {
+            "type": "dividend",
+            "ticker": "QCOM",
+            "date": "2026-06-04",
+            "amount": 0.92
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-06-04",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.319281,
+            "price": 313.2300109863281,
+            "notional": 100,
+            "cashAfter": 100
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "8a6b9e39e056d74c787796cc9333106e0f93f5a0693234bdaca07a9533f41a8e",
+      "market": {
+        "open": 313.2300109863281,
+        "close": 311.2300109863281,
+        "observedClose": 310.260009765625
+      }
+    },
+    {
+      "date": "2026-06-05",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 100,
+          "holdings": {
+            "AAPL": {
+              "units": 1.285812,
+              "avgCost": 311.1,
+              "lastClose": 311.2300109863281,
+              "value": 400.18
+            }
+          },
+          "holdingsValue": 400.18,
+          "netWorth": 500.18
+        },
+        "portfolioAfter": {
+          "cash": 0,
+          "holdings": {
+            "AAPL": {
+              "units": 1.605462,
+              "avgCost": 311.45,
+              "lastClose": 307.3399963378906,
+              "value": 493.42
+            }
+          },
+          "holdingsValue": 493.42,
+          "netWorth": 493.42
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "BKNG",
+            "date": "2026-06-05",
+            "amount": 0.42
+          },
+          {
+            "type": "dividend",
+            "ticker": "KHC",
+            "date": "2026-06-05",
+            "amount": 0.4
+          },
+          {
+            "type": "dividend",
+            "ticker": "PEP",
+            "date": "2026-06-05",
+            "amount": 1.48
+          },
+          {
+            "type": "dividend",
+            "ticker": "WDC",
+            "date": "2026-06-05",
+            "amount": 0.15
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-06-05",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.31965,
+            "price": 312.8599853515625,
+            "notional": 100,
+            "cashAfter": 0
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "5a8d5882f96ec19f3eeefbce475ee1271cde7a2847251d095884f7b60d195ddc",
+      "market": {
+        "open": 312.8599853515625,
+        "close": 307.3399963378906,
+        "observedClose": 311.2300109863281
+      }
+    },
+    {
+      "date": "2026-06-08",
+      "orders": [],
+      "record": {
+        "portfolioBefore": {
+          "cash": 0,
+          "holdings": {
+            "AAPL": {
+              "units": 1.605462,
+              "avgCost": 311.45,
+              "lastClose": 307.3399963378906,
+              "value": 493.42
+            }
+          },
+          "holdingsValue": 493.42,
+          "netWorth": 493.42
+        },
+        "portfolioAfter": {
+          "cash": 0,
+          "holdings": {
+            "AAPL": {
+              "units": 1.605462,
+              "avgCost": 311.45,
+              "lastClose": 301.5400085449219,
+              "value": 484.11
+            }
+          },
+          "holdingsValue": 484.11,
+          "netWorth": 484.11
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "GOOG",
+            "date": "2026-06-08",
+            "amount": 0.22
+          },
+          {
+            "type": "dividend",
+            "ticker": "GOOGL",
+            "date": "2026-06-08",
+            "amount": 0.22
+          }
+        ],
+        "fills": [],
+        "failedOrders": []
+      },
+      "sourceSha256": "5de51ac1163166acdfec8fb03d6af5ec847bbe822c548f126896af76d31f0127",
+      "market": {
+        "open": 308.739990234375,
+        "close": 301.5400085449219,
+        "observedClose": 307.3399963378906
+      }
+    },
+    {
+      "date": "2026-06-09",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "SELL",
+          "sizing": {
+            "kind": "units",
+            "units": 0.802731
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 0,
+          "holdings": {
+            "AAPL": {
+              "units": 1.605462,
+              "avgCost": 311.45,
+              "lastClose": 301.5400085449219,
+              "value": 484.11
+            }
+          },
+          "holdingsValue": 484.11,
+          "netWorth": 484.11
+        },
+        "portfolioAfter": {
+          "cash": 241.05,
+          "holdings": {
+            "AAPL": {
+              "units": 0.802731,
+              "avgCost": 311.45,
+              "lastClose": 290.54998779296875,
+              "value": 233.23
+            }
+          },
+          "holdingsValue": 233.23,
+          "netWorth": 474.28
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "ROST",
+            "date": "2026-06-09",
+            "amount": 0.445
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-06-09",
+            "ticker": "AAPL",
+            "side": "SELL",
+            "units": 0.802731,
+            "price": 300.2799987792969,
+            "notional": 241.05,
+            "cashAfter": 241.05
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "724424aecb8614e1667ccebd442de3ee3bb826725e183621cbe6a67013ce386e",
+      "market": {
+        "open": 300.2799987792969,
+        "close": 290.54998779296875,
+        "observedClose": 301.5400085449219
+      }
+    },
+    {
+      "date": "2026-06-10",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 241.05,
+          "holdings": {
+            "AAPL": {
+              "units": 0.802731,
+              "avgCost": 311.45,
+              "lastClose": 290.54998779296875,
+              "value": 233.23
+            }
+          },
+          "holdingsValue": 233.23,
+          "netWorth": 474.28
+        },
+        "portfolioAfter": {
+          "cash": 141.05,
+          "holdings": {
+            "AAPL": {
+              "units": 1.146711,
+              "avgCost": 305.24,
+              "lastClose": 291.5799865722656,
+              "value": 334.36
+            }
+          },
+          "holdingsValue": 334.36,
+          "netWorth": 475.41
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-06-10",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.34398,
+            "price": 290.739990234375,
+            "notional": 100,
+            "cashAfter": 141.05
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "eda8790975b4559babea556a98806d5a151017be16cc9eacdf0e64e2f02e8d88",
+      "market": {
+        "open": 290.739990234375,
+        "close": 291.5799865722656,
+        "observedClose": 290.54998779296875
+      }
+    },
+    {
+      "date": "2026-06-11",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 141.05,
+          "holdings": {
+            "AAPL": {
+              "units": 1.146711,
+              "avgCost": 305.24,
+              "lastClose": 291.5799865722656,
+              "value": 334.36
+            }
+          },
+          "holdingsValue": 334.36,
+          "netWorth": 475.41
+        },
+        "portfolioAfter": {
+          "cash": 41.05,
+          "holdings": {
+            "AAPL": {
+              "units": 1.487181,
+              "avgCost": 302.6,
+              "lastClose": 295.6300048828125,
+              "value": 439.66
+            }
+          },
+          "holdingsValue": 439.66,
+          "netWorth": 480.71
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-06-11",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.34047,
+            "price": 293.7200012207031,
+            "notional": 100,
+            "cashAfter": 41.05
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "fdfb762cd4b1cb81a579236193c61a04c04dc00bcc657b6c77beeb63349dfd43",
+      "market": {
+        "open": 293.7200012207031,
+        "close": 295.6300048828125,
+        "observedClose": 291.5799865722656
+      }
+    },
+    {
+      "date": "2026-06-12",
+      "orders": [],
+      "record": {
+        "portfolioBefore": {
+          "cash": 41.05,
+          "holdings": {
+            "AAPL": {
+              "units": 1.487181,
+              "avgCost": 302.6,
+              "lastClose": 295.6300048828125,
+              "value": 439.66
+            }
+          },
+          "holdingsValue": 439.66,
+          "netWorth": 480.71
+        },
+        "portfolioAfter": {
+          "cash": 41.05,
+          "holdings": {
+            "AAPL": {
+              "units": 1.487181,
+              "avgCost": 302.6,
+              "lastClose": 291.1300048828125,
+              "value": 432.96
+            }
+          },
+          "holdingsValue": 432.96,
+          "netWorth": 474.01
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "ADP",
+            "date": "2026-06-12",
+            "amount": 1.7
+          },
+          {
+            "type": "split",
+            "ticker": "KLAC",
+            "date": "2026-06-12",
+            "ratio": 10
+          }
+        ],
+        "fills": [],
+        "failedOrders": []
+      },
+      "sourceSha256": "cf32fe9a68a82aaec595f563c4defb2b3bfeb9ca2ea93e8fb88df835daa21ff5",
+      "market": {
+        "open": 296.0299987792969,
+        "close": 291.1300048828125,
+        "observedClose": 295.6300048828125
+      }
+    },
+    {
+      "date": "2026-06-15",
+      "orders": [],
+      "record": {
+        "portfolioBefore": {
+          "cash": 41.05,
+          "holdings": {
+            "AAPL": {
+              "units": 1.487181,
+              "avgCost": 302.6,
+              "lastClose": 291.1300048828125,
+              "value": 432.96
+            }
+          },
+          "holdingsValue": 432.96,
+          "netWorth": 474.01
+        },
+        "portfolioAfter": {
+          "cash": 41.05,
+          "holdings": {
+            "AAPL": {
+              "units": 1.487181,
+              "avgCost": 302.6,
+              "lastClose": 296.4200134277344,
+              "value": 440.83
+            }
+          },
+          "holdingsValue": 440.83,
+          "netWorth": 481.88
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "GILD",
+            "date": "2026-06-15",
+            "amount": 0.82
+          },
+          {
+            "type": "dividend",
+            "ticker": "META",
+            "date": "2026-06-15",
+            "amount": 0.525
+          },
+          {
+            "type": "dividend",
+            "ticker": "VRSK",
+            "date": "2026-06-15",
+            "amount": 0.5
+          },
+          {
+            "type": "dividend",
+            "ticker": "XEL",
+            "date": "2026-06-15",
+            "amount": 0.593
+          }
+        ],
+        "fills": [],
+        "failedOrders": []
+      },
+      "sourceSha256": "b79caa00cb375d5d410fc486148a591b4317bb76cdac5f520fb629a0592e00c7",
+      "market": {
+        "open": 294.1199951171875,
+        "close": 296.4200134277344,
+        "observedClose": 291.1300048828125
+      }
+    },
+    {
+      "date": "2026-06-16",
+      "orders": [],
+      "record": {
+        "portfolioBefore": {
+          "cash": 41.05,
+          "holdings": {
+            "AAPL": {
+              "units": 1.487181,
+              "avgCost": 302.6,
+              "lastClose": 296.4200134277344,
+              "value": 440.83
+            }
+          },
+          "holdingsValue": 440.83,
+          "netWorth": 481.88
+        },
+        "portfolioAfter": {
+          "cash": 41.05,
+          "holdings": {
+            "AAPL": {
+              "units": 1.487181,
+              "avgCost": 302.6,
+              "lastClose": 299.239990234375,
+              "value": 445.02
+            }
+          },
+          "holdingsValue": 445.02,
+          "netWorth": 486.07
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [],
+        "failedOrders": []
+      },
+      "sourceSha256": "177a8f6985c21fd4489f604cdb659b8ef0d08dd34738a1aba90a07c7a05e6dc9",
+      "market": {
+        "open": 295.25,
+        "close": 299.239990234375,
+        "observedClose": 296.4200134277344
+      }
+    },
+    {
+      "date": "2026-06-17",
+      "orders": [],
+      "record": {
+        "portfolioBefore": {
+          "cash": 41.05,
+          "holdings": {
+            "AAPL": {
+              "units": 1.487181,
+              "avgCost": 302.6,
+              "lastClose": 299.239990234375,
+              "value": 445.02
+            }
+          },
+          "holdingsValue": 445.02,
+          "netWorth": 486.07
+        },
+        "portfolioAfter": {
+          "cash": 41.05,
+          "holdings": {
+            "AAPL": {
+              "units": 1.487181,
+              "avgCost": 302.6,
+              "lastClose": 295.95001220703125,
+              "value": 440.13
+            }
+          },
+          "holdingsValue": 440.13,
+          "netWorth": 481.18
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "LRCX",
+            "date": "2026-06-17",
+            "amount": 0.26
+          }
+        ],
+        "fills": [],
+        "failedOrders": []
+      },
+      "sourceSha256": "527473e615f28ffe7feddbab55a6a502c05c696b0c2d3501d509349a0a551724",
+      "market": {
+        "open": 300.8500061035156,
+        "close": 295.95001220703125,
+        "observedClose": 299.239990234375
+      }
+    },
+    {
+      "date": "2026-06-18",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "SELL",
+          "sizing": {
+            "kind": "units",
+            "units": 0.7435905
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 41.05,
+          "holdings": {
+            "AAPL": {
+              "units": 1.487181,
+              "avgCost": 302.6,
+              "lastClose": 295.95001220703125,
+              "value": 440.13
+            }
+          },
+          "holdingsValue": 440.13,
+          "netWorth": 481.18
+        },
+        "portfolioAfter": {
+          "cash": 262.72,
+          "holdings": {
+            "AAPL": {
+              "units": 0.743591,
+              "avgCost": 302.6,
+              "lastClose": 298.010009765625,
+              "value": 221.6
+            }
+          },
+          "holdingsValue": 221.6,
+          "netWorth": 484.32
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-06-18",
+            "ticker": "AAPL",
+            "side": "SELL",
+            "units": 0.74359,
+            "price": 298.1099853515625,
+            "notional": 221.67,
+            "cashAfter": 262.72
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "06fbc18f9f05d4758e953663e0e72aa2f14a73a9f0db71744249660297b18b6b",
+      "market": {
+        "open": 298.1099853515625,
+        "close": 298.010009765625,
+        "observedClose": 295.95001220703125
+      }
+    },
+    {
+      "date": "2026-06-22",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 262.72,
+          "holdings": {
+            "AAPL": {
+              "units": 0.743591,
+              "avgCost": 302.6,
+              "lastClose": 298.010009765625,
+              "value": 221.6
+            }
+          },
+          "holdingsValue": 221.6,
+          "netWorth": 484.32
+        },
+        "portfolioAfter": {
+          "cash": 162.72,
+          "holdings": {
+            "AAPL": {
+              "units": 1.079967,
+              "avgCost": 300.95,
+              "lastClose": 297.010009765625,
+              "value": 320.76
+            }
+          },
+          "holdingsValue": 320.76,
+          "netWorth": 483.48
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "AVGO",
+            "date": "2026-06-22",
+            "amount": 0.65
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-06-22",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.336376,
+            "price": 297.30999755859375,
+            "notional": 100,
+            "cashAfter": 162.72
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "bcb4ff17a469aaa13aab1367ef427dec894d2ea11291432f97040b872db4e822",
+      "market": {
+        "open": 297.30999755859375,
+        "close": 297.010009765625,
+        "observedClose": 298.010009765625
+      }
+    },
+    {
+      "date": "2026-06-23",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 162.72,
+          "holdings": {
+            "AAPL": {
+              "units": 1.079967,
+              "avgCost": 300.95,
+              "lastClose": 297.010009765625,
+              "value": 320.76
+            }
+          },
+          "holdingsValue": 320.76,
+          "netWorth": 483.48
+        },
+        "portfolioAfter": {
+          "cash": 62.72,
+          "holdings": {
+            "AAPL": {
+              "units": 1.416061,
+              "avgCost": 300.14,
+              "lastClose": 294.29998779296875,
+              "value": 416.75
+            }
+          },
+          "holdingsValue": 416.75,
+          "netWorth": 479.47
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-06-23",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.336094,
+            "price": 297.5400085449219,
+            "notional": 100,
+            "cashAfter": 62.72
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "d4c35908e998032a3ac6b1b5782c74f71b7c0803aad809598f737f4d8023d8ac",
+      "market": {
+        "open": 297.5400085449219,
+        "close": 294.29998779296875,
+        "observedClose": 297.010009765625
+      }
+    },
+    {
+      "date": "2026-06-24",
+      "orders": [],
+      "record": {
+        "portfolioBefore": {
+          "cash": 62.72,
+          "holdings": {
+            "AAPL": {
+              "units": 1.416061,
+              "avgCost": 300.14,
+              "lastClose": 294.29998779296875,
+              "value": 416.75
+            }
+          },
+          "holdingsValue": 416.75,
+          "netWorth": 479.47
+        },
+        "portfolioAfter": {
+          "cash": 62.72,
+          "holdings": {
+            "AAPL": {
+              "units": 1.416061,
+              "avgCost": 300.14,
+              "lastClose": 293.0799865722656,
+              "value": 415.02
+            }
+          },
+          "holdingsValue": 415.02,
+          "netWorth": 477.74
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "NXPI",
+            "date": "2026-06-24",
+            "amount": 1.014
+          },
+          {
+            "type": "dividend",
+            "ticker": "STX",
+            "date": "2026-06-24",
+            "amount": 0.74
+          }
+        ],
+        "fills": [],
+        "failedOrders": []
+      },
+      "sourceSha256": "7721374df56bb735737349c7b483a6eb016c3f3e658842e350c318908f65ed6c",
+      "market": {
+        "open": 295.3599853515625,
+        "close": 293.0799865722656,
+        "observedClose": 294.29998779296875
+      }
+    },
+    {
+      "date": "2026-06-25",
+      "orders": [],
+      "record": {
+        "portfolioBefore": {
+          "cash": 62.72,
+          "holdings": {
+            "AAPL": {
+              "units": 1.416061,
+              "avgCost": 300.14,
+              "lastClose": 293.0799865722656,
+              "value": 415.02
+            }
+          },
+          "holdingsValue": 415.02,
+          "netWorth": 477.74
+        },
+        "portfolioAfter": {
+          "cash": 62.72,
+          "holdings": {
+            "AAPL": {
+              "units": 1.416061,
+              "avgCost": 300.14,
+              "lastClose": 275.1499938964844,
+              "value": 389.63
+            }
+          },
+          "holdingsValue": 389.63,
+          "netWorth": 452.35
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [],
+        "failedOrders": []
+      },
+      "sourceSha256": "790d6aa9fb2b61ee048118eeaa579e319f39ebe6f5ee7d143f27822cc3890201",
+      "market": {
+        "open": 287.3999938964844,
+        "close": 275.1499938964844,
+        "observedClose": 293.0799865722656
+      }
+    },
+    {
+      "date": "2026-06-26",
+      "orders": [],
+      "record": {
+        "portfolioBefore": {
+          "cash": 62.72,
+          "holdings": {
+            "AAPL": {
+              "units": 1.416061,
+              "avgCost": 300.14,
+              "lastClose": 275.1499938964844,
+              "value": 389.63
+            }
+          },
+          "holdingsValue": 389.63,
+          "netWorth": 452.35
+        },
+        "portfolioAfter": {
+          "cash": 62.72,
+          "holdings": {
+            "AAPL": {
+              "units": 1.416061,
+              "avgCost": 300.14,
+              "lastClose": 283.7799987792969,
+              "value": 401.85
+            }
+          },
+          "holdingsValue": 401.85,
+          "netWorth": 464.57
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "KDP",
+            "date": "2026-06-26",
+            "amount": 0.23
+          }
+        ],
+        "fills": [],
+        "failedOrders": []
+      },
+      "sourceSha256": "87cded81f5830e30936d6fe1afe1d975a87577702950159ba72c0d07eacb2aed",
+      "market": {
+        "open": 275,
+        "close": 283.7799987792969,
+        "observedClose": 275.1499938964844
+      }
+    },
+    {
+      "date": "2026-06-29",
+      "orders": [],
+      "record": {
+        "portfolioBefore": {
+          "cash": 62.72,
+          "holdings": {
+            "AAPL": {
+              "units": 1.416061,
+              "avgCost": 300.14,
+              "lastClose": 283.7799987792969,
+              "value": 401.85
+            }
+          },
+          "holdingsValue": 401.85,
+          "netWorth": 464.57
+        },
+        "portfolioAfter": {
+          "cash": 62.72,
+          "holdings": {
+            "AAPL": {
+              "units": 1.416061,
+              "avgCost": 300.14,
+              "lastClose": 281.739990234375,
+              "value": 398.96
+            }
+          },
+          "holdingsValue": 398.96,
+          "netWorth": 461.68
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [],
+        "failedOrders": []
+      },
+      "sourceSha256": "c18421b216364c191c06acc7586bbb723e8ba1828ee8efdd9fb188928ee4472c",
+      "market": {
+        "open": 286.7300109863281,
+        "close": 281.739990234375,
+        "observedClose": 283.7799987792969
+      }
+    },
+    {
+      "date": "2026-06-30",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "SELL",
+          "sizing": {
+            "kind": "units",
+            "units": 0.7080305
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 62.72,
+          "holdings": {
+            "AAPL": {
+              "units": 1.416061,
+              "avgCost": 300.14,
+              "lastClose": 281.739990234375,
+              "value": 398.96
+            }
+          },
+          "holdingsValue": 398.96,
+          "netWorth": 461.68
+        },
+        "portfolioAfter": {
+          "cash": 261.79,
+          "holdings": {
+            "AAPL": {
+              "units": 0.708031,
+              "avgCost": 300.14,
+              "lastClose": 289.3599853515625,
+              "value": 204.88
+            }
+          },
+          "holdingsValue": 204.88,
+          "netWorth": 466.67
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "MDLZ",
+            "date": "2026-06-30",
+            "amount": 0.5
+          },
+          {
+            "type": "dividend",
+            "ticker": "MPWR",
+            "date": "2026-06-30",
+            "amount": 2
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-06-30",
+            "ticker": "AAPL",
+            "side": "SELL",
+            "units": 0.70803,
+            "price": 281.1700134277344,
+            "notional": 199.07,
+            "cashAfter": 261.79
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "c61f441f1dcfb2d235fee0808fe3a4196656a8976a1466c7c4921a8f1f88b340",
+      "market": {
+        "open": 281.1700134277344,
+        "close": 289.3599853515625,
+        "observedClose": 281.739990234375
+      }
+    },
+    {
+      "date": "2026-07-01",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 261.79,
+          "holdings": {
+            "AAPL": {
+              "units": 0.708031,
+              "avgCost": 300.14,
+              "lastClose": 289.3599853515625,
+              "value": 204.88
+            }
+          },
+          "holdingsValue": 204.88,
+          "netWorth": 466.67
+        },
+        "portfolioAfter": {
+          "cash": 661.79,
+          "holdings": {
+            "AAPL": {
+              "units": 1.048817,
+              "avgCost": 297.96,
+              "lastClose": 294.3800048828125,
+              "value": 308.75
+            }
+          },
+          "holdingsValue": 308.75,
+          "netWorth": 970.54
+        },
+        "contribution": 500,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "CMCSA",
+            "date": "2026-07-01",
+            "amount": 0.33
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-07-01",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.340786,
+            "price": 293.44000244140625,
+            "notional": 100,
+            "cashAfter": 661.79
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "732ea4ca0d7b501e395eeee6eb538ab64a1a3ef474d2ade02e30b2858d0b8730",
+      "market": {
+        "open": 293.44000244140625,
+        "close": 294.3800048828125,
+        "observedClose": 289.3599853515625
+      }
+    },
+    {
+      "date": "2026-07-02",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 661.79,
+          "holdings": {
+            "AAPL": {
+              "units": 1.048817,
+              "avgCost": 297.96,
+              "lastClose": 294.3800048828125,
+              "value": 308.75
+            }
+          },
+          "holdingsValue": 308.75,
+          "netWorth": 970.54
+        },
+        "portfolioAfter": {
+          "cash": 561.79,
+          "holdings": {
+            "AAPL": {
+              "units": 1.388837,
+              "avgCost": 297.02,
+              "lastClose": 308.6300048828125,
+              "value": 428.64
+            }
+          },
+          "holdingsValue": 428.64,
+          "netWorth": 990.43
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "split",
+            "ticker": "CRWD",
+            "date": "2026-07-02",
+            "ratio": 4
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-07-02",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.34002,
+            "price": 294.1199951171875,
+            "notional": 100,
+            "cashAfter": 561.79
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "6ca702b818ffc9d5afdcd6b622f4bed7a8c782cb7d6f43a0fc987441bc8a420a",
+      "market": {
+        "open": 294.1199951171875,
+        "close": 308.6300048828125,
+        "observedClose": 294.3800048828125
+      }
+    },
+    {
+      "date": "2026-07-06",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 561.79,
+          "holdings": {
+            "AAPL": {
+              "units": 1.388837,
+              "avgCost": 297.02,
+              "lastClose": 308.6300048828125,
+              "value": 428.64
+            }
+          },
+          "holdingsValue": 428.64,
+          "netWorth": 990.43
+        },
+        "portfolioAfter": {
+          "cash": 461.79,
+          "holdings": {
+            "AAPL": {
+              "units": 1.714195,
+              "avgCost": 298.98,
+              "lastClose": 312.6600036621094,
+              "value": 535.96
+            }
+          },
+          "holdingsValue": 535.96,
+          "netWorth": 997.75
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "CSCO",
+            "date": "2026-07-06",
+            "amount": 0.42
+          },
+          {
+            "type": "dividend",
+            "ticker": "MU",
+            "date": "2026-07-06",
+            "amount": 0.15
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-07-06",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.325358,
+            "price": 307.3599853515625,
+            "notional": 100,
+            "cashAfter": 461.79
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "69186439a98556b89657b9cd0f10a59afc09b47d4f695173d6f128171b373ee6",
+      "market": {
+        "open": 307.3599853515625,
+        "close": 312.6600036621094,
+        "observedClose": 308.6300048828125
+      }
+    },
+    {
+      "date": "2026-07-07",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 461.79,
+          "holdings": {
+            "AAPL": {
+              "units": 1.714195,
+              "avgCost": 298.98,
+              "lastClose": 312.6600036621094,
+              "value": 535.96
+            }
+          },
+          "holdingsValue": 535.96,
+          "netWorth": 997.75
+        },
+        "portfolioAfter": {
+          "cash": 361.79,
+          "holdings": {
+            "AAPL": {
+              "units": 2.031383,
+              "avgCost": 301.53,
+              "lastClose": 310.6600036621094,
+              "value": 631.07
+            }
+          },
+          "holdingsValue": 631.07,
+          "netWorth": 992.86
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-07-07",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.317188,
+            "price": 315.2900085449219,
+            "notional": 100,
+            "cashAfter": 361.79
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "053404061bb395bd8782dfdbbd35bab533fa3131f6943abf297e3beb09def401",
+      "market": {
+        "open": 315.2900085449219,
+        "close": 310.6600036621094,
+        "observedClose": 312.6600036621094
+      }
+    },
+    {
+      "date": "2026-07-08",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 361.79,
+          "holdings": {
+            "AAPL": {
+              "units": 2.031383,
+              "avgCost": 301.53,
+              "lastClose": 310.6600036621094,
+              "value": 631.07
+            }
+          },
+          "holdingsValue": 631.07,
+          "netWorth": 992.86
+        },
+        "portfolioAfter": {
+          "cash": 261.79,
+          "holdings": {
+            "AAPL": {
+              "units": 2.352008,
+              "avgCost": 302.94,
+              "lastClose": 313.3900146484375,
+              "value": 737.1
+            }
+          },
+          "holdingsValue": 737.1,
+          "netWorth": 998.89
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "ROP",
+            "date": "2026-07-08",
+            "amount": 0.91
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-07-08",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.320625,
+            "price": 311.9100036621094,
+            "notional": 100,
+            "cashAfter": 261.79
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "51a9f6d5eab5363249dd0970c3f2af0e413bccbb2123daa1a271d20614e660dc",
+      "market": {
+        "open": 311.9100036621094,
+        "close": 313.3900146484375,
+        "observedClose": 310.6600036621094
+      }
+    },
+    {
+      "date": "2026-07-09",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 261.79,
+          "holdings": {
+            "AAPL": {
+              "units": 2.352008,
+              "avgCost": 302.94,
+              "lastClose": 313.3900146484375,
+              "value": 737.1
+            }
+          },
+          "holdingsValue": 737.1,
+          "netWorth": 998.89
+        },
+        "portfolioAfter": {
+          "cash": 161.79,
+          "holdings": {
+            "AAPL": {
+              "units": 2.674068,
+              "avgCost": 303.85,
+              "lastClose": 316.2200012207031,
+              "value": 845.59
+            }
+          },
+          "holdingsValue": 845.59,
+          "netWorth": 1007.38
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "INTU",
+            "date": "2026-07-09",
+            "amount": 1.2
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-07-09",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.32206,
+            "price": 310.510009765625,
+            "notional": 100,
+            "cashAfter": 161.79
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "a62c03d80cf891884ec80b2948a8ea6cd3645f6d2bd30eddcf3ee536f9044f40",
+      "market": {
+        "open": 310.510009765625,
+        "close": 316.2200012207031,
+        "observedClose": 313.3900146484375
+      }
+    },
+    {
+      "date": "2026-07-10",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "SELL",
+          "sizing": {
+            "kind": "units",
+            "units": 1.337034
+          }
+        },
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 161.79,
+          "holdings": {
+            "AAPL": {
+              "units": 2.674068,
+              "avgCost": 303.85,
+              "lastClose": 316.2200012207031,
+              "value": 845.59
+            }
+          },
+          "holdingsValue": 845.59,
+          "netWorth": 1007.38
+        },
+        "portfolioAfter": {
+          "cash": 482.58,
+          "holdings": {
+            "AAPL": {
+              "units": 1.654788,
+              "avgCost": 305.94,
+              "lastClose": 315.32000732421875,
+              "value": 521.79
+            }
+          },
+          "holdingsValue": 521.79,
+          "netWorth": 1004.37
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "MRVL",
+            "date": "2026-07-10",
+            "amount": 0.06
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-07-10",
+            "ticker": "AAPL",
+            "side": "SELL",
+            "units": 1.337034,
+            "price": 314.7200012207031,
+            "notional": 420.79,
+            "cashAfter": 582.58
+          },
+          {
+            "date": "2026-07-10",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.317754,
+            "price": 314.7200012207031,
+            "notional": 100,
+            "cashAfter": 482.58
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "63f78dee0850d6157ce50219bcf1ba45ca965e22a6c10bed71ec1522b17d6511",
+      "market": {
+        "open": 314.7200012207031,
+        "close": 315.32000732421875,
+        "observedClose": 316.2200012207031
+      }
+    },
+    {
+      "date": "2026-07-13",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 482.58,
+          "holdings": {
+            "AAPL": {
+              "units": 1.654788,
+              "avgCost": 305.94,
+              "lastClose": 315.32000732421875,
+              "value": 521.79
+            }
+          },
+          "holdingsValue": 521.79,
+          "netWorth": 1004.37
+        },
+        "portfolioAfter": {
+          "cash": 382.58,
+          "holdings": {
+            "AAPL": {
+              "units": 1.970238,
+              "avgCost": 307.71,
+              "lastClose": 317.30999755859375,
+              "value": 625.18
+            }
+          },
+          "holdingsValue": 625.18,
+          "netWorth": 1007.76
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-07-13",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.31545,
+            "price": 317.0199890136719,
+            "notional": 100,
+            "cashAfter": 382.58
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "c7ade639fb99c5d08d62f08181ceecfea1660fa484750d47a216475ad437e0b4",
+      "market": {
+        "open": 317.0199890136719,
+        "close": 317.30999755859375,
+        "observedClose": 315.32000732421875
+      }
+    },
+    {
+      "date": "2026-07-14",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 382.58,
+          "holdings": {
+            "AAPL": {
+              "units": 1.970238,
+              "avgCost": 307.71,
+              "lastClose": 317.30999755859375,
+              "value": 625.18
+            }
+          },
+          "holdingsValue": 625.18,
+          "netWorth": 1007.76
+        },
+        "portfolioAfter": {
+          "cash": 282.58,
+          "holdings": {
+            "AAPL": {
+              "units": 2.288962,
+              "avgCost": 308.55,
+              "lastClose": 314.8599853515625,
+              "value": 720.7
+            }
+          },
+          "holdingsValue": 720.7,
+          "netWorth": 1003.28
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-07-14",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.318724,
+            "price": 313.760009765625,
+            "notional": 100,
+            "cashAfter": 282.58
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "4084a6a82ecffbef51bad97d4e6f2c6ee4eece48029da648b8d467b07098f7c9",
+      "market": {
+        "open": 313.760009765625,
+        "close": 314.8599853515625,
+        "observedClose": 317.30999755859375
+      }
+    },
+    {
+      "date": "2026-07-15",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 282.58,
+          "holdings": {
+            "AAPL": {
+              "units": 2.288962,
+              "avgCost": 308.55,
+              "lastClose": 314.8599853515625,
+              "value": 720.7
+            }
+          },
+          "holdingsValue": 720.7,
+          "netWorth": 1003.28
+        },
+        "portfolioAfter": {
+          "cash": 182.58,
+          "holdings": {
+            "AAPL": {
+              "units": 2.603819,
+              "avgCost": 309.65,
+              "lastClose": 327.5,
+              "value": 852.75
+            }
+          },
+          "holdingsValue": 852.75,
+          "netWorth": 1035.33
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-07-15",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.314857,
+            "price": 317.6199951171875,
+            "notional": 100,
+            "cashAfter": 182.58
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "6af7224ac7a103ccef05e959598d0584ae86fd434330b101cade7f4509e335ac",
+      "market": {
+        "open": 317.6199951171875,
+        "close": 327.5,
+        "observedClose": 314.8599853515625
+      }
+    },
+    {
+      "date": "2026-07-16",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 182.58,
+          "holdings": {
+            "AAPL": {
+              "units": 2.603819,
+              "avgCost": 309.65,
+              "lastClose": 327.5,
+              "value": 852.75
+            }
+          },
+          "holdingsValue": 852.75,
+          "netWorth": 1035.33
+        },
+        "portfolioAfter": {
+          "cash": 82.58,
+          "holdings": {
+            "AAPL": {
+              "units": 2.908706,
+              "avgCost": 311.57,
+              "lastClose": 333.260009765625,
+              "value": 969.36
+            }
+          },
+          "holdingsValue": 969.36,
+          "netWorth": 1051.94
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-07-16",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.304887,
+            "price": 328.010009765625,
+            "notional": 100,
+            "cashAfter": 82.58
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "a20e26f8862f0140c91f55735e11e706b67aef36057819adc87da17925d4fa8b",
+      "market": {
+        "open": 328.010009765625,
+        "close": 333.260009765625,
+        "observedClose": 327.5
+      }
+    },
+    {
+      "date": "2026-07-17",
+      "orders": [],
+      "record": {
+        "portfolioBefore": {
+          "cash": 82.58,
+          "holdings": {
+            "AAPL": {
+              "units": 2.908706,
+              "avgCost": 311.57,
+              "lastClose": 333.260009765625,
+              "value": 969.36
+            }
+          },
+          "holdingsValue": 969.36,
+          "netWorth": 1051.94
+        },
+        "portfolioAfter": {
+          "cash": 82.58,
+          "holdings": {
+            "AAPL": {
+              "units": 2.908706,
+              "avgCost": 311.57,
+              "lastClose": 333.739990234375,
+              "value": 970.75
+            }
+          },
+          "holdingsValue": 970.75,
+          "netWorth": 1053.33
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [],
+        "failedOrders": []
+      },
+      "sourceSha256": "a59141b11aaccb53cdf838211cd8563c09b3e753601a642bdca354b8a3db6c6e",
+      "market": {
+        "open": 331.9800109863281,
+        "close": 333.739990234375,
+        "observedClose": 333.260009765625
+      }
+    },
+    {
+      "date": "2026-07-20",
+      "orders": [],
+      "record": {
+        "portfolioBefore": {
+          "cash": 82.58,
+          "holdings": {
+            "AAPL": {
+              "units": 2.908706,
+              "avgCost": 311.57,
+              "lastClose": 333.739990234375,
+              "value": 970.75
+            }
+          },
+          "holdingsValue": 970.75,
+          "netWorth": 1053.33
+        },
+        "portfolioAfter": {
+          "cash": 82.58,
+          "holdings": {
+            "AAPL": {
+              "units": 2.908706,
+              "avgCost": 311.57,
+              "lastClose": 326.5899963378906,
+              "value": 949.95
+            }
+          },
+          "holdingsValue": 949.95,
+          "netWorth": 1032.53
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [],
+        "failedOrders": []
+      },
+      "sourceSha256": "2171391a964811c521a2bde64b26f3d0fb58ffed9e995705bfa10358fc1b6878",
+      "market": {
+        "open": 333.510009765625,
+        "close": 326.5899963378906,
+        "observedClose": 333.739990234375
+      }
+    },
+    {
+      "date": "2026-07-21",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "SELL",
+          "sizing": {
+            "kind": "units",
+            "units": 1.454353
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 82.58,
+          "holdings": {
+            "AAPL": {
+              "units": 2.908706,
+              "avgCost": 311.57,
+              "lastClose": 326.5899963378906,
+              "value": 949.95
+            }
+          },
+          "holdingsValue": 949.95,
+          "netWorth": 1032.53
+        },
+        "portfolioAfter": {
+          "cash": 552.52,
+          "holdings": {
+            "AAPL": {
+              "units": 1.454353,
+              "avgCost": 311.57,
+              "lastClose": 327.739990234375,
+              "value": 476.65
+            }
+          },
+          "holdingsValue": 476.65,
+          "netWorth": 1029.17
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-07-21",
+            "ticker": "AAPL",
+            "side": "SELL",
+            "units": 1.454353,
+            "price": 323.1300048828125,
+            "notional": 469.94,
+            "cashAfter": 552.52
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "00b62f4b8fb90127a016cb0c0c86078b3cef611befac94851bd109c02976ab41",
+      "market": {
+        "open": 323.1300048828125,
+        "close": 327.739990234375,
+        "observedClose": 326.5899963378906
+      }
+    },
+    {
+      "date": "2026-07-22",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 552.52,
+          "holdings": {
+            "AAPL": {
+              "units": 1.454353,
+              "avgCost": 311.57,
+              "lastClose": 327.739990234375,
+              "value": 476.65
+            }
+          },
+          "holdingsValue": 476.65,
+          "netWorth": 1029.17
+        },
+        "portfolioAfter": {
+          "cash": 452.52,
+          "holdings": {
+            "AAPL": {
+              "units": 1.759371,
+              "avgCost": 314.4,
+              "lastClose": 325.8900146484375,
+              "value": 573.36
+            }
+          },
+          "holdingsValue": 573.36,
+          "netWorth": 1025.88
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-07-22",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.305018,
+            "price": 327.8699951171875,
+            "notional": 100,
+            "cashAfter": 452.52
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "6d8ec0afb9eb3154f1d47180b34c467b9f242b4c8fc165feb8ad9964cda5dc4f",
+      "market": {
+        "open": 327.8699951171875,
+        "close": 325.8900146484375,
+        "observedClose": 327.739990234375
+      }
+    },
+    {
+      "date": "2026-07-23",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 452.52,
+          "holdings": {
+            "AAPL": {
+              "units": 1.759371,
+              "avgCost": 314.4,
+              "lastClose": 325.8900146484375,
+              "value": 573.36
+            }
+          },
+          "holdingsValue": 573.36,
+          "netWorth": 1025.88
+        },
+        "portfolioAfter": {
+          "cash": 352.52,
+          "holdings": {
+            "AAPL": {
+              "units": 2.070198,
+              "avgCost": 315.5,
+              "lastClose": 321.6600036621094,
+              "value": 665.9
+            }
+          },
+          "holdingsValue": 665.9,
+          "netWorth": 1018.42
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-07-23",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.310827,
+            "price": 321.7300109863281,
+            "notional": 100,
+            "cashAfter": 352.52
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "8fbd4afba416fdc58e49d0640e8b0c5a127027227ad41f87b3c35affa4564c4d",
+      "market": {
+        "open": 321.7300109863281,
+        "close": 321.6600036621094,
+        "observedClose": 325.8900146484375
+      }
+    },
+    {
+      "date": "2026-07-24",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 352.52,
+          "holdings": {
+            "AAPL": {
+              "units": 2.070198,
+              "avgCost": 315.5,
+              "lastClose": 321.6600036621094,
+              "value": 665.9
+            }
+          },
+          "holdingsValue": 665.9,
+          "netWorth": 1018.42
+        },
+        "portfolioAfter": {
+          "cash": 252.52,
+          "holdings": {
+            "AAPL": {
+              "units": 2.380978,
+              "avgCost": 316.32,
+              "lastClose": 333.0199890136719,
+              "value": 792.91
+            }
+          },
+          "holdingsValue": 792.91,
+          "netWorth": 1045.43
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "COST",
+            "date": "2026-07-24",
+            "amount": 1.47
+          },
+          {
+            "type": "dividend",
+            "ticker": "GEHC",
+            "date": "2026-07-24",
+            "amount": 0.035
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-07-24",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.31078,
+            "price": 321.7900085449219,
+            "notional": 100,
+            "cashAfter": 252.52
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "6178fdb148d2331059a1fdf3a9c57691ebc2d2aa901c699d512cb0b1bf5270aa",
+      "market": {
+        "open": 321.7900085449219,
+        "close": 333.0199890136719,
+        "observedClose": 321.6600036621094
+      }
+    },
+    {
+      "date": "2026-07-27",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 252.52,
+          "holdings": {
+            "AAPL": {
+              "units": 2.380978,
+              "avgCost": 316.32,
+              "lastClose": 333.0199890136719,
+              "value": 792.91
+            }
+          },
+          "holdingsValue": 792.91,
+          "netWorth": 1045.43
+        },
+        "portfolioAfter": {
+          "cash": 152.52,
+          "holdings": {
+            "AAPL": {
+              "units": 2.679903,
+              "avgCost": 318.35,
+              "lastClose": 336.9100036621094,
+              "value": 902.89
+            }
+          },
+          "holdingsValue": 902.89,
+          "netWorth": 1055.41
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-07-27",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.298925,
+            "price": 334.5400085449219,
+            "notional": 100,
+            "cashAfter": 152.52
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "8b3349fac6871309ed2a2ca4d724105ef23f2ef6950e1cabbd2307d0a8c112db",
+      "market": {
+        "open": 334.5400085449219,
+        "close": 336.9100036621094,
+        "observedClose": 333.0199890136719
+      }
+    },
+    {
+      "date": "2026-07-28",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 152.52,
+          "holdings": {
+            "AAPL": {
+              "units": 2.679903,
+              "avgCost": 318.35,
+              "lastClose": 336.9100036621094,
+              "value": 902.89
+            }
+          },
+          "holdingsValue": 902.89,
+          "netWorth": 1055.41
+        },
+        "portfolioAfter": {
+          "cash": 52.52,
+          "holdings": {
+            "AAPL": {
+              "units": 2.974017,
+              "avgCost": 320.49,
+              "lastClose": 340.0799865722656,
+              "value": 1011.4
+            }
+          },
+          "holdingsValue": 1011.4,
+          "netWorth": 1063.92
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "ASML",
+            "date": "2026-07-28",
+            "amount": 2.138
+          },
+          {
+            "type": "dividend",
+            "ticker": "FAST",
+            "date": "2026-07-28",
+            "amount": 0.26
+          },
+          {
+            "type": "dividend",
+            "ticker": "PAYX",
+            "date": "2026-07-28",
+            "amount": 1.19
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-07-28",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.294114,
+            "price": 340.0299987792969,
+            "notional": 100,
+            "cashAfter": 52.52
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "1ff95fe93f6c94d6be2ba44b8fd4edd286c865cdc1bb7bdd716ced325133d870",
+      "market": {
+        "open": 340.0299987792969,
+        "close": 340.0799865722656,
+        "observedClose": 336.9100036621094
+      }
+    },
+    {
+      "date": "2026-07-29",
+      "orders": [],
+      "record": {
+        "portfolioBefore": {
+          "cash": 52.52,
+          "holdings": {
+            "AAPL": {
+              "units": 2.974017,
+              "avgCost": 320.49,
+              "lastClose": 340.0799865722656,
+              "value": 1011.4
+            }
+          },
+          "holdingsValue": 1011.4,
+          "netWorth": 1063.92
+        },
+        "portfolioAfter": {
+          "cash": 52.52,
+          "holdings": {
+            "AAPL": {
+              "units": 2.974017,
+              "avgCost": 320.49,
+              "lastClose": 338.19000244140625,
+              "value": 1005.78
+            }
+          },
+          "holdingsValue": 1005.78,
+          "netWorth": 1058.3
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [],
+        "failedOrders": []
+      },
+      "sourceSha256": "c27cca225125e2cde87f5421288ec5368affe3bef4089539ad72ef88d4ae3b69",
+      "market": {
+        "open": 339.7300109863281,
+        "close": 338.19000244140625,
+        "observedClose": 340.0799865722656
+      }
+    },
+    {
+      "date": "2026-07-30",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "SELL",
+          "sizing": {
+            "kind": "units",
+            "units": 1.4870085
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 52.52,
+          "holdings": {
+            "AAPL": {
+              "units": 2.974017,
+              "avgCost": 320.49,
+              "lastClose": 338.19000244140625,
+              "value": 1005.78
+            }
+          },
+          "holdingsValue": 1005.78,
+          "netWorth": 1058.3
+        },
+        "portfolioAfter": {
+          "cash": 547.85,
+          "holdings": {
+            "AAPL": {
+              "units": 1.487009,
+              "avgCost": 320.49,
+              "lastClose": 333.42999267578125,
+              "value": 495.81
+            }
+          },
+          "holdingsValue": 495.81,
+          "netWorth": 1043.66
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-07-30",
+            "ticker": "AAPL",
+            "side": "SELL",
+            "units": 1.487008,
+            "price": 333.1000061035156,
+            "notional": 495.33,
+            "cashAfter": 547.85
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "24e3e2ea701f9f26523fe4c65e2c5e82a9135d97a9269bc58462112845144b6f",
+      "market": {
+        "open": 333.1000061035156,
+        "close": 333.42999267578125,
+        "observedClose": 338.19000244140625
+      }
+    },
+    {
+      "date": "2026-07-31",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 547.85,
+          "holdings": {
+            "AAPL": {
+              "units": 1.487009,
+              "avgCost": 320.49,
+              "lastClose": 333.42999267578125,
+              "value": 495.81
+            }
+          },
+          "holdingsValue": 495.81,
+          "netWorth": 1043.66
+        },
+        "portfolioAfter": {
+          "cash": 447.85,
+          "holdings": {
+            "AAPL": {
+              "units": 1.815114,
+              "avgCost": 317.66,
+              "lastClose": 308.9100036621094,
+              "value": 560.71
+            }
+          },
+          "holdingsValue": 560.71,
+          "netWorth": 1008.56
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "TXN",
+            "date": "2026-07-31",
+            "amount": 1.42
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-07-31",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.328105,
+            "price": 304.80999755859375,
+            "notional": 100,
+            "cashAfter": 447.85
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "deabb665678e1ccfe827b65952b620c2419957b4880ae33e86b9bfe204c38f95",
+      "market": {
+        "open": 304.80999755859375,
+        "close": 308.9100036621094,
+        "observedClose": 333.42999267578125
+      }
+    },
+    {
+      "date": "2026-08-03",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 447.85,
+          "holdings": {
+            "AAPL": {
+              "units": 1.815114,
+              "avgCost": 317.66,
+              "lastClose": 308.9100036621094,
+              "value": 560.71
+            }
+          },
+          "holdingsValue": 560.71,
+          "netWorth": 1008.56
+        },
+        "portfolioAfter": {
+          "cash": 847.85,
+          "holdings": {
+            "AAPL": {
+              "units": 2.138138,
+              "avgCost": 316.44,
+              "lastClose": 303.4200134277344,
+              "value": 648.75
+            }
+          },
+          "holdingsValue": 648.75,
+          "netWorth": 1496.6
+        },
+        "contribution": 500,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-08-03",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.323024,
+            "price": 309.5799865722656,
+            "notional": 100,
+            "cashAfter": 847.85
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "b57bb7390adb71d06ccf64926f7fa81e9a2f09627aa2b17c70476e1e96c4b461",
+      "market": {
+        "open": 309.5799865722656,
+        "close": 303.4200134277344,
+        "observedClose": 308.9100036621094
+      }
+    },
+    {
+      "date": "2026-08-04",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 847.85,
+          "holdings": {
+            "AAPL": {
+              "units": 2.138138,
+              "avgCost": 316.44,
+              "lastClose": 303.4200134277344,
+              "value": 648.75
+            }
+          },
+          "holdingsValue": 648.75,
+          "netWorth": 1496.6
+        },
+        "portfolioAfter": {
+          "cash": 747.85,
+          "holdings": {
+            "AAPL": {
+              "units": 2.468486,
+              "avgCost": 314.61,
+              "lastClose": 309.3800048828125,
+              "value": 763.7
+            }
+          },
+          "holdingsValue": 763.7,
+          "netWorth": 1511.55
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-08-04",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.330348,
+            "price": 302.7300109863281,
+            "notional": 100,
+            "cashAfter": 747.85
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "a52c29762f8e02c21b23c49b068d08857a48bb60f4d4c3c2bbc69e7fe199062d",
+      "market": {
+        "open": 302.7300109863281,
+        "close": 309.3800048828125,
+        "observedClose": 303.4200134277344
+      }
+    },
+    {
+      "date": "2026-08-05",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 747.85,
+          "holdings": {
+            "AAPL": {
+              "units": 2.468486,
+              "avgCost": 314.61,
+              "lastClose": 309.3800048828125,
+              "value": 763.7
+            }
+          },
+          "holdingsValue": 763.7,
+          "netWorth": 1511.55
+        },
+        "portfolioAfter": {
+          "cash": 647.85,
+          "holdings": {
+            "AAPL": {
+              "units": 2.791747,
+              "avgCost": 314,
+              "lastClose": 311,
+              "value": 868.23
+            }
+          },
+          "holdingsValue": 868.23,
+          "netWorth": 1516.08
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-08-05",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.323261,
+            "price": 309.3599853515625,
+            "notional": 100,
+            "cashAfter": 647.85
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "00a97d2e93f982e454805234fef54960c155238402669891b067a66bcfe0a717",
+      "market": {
+        "open": 309.3599853515625,
+        "close": 311,
+        "observedClose": 309.3800048828125
+      }
+    },
+    {
+      "date": "2026-08-06",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 647.85,
+          "holdings": {
+            "AAPL": {
+              "units": 2.791747,
+              "avgCost": 314,
+              "lastClose": 311,
+              "value": 868.23
+            }
+          },
+          "holdingsValue": 868.23,
+          "netWorth": 1516.08
+        },
+        "portfolioAfter": {
+          "cash": 547.85,
+          "holdings": {
+            "AAPL": {
+              "units": 3.109896,
+              "avgCost": 314.03,
+              "lastClose": 312.4100036621094,
+              "value": 971.56
+            }
+          },
+          "holdingsValue": 971.56,
+          "netWorth": 1519.41
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-08-06",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.318149,
+            "price": 314.3399963378906,
+            "notional": 100,
+            "cashAfter": 547.85
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "2f7f94601c55acc4adfb47fd74597ef2c723546275f204321162cddc00cdaf4a",
+      "market": {
+        "open": 314.3399963378906,
+        "close": 312.4100036621094,
+        "observedClose": 311
+      }
+    },
+    {
+      "date": "2026-08-07",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 547.85,
+          "holdings": {
+            "AAPL": {
+              "units": 3.109896,
+              "avgCost": 314.03,
+              "lastClose": 312.4100036621094,
+              "value": 971.56
+            }
+          },
+          "holdingsValue": 971.56,
+          "netWorth": 1519.41
+        },
+        "portfolioAfter": {
+          "cash": 447.85,
+          "holdings": {
+            "AAPL": {
+              "units": 3.431,
+              "avgCost": 313.79,
+              "lastClose": 313.3299865722656,
+              "value": 1075.04
+            }
+          },
+          "holdingsValue": 1075.04,
+          "netWorth": 1522.89
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "BKR",
+            "date": "2026-08-07",
+            "amount": 0.23
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-08-07",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.321104,
+            "price": 311.45001220703125,
+            "notional": 100,
+            "cashAfter": 447.85
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "022ac76cd6e8afe630f3524fc9d98b05b2c61299bb83cec42e02007cb6fb2062",
+      "market": {
+        "open": 311.45001220703125,
+        "close": 313.3299865722656,
+        "observedClose": 312.4100036621094
+      }
+    },
+    {
+      "date": "2026-08-10",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "SELL",
+          "sizing": {
+            "kind": "units",
+            "units": 1.7155
+          }
+        },
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 447.85,
+          "holdings": {
+            "AAPL": {
+              "units": 3.431,
+              "avgCost": 313.79,
+              "lastClose": 313.3299865722656,
+              "value": 1075.04
+            }
+          },
+          "holdingsValue": 1075.04,
+          "netWorth": 1522.89
+        },
+        "portfolioAfter": {
+          "cash": 875.14,
+          "holdings": {
+            "AAPL": {
+              "units": 2.041439,
+              "avgCost": 312.68,
+              "lastClose": 308.260009765625,
+              "value": 629.29
+            }
+          },
+          "holdingsValue": 629.29,
+          "netWorth": 1504.43
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "AAPL",
+            "date": "2026-08-10",
+            "amount": 0.27
+          },
+          {
+            "type": "dividend",
+            "ticker": "AEP",
+            "date": "2026-08-10",
+            "amount": 0.95
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-08-10",
+            "ticker": "AAPL",
+            "side": "SELL",
+            "units": 1.7155,
+            "price": 306.8299865722656,
+            "notional": 526.36,
+            "cashAfter": 975.14
+          },
+          {
+            "date": "2026-08-10",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.325939,
+            "price": 306.8299865722656,
+            "notional": 100,
+            "cashAfter": 875.14
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "71f9d4135508195e1dea1ac301158179916b29339bbda826b5ca2f9d62126ebc",
+      "market": {
+        "open": 306.8299865722656,
+        "close": 308.260009765625,
+        "observedClose": 313.3299865722656
+      }
+    },
+    {
+      "date": "2026-08-11",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 875.14,
+          "holdings": {
+            "AAPL": {
+              "units": 2.041439,
+              "avgCost": 312.68,
+              "lastClose": 308.260009765625,
+              "value": 629.29
+            }
+          },
+          "holdingsValue": 629.29,
+          "netWorth": 1504.43
+        },
+        "portfolioAfter": {
+          "cash": 775.14,
+          "holdings": {
+            "AAPL": {
+              "units": 2.366385,
+              "avgCost": 312,
+              "lastClose": 304.9100036621094,
+              "value": 721.53
+            }
+          },
+          "holdingsValue": 721.53,
+          "netWorth": 1496.67
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "split",
+            "ticker": "MNST",
+            "date": "2026-08-11",
+            "ratio": 2
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-08-11",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.324946,
+            "price": 307.75,
+            "notional": 100,
+            "cashAfter": 775.14
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "26e065984df45736fd276a8d66b563bcd1fb69c67fecb0493251ab1a18fcd2eb",
+      "market": {
+        "open": 307.75,
+        "close": 304.9100036621094,
+        "observedClose": 308.260009765625
+      }
+    },
+    {
+      "date": "2026-08-12",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 775.14,
+          "holdings": {
+            "AAPL": {
+              "units": 2.366385,
+              "avgCost": 312,
+              "lastClose": 304.9100036621094,
+              "value": 721.53
+            }
+          },
+          "holdingsValue": 721.53,
+          "netWorth": 1496.67
+        },
+        "portfolioAfter": {
+          "cash": 675.14,
+          "holdings": {
+            "AAPL": {
+              "units": 2.694149,
+              "avgCost": 311.16,
+              "lastClose": 302.25,
+              "value": 814.31
+            }
+          },
+          "holdingsValue": 814.31,
+          "netWorth": 1489.45
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "PCAR",
+            "date": "2026-08-12",
+            "amount": 0.35
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-08-12",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.327764,
+            "price": 305.1000061035156,
+            "notional": 100,
+            "cashAfter": 675.14
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "0a5c2ff5b9aa0e07b7d1dfaa47ea14b962951e7c147961b2b64b814f9596576d",
+      "market": {
+        "open": 305.1000061035156,
+        "close": 302.25,
+        "observedClose": 304.9100036621094
+      }
+    },
+    {
+      "date": "2026-08-13",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 675.14,
+          "holdings": {
+            "AAPL": {
+              "units": 2.694149,
+              "avgCost": 311.16,
+              "lastClose": 302.25,
+              "value": 814.31
+            }
+          },
+          "holdingsValue": 814.31,
+          "netWorth": 1489.45
+        },
+        "portfolioAfter": {
+          "cash": 575.14,
+          "holdings": {
+            "AAPL": {
+              "units": 3.022895,
+              "avgCost": 310.4,
+              "lastClose": 305.260009765625,
+              "value": 922.77
+            }
+          },
+          "holdingsValue": 922.77,
+          "netWorth": 1497.91
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "FANG",
+            "date": "2026-08-13",
+            "amount": 1.1
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-08-13",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.328746,
+            "price": 304.2099914550781,
+            "notional": 100,
+            "cashAfter": 575.14
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "0d5b690ad281c7c4577e57abff56adc79d98f4ff1021b0d5e765ddfe7b7bd78f",
+      "market": {
+        "open": 304.2099914550781,
+        "close": 305.260009765625,
+        "observedClose": 302.25
+      }
+    },
+    {
+      "date": "2026-08-14",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 575.14,
+          "holdings": {
+            "AAPL": {
+              "units": 3.022895,
+              "avgCost": 310.4,
+              "lastClose": 305.260009765625,
+              "value": 922.77
+            }
+          },
+          "holdingsValue": 922.77,
+          "netWorth": 1497.91
+        },
+        "portfolioAfter": {
+          "cash": 475.14,
+          "holdings": {
+            "AAPL": {
+              "units": 3.349722,
+              "avgCost": 309.97,
+              "lastClose": 305.92999267578125,
+              "value": 1024.78
+            }
+          },
+          "holdingsValue": 1024.78,
+          "netWorth": 1499.92
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "CTAS",
+            "date": "2026-08-14",
+            "amount": 0.52
+          },
+          {
+            "type": "dividend",
+            "ticker": "SBUX",
+            "date": "2026-08-14",
+            "amount": 0.62
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-08-14",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.326827,
+            "price": 306,
+            "notional": 100,
+            "cashAfter": 475.14
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "ef1ced6607a263d4b66ea8554a9de6d96240ad9fe359681a3ae7b03100a3de75",
+      "market": {
+        "open": 306,
+        "close": 305.92999267578125,
+        "observedClose": 305.260009765625
+      }
+    },
+    {
+      "date": "2026-08-17",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 475.14,
+          "holdings": {
+            "AAPL": {
+              "units": 3.349722,
+              "avgCost": 309.97,
+              "lastClose": 305.92999267578125,
+              "value": 1024.78
+            }
+          },
+          "holdingsValue": 1024.78,
+          "netWorth": 1499.92
+        },
+        "portfolioAfter": {
+          "cash": 375.14,
+          "holdings": {
+            "AAPL": {
+              "units": 3.676317,
+              "avgCost": 309.64,
+              "lastClose": 305.5899963378906,
+              "value": 1123.45
+            }
+          },
+          "holdingsValue": 1123.45,
+          "netWorth": 1498.59
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "KLAC",
+            "date": "2026-08-17",
+            "amount": 0.23
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-08-17",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.326595,
+            "price": 306.2099914550781,
+            "notional": 100,
+            "cashAfter": 375.14
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "a5c9d3e27c34530494c485da2f222b29bcc2f9068570525bc26253d4bdc17e2a",
+      "market": {
+        "open": 306.2099914550781,
+        "close": 305.5899963378906,
+        "observedClose": 305.92999267578125
+      }
+    },
+    {
+      "date": "2026-08-18",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 375.14,
+          "holdings": {
+            "AAPL": {
+              "units": 3.676317,
+              "avgCost": 309.64,
+              "lastClose": 305.5899963378906,
+              "value": 1123.45
+            }
+          },
+          "holdingsValue": 1123.45,
+          "netWorth": 1498.59
+        },
+        "portfolioAfter": {
+          "cash": 275.14,
+          "holdings": {
+            "AAPL": {
+              "units": 4.001446,
+              "avgCost": 309.47,
+              "lastClose": 310.0299987792969,
+              "value": 1240.57
+            }
+          },
+          "holdingsValue": 1240.57,
+          "netWorth": 1515.71
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "CEG",
+            "date": "2026-08-18",
+            "amount": 0.427
+          },
+          {
+            "type": "dividend",
+            "ticker": "CTSH",
+            "date": "2026-08-18",
+            "amount": 0.33
+          },
+          {
+            "type": "dividend",
+            "ticker": "REGN",
+            "date": "2026-08-18",
+            "amount": 0.94
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-08-18",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.325129,
+            "price": 307.5799865722656,
+            "notional": 100,
+            "cashAfter": 275.14
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "8b7b7d7266efde029e5176f688c290ad26064097d110d6e8e18d105c2d61c857",
+      "market": {
+        "open": 307.5799865722656,
+        "close": 310.0299987792969,
+        "observedClose": 305.5899963378906
+      }
+    },
+    {
+      "date": "2026-08-19",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "SELL",
+          "sizing": {
+            "kind": "units",
+            "units": 2.000723
+          }
+        },
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 275.14,
+          "holdings": {
+            "AAPL": {
+              "units": 4.001446,
+              "avgCost": 309.47,
+              "lastClose": 310.0299987792969,
+              "value": 1240.57
+            }
+          },
+          "holdingsValue": 1240.57,
+          "netWorth": 1515.71
+        },
+        "portfolioAfter": {
+          "cash": 795.65,
+          "holdings": {
+            "AAPL": {
+              "units": 2.32316,
+              "avgCost": 309.56,
+              "lastClose": 316.8299865722656,
+              "value": 736.05
+            }
+          },
+          "holdingsValue": 736.05,
+          "netWorth": 1531.7
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "TRI",
+            "date": "2026-08-19",
+            "amount": 0.655
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-08-19",
+            "ticker": "AAPL",
+            "side": "SELL",
+            "units": 2.000723,
+            "price": 310.1400146484375,
+            "notional": 620.51,
+            "cashAfter": 895.65
+          },
+          {
+            "date": "2026-08-19",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.322437,
+            "price": 310.1400146484375,
+            "notional": 100,
+            "cashAfter": 795.65
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "9382bd9080bbad0b38b15f0669cd6ccc60f6fd8a033e7540450485351261ac11",
+      "market": {
+        "open": 310.1400146484375,
+        "close": 316.8299865722656,
+        "observedClose": 310.0299987792969
+      }
+    },
+    {
+      "date": "2026-08-20",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 795.65,
+          "holdings": {
+            "AAPL": {
+              "units": 2.32316,
+              "avgCost": 309.56,
+              "lastClose": 316.8299865722656,
+              "value": 736.05
+            }
+          },
+          "holdingsValue": 736.05,
+          "netWorth": 1531.7
+        },
+        "portfolioAfter": {
+          "cash": 695.65,
+          "holdings": {
+            "AAPL": {
+              "units": 2.638174,
+              "avgCost": 310.5,
+              "lastClose": 311.29998779296875,
+              "value": 821.26
+            }
+          },
+          "holdingsValue": 821.26,
+          "netWorth": 1516.91
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "AMAT",
+            "date": "2026-08-20",
+            "amount": 0.53
+          },
+          {
+            "type": "dividend",
+            "ticker": "MAR",
+            "date": "2026-08-20",
+            "amount": 0.73
+          },
+          {
+            "type": "dividend",
+            "ticker": "MSFT",
+            "date": "2026-08-20",
+            "amount": 0.91
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-08-20",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.315014,
+            "price": 317.4599914550781,
+            "notional": 100,
+            "cashAfter": 695.65
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "1766e87942edf0dc046e6837c9e49c3318a6c2c541c341670dcd77fc89f1c3ba",
+      "market": {
+        "open": 317.4599914550781,
+        "close": 311.29998779296875,
+        "observedClose": 316.8299865722656
+      }
+    },
+    {
+      "date": "2026-08-21",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 695.65,
+          "holdings": {
+            "AAPL": {
+              "units": 2.638174,
+              "avgCost": 310.5,
+              "lastClose": 311.29998779296875,
+              "value": 821.26
+            }
+          },
+          "holdingsValue": 821.26,
+          "netWorth": 1516.91
+        },
+        "portfolioAfter": {
+          "cash": 595.65,
+          "holdings": {
+            "AAPL": {
+              "units": 2.958644,
+              "avgCost": 310.67,
+              "lastClose": 309.3500061035156,
+              "value": 915.26
+            }
+          },
+          "holdingsValue": 915.26,
+          "netWorth": 1510.91
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "AMGN",
+            "date": "2026-08-21",
+            "amount": 2.52
+          },
+          {
+            "type": "dividend",
+            "ticker": "WMT",
+            "date": "2026-08-21",
+            "amount": 0.248
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-08-21",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.32047,
+            "price": 312.04998779296875,
+            "notional": 100,
+            "cashAfter": 595.65
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "4e892b85d5505f0df6d30f76439f84beff58191ee8e4510151dd095b251f3c48",
+      "market": {
+        "open": 312.04998779296875,
+        "close": 309.3500061035156,
+        "observedClose": 311.29998779296875
+      }
+    },
+    {
+      "date": "2026-08-24",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 595.65,
+          "holdings": {
+            "AAPL": {
+              "units": 2.958644,
+              "avgCost": 310.67,
+              "lastClose": 309.3500061035156,
+              "value": 915.26
+            }
+          },
+          "holdingsValue": 915.26,
+          "netWorth": 1510.91
+        },
+        "portfolioAfter": {
+          "cash": 495.65,
+          "holdings": {
+            "AAPL": {
+              "units": 3.279721,
+              "avgCost": 310.75,
+              "lastClose": 310.3399963378906,
+              "value": 1017.83
+            }
+          },
+          "holdingsValue": 1017.83,
+          "netWorth": 1513.48
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "MCHP",
+            "date": "2026-08-24",
+            "amount": 0.455
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-08-24",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.321077,
+            "price": 311.4700012207031,
+            "notional": 100,
+            "cashAfter": 495.65
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "d9dae3ffb38929120b317ff2fd699a581e3593a70db1fca700f99ca1055ac485",
+      "market": {
+        "open": 311.4700012207031,
+        "close": 310.3399963378906,
+        "observedClose": 309.3500061035156
+      }
+    },
+    {
+      "date": "2026-08-25",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 495.65,
+          "holdings": {
+            "AAPL": {
+              "units": 3.279721,
+              "avgCost": 310.75,
+              "lastClose": 310.3399963378906,
+              "value": 1017.83
+            }
+          },
+          "holdingsValue": 1017.83,
+          "netWorth": 1513.48
+        },
+        "portfolioAfter": {
+          "cash": 395.65,
+          "holdings": {
+            "AAPL": {
+              "units": 3.601483,
+              "avgCost": 310.75,
+              "lastClose": 309.8999938964844,
+              "value": 1116.1
+            }
+          },
+          "holdingsValue": 1116.1,
+          "netWorth": 1511.75
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-08-25",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.321762,
+            "price": 310.7900085449219,
+            "notional": 100,
+            "cashAfter": 395.65
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "5cd30ba1ea8f30a3bfaad314d96271151a94fc121b309f9869ef61ab6438aeb0",
+      "market": {
+        "open": 310.7900085449219,
+        "close": 309.8999938964844,
+        "observedClose": 310.3399963378906
+      }
+    },
+    {
+      "date": "2026-08-26",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 395.65,
+          "holdings": {
+            "AAPL": {
+              "units": 3.601483,
+              "avgCost": 310.75,
+              "lastClose": 309.8999938964844,
+              "value": 1116.1
+            }
+          },
+          "holdingsValue": 1116.1,
+          "netWorth": 1511.75
+        },
+        "portfolioAfter": {
+          "cash": 295.65,
+          "holdings": {
+            "AAPL": {
+              "units": 3.923767,
+              "avgCost": 310.71,
+              "lastClose": 313.45001220703125,
+              "value": 1229.9
+            }
+          },
+          "holdingsValue": 1229.9,
+          "netWorth": 1525.55
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-08-26",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.322284,
+            "price": 310.29998779296875,
+            "notional": 100,
+            "cashAfter": 295.65
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "65c3a11539154a44850a0449a52d492919263d39f255fca17677afe3750a33ea",
+      "market": {
+        "open": 310.29998779296875,
+        "close": 313.45001220703125,
+        "observedClose": 309.8999938964844
+      }
+    },
+    {
+      "date": "2026-08-27",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 295.65,
+          "holdings": {
+            "AAPL": {
+              "units": 3.923767,
+              "avgCost": 310.71,
+              "lastClose": 313.45001220703125,
+              "value": 1229.9
+            }
+          },
+          "holdingsValue": 1229.9,
+          "netWorth": 1525.55
+        },
+        "portfolioAfter": {
+          "cash": 195.65,
+          "holdings": {
+            "AAPL": {
+              "units": 4.245805,
+              "avgCost": 310.7,
+              "lastClose": 314.5799865722656,
+              "value": 1335.65
+            }
+          },
+          "holdingsValue": 1335.65,
+          "netWorth": 1531.3
+        },
+        "contribution": 0,
+        "corporateActions": [],
+        "fills": [
+          {
+            "date": "2026-08-27",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.322038,
+            "price": 310.54998779296875,
+            "notional": 100,
+            "cashAfter": 195.65
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "06af9492487a89d0fad91cd46a68341348a292a34738a10c88805181d48a0e19",
+      "market": {
+        "open": 310.54998779296875,
+        "close": 314.5799865722656,
+        "observedClose": 313.45001220703125
+      }
+    },
+    {
+      "date": "2026-08-28",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "SELL",
+          "sizing": {
+            "kind": "units",
+            "units": 2.1229025
+          }
+        },
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 195.65,
+          "holdings": {
+            "AAPL": {
+              "units": 4.245805,
+              "avgCost": 310.7,
+              "lastClose": 314.5799865722656,
+              "value": 1335.65
+            }
+          },
+          "holdingsValue": 1335.65,
+          "netWorth": 1531.3
+        },
+        "portfolioAfter": {
+          "cash": 768.29,
+          "holdings": {
+            "AAPL": {
+              "units": 2.438519,
+              "avgCost": 311.5,
+              "lastClose": 319.70001220703125,
+              "value": 779.59
+            }
+          },
+          "holdingsValue": 779.59,
+          "netWorth": 1547.88
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "TMUS",
+            "date": "2026-08-28",
+            "amount": 1.02
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-08-28",
+            "ticker": "AAPL",
+            "side": "SELL",
+            "units": 2.122902,
+            "price": 316.8500061035156,
+            "notional": 672.64,
+            "cashAfter": 868.29
+          },
+          {
+            "date": "2026-08-28",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.315616,
+            "price": 316.8500061035156,
+            "notional": 100,
+            "cashAfter": 768.29
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "039a01f2108d9925ebef57149bc50e1f907d2a9949b666299f964ed077c0e572",
+      "market": {
+        "open": 316.8500061035156,
+        "close": 319.70001220703125,
+        "observedClose": 314.5799865722656
+      }
+    },
+    {
+      "date": "2026-08-31",
+      "orders": [
+        {
+          "ticker": "AAPL",
+          "side": "BUY",
+          "sizing": {
+            "kind": "notional",
+            "usd": 100
+          }
+        }
+      ],
+      "record": {
+        "portfolioBefore": {
+          "cash": 768.29,
+          "holdings": {
+            "AAPL": {
+              "units": 2.438519,
+              "avgCost": 311.5,
+              "lastClose": 319.70001220703125,
+              "value": 779.59
+            }
+          },
+          "holdingsValue": 779.59,
+          "netWorth": 1547.88
+        },
+        "portfolioAfter": {
+          "cash": 668.29,
+          "holdings": {
+            "AAPL": {
+              "units": 2.751423,
+              "avgCost": 312.42,
+              "lastClose": 316.8500061035156,
+              "value": 871.79
+            }
+          },
+          "holdingsValue": 871.79,
+          "netWorth": 1540.08
+        },
+        "contribution": 0,
+        "corporateActions": [
+          {
+            "type": "dividend",
+            "ticker": "CSX",
+            "date": "2026-08-31",
+            "amount": 0.14
+          }
+        ],
+        "fills": [
+          {
+            "date": "2026-08-31",
+            "ticker": "AAPL",
+            "side": "BUY",
+            "units": 0.312904,
+            "price": 319.6000061035156,
+            "notional": 100,
+            "cashAfter": 668.29
+          }
+        ],
+        "failedOrders": []
+      },
+      "sourceSha256": "9d4d455e1670c0115b2ea358c3ff9676e95426996e15aee49a849026fe2d04cb",
+      "market": {
+        "open": 319.6000061035156,
+        "close": 316.8500061035156,
+        "observedClose": 319.70001220703125
+      }
+    }
+  ]
+}

@@ -1,0 +1,251 @@
+$ bun test
+bun test v1.3.14 (0d9b296a)
+
+tests/opencodeConfig.test.ts:
+(pass) official client config isolates ambient resources and exact prompt plugin records its actual output [5.17ms]
+
+tests/opencodeQualification.test.ts:
+(pass) exact refreshed catalog entry proves active zero-cost Zen tool-call routing [0.18ms]
+(pass) catalog qualification fails closed on absence, price tiers, status, endpoint, name, or tools [0.11ms]
+(pass) official adapter rejects alternate model and unqualified client before setup [0.09ms]
+
+tests/analytics.test.ts:
+(pass) registered analytics keep dimensions separate and measure causal forward dip behavior [1.60ms]
+(pass) legacy configs get no new analytics and therefore no silent reinterpretation [0.34ms]
+
+tests/indicators.test.ts:
+(pass) data/indicators > sma is null below the required window and computed once enough history exists [0.18ms]
+(pass) data/indicators > sma reflects only the trailing window, not the whole series [0.07ms]
+(pass) data/indicators > rsi is 100 for an all-gains series and null with insufficient history [0.10ms]
+(pass) data/indicators > rsi for an all-losses series is 0 [0.03ms]
+(pass) data/indicators > computeIndicators is a pure function of the given window [0.12ms]
+(pass) Wilder reference regressions > seed plus 14 declining bars retains recursively smoothed gains [0.07ms]
+(pass) Wilder reference regressions > classic Wilder example matches independent published rounded values [0.05ms]
+(pass) Wilder reference regressions > flat prices are neutral and calculations retain precision [0.07ms]
+(pass) Wilder reference regressions > full-prefix initialization differs from sliding window reseeding [0.16ms]
+
+tests/ohlcv.test.ts:
+(pass) data/ohlcv as-of loading (no look-ahead) > asOf never returns bars dated after the requested date [0.97ms]
+(pass) data/ohlcv as-of loading (no look-ahead) > asOf on the first calendar date returns exactly one bar [0.07ms]
+(pass) data/ohlcv as-of loading (no look-ahead) > lookback truncates from the end, keeping the as-of date as the last bar [0.76ms]
+(pass) data/ohlcv as-of loading (no look-ahead) > asOf is a strict function of the date — later calls don't leak future state [0.45ms]
+(pass) data/ohlcv as-of loading (no look-ahead) > barOn returns undefined for a non-trading day (weekend) [0.16ms]
+(pass) data/ohlcv as-of loading (no look-ahead) > calendarDates agrees across the full universe and is sorted ascending [10.95ms]
+
+tests/opencodeEvents.test.ts:
+(pass) official client strict step and usage accounting > requires a matching start before a terminal finish [3.05ms]
+(pass) official client strict step and usage accounting > rejects fractional, negative, string and inconsistent token fields [1.04ms]
+(pass) official client strict step and usage accounting > rejects invalid costs and cumulative token overflow [0.63ms]
+(pass) official client strict step and usage accounting > counts separately reported reasoning and reconciles prompt plus completion [0.29ms]
+(pass) official client strict step and usage accounting > does not double-count reasoning already included in output [0.35ms]
+(pass) official client strict step and usage accounting > rejects nested, duplicate and unfinished steps [1.02ms]
+(pass) official client strict step and usage accounting > counts turns against the cap and keeps only final-step rationale [0.32ms]
+(pass) official client strict step and usage accounting > malformed prefixed tool parts cannot evade the reconciliation input schema [0.28ms]
+(pass) official client strict step and usage accounting > provider error stays terminally unsuccessful even if followed by a stop [0.27ms]
+(pass) official client strict step and usage accounting > malformed JSON is retained as evidence and cannot become success [0.51ms]
+(pass) official client strict step and usage accounting > accepts all six usage snapshots captured from the actual MiMo qualification [0.42ms]
+(pass) unlimited study turns retain complete event and usage accounting beyond old caps [1.82ms]
+(pass) missing numeric metadata is unavailable, not zero or a submission integrity error [0.70ms]
+(pass) explicit tool-call completion needs no final prose step [0.26ms]
+
+tests/execution.test.ts:
+(pass) engine/execution > buy by notional sizes deterministic fractional units, rounded down to 6dp [0.90ms]
+(pass) engine/execution > buy fails with an actionable reason when cash is insufficient [0.12ms]
+(pass) engine/execution > sell more units than held fails and reports the actual held amount [0.11ms]
+(pass) engine/execution > no short selling: selling a ticker never held fails [0.03ms]
+(pass) engine/execution > selling the full position removes the holding entirely [0.08ms]
+(pass) engine/execution > repeated buys compute a correctly weighted average cost [0.06ms]
+(pass) engine/execution > a micro BUY that would round to $0 notional is rejected, not filled for free shares [0.06ms]
+(pass) engine/execution > a micro SELL that would round to $0 notional is rejected, not filled for free cash [0.05ms]
+(pass) engine/execution > conservation: a single BUY fill EXACTLY preserves cash + rounded position value at the fill price [0.13ms]
+(pass) engine/execution > conservation: a single SELL fill EXACTLY preserves cash + rounded position value at the fill price [0.07ms]
+(pass) engine/execution > round trip: buying then selling the exact same units at the same price returns to the starting cash [0.05ms]
+(pass) engine/execution > floorUnits is idempotent across the full 6dp value space: a persisted holding's own unit count must round-trip through floorUnits unchanged [788.06ms]
+(pass) engine/execution > regression: floorUnits(0.000249) used to shave a dust unit off an already-quantized value [0.14ms]
+(pass) engine/execution > round 13: canonical-decimal flooring never rounds a raw request upward > reviewer repro: floorUnits(277359992.498531) is idempotent — units*1e6's float noise (277359992498530.97) no longer shaves a micro-share off an already-quantized value [0.02ms]
+(pass) engine/execution > round 13: canonical-decimal flooring never rounds a raw request upward > reviewer repro: floorCents(608501453.42) is idempotent — usd*100's float noise (60850145341.99999) no longer under-budgets an all-cash BUY by $0.01 [0.02ms]
+(pass) engine/execution > round 13: canonical-decimal flooring never rounds a raw request upward > floorUnits still floors a genuinely fractional value at large scale, not just snaps representation noise to the nearest tick [0.06ms]
+(pass) engine/execution > round 13: canonical-decimal flooring never rounds a raw request upward > floorCents still floors a genuinely fractional value near the MAX_MONEY_USD scale, not just snaps representation noise to the nearest cent [0.01ms]
+(pass) engine/execution > round 13: canonical-decimal flooring never rounds a raw request upward > floorUnits is idempotent across a deterministic sample spanning the FULL 0..MAX_UNITS domain, not just the dense 0..5 sample above [419.18ms]
+(pass) engine/execution > round 13: canonical-decimal flooring never rounds a raw request upward > floorCents is idempotent across a deterministic sample spanning the FULL 0..MAX_MONEY_USD domain [418.20ms]
+(pass) engine/execution > round 13: canonical-decimal flooring never rounds a raw request upward > nextDown neighbors floor downward while canonical unit/cent grid values remain idempotent [0.36ms]
+(pass) engine/execution > round 13: canonical-decimal flooring never rounds a raw request upward > accepted BUY fills never exceed raw units or raw notional requests [0.32ms]
+(pass) engine/execution > round 13: canonical-decimal flooring never rounds a raw request upward > only the exact persisted unit count is a full exit; an adjacent raw oversell is rejected [0.16ms]
+(pass) engine/execution > selling the exact persisted unit count of a dust-prone 6dp holding clears the position with no leftover dust [0.09ms]
+(pass) engine/execution > a full-position sell sized by the position's own notional value never leaves dust or a spurious oversell rejection [0.13ms]
+(pass) engine/execution > regression: a $0.015 BUY at $100/share is never filled for $0.015 of assets at $0.01 of cash — it buys only what $0.01 covers [0.13ms]
+(pass) engine/execution > regression: two 0.00014-unit BUYs followed by a same-price full exit ends at EXACTLY the starting cash (round 5's $0.01 arbitrage) [0.10ms]
+(pass) engine/execution > property: a deterministic sequence of buys/sells at a CONSTANT price never gains or loses net worth [0.21ms]
+(pass) engine/execution > property: a deterministic sequence of notional buys/sells at a CONSTANT price never gains or loses net worth [0.30ms]
+(pass) engine/execution > long-run conservation: a deterministic sequence of buys/sells EXACTLY preserves value at each fill's own price [0.45ms]
+(pass) engine/execution > regression (round 6): a $10.009 BUY at $1/share with exactly $10.00 cash fills for exactly $10.00 — its FLOORED budget, not the raw request, is what must be checked against cash [0.09ms]
+(pass) engine/execution > a $10.01 BUY with exactly $10.00 cash still fails — the floored-budget fix doesn't waive the cash check itself [0.03ms]
+(pass) engine/execution > defensive safe-range checks (round 6: a 1e306 budget used to hang maxBuyTicks/maxSellTicks' binary search) > a price below MIN_PRICE_USD is rejected outright, not sized against [0.04ms]
+(pass) engine/execution > defensive safe-range checks (round 6: a 1e306 budget used to hang maxBuyTicks/maxSellTicks' binary search) > a price above MAX_MONEY_USD is rejected outright [0.04ms]
+(pass) engine/execution > defensive safe-range checks (round 6: a 1e306 budget used to hang maxBuyTicks/maxSellTicks' binary search) > an oversized notional (> MAX_MONEY_USD) is rejected instead of driving maxBuyTicks' binary search toward Infinity [0.03ms]
+(pass) engine/execution > defensive safe-range checks (round 6: a 1e306 budget used to hang maxBuyTicks/maxSellTicks' binary search) > oversized portfolio cash alone (finite but beyond MAX_MONEY_USD, e.g. from a corrupted run directory) is rejected rather than sized against [0.04ms]
+(pass) engine/execution > paired-extrema safe-range checks (round 7: individually-safe bounds whose CROSS-PRODUCT still overflowed the binary search) > BUY at the accepted boundary (cash/notional=MAX_MONEY_USD, price=MIN_PRICE_USD) returns promptly, does not overspend, conserves value, and never persists units above MAX_UNITS (round 8 reviewer repro) [0.18ms]
+(pass) engine/execution > paired-extrema safe-range checks (round 7: individually-safe bounds whose CROSS-PRODUCT still overflowed the binary search) > a units-sized BUY that would push a near-ceiling position past MAX_UNITS is rejected, and the position remains sellable [0.08ms]
+(pass) engine/execution > paired-extrema safe-range checks (round 7: individually-safe bounds whose CROSS-PRODUCT still overflowed the binary search) > a notional BUY into a near-ceiling position is capped to the remaining MAX_UNITS headroom instead of overshooting it, and the position remains sellable [0.11ms]
+(pass) engine/execution > paired-extrema safe-range checks (round 7: individually-safe bounds whose CROSS-PRODUCT still overflowed the binary search) > an empty portfolio (existingUnits=0) buying by units at the exact MAX_UNITS boundary is accepted at exactly MAX_UNITS, one unit past it is rejected [0.06ms]
+(pass) engine/execution > paired-extrema safe-range checks (round 7: individually-safe bounds whose CROSS-PRODUCT still overflowed the binary search) > BUY just inside the accepted boundary (price = MIN_PRICE_USD + one cent) also returns promptly and conserves value [0.18ms]
+(pass) engine/execution > paired-extrema safe-range checks (round 7: individually-safe bounds whose CROSS-PRODUCT still overflowed the binary search) > a held position at exactly MAX_UNITS is PARTIALLY sellable by notional (exercises maxSellTicks' binary search, not the full-exit fast path): prompt return, no shorting, exact conservation [0.22ms]
+(pass) engine/execution > paired-extrema safe-range checks (round 7: individually-safe bounds whose CROSS-PRODUCT still overflowed the binary search) > a held position just under MAX_UNITS sold PARTIALLY also returns promptly with exact conservation [0.18ms]
+(pass) engine/execution > paired-extrema safe-range checks (round 7: individually-safe bounds whose CROSS-PRODUCT still overflowed the binary search) > reviewer repro: BUY with cash/notional=1e9 at price=0.01 is REJECTED (price is below MIN_PRICE_USD) instead of hanging [0.04ms]
+(pass) engine/execution > paired-extrema safe-range checks (round 7: individually-safe bounds whose CROSS-PRODUCT still overflowed the binary search) > reviewer repro: SELL from 1e11 held units at notional=5e8, price=0.01 is REJECTED (held units exceed MAX_UNITS) instead of hanging [0.03ms]
+(pass) engine/execution > paired-extrema safe-range checks (round 7: individually-safe bounds whose CROSS-PRODUCT still overflowed the binary search) > a held position just above MAX_UNITS (corrupted/adversarial state) is rejected rather than sized against [0.03ms]
+(pass) engine/execution > paired-extrema safe-range checks (round 7: individually-safe bounds whose CROSS-PRODUCT still overflowed the binary search) > a negative held-units value (corrupted state) is rejected rather than sized against [0.03ms]
+(pass) engine/execution > cent-exact value deltas at large position scale (round 9: catastrophic cancellation in round2(a)-round2(b)) > reviewer repro: BUY 50,000,000 units at $20 (exactly MAX_MONEY_USD) then SELL 0.001 units returns an exact $0.02, not a fractional-cent float [0.14ms]
+(pass) engine/execution > cent-exact value deltas at large position scale (round 9: catastrophic cancellation in round2(a)-round2(b)) > MAX_UNITS held at price $100,000: selling a single 1e-6 tick is REJECTED (the remaining ~MAX_UNITS position, still ~$1e14, would leave the domain) [0.06ms]
+(pass) engine/execution > cent-exact value deltas at large position scale (round 9: catastrophic cancellation in round2(a)-round2(b)) > MAX_UNITS held at price MAX_MONEY_USD ($1e9): selling a single 1e-6 tick is REJECTED (the remaining ~MAX_UNITS position, still ~$1e18, would leave the domain) [0.04ms]
+(pass) engine/execution > money domain closed under valuation and SELL transitions (round 10) > valuePortfolio: marking MAX_UNITS at an extreme price ($1e9) throws a clean domain error instead of persisting a lossy value [0.27ms]
+(pass) engine/execution > money domain closed under valuation and SELL transitions (round 10) > round 11 regression: a tiny partial SELL at the extreme price is REJECTED up front (the REMAINING position would leave the domain), not accepted and left for applyFill to throw on [0.07ms]
+(pass) engine/execution > money domain closed under valuation and SELL transitions (round 10) > full exit: a SELL of the entire position at the extreme price is REJECTED up front (cash would leave the domain), not accepted and corrupted [0.04ms]
+(pass) engine/execution > money domain closed under valuation and SELL transitions (round 10) > a subsequent valid order: after the full exit is rejected, the portfolio is untouched and a normal-priced SELL still fills correctly [0.08ms]
+(pass) engine/execution > money domain closed under valuation and SELL transitions (round 10) > round 11 regression: reviewer's BUY-side repro — a tiny BUY into a large, valid position (500,000,000 AAPL units @ $2 = exactly MAX_MONEY_USD, $1e9 cash) is REJECTED up front when the resulting position would leave the domain, not accepted and left for applyFill to throw on [0.04ms]
+(pass) engine/execution > money domain closed under valuation and SELL transitions (round 10) > round 11 regression: fills accepted right AT the money-domain boundary (not over it) still apply via applyFill without throwing, for both BUY and SELL [0.07ms]
+(pass) engine/execution > money domain closed under valuation and SELL transitions (round 10) > ordinary in-domain appreciation still marks and conserves exactly (the fix doesn't reject realistic gains, only the out-of-domain extreme) [0.14ms]
+
+tests/baselines.test.ts:
+(pass) engine/baselines > cash baseline never grows or shrinks [0.20ms]
+(pass) engine/baselines > buy-and-hold invests once on day one's OPEN and mark-to-markets at CLOSE afterward [17.71ms]
+(pass) engine/baselines > buy-and-hold's day-one deployment is EXACTLY starting capital when marked at its own fill price (no synthetic deployment gain) [2.03ms]
+(pass) engine/baselines > buy-and-hold net worth on day one (valued at day one's close) is close to starting capital [12.09ms]
+(pass) engine/baselines > tradeCount reflects actual accepted fills, not universe.length, when per-ticker sizing is below the minimum tradable notional [11.21ms]
+(pass) engine/baselines > turnoverPct reflects the actual day-one deployment (~100% of starting capital), then 0 on every later date [11.33ms]
+(pass) engine/baselines > turnoverPct is 0 throughout when every day-one fill is rejected (nothing was actually deployed) [10.72ms]
+
+tests/studyIdentity.test.ts:
+(pass) identity follows active dependencies and excludes reporting, archived clients, and documentation [6.84ms]
+
+tests/studyReference.test.ts:
+(pass) NDX comparison aligns actual contribution opens and separates price return from funded return [0.69ms]
+(pass) portfolio dividends are accounted separately, including same-day split-adjusted units [0.25ms]
+
+tests/metrics.test.ts:
+(pass) engine/metrics > flat curve: zero return, zero drawdown, zero volatility, null sharpe [0.16ms]
+(pass) engine/metrics > monotonically rising curve: positive return, zero drawdown [0.04ms]
+(pass) engine/metrics > drawdown captures the worst peak-to-trough decline, not just start-to-end [0.02ms]
+(pass) engine/metrics > counts pass through untouched [0.03ms]
+(pass) engine/metrics > empty curve falls back to starting capital with zero days [0.02ms]
+(pass) engine/metrics > a first-day loss is captured in BOTH totalReturnPct and maxDrawdownPct (starting capital seeds the curve) [0.02ms]
+(pass) engine/metrics > a first-day gain is captured in maxDrawdownPct's peak tracking too (no false drawdown from an unseeded series) [0.01ms]
+(pass) engine/metrics > zero starting capital is rejected at the metric boundary [0.05ms]
+(pass) engine/metrics > every persisted metric stays finite at the MIN_MONEY_USD boundary [0.05ms]
+(pass) engine/metrics > every persisted metric stays finite at the MAX_MONEY_USD boundary [0.05ms]
+(pass) engine/metrics > the first day's return is included in volatility/Sharpe, not silently excluded [0.02ms]
+
+tests/yahoo.test.ts:
+(pass) Yahoo raw conversion > reverses splits beyond evaluation end on OHLC, volume AND cash dividend; ignores adjclose [2.40ms]
+(pass) Yahoo raw conversion > spin-off factors masquerading as Yahoo splits are rejected [0.17ms]
+(pass) Yahoo raw conversion > pre-coverage exotic factors are ignored because they cannot affect retained raw bars [0.30ms]
+(pass) Yahoo raw conversion > multiple forward and reverse splits apply strictly after each bar [0.39ms]
+(pass) Yahoo raw conversion > Yahoo symbol alias, null rows, duplicate dates and unsupported distributions fail loudly [0.71ms]
+Imported AAPL: 311 bars, 1 actions
+Imported AAPL: 311 bars, 1 actions
+(pass) immutable Yahoo import and replay > frozen snapshots reproduce byte-identical manifests and version with network forbidden [40.02ms]
+(pass) immutable Yahoo import and replay > stale provider bars fail instead of silently shortening the requested benchmark [10.97ms]
+
+tests/opencodeAudit.test.ts:
+(pass) SDK updates deduplicate; older file snapshots do not erase completed stdout evidence [0.93ms]
+(pass) SDK schema rejection never reaching MCP counts as failed attempt [0.07ms]
+(pass) unknown SDK call consumes cap before later valid MCP trade; day fails closed [0.11ms]
+(pass) MCP semantic failure counts once even when SDK marks wrapper completed [0.07ms]
+(pass) unmatched completed calls, missing SDK evidence, pending calls and conflicting terminal states fail closed [0.13ms]
+(pass) same arguments called twice require two distinct MCP executions [0.09ms]
+(pass) all runtime request/config audits must agree on free model, exact prompt, tools and isolated cwd [1.07ms]
+(pass) runtime audit fails closed on ambient tools, missing version, wrong directory and nonzero model cache pricing [1.01ms]
+(pass) unmetered background requests fail the runtime audit even with matching prompts [0.28ms]
+(pass) unmatched MCP refusals remain counted in failed-attempt evidence [0.06ms]
+
+tests/experiment.test.ts:
+(pass) three-month experiment contract > default uses the last three completed UTC calendar months [0.12ms]
+(pass) three-month experiment contract > window qualification requires first-of-month through final day of month three [0.05ms]
+(pass) three-month experiment contract > deposits occur on first represented session of months two and three, including holidays/weekends [0.08ms]
+(pass) three-month experiment contract > dataset defaults identify both evaluation months [0.04ms]
+(pass) three-month experiment contract > boolean flags reject ambiguous values [0.11ms]
+(pass) three-month experiment contract > new core accepts ordinary short windows with no scored-quarter label [125.42ms]
+(pass) three-month experiment contract > retired tool quota/model/agent flags are rejected [256.93ms]
+(pass) three-month experiment contract > new CLI keeps minimum warmup and hard history bounds [105.26ms]
+
+tests/studyTools.test.ts:
+(pass) exactly four tools; preloaded cash, funding, universe and original note [7.67ms]
+(pass) submission is durable before acknowledgement, whole-batch validated and repeated delivery is idempotent [64.71ms]
+(pass) invalid/partial submissions persist no orders or journal, including mixed valid and invalid orders [93.25ms]
+(pass) seen evidence includes every successful read and opening context; explicit citations stay separate [29.41ms]
+(pass) forged, foreign and future evidence IDs rejected; citations optional including holds [63.46ms]
+(pass) unlimited research calls; retained deadline and payload/history bounds [509.71ms]
+(pass) unknown tools denied and permanently flagged as integrity failures [17.88ms]
+(pass) journal filters combine ticker aliases, exact dates and text, returning full notes with pagination [67.88ms]
+(pass) foreign/future journal input refused; current failed-attempt submissions never queried [8.33ms]
+(pass) event truncation and tampering refuse recovery instead of silently changing history [13.76ms]
+
+tests/studyRunner.test.ts:
+(pass) multi-day control replays and resumes without duplicate decisions/fills or duplicate authoritative files [593.94ms]
+(pass) crash after-result recovers durable decision exactly once without another turn [545.07ms]
+(pass) crash after-commit recovers durable decision exactly once without another turn [601.10ms]
+(pass) crash after durable submission but before integrity completion executes nothing and hides failed note on retry [195.17ms]
+(pass) unknown usage preserves an otherwise complete submission and remains null on replay [226.17ms]
+(pass) broker/result/context integrity errors invalidate complete submissions [345.13ms]
+(pass) next-day prompt includes exact original note and changed cash/holdings; forged preload rejected [414.98ms]
+(pass) changed semantics and conflicting atomic publication fail closed [205.99ms]
+
+tests/dataset.test.ts:
+(pass) dataset validation and causal corporate actions > raw execution bars and date-effective adjusted history [1.74ms]
+(pass) dataset validation and causal corporate actions > future action changes cannot leak into earlier decision [1.74ms]
+(pass) dataset validation and causal corporate actions > coverage includes nontrading boundary days and rejects truncation/warmup [0.94ms]
+(pass) dataset validation and causal corporate actions > content and source tampering fail SHA verification [1.42ms]
+(pass) dataset validation and causal corporate actions > missing exchange sessions and duplicate calendar fail before use [0.69ms]
+(pass) dataset validation and causal corporate actions > file gaps fail even when newly hashed; invalid actions fail [1.37ms]
+(pass) dataset validation and causal corporate actions > legacy fixtures remain labeled synthetic and independently immutable [9.34ms]
+(pass) dataset validation and causal corporate actions > bar schema rejects invalid domains, ordering, dates and bounds [0.23ms]
+(pass) NYSE calendar > exchange holidays and exceptional closures are excluded; early closes retained [0.26ms]
+(pass) versioned historical universe excludes HON while preserving the legacy universe [0.19ms]
+
+tests/cliValidate.test.ts:
+(pass) cli/args parseFlags > a leading `--` separator (as pnpm forwards it) is dropped, not treated as an empty flag [0.13ms]
+(pass) cli/args parseFlags > parses identically with or without the leading separator [0.03ms]
+(pass) cli/args parseFlags > a non-flag token is collected as a positional, not silently dropped [0.02ms]
+(pass) cli/args parseFlags > `--flag value` form still consumes its value, not treated as a positional [0.02ms]
+(pass) cli/args parseFlags > only ONE leading separator is dropped; a second bare `--` is caught as an unknown flag, not silently accepted [0.17ms]
+(pass) cli/validate assertKnownFlags / assertNoPositionals > rejects an unknown flag by name, not by the separator [0.06ms]
+(pass) cli/validate assertKnownFlags / assertNoPositionals > rejects stray positional arguments [0.04ms]
+(pass) cli/validate assertKnownFlags / assertNoPositionals > accepts an empty positionals list [0.02ms]
+(pass) cli/validate parseDateFlag > accepts a real calendar date [0.08ms]
+(pass) cli/validate parseDateFlag > rejects an impossible month [0.04ms]
+(pass) cli/validate parseDateFlag > rejects an impossible day-of-month (Feb 30) [0.02ms]
+(pass) cli/validate parseDateFlag > rejects Feb 29 on a non-leap year [0.02ms]
+(pass) cli/validate parseDateFlag > rejects a malformed shape before even checking calendar validity [0.02ms]
+(pass) cli/validate parseDateFlag > undefined input means "not provided" (null), not an error [0.01ms]
+(pass) cli/validate numeric flag parsing > parsePositiveFinite rejects non-finite/non-positive input [0.05ms]
+(pass) cli/validate numeric flag parsing > parsePositiveInt rejects a non-integer [0.03ms]
+(pass) cli/validate numeric flag parsing > parseIntFlag rejects a non-integer but allows negative [0.04ms]
+(pass) cli/run --starting-capital normalize-then-bound (round2 BEFORE assertInRange) > a sub-cent value that's positive/finite RAW but rounds to $0 is rejected, not silently accepted as capital 0 [0.06ms]
+(pass) cli/run --starting-capital normalize-then-bound (round2 BEFORE assertInRange) > 1e307 is finite RAW but round2(1e307) overflows to Infinity — rejected, not accepted as an infinite-capital run [0.03ms]
+(pass) cli/run --starting-capital normalize-then-bound (round2 BEFORE assertInRange) > 1e306 stays nominally finite after round2 but is still rejected — outside the documented safe range even though it wouldn't hang assertInRange itself [0.03ms]
+(pass) cli/run --starting-capital normalize-then-bound (round2 BEFORE assertInRange) > $0.01 (MIN_MONEY_USD) is accepted; a value that rounds below it is not [0.02ms]
+(pass) cli/run --starting-capital normalize-then-bound (round2 BEFORE assertInRange) > MAX_MONEY_USD is accepted; a dollar above is not [0.03ms]
+(pass) cli/run --starting-capital normalize-then-bound (round2 BEFORE assertInRange) > the documented benchmark default ($1000) is comfortably inside the safe range
+(pass) engine/calendar resolveDateRange > a wholly out-of-range window is rejected with the available range in the message [0.08ms]
+(pass) engine/calendar resolveDateRange > start after end is rejected [0.02ms]
+(pass) engine/calendar resolveDateRange > an empty fixture calendar is rejected outright [0.03ms]
+(pass) engine/calendar resolveDateRange > a partially overlapping window resolves to just the intersection [0.02ms]
+(pass) engine/calendar resolveDateRange > null start/end default to the full calendar
+
+tests/studyEquivalence.test.ts:
+(pass) all 64 archived v10 ledger days reproduce exactly under extracted accounting [5.53ms]
+(pass) ordered sells fund later buys; fixed shares can fail while dollar orders adapt to unknown open [0.46ms]
+(pass) contributions, split and dividend are applied once and evaluator gaps use split-consistent shares [0.46ms]
+(pass) opening context applies due contribution, split-adjusted holdings and dividend before preload [0.43ms]
+
+tests/studyCausality.test.ts:
+(pass) changing every future price and future split leaves all current financial tool replies identical [71.20ms]
+
+tests/studyGateway.test.ts:
+(pass) gateway binds provider identity, denies unauthorized content/tools, retains raw observations, and blocks extra inference after submit [44.09ms]
+(pass) actual provider context attestation rejects hidden prompt changes and missing/duplicate effective tools [3.36ms]
+
+ 200 pass
+ 0 fail
+ 1227 expect() calls
+Ran 200 tests across 21 files. [6.58s]

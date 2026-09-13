@@ -1,0 +1,12 @@
+{
+  "datasetHash": "abc104ae3f2cb258e1c9c9bc996a9f46c14ca83771da5c9acbeb7eaab23b2de7",
+  "unit": "stored-dataset security-days; not actual model fills or independently verified market-wide estimates",
+  "splitUnits": "previous close adjusted for splits through execution date; same units as opening fill",
+  "securities": 99,
+  "days": 64,
+  "observations": 6336,
+  "absoluteMedianPct": 0.8119391214461091,
+  "absoluteP95Pct": 4.716373278976638,
+  "absoluteOver2Pct": 19.333964646464647,
+  "absoluteMaxPct": 29.48899774546838
+}

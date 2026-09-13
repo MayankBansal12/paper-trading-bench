@@ -20,7 +20,7 @@ test("decision reviews keep hostile original notes literal while preserving host
       allocation: "Cash", alternatives: "Hold", risks: "Risk", invalidation: "Review", continuity: "First day",
     } }],
   };
-  const r: any = { date: a.scope.date, fills: [], failedOrders: [], portfolioAfter: { netWorth: 500, cash: 500 } };
+  const r: any = { portfolioBefore: { cash: 500, holdings: {}, holdingsValue: 0, netWorth: 500 }, date: a.scope.date, fills: [], failedOrders: [], portfolioAfter: { netWorth: 500, cash: 500 } };
   const markdown = (renderJournalReview as Function)([r], [a], {});
   const html = Bun.markdown.html(markdown);
   expect(html).not.toMatch(/<(?:img|script)\b/i);

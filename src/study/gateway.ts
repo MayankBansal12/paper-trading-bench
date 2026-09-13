@@ -1,6 +1,9 @@
 import { randomUUID } from "node:crypto";
 import { chmod } from "node:fs/promises";
-import { contentHash } from "../run/persist.ts";
+import { contentHash, canonical } from "../core/hash.ts";
+import { assertProviderContext } from "../opencode/context.ts";
+import { OPENCODE_PROMPT_SUFFIX } from "../opencode/config.ts";
+import { systemPrompt } from "./protocol.ts";
 import { STUDY_TOOLS, POLICY } from "./protocol.ts";
 import { SessionTools, toolDefinitions } from "./tools.ts";
 import { QUALIFIED_ZEN_MODEL } from "../opencode/qualification.ts";
@@ -14,8 +17,10 @@ export async function serveGateway(
   onBudgetCutoff: (reason: string) => void = () => {},
 ) {
   const capability = randomUUID();
-  let closed = false, inferences = 0;
+  let closed = false,
+    inferences = 0;
   const abort = new AbortController();
+  const bindings: Array<{ callID: string; tool: string; args: unknown }> = [];
   const deny = (reason: string, status = 403) => {
     audit({ type: "gateway_denied", reason });
     return new Response("Request denied", { status });
@@ -29,6 +34,15 @@ export async function serveGateway(
       if (req.headers.get("authorization") !== `Bearer ${capability}`)
         return deny("unauthorized");
       const url = new URL(req.url);
+      // The official MCP client probes an optional SSE stream. This stateless broker
+      // implements POST only; a 405 is normal transport negotiation, not a tool attempt.
+      if (!url.search && url.pathname === "/mcp" && req.method === "GET") {
+        audit({ type: "mcp_transport_probe", method: "GET", status: 405 });
+        return new Response("POST only", {
+          status: 405,
+          headers: { allow: "POST" },
+        });
+      }
       if (url.search || req.method !== "POST") return deny("method/path");
       const raw = await req.text();
       if (closed || Date.now() >= deadline) return deny("expired");
@@ -37,6 +51,26 @@ export async function serveGateway(
         body = JSON.parse(raw);
       } catch {
         return deny("invalid-json", 400);
+      }
+      if (!body || typeof body !== "object" || Array.isArray(body))
+        return deny("invalid-request-object", 400);
+      if (url.pathname === "/bind-call") {
+        if (Buffer.byteLength(raw) > POLICY.maxRequestBytes)
+          return deny("binding-size", 413);
+        if (
+          typeof body.callID !== "string" ||
+          !body.callID ||
+          body.callID.length > 160 ||
+          !(STUDY_TOOLS as readonly string[]).some(
+            (t) => `trading_${t}` === body.tool,
+          )
+        )
+          return deny("invalid-call-binding");
+        if (bindings.some((b) => b.callID === body.callID))
+          return deny("duplicate-call-binding");
+        bindings.push(body);
+        audit({ type: "provider_tool_binding", ...body });
+        return Response.json({ bound: true });
       }
       if (url.pathname === "/mcp") {
         if (Buffer.byteLength(raw) > POLICY.maxRequestBytes)
@@ -48,13 +82,26 @@ export async function serveGateway(
           return reply({
             protocolVersion: "2024-11-05",
             capabilities: { tools: {} },
-            serverInfo: { name: "study-session", version: "10" },
+            serverInfo: { name: "study-session", version: "11" },
           });
         if (body.method === "ping") return reply({});
         if (body.method === "tools/list")
           return reply({ tools: toolDefinitions });
         if (body.method === "tools/call") {
-          const response = reply(tools.call(body.params?.name, body.params?.arguments ?? {}));
+          const bindingIndex = bindings.findIndex(
+            (b) =>
+              b.tool === `trading_${body.params?.name}` &&
+              canonical(b.args) === canonical(body.params?.arguments ?? {}),
+          );
+          if (bindingIndex < 0) return deny("missing-provider-call-binding");
+          const binding = bindings.splice(bindingIndex, 1)[0]!;
+          const response = reply(
+            tools.call(
+              body.params?.name,
+              body.params?.arguments ?? {},
+              binding.callID,
+            ),
+          );
           if (tools.boundedReason) onBudgetCutoff(tools.boundedReason);
           return response;
         }
@@ -66,6 +113,17 @@ export async function serveGateway(
         )
       )
         return deny("route");
+      if (tools.submission()) {
+        audit({
+          type: "submission_finalization",
+          reason:
+            "client requested continuation after final submission; no provider request sent",
+        });
+        return new Response("Decision submitted", {
+          status: 409,
+          headers: { "x-bench-submitted": "true" },
+        });
+      }
       if (body.model !== QUALIFIED_ZEN_MODEL) return deny("model");
       // Provider-hosted retrieval is also outside the experiment. No URL media,
       // uploaded files, response continuations, external MCP or server-side tools.
@@ -151,6 +209,16 @@ export async function serveGateway(
           ))
       )
         return deny("tool-allowlist");
+      try {
+        assertProviderContext(
+          body,
+          systemPrompt(tools.view.limits) + OPENCODE_PROMPT_SUFFIX,
+          tools.prompt(),
+          STUDY_TOOLS,
+        );
+      } catch {
+        return deny("effective-context-or-tools");
+      }
       const sequence = ++inferences;
       audit({
         type: "inference_request",
@@ -158,6 +226,7 @@ export async function serveGateway(
         route: url.pathname,
         model: body.model,
         bodyHash: contentHash(body),
+        body,
         tools: (body.tools ?? []).map((t: any) => t.function?.name ?? t.name),
       });
       const headers = new Headers();
@@ -193,7 +262,26 @@ export async function serveGateway(
         outHeaders.delete("content-length");
         outHeaders.delete("content-encoding");
         outHeaders.delete("set-cookie");
-        return new Response(response.body, {
+        let responseBytes = 0;
+        const stream = response.body?.pipeThrough(
+          new TransformStream({
+            transform(chunk, controller) {
+              responseBytes += chunk.length;
+              if (responseBytes > POLICY.maxOutputBytes) {
+                onBudgetCutoff("Provider response exceeded byte bound");
+                controller.error(new Error("Response too large"));
+                return;
+              }
+              audit({
+                type: "inference_chunk",
+                sequence,
+                base64: Buffer.from(chunk).toString("base64"),
+              });
+              controller.enqueue(chunk);
+            },
+          }),
+        );
+        return new Response(stream, {
           status: response.status,
           headers: outHeaders,
         });

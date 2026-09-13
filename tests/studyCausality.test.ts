@@ -9,12 +9,17 @@ import {
   type DatasetManifest,
 } from "../src/data/dataset.ts";
 import { CALENDAR_VERSION, exchangeDates } from "../src/data/calendar.ts";
-import { scopeFor, makeView, dailyPrompt, openingPortfolio } from "../src/study/protocol.ts";
-import { buildDecisionContext } from "../src/run/day.ts";
+import {
+  scopeFor,
+  makeView,
+  dailyPrompt,
+  openingPortfolio,
+} from "../src/study/protocol.ts";
+import { buildDecisionContext } from "../src/core/context.ts";
 import { createInitialPortfolio } from "../src/engine/portfolio.ts";
 import { SessionTools } from "../src/study/tools.ts";
 import { JournalStore } from "../src/study/journal.ts";
-import type { RunConfig } from "../src/domain/types.ts";
+import type { ContextConfig } from "../src/core/context.ts";
 test("changing every future price and future split leaves all current financial tool replies identical", async () => {
   const dir = mkdtempSync(join(tmpdir(), "study-future-"));
   try {
@@ -70,12 +75,15 @@ test("changing every future price and future split leaves all current financial 
     save();
     const after = await loadDataset(dir);
     expect(before.version).not.toBe(after.version);
+    expect(before.openOn("AAPL", "2025-01-22")).not.toBe(
+      after.openOn("AAPL", "2025-01-22"),
+    );
     const scope = scopeFor("causality", "2025-01-22", 1);
     const config = {
-      warmupBars: 60,
-      limits: { maxTurns: null, maxToolCalls: 24, timeoutMs: 10000 },
+      history: 60,
+      limits: { maxTurns: null, maxToolCalls: null, timeoutMs: 10000 },
       contributions: [],
-    } as unknown as RunConfig<null>;
+    } as unknown as ContextConfig;
     const views = [before, after].map((m) =>
       makeView(
         buildDecisionContext(
@@ -91,19 +99,21 @@ test("changing every future price and future split leaves all current financial 
     );
     expect(views[0]).toEqual(views[1]);
     expect(openingPortfolio(views[0]!)).toEqual(openingPortfolio(views[1]!));
-    expect(dailyPrompt(views[0]!, scope.date, "2025-01-24", [])).toEqual(dailyPrompt(views[1]!, scope.date, "2025-01-24", []));
+    expect(dailyPrompt(views[0]!, scope.date, "2025-01-24", [])).toEqual(
+      dailyPrompt(views[1]!, scope.date, "2025-01-24", []),
+    );
     const replies = views.map((view, i) => {
       const journal = new JournalStore(join(dir, `journal-${i}`));
       journal.begin(scope);
       const tools = new SessionTools(view, journal, [], Date.now() + 10000);
       return [
-        tools.call("get_price", { ticker: "AAPL" }),
-        tools.call("get_ohlcv", { ticker: "AAPL" }),
-        tools.call("get_indicators", {}),
-        tools.call("get_portfolio", {}),
+        tools.call("market_snapshot", { tickers: ["AAPL"] }),
+        tools.call("price_history", { tickers: ["AAPL"], lookback: 252 }),
+        tools.call("journal", {}),
       ];
     });
     expect(replies[0]).toEqual(replies[1]);
+    expect(replies[0]!.every((r) => !r.isError)).toBe(true);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }

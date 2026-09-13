@@ -62,7 +62,7 @@ export const roundUnits = (n: number) => {
  * provenance is known; raw caller input never gets an ULP-based upward snap. */
 export const floorUnits = (n: number) => decimalFloor(n, UNIT_DECIMALS);
 
-/** A run terminates once net worth falls below 1% of starting capital (spec: PRODUCT.md). */
+/** A run terminates once net worth falls below 1% of starting capital (legacy engine utility; the daily study does not terminate at this threshold). */
 export const TERMINATION_FRACTION = 0.01;
 
 export function isTerminated(portfolio: PortfolioState, startingCapital: number): boolean {

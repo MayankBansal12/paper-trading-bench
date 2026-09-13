@@ -1,0 +1,34 @@
+{
+  "config": {
+    "protocol": "v11-portfolio-journal-submit",
+    "kind": "smoke",
+    "runId": "muse-v11-smoke-20260730-0803",
+    "dataDir": "/home/ai/code/paper-trading-bench/datasets/historical/nasdaq100_202606_202608_v2",
+    "datasetHash": "abc104ae3f2cb258e1c9c9bc996a9f46c14ca83771da5c9acbeb7eaab23b2de7",
+    "universeVersion": "dataset",
+    "start": "2026-07-30",
+    "end": "2026-08-03",
+    "history": 100,
+    "limits": {
+      "maxTurns": null,
+      "maxToolCalls": null,
+      "timeoutMs": 300000
+    },
+    "policy": {
+      "version": "v11-portfolio-journal-submit",
+      "maxHistory": 252,
+      "maxHistoryTickers": 8,
+      "maxOrders": 128,
+      "maxAttemptsPerDay": 3,
+      "maxEntryChars": 2000,
+      "maxReadChars": 12000,
+      "maxRequestBytes": 32768,
+      "maxResponseBytes": 524288,
+      "maxOutputBytes": 16777216,
+      "reports": "disabled",
+      "journal": "own-committed-past-only"
+    }
+  },
+  "sessions": 3,
+  "modelCalls": 0
+}

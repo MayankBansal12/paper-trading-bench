@@ -1,0 +1,209 @@
+{
+  "protocol": "v11-portfolio-journal-submit",
+  "baseCommit": "7f077b64ccb2ce2439486d6bde69a3fa76e7a940",
+  "implementationCommit": "92545440b399f42c73aa44add4f6a7ca8b9e8762",
+  "liveSmokeCommit": "c94d997",
+  "checkedAt": "2026-09-13T16:27:10.925811+00:00",
+  "phases": "1-4; direct-provider phase 5 deferred",
+  "tests": {
+    "current": {
+      "pass": 200,
+      "fail": 0,
+      "assertions": 1227
+    },
+    "archivedV10": {
+      "pass": 341,
+      "fail": 0,
+      "assertions": 4547
+    },
+    "typecheck": "passed"
+  },
+  "control": {
+    "protocol": "v11-portfolio-journal-submit",
+    "kind": "control",
+    "status": "completed",
+    "failure": null,
+    "committedDays": 64,
+    "totalDays": 64,
+    "portfolio": {
+      "cash": 668.29,
+      "holdings": {
+        "AAPL": {
+          "units": 2.751423,
+          "avgCost": 312.42,
+          "lastClose": 316.8500061035156,
+          "value": 871.79
+        }
+      },
+      "holdingsValue": 871.79,
+      "netWorth": 1540.08
+    },
+    "fills": 56,
+    "rejectedOrders": 0,
+    "journalEntries": 64,
+    "eventRoot": "f662c7b888162d91d6fdac6c5fc398c3357999dc007d045559939f102aa146f2",
+    "commitRoot": "163e1c74d7fa2157e3fed39b4404bc8346637ccbc17fb3860591585aa8ad4886",
+    "attempts": 64,
+    "failures": 0,
+    "usageUnavailableAttempts": 0,
+    "replay": "identical",
+    "ledgerEquivalence": "all 64 original v10 daily portfolio/funding/action/fill/rejection values equal",
+    "originalDailyFilesUnchanged": 64,
+    "inferenceCalls": 0
+  },
+  "sandbox": "qualified; namespaces, seccomp, capabilities, mounts, denied host/egress access and scoped gateway tested",
+  "adapterFixtures": {
+    "complete": "one scripted provider request; explicit submit ends official-client work without another inference turn; literal preload/effective tools attested",
+    "watchdog": "two scripted requests, one observed successful tool, no submission/orders; failed usage unavailable; no remote inference"
+  },
+  "liveSmoke": {
+    "runId": "muse-v11-smoke-20260730-0803",
+    "status": "partial: 2 of 3 sessions committed",
+    "source": "source-c94d997.tar.gz",
+    "days": [
+      {
+        "date": "2026-07-30",
+        "outcome": "completed",
+        "reason": null,
+        "elapsedMs": 78803,
+        "modelTurns": 8,
+        "observedBrokerCalls": 9,
+        "submission": true,
+        "usage": {
+          "completeness": "unavailable",
+          "missingSteps": 3,
+          "turns": 8,
+          "toolCalls": 9,
+          "failedToolCalls": 1,
+          "promptTokens": null,
+          "completionTokens": null,
+          "inputTokens": null,
+          "cacheReadTokens": null,
+          "cacheWriteTokens": null,
+          "totalTokens": null,
+          "costUsd": 0,
+          "attemptedToolCalls": 9,
+          "admittedToolCalls": 9,
+          "refusedToolCalls": 0,
+          "successfulToolCalls": 8,
+          "pendingToolCalls": 0
+        }
+      },
+      {
+        "date": "2026-07-31",
+        "outcome": "completed",
+        "reason": null,
+        "elapsedMs": 27311,
+        "modelTurns": 4,
+        "observedBrokerCalls": 4,
+        "submission": true,
+        "usage": {
+          "completeness": "complete",
+          "missingSteps": 0,
+          "turns": 4,
+          "toolCalls": 4,
+          "failedToolCalls": 0,
+          "promptTokens": 25270,
+          "completionTokens": 2723,
+          "inputTokens": 12658,
+          "cacheReadTokens": 12612,
+          "cacheWriteTokens": 0,
+          "totalTokens": 27993,
+          "costUsd": 0,
+          "attemptedToolCalls": 4,
+          "admittedToolCalls": 4,
+          "refusedToolCalls": 0,
+          "successfulToolCalls": 4,
+          "pendingToolCalls": 0
+        }
+      },
+      {
+        "date": "2026-08-03",
+        "outcome": "budget_cutoff",
+        "reason": "Hard session timeout",
+        "elapsedMs": 300225,
+        "modelTurns": 27,
+        "observedBrokerCalls": 4,
+        "submission": false,
+        "usage": {
+          "completeness": "unavailable",
+          "missingSteps": 23,
+          "turns": 27,
+          "toolCalls": 0,
+          "failedToolCalls": 0,
+          "promptTokens": null,
+          "completionTokens": null,
+          "inputTokens": null,
+          "cacheReadTokens": null,
+          "cacheWriteTokens": null,
+          "totalTokens": null,
+          "costUsd": null,
+          "attemptedToolCalls": 0,
+          "admittedToolCalls": 0,
+          "refusedToolCalls": 0,
+          "successfulToolCalls": 0,
+          "pendingToolCalls": 0
+        }
+      }
+    ],
+    "fills": 4,
+    "rejects": 0,
+    "commitBoundaryFailure": "2026-08-03 reached the 300000ms watchdog without submit_day; no fills or contribution committed for that day",
+    "qualificationLimitation": "Existing-position continuity was exercised live; the contribution-boundary day did not commit. No performance/superiority claim. Missing usage is excluded from token/cost-efficiency comparisons.",
+    "postSmokeChange": "Final source only adds observed failed-attempt tool reconciliation after interrupted audits. Qualified with scripted real-sandbox failure/success checks; no further live inference and no resume under changed identity.",
+    "diagnostic": "One Bun idle-request timeout warning retained in live-smoke.log; successful days passed independent complete request/context/tool audits."
+  },
+  "gapAudit": {
+    "datasetHash": "abc104ae3f2cb258e1c9c9bc996a9f46c14ca83771da5c9acbeb7eaab23b2de7",
+    "unit": "stored-dataset security-days; not actual model fills or independently verified market-wide estimates",
+    "splitUnits": "previous close adjusted for splits through execution date; same units as opening fill",
+    "securities": 99,
+    "days": 64,
+    "observations": 6336,
+    "absoluteMedianPct": 0.8119391214461091,
+    "absoluteP95Pct": 4.716373278976638,
+    "absoluteOver2Pct": 19.333964646464647,
+    "absoluteMaxPct": 29.48899774546838
+  },
+  "artifactsSha256": {
+    "README.md": "355f8d54215efe7a1301f4d1844a0aa15013aeb02bdbcfe05ca36d48e87c7cf3",
+    "adapter-fixtures.tar.gz": "4524932caf90b0bb9845e641090c111749665f17b165fa8b3441d114d4d25343",
+    "archived-test-install-diagnostics.tar.gz": "002dc16a0dded546032ccdef254f8f1595884e65e5590777ffb126de1b5e6ff2",
+    "archived-tests-final-policy.log": "f8f4ee71b8ceaff0218f97a58ff36c1593a7c7fe601bd90caf726fc7187bb53f",
+    "control-final-replay.json": "5979494a6e61714c1fceae3640e5b3cc1bcb2e23f9799325ac4ac47b058129a5",
+    "control-final-review.log": "de6594aff35cb28601df4aabf513eba0ee0b0da6c04d569ab0cf1b50e1b286c7",
+    "control-final.log": "9fcd0624df9d179149bfb9d9436e4b07601be3aba3305f95147076403eff370d",
+    "control-final.tar.gz": "2262fb00519295030d572f26f57abfacd6d2f994305966045a0d89797ac0569d",
+    "control-replay.json": "d08bceee717b5855f38ea31b148ff076c30633610e8977ec527bbc29b5067862",
+    "control-review.log": "2b8302c7a118d31c2b6fd297898f5cbe6d65ab1bca184e06d912354206305dd7",
+    "control.log": "91079f680008254cf199bdcc811a81b9ee329cd56b664b6c481e2fc83e0682df",
+    "dataset-gap-summary.json": "bd859919548abbf1f7dd72029a55c5ec08ebee801f59e124b120ef6ed6bc4e53",
+    "live-initial-context.txt": "558904f5125d898226919fadcb080ebbb04b968f3e34e02518c34d666ab1124e",
+    "live-preflight.json": "259f8b00b7c1cf042d46bcb1a16dc3aad46c5242d9c58eff2b7b8f5ca59f8b99",
+    "live-replay.json": "3fadfa1813d77cd9dde8aa903eb8251cbfcd6ea244b211eaa1c9536a3022f5f8",
+    "live-review.log": "b32f2872c3545df70664fd5a03ddb8b413f9b7fd2a1d8084459c391c3bda0caf",
+    "live-review.md": "18fce52222853634352fbe32a416689dbc4b09819b37de67d9eb4d77a576425c",
+    "live-smoke-c94d997.tar.gz": "13e939c171e3e1374d031f6a45574f7495d612965460e5c8bbc9d91369d05df3",
+    "live-smoke.log": "75c245b433cad90e9d82c8af2cbeaa8631b8770b92fbe12380c50c2e57c21bff",
+    "model-preflight.json": "f4ac07a1ceaf04d9bac0e47889fde6b613e7cea1e20f9dad415e613c26b0e9e2",
+    "model-preflight.log": "3ad42385e0a62545e58a475e0d6aff7ebaadf8ee419e0007729dea2549e460b9",
+    "offline-tests-final.log": "d1b79cddecda220f478b46519206acce7da92c64e0ee76e76d1d163478324294",
+    "offline-tests.log": "f64e3e0f0f61e55dc4de6284eaaa0c2a0d922494d31b6e997bac59a3caf0247b",
+    "sandbox-check.log": "ca68f8a31df83111ade864f132d3069f677639401f94b6b67403f00e771f27a3",
+    "sandbox-final.json": "4958280713cddde04504761d6d98a0348cdd52cbfccebb7e003cf6506689a0d4",
+    "sandbox-final.log": "58ffc59f8b045ae3b71a88efa624806d5202f735fd2a7cb19da4a411aec4d2b5",
+    "source-9254544.tar.gz": "d6d789aef852796ba16b621bd70d3be3b45ca6e0af276fdce968819cd7cec283",
+    "source-c94d997.tar.gz": "34aafb901dba9f0c258272998ab25149d03440652a2a125b42811ca0c8dfb746",
+    "submission-fixture-final.log": "98615e0f049acdeb433b4f5172c9360d23e31b7369db6cb74503e478563544a0",
+    "submission-fixture-head.log": "8251fb02d3bd2498d272897ee7c11cb1a7f120cbc7ca311a234fb7d7eb5ff449",
+    "submission-fixture-r2.log": "f9a88e8153a64deee7d30cb7d5a89745aa324799db001190688bc0d383b9fd90",
+    "submission-fixture-r3.log": "c93b382c7d2da6312db9f5742570eb369c32a45f98682c379d0cd5d372c583fe",
+    "submission-fixture-r4.log": "355f4e726f475fe83b8235971d96166ddd82e81f7ef0490b4ae1b7b1646ddfb0",
+    "submission-fixture.log": "2e09c2e0728b2a49380e2ed8cdcf0f8bd9e483734ca0a5d340a46f77d1f42ca4",
+    "watchdog-fixture.log": "698cd123c2f174b40ccab47b1f5b34b273d1fe86d86a673dc2506c49dbda8212"
+  },
+  "diagnosticLogMembersSha256": {
+    "archived-tests.log": "de26fc33dc33bc82e85771d35f744d735faac56f0426f4566b4032e0ed87b737",
+    "archived-tests-final.log": "12a4b39c652f41906cf6c7680c0fd3bf89a80197e6b870b99950dc870e629b9e"
+  }
+}
