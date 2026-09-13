@@ -1,6 +1,6 @@
 # Proposal: a focused portfolio and journal environment
 
-Status: phases 1–4 implemented as `v11-portfolio-journal-submit`; qualification evidence is recorded in [SIMPLIFICATION_VALIDATION.md](SIMPLIFICATION_VALIDATION.md). Phase 5 remains deferred. The findings and proposal below preserve the reviewed v10 baseline.
+Status: the initial simplification is implemented as `v11-portfolio-journal-submit`; phase 4 offline/sandbox qualification passes and its live smoke is partial. Evidence is recorded in [SIMPLIFICATION_VALIDATION.md](SIMPLIFICATION_VALIDATION.md). Phase 5 remains deferred. The findings and proposal below preserve the reviewed v10 baseline.
 
 ## Goal and boundary
 

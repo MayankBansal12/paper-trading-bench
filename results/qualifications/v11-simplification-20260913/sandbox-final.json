@@ -1,0 +1,56 @@
+{
+  "policy": "bwrap-systemd-unix-gateway-v2",
+  "bwrap": "bubblewrap 0.9.0",
+  "hashes": {
+    "scripts/sandbox/launch.sh": "91b71627c57767fe9460623f42cfce323f4378b19f3021d47ee6a0ed4eb74e6e",
+    "src/study/worker.ts": "a8eb93e16572c457699d4a86c92d00af3fe8ac3cffe85ce76566d4a64e419a63",
+    ".sandbox/seccomp.bpf": "791d20edbc3fa44a193adcfe6774c739f80e6806742cfbbdab3f0c8b4fba70e0"
+  },
+  "opencodeHash": "87bd160e053af86b5b409daabf71f8dc05bbc3a2a3a5f563f36011cdf706a999",
+  "bunHash": "9fd36f87e4b90b07632b987a2e4ec81ca15a62c81bf983190cea6d715be2ad74",
+  "bwrapHash": "52231e1caf55bcbc667b269f49c63599a6f7db4767ae6a039580d0ff853db712",
+  "kernel": "6.17.0-1022-azure",
+  "limits": {
+    "memoryBytes": 2147483648,
+    "tasks": 128,
+    "tmpBytes": 67108864,
+    "workBytes": 134217728
+  },
+  "id": "794430e43b2751c6ddde50e4fd2acb0ec2aae6b533c03c6189de58293f9083dd",
+  "hostNamespaces": {
+    "mnt": "mnt:[4026531832]",
+    "pid": "pid:[4026531836]",
+    "net": "net:[4026531833]",
+    "user": "user:[4026531837]",
+    "ipc": "ipc:[4026531839]",
+    "uts": "uts:[4026531838]"
+  },
+  "unit": "trading-bench-27f067e4-4ec6-415d-b9cd-1cffc457ac88",
+  "checks": {
+    "status": "Name:\tbun\nUmask:\t0022\nState:\tS (sleeping)\nTgid:\t2\nNgid:\t0\nPid:\t2\nPPid:\t1\nTracerPid:\t0\nUid:\t1000\t1000\t1000\t1000\nGid:\t1000\t1000\t1000\t1000\nFDSize:\t64\nGroups:\t \nNStgid:\t2\nNSpid:\t2\nNSpgid:\t1\nNSsid:\t1\nKthread:\t0\nVmPeak:\t135364752 kB\nVmSize:\t73912692 kB\nVmLck:\t       0 kB\nVmPin:\t       0 kB\nVmHWM:\t   39576 kB\nVmRSS:\t   39576 kB\nRssAnon:\t    7556 kB\nRssFile:\t   32020 kB\nRssShmem:\t       0 kB\nVmData:\t70424536 kB\nVmStk:\t     316 kB\nVmExe:\t   57144 kB\nVmLib:\t    2268 kB\nVmPTE:\t     356 kB\nVmSwap:\t       0 kB\nHugetlbPages:\t       0 kB\nCoreDumping:\t0\nTHP_enabled:\t0\nuntag_mask:\t0xffffffffffffffff\nThreads:\t12\nSigQ:\t0/257070\nSigPnd:\t0000000000000000\nShdPnd:\t0000000000000000\nSigBlk:\t0000000000000000\nSigIgn:\t0000000001001000\nSigCgt:\t00000001200004c8\nCapInh:\t0000000000000000\nCapPrm:\t0000000000000000\nCapEff:\t0000000000000000\nCapBnd:\t0000000000000000\nCapAmb:\t0000000000000000\nNoNewPrivs:\t1\nSeccomp:\t2\nSeccomp_filters:\t1\nSpeculation_Store_Bypass:\tvulnerable\nSpeculationIndirectBranch:\talways enabled\nCpus_allowed:\tffff\nCpus_allowed_list:\t0-15\nMems_allowed:\t00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000000,00000001\nMems_allowed_list:\t0\nvoluntary_ctxt_switches:\t15\nnonvoluntary_ctxt_switches:\t0\nx86_Thread_features:\t\nx86_Thread_features_locked:\t\n",
+    "namespaces": {
+      "mnt": "mnt:[4026532486]",
+      "pid": "pid:[4026532494]",
+      "net": "net:[4026532496]",
+      "user": "user:[4026532557]",
+      "ipc": "ipc:[4026532493]",
+      "uts": "uts:[4026532492]"
+    },
+    "cwd": "/work",
+    "scratch": "writable",
+    "write:/runtime/worker.ts": "denied",
+    "write:/work/benchmark-plugin.mjs": "denied",
+    "/home/ai/.env": "denied",
+    "/home/ai/code/paper-trading-bench/README.md": "denied",
+    "/proc/1/root/home/ai": "denied",
+    "/etc/shadow": "denied",
+    "/var/run/docker.sock": "denied",
+    "external": "denied"
+  },
+  "probe": {
+    "type": "sandbox_probe",
+    "status": 200,
+    "body": "scoped-gateway"
+  },
+  "qualified": true
+}
