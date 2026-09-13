@@ -7,7 +7,7 @@ const count = (value: unknown): value is number => typeof value === "number" && 
  * A successful terminal requires a complete started step and explicit usage.
  * Some providers include reasoning in output, others report it separately;
  * the reported total must reconcile with exactly one of those conventions. */
-export async function readEvents(stream: ReadableStream<Uint8Array>, decision: LiveDecision, maxTurns: number, stop: (reason: string) => void) {
+export async function readEvents(stream: ReadableStream<Uint8Array>, decision: LiveDecision, maxTurns: number | null, stop: (reason: string) => void) {
   let pending = "";
   let finalReason: string | undefined;
   let error: string | undefined;
@@ -34,7 +34,7 @@ export async function readEvents(stream: ReadableStream<Uint8Array>, decision: L
       decision.usage.turns++;
       rationale = "";
       finalReason = undefined;
-      if (decision.usage.turns > maxTurns) stop(`Max turns (${maxTurns}) exceeded`);
+      if (maxTurns !== null && decision.usage.turns > maxTurns) stop(`Max turns (${maxTurns}) exceeded`);
     }
     if (event.type === "text") {
       if (!activeStep) fail("Client text appeared outside an active step");

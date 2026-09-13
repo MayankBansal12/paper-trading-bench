@@ -10,14 +10,14 @@ export const BENCHMARK_STARTING_CAPITAL = MONTHLY_CONTRIBUTION;
 const KNOWN_FLAGS = ["model", "provider", "agent", "seed", "start", "end", "starting-capital", "universe-version", "max-turns", "max-tool-calls", "timeout-ms", "run-id", "data-dir", "warmup-bars", "smoke", "free-only", "comparison", "preflight", "help"] as const;
 
 function printRunUsage(): void {
-  console.error("Usage: pnpm run run -- [--provider=opencode] [--model=mimo-v2.5-free] [--agent=opencode|pi|fake]");
+  console.error("Usage: pnpm run run -- [--provider=opencode] [--model=muse-spark-1.3-contributor-free] [--agent=opencode|pi|fake]");
   console.error("  --data-dir=<snapshot> --start=YYYY-MM-DD --end=YYYY-MM-DD [--seed=1] [--run-id=<id>]");
   console.error("  [--max-turns=12] [--max-tool-calls=20] [--timeout-ms=120000] [--free-only=true]");
-  console.error("  [--comparison=202606-202608-v6] [--preflight]  # frozen settings; validate without a model call");
+  console.error("  [--comparison=nasdaq100-20260601-20260831-v7] [--preflight]  # frozen settings; validate without a model call");
   console.error("Default: last three completed UTC calendar months; $500 initially and $500 at the start of months 2 and 3.");
   console.error("Historical data with at least 60 warm-up bars is required for a benchmark. Download a snapshot first with data:import.");
   console.error("--smoke permits shorter/synthetic qualification windows. --warmup-bars=0 is allowed only for smoke tests.");
-  console.error("--seed is a replicate label, not a model sampling seed. --free-only=false explicitly permits a paid model.");
+  console.error("--seed is a replicate label, not a model sampling seed. Live inference is hard-restricted to the exact zero-cost Muse Spark model; no paid or provider fallback exists.");
 }
 
 export async function runRun(argv: string[]): Promise<void> {
@@ -26,6 +26,7 @@ export async function runRun(argv: string[]): Promise<void> {
   assertKnownFlags(flags, KNOWN_FLAGS, "run");
   assertNoPositionals(positionals, "run");
   applyComparisonFlags(flags);
+  const comparison = flags.has("comparison") ? getComparisonProfile(flags.get("comparison")!) : undefined;
   const preflightOnly = parseBooleanFlag("preflight", flags.get("preflight"));
   const agentKind = flags.get("agent") ?? "opencode";
   if (agentKind !== "fake" && agentKind !== "pi" && agentKind !== "opencode") throw new Error(`--agent must be "fake", "pi", or "opencode", got "${agentKind}"`);
@@ -44,7 +45,7 @@ export async function runRun(argv: string[]): Promise<void> {
     throw new Error("A benchmark requires three complete calendar months, $500 initial capital, and at least 60 warm-up bars. Use --smoke for qualification runs.");
   }
   const provider = flags.get("provider") ?? "opencode";
-  const model = flags.get("model") ?? (agentKind === "fake" ? "fake" : "mimo-v2.5-free");
+  const model = flags.get("model") ?? (agentKind === "fake" ? "fake" : "muse-spark-1.3-contributor-free");
   const limits = {
     maxTurns: parsePositiveInt("max-turns", flags.get("max-turns"), DEFAULT_LIMITS.maxTurns),
     maxToolCalls: parsePositiveInt("max-tool-calls", flags.get("max-tool-calls"), DEFAULT_LIMITS.maxToolCalls),
@@ -52,7 +53,7 @@ export async function runRun(argv: string[]): Promise<void> {
   };
   const seed = parseIntFlag("seed", flags.get("seed"), 1);
   if (![seed, ...Object.values(limits)].every(Number.isSafeInteger) || limits.timeoutMs > 2_147_483_647) throw new Error("Seed and limits must be safe integers; timeout must fit a 32-bit timer.");
-  const dataDir = resolve(flags.get("data-dir") ?? defaultDataDir(start, end));
+  const dataDir = resolve(flags.get("data-dir") ?? comparison?.dataDir ?? defaultDataDir(start, end));
   // Delayed imports keep --help and malformed flags independent of fixtures/SDK.
   const { loadDataset, validateDatasetWindow } = await import("../data/dataset.ts");
   const { UNIVERSE_VERSION, getUniverse } = await import("../config/universe.ts");
@@ -60,22 +61,26 @@ export async function runRun(argv: string[]): Promise<void> {
     throw new Error(`Cannot load dataset ${dataDir}. Download it with: pnpm run data:import -- --start=${start} --end=${end} --out=${dataDir}`, { cause: error });
   });
   if (!smoke && dataset.kind !== "historical") throw new Error("A benchmark requires historical data; use --smoke for synthetic fixtures.");
-  const universeVersion = flags.get("universe-version") ?? UNIVERSE_VERSION;
+  const universeVersion = flags.get("universe-version") ?? (agentKind === "fake" && smoke ? "v1" : UNIVERSE_VERSION);
   const dates = validateDatasetWindow(dataset, start, end, warmupBars, getUniverse(universeVersion));
   const contributions = monthlyDeposits(dates);
   const { EXECUTION_CONVENTION } = await import("../engine/execution.ts");
   const { AGENT_PROTOCOL_VERSION } = await import("../agent/protocolVersion.ts");
   const config: RunConfig = { model, provider, freeOnly, agent: agentKind, seed, startDate: start, endDate: end, startingCapital: capital,
     universeVersion, limits, executionConvention: EXECUTION_CONVENTION, fixtureVersion: dataset.version,
-    protocolVersion: AGENT_PROTOCOL_VERSION, runId: flags.get("run-id"), dataDir, contributions, warmupBars,
+    protocolVersion: comparison?.config.protocolVersion ?? AGENT_PROTOCOL_VERSION, ...(comparison?.config.behaviorAnalysis ? { behaviorAnalysis: comparison.config.behaviorAnalysis } : {}), runId: flags.get("run-id"), dataDir, contributions, warmupBars,
     experiment: smoke ? "smoke" : "three-month",
     ...(flags.has("comparison") ? { comparisonProfile: flags.get("comparison") } : {}) };
   validateComparisonConfig(config);
   if (preflightOnly) {
-    console.log(JSON.stringify({ config, sessions: dates.length, ...(config.comparisonProfile ? { memory: getComparisonProfile(config.comparisonProfile).memory } : {}) }, null, 2));
+    console.log(JSON.stringify({ config, sessions: dates.length, ...(comparison ? { memory: comparison.memory, promptProtocol: comparison.promptProtocol, modelPolicy: comparison.modelPolicy } : {}) }, null, 2));
     console.error("[preflight] Configuration and dataset validated. No agent started or run artifacts written.");
     return;
   }
+  if (agentKind !== "fake" && (agentKind !== "opencode" || provider !== "opencode" || model !== "muse-spark-1.3-contributor-free" || freeOnly !== true)) {
+    throw new Error("Live inference is restricted to zero-cost opencode/muse-spark-1.3-contributor-free through the official OpenCode client; no fallback is permitted.");
+  }
+  if (agentKind !== "fake") throw new Error("Legacy live runs are retired. Use pnpm study:run for the v8 sandbox.");
   const { FakeAgent } = await import("../agent/fakeAgent.ts");
   const { PiAgent } = await import("../agent/piAgent.ts");
   const { OpenCodeAgent } = await import("../opencode/agent.ts");

@@ -14,6 +14,7 @@ import { ensureConfig, loadRunState, resolveRunDir, saveRunState } from "./state
 import { acquireRunLock } from "./lock.ts";
 import { ARTIFACT_VERSION, contentHash, decisionUsage, loadAttempts, loadDailyRecord, writeAttempt, writeDailyRecord, writeIfChanged, writeTransactions } from "./persist.ts";
 import { runConfigFile, runSummaryFile } from "../utils/paths.ts";
+import { derivePortfolioAnalytics } from "../report/analytics.ts";
 import type { AgentPort, AttemptRecord, DailyRecord, RunConfig, RunState, RunSummary, UsageStats } from "../domain/types.ts";
 
 const nowIso = () => new Date().toISOString();
@@ -99,15 +100,20 @@ async function deriveSummary(dir: string, config: RunConfig, state: RunState, re
   const baselineDates = records.map((r) => r.date);
   const cashCurve = cashBaseline(config.startingCapital, baselineDates, config.contributions);
   const bh = await buyAndHoldBaseline(config.startingCapital, universe, baselineDates, config.contributions, market);
+  const cashMetrics = computeMetrics(cashCurve, config.startingCapital, 0, 0, 0, baselineDates.map(() => 0));
+  const buyAndHoldMetrics = computeMetrics(bh.equityCurve, config.startingCapital, bh.tradeCount, 0, 0, bh.turnoverPct);
+  const usageTotals = sumUsage([...records.map((r) => r.usage), ...failed.map((a) => a.usage)]);
+  const analytics = derivePortfolioAnalytics({ config, records, attempts, modelMetrics: metrics, cashMetrics,
+    referenceCurve: bh.equityCurve, referenceMetrics: buyAndHoldMetrics, usage: usageTotals, market });
   const body: RunSummary = { artifactVersion: ARTIFACT_VERSION, datasetVersion: market.version, datasetKind: market.kind, config, status: state.status,
     resolvedCoverage: { firstDate: dates[0]!, lastDate: dates.at(-1)!, tradingDays: dates.length },
     finalPortfolio: records.at(-1)?.portfolioAfter ?? createInitialPortfolio(config.startingCapital),
     totalContributions: metrics.totalContributions, netProfit: metrics.netProfit, timeWeightedReturnPct: metrics.timeWeightedReturnPct,
     attemptCount: records.length + failed.length, failedAttemptCount: failed.length,
-    equityCurve, metrics, usageTotals: sumUsage([...records.map((r) => r.usage), ...failed.map((a) => a.usage)]),
+    equityCurve, metrics, usageTotals, ...(analytics ? { analytics } : {}),
     baselines: {
-      cash: { equityCurve: cashCurve, metrics: computeMetrics(cashCurve, config.startingCapital, 0, 0, 0, baselineDates.map(() => 0)) },
-      buyAndHold: { equityCurve: bh.equityCurve, metrics: computeMetrics(bh.equityCurve, config.startingCapital, bh.tradeCount, 0, 0, bh.turnoverPct) },
+      cash: { equityCurve: cashCurve, metrics: cashMetrics },
+      buyAndHold: { equityCurve: bh.equityCurve, metrics: buyAndHoldMetrics },
     } };
   const summary = { ...body, integrityHash: contentHash(body) };
   await writeTransactions(dir, records);
@@ -189,6 +195,10 @@ async function processRun(dir: string, config: RunConfig, prepared: Awaited<Retu
 }
 
 export async function runBatch(configInput: RunConfig, agent: AgentPort): Promise<{ runId: string; dir: string; summary: RunSummary }> {
+  if (configInput.agent !== "fake") throw new Error("Legacy live runs are retired. Use pnpm study:run for the v8 sandbox; offline replay remains supported.");
+  if (configInput.agent !== "fake" && (configInput.agent !== "opencode" || configInput.provider !== "opencode" || configInput.model !== "muse-spark-1.3-contributor-free" || configInput.freeOnly !== true)) {
+    throw new Error("Live runs require exact zero-cost opencode/muse-spark-1.3-contributor-free through the official client; no fallback is permitted.");
+  }
   if (configInput.agent !== "fake" && configInput.protocolVersion !== AGENT_PROTOCOL_VERSION) {
     throw new Error(`Live runs require protocol ${AGENT_PROTOCOL_VERSION}; historical protocols are available for report replay only. Start a new run.`);
   }

@@ -31,9 +31,9 @@ export function convertYahooChart(raw: unknown, ticker: string, start: string, e
     const ratio = Number(event.numerator) / Number(event.denominator);
     if (!Number.isFinite(ratio) || ratio <= 0 || !event.numerator || !event.denominator || event.numerator < 0 || event.denominator < 0) throw new Error(`Invalid Yahoo split for ${ticker}`);
     const date = sessionDate(event.date);
-    assertSupportedSplitRatio(ratio, ticker, date);
+    if (date >= start) assertSupportedSplitRatio(ratio, ticker, date);
     return { type: "split", date, ticker, ratio };
-  }).sort((a, b) => a.date.localeCompare(b.date));
+  }).filter(split => split.date >= start).sort((a, b) => a.date.localeCompare(b.date));
   if (new Set(allSplits.map(s => s.date)).size !== allSplits.length) throw new Error(`Duplicate Yahoo split for ${ticker}`);
   const futureFactor = (date: string): number => allSplits.reduce((factor, split) => split.date > date && split.type === "split" ? factor * split.ratio : factor, 1);
   const q = r.indicators?.quote?.[0];

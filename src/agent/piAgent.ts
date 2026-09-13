@@ -23,6 +23,7 @@ export class PiAgent implements AgentPort {
     }
   }
   async decide(ctx: DecisionContext): Promise<LiveDecision> {
+    if (!this.options.offlineTransportModule) throw new Error("Unsandboxed live adapter retired. Use pnpm study:run.");
     const startedAt = Date.now();
     let latest = initialDecision(ctx, this.modelId, this.provider);
     return new Promise((resolve) => {

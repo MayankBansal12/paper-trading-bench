@@ -72,8 +72,9 @@ export type ToolResult<T = unknown> =
   | { ok: false; error: string; context?: Record<string, unknown> };
 
 /** Bounded resource budget for a single day's agent decision. */
-export interface RunLimits {
-  maxTurns: number;
+export interface RunLimits<TurnLimit extends number | null = number> {
+  /** null means no model-turn limit; legacy protocols retain numeric caps. */
+  maxTurns: TurnLimit;
   maxToolCalls: number;
   timeoutMs: number;
 }
@@ -96,7 +97,7 @@ export interface UsageStats {
   pendingToolCalls?: number;
 }
 
-export interface DecisionContext {
+export interface DecisionContext<TurnLimit extends number | null = number> {
   date: string;
   universe: readonly string[];
   portfolio: PortfolioState;
@@ -109,7 +110,7 @@ export interface DecisionContext {
    * order can ever condition on a D-open price learned from an earlier
    * order's fill within the same decision. */
   recentDays: DailyRecord[]; // most recent N days of this run, oldest first
-  limits: RunLimits;
+  limits: RunLimits<TurnLimit>;
   horizon?: { startDate: string | null; endDate: string | null };
   contributions?: Contribution[];
 }
@@ -173,9 +174,22 @@ export interface DailyRecord {
   boundedReason: string | null;
 }
 
-export interface RunConfig {
+export interface BehaviorAnalysisRules {
+  version: "dip-behavior-v1";
+  reference: "equal-weight-buy-and-hold";
+  dailyLossThresholdPct: number;
+  drawdownThresholdPct: number;
+  cooldownSessions: number;
+  forwardSessions: number;
+  liquidityMetric: "filled-shares-over-session-volume";
+}
+
+export interface RunConfig<TurnLimit extends number | null = number> {
+
   /** Named, immutable comparison preset; pinned settings are checked during preflight. */
   comparisonProfile?: string;
+  /** Pre-registered derived-analysis rules; part of canonical run identity. */
+  behaviorAnalysis?: BehaviorAnalysisRules;
   provider?: string;
   freeOnly?: boolean;
   dataDir?: string;
@@ -193,7 +207,7 @@ export interface RunConfig {
   endDate: string | null; // inclusive; null = latest fixture date
   startingCapital: number;
   universeVersion: string;
-  limits: RunLimits;
+  limits: RunLimits<TurnLimit>;
   /** Identifies the causal execution convention (see engine/execution.ts).
    * Part of a run's canonical identity: changing it must never silently
    * reinterpret an existing run directory's data. */
@@ -250,6 +264,55 @@ export interface Metrics {
   daysRun: number;
 }
 
+export interface DipBehaviorEvent {
+  triggerDate: string;
+  triggerReasons: Array<"reference-daily-loss" | "reference-drawdown">;
+  referenceDailyReturnPct: number;
+  referenceDrawdownPct: number;
+  forwardWindowStart: string | null;
+  forwardWindowEnd: string | null;
+  completeForwardWindow: boolean;
+  modelInvestedPctAtTrigger: number;
+  modelExposureChangePctPoints: number | null;
+  modelForwardReturnPct: number | null;
+  referenceForwardReturnPct: number | null;
+  forwardExcessReturnPct: number | null;
+  forwardNetBuyNotional: number | null;
+}
+
+export interface PortfolioAnalytics {
+  rules: BehaviorAnalysisRules;
+  excessReturn: { versusCashPct: number; versusEqualWeightPct: number };
+  concentration: {
+    averageRiskyHhi: number; maximumRiskyHhi: number; averageEffectiveRiskyPositions: number;
+    averageHoldingCount: number; maximumSingleSecurityWeightPct: number; finalSingleSecurityWeightPct: number;
+  };
+  cashDeployment: {
+    averageInvestedPct: number; finalInvestedPct: number; minimumInvestedPct: number; maximumInvestedPct: number;
+    fullyCashDays: number;
+    contributionDayNetBuyPct: Array<{ date: string; contribution: number; netBuyNotional: number; pctOfContribution: number }>;
+  };
+  capitalEfficiency: { netProfitPctOfPrincipal: number; timeWeightedReturnPerAverageInvestedFraction: number | null };
+  holdingAndTrading: {
+    tradeDays: number; noTradeDays: number; buyFills: number; sellFills: number; uniqueSecuritiesHeld: number;
+    grossTradedNotional: number; netBuyNotional: number; cumulativeTurnoverPct: number;
+  };
+  riskEfficiency: {
+    sharpe: number | null; returnOverAbsoluteMaxDrawdown: number | null; returnPerAnnualizedVolatility: number | null;
+    trackingErrorAnnualizedPct: number; informationRatio: number | null;
+  };
+  operationalEfficiency: {
+    decisionDays: number; failedAttempts: number; submittedOrders: number; fills: number; rejectedOrders: number;
+    fillRatePct: number | null; turnsPerDecisionDay: number; toolCallsPerDecisionDay: number;
+    tokensPerDecisionDay: number; tokensPerFill: number | null; averageDecisionElapsedMs: number;
+  };
+  liquidity: {
+    observedFills: number; zeroVolumeFills: number; averageFilledSharesOfSessionVolumePct: number | null;
+    maximumFilledSharesOfSessionVolumePct: number | null; fillsAboveOnePctOfSessionVolume: number;
+  };
+  dipBehavior: { definition: string; events: DipBehaviorEvent[] };
+}
+
 export interface RunSummary {
   datasetVersion?: string;
   artifactVersion?: string;
@@ -267,6 +330,7 @@ export interface RunSummary {
   equityCurve: EquityPoint[];
   metrics: Metrics;
   usageTotals: UsageStats;
+  analytics?: PortfolioAnalytics;
   baselines: {
     cash: { equityCurve: EquityPoint[]; metrics: Metrics };
     buyAndHold: { equityCurve: EquityPoint[]; metrics: Metrics };

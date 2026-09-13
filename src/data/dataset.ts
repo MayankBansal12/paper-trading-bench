@@ -4,6 +4,7 @@ import { resolve, relative, isAbsolute } from "node:path";
 import type { OhlcvBar } from "../domain/types.ts";
 import { FIXTURES_DIR } from "../utils/paths.ts";
 import { assertDate, exchangeDates, CALENDAR_VERSION } from "./calendar.ts";
+import { getUniverse, getUniverseDefinition, UNIVERSE_EXCLUSIONS, type UniverseDefinition } from "../config/universe.ts";
 
 export type CorporateAction =
   | { type: "split"; date: string; ticker: string; ratio: number }
@@ -18,6 +19,7 @@ export interface MarketDataset {
   asOfBefore(ticker: string, date: string, lookback?: number): OhlcvBar[];
   openOn(ticker: string, date: string): number | undefined;
   closeOn(ticker: string, date: string): number;
+  volumeOn(ticker: string, date: string): number;
   actionsOn(date: string): CorporateAction[];
 }
 export const ADJUSTMENT_CONVENTION = "raw-as-traded-ohlcv;split-events;dividend-cash-on-ex-date-v1";
@@ -36,6 +38,11 @@ export interface DatasetManifest {
   actions: CorporateAction[];
   files: Record<string, DatasetFile>;
   snapshots: DatasetFile[];
+  universeVersion?: string;
+  universeDefinition?: UniverseDefinition;
+  universeRecord?: DatasetFile;
+  exclusions?: readonly { ticker: string; reason: string; sources: readonly string[] }[];
+  corporateActionReview?: Record<string, unknown>;
   [key: string]: unknown;
 }
 export function sha256(bytes: string | Uint8Array): string {
@@ -133,6 +140,9 @@ function buildDataset(manifest: Pick<DatasetManifest, "kind" | "calendar" | "uni
     closeOn(ticker: string, date: string) {
       const bar = exact(ticker, date); if (!bar) throw new Error(`No bar for ${ticker} on ${date}`); return bar.close;
     },
+    volumeOn(ticker: string, date: string) {
+      const bar = exact(ticker, date); if (!bar) throw new Error("No bar for " + ticker + " on " + date); return bar.volume;
+    },
     actionsOn(date: string) { assertDate(date); return actions.filter(a => a.date === date).map(a => ({ ...a })); },
   });
 }
@@ -175,6 +185,22 @@ export async function loadDataset(dataDir?: string): Promise<MarketDataset> {
   const series = new Map<string, OhlcvBar[]>();
   for (const ticker of m.universe) series.set(ticker, validateBars(JSON.parse((await verifiedFile(dataDir, m.files[ticker]!)).toString()), ticker));
   for (const snapshot of m.snapshots) await verifiedFile(dataDir, snapshot);
+  if (m.universeVersion === "v3") {
+    const expectedDefinition = getUniverseDefinition("v3");
+    const expectedExclusions = UNIVERSE_EXCLUSIONS.v3 ?? [];
+    if (JSON.stringify(m.universe) !== JSON.stringify(getUniverse("v3"))) throw new Error("Nasdaq universe membership/order differs from canonical v3");
+    if (JSON.stringify(m.universeDefinition) !== JSON.stringify(expectedDefinition)) throw new Error("Nasdaq universe definition differs from canonical v3");
+    if (JSON.stringify(m.exclusions) !== JSON.stringify(expectedExclusions)) throw new Error("Nasdaq universe exclusions differ from canonical v3");
+    if (!m.universeRecord || !m.snapshots.some(file => JSON.stringify(file) === JSON.stringify(m.universeRecord))) throw new Error("Nasdaq dataset is missing its canonical universe snapshot");
+    const record = JSON.parse((await verifiedFile(dataDir, m.universeRecord)).toString()) as { universeVersion?: string; tradableSecurities?: string[]; excludedSecurities?: {ticker:string}[] };
+    if (record.universeVersion !== "v3" || JSON.stringify(record.tradableSecurities) !== JSON.stringify(m.universe)
+      || JSON.stringify(record.excludedSecurities?.map(x => x.ticker)) !== JSON.stringify(expectedExclusions.map(x => x.ticker))) {
+      throw new Error("Nasdaq canonical universe snapshot is incompatible with its manifest");
+    }
+    if (m.corporateActionReview?.policyVersion !== "splits-dividends-only-v2" || m.corporateActionReview?.nonstandardSplitFactors !== "fail closed") {
+      throw new Error("Nasdaq corporate-action review policy is missing or incompatible");
+    }
+  }
   return buildDataset(m, series, sha256(manifestBytes));
 }
 /** Reject truncated evaluation and insufficient warmup before any inference call. */

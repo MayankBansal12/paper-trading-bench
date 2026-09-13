@@ -8,7 +8,7 @@ const tokens = () => ({ input: 10, output: 2, reasoning: 3, cache: { read: 20, w
 const start = { type: "step_start" };
 const text = { type: "text", part: { text: "Hold." } };
 const finish = (usage: unknown = tokens(), reason = "stop", cost = 0) => ({ type: "step_finish", part: { reason, cost, tokens: usage } });
-async function parse(events: unknown[], maxTurns = 6) {
+async function parse(events: unknown[], maxTurns: number | null = 6) {
   const decision = initialDecision(ctx, "test", "opencode"), stops: string[] = [];
   const parsed = await readEvents(new Response(events.map(e => JSON.stringify(e)).join("\n")).body!, decision, maxTurns, r => stops.push(r));
   return { decision, parsed, stops };
@@ -72,4 +72,13 @@ describe("official client strict step and usage accounting", () => {
     expect(r.decision.usage.totalTokens).toBe(r.decision.usage.promptTokens + r.decision.usage.completionTokens);
     expect(r.stops).toEqual([]);
   });
+});
+
+test("unlimited study turns retain complete event and usage accounting beyond old caps", async () => {
+  const events = Array.from({length: 300}, (_, i) => [start, text, finish(tokens(), i === 299 ? "stop" : "tool-calls")]).flat();
+  const r = await parse(events, null);
+  expect(r.stops).toEqual([]);
+  expect(r.parsed).toEqual({ error: undefined, finalReason: "stop", rationale: "Hold." });
+  expect(r.decision.usage.turns).toBe(300);
+  expect(r.decision.usage.totalTokens).toBe(300 * 41);
 });

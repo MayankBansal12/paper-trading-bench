@@ -1,4 +1,5 @@
 import { loadDataset, type MarketDataset } from "../data/dataset.ts";
+import { AGENT_PROTOCOL_VERSION } from "../agent/protocolVersion.ts";
 import { buildDailyPrompt, buildSystemPrompt } from "../agent/prompt.ts";
 import { computeIndicators } from "../data/indicators.ts";
 import { executeOrder } from "../engine/execution.ts";
@@ -6,6 +7,8 @@ import { applyFill, isTerminated, valuePortfolio } from "../engine/portfolio.ts"
 import { contributionOn, preparePortfolio } from "../engine/cashFlows.ts";
 import type { AgentDecision, AgentPort, DailyRecord, DecisionContext, FailedOrder, Fill, Indicators, OhlcvBar, PortfolioState, RunConfig } from "../domain/types.ts";
 import { ARTIFACT_VERSION, contentHash, sealRecord, textHash, validateUsage } from "./persist.ts";
+import { assertZeroCostCatalogEntry, QUALIFIED_OPENCODE_CLIENT_VERSION, QUALIFIED_ZEN_MODEL_ID } from "../opencode/qualification.ts";
+import { OPENCODE_PROMPT_SUFFIX } from "../opencode/config.ts";
 
 export class DecisionAttemptError extends Error {
   constructor(readonly date: string, readonly decision: AgentDecision, reason?: string, readonly failurePhase?: "validation" | "execution") {
@@ -49,7 +52,7 @@ export function replayDecision(config: RunConfig, date: string, universe: readon
   } catch (error) { throw new DecisionAttemptError(date, decision, error instanceof Error ? error.message : String(error), "execution"); }
 }
 
-export function buildDecisionContext(config: RunConfig, date: string, universe: readonly string[], portfolioBefore: PortfolioState, recentDays: DailyRecord[], market: MarketDataset): DecisionContext {
+export function buildDecisionContext<TurnLimit extends number | null>(config: RunConfig<TurnLimit>, date: string, universe: readonly string[], portfolioBefore: PortfolioState, recentDays: DailyRecord[], market: MarketDataset): DecisionContext<TurnLimit> {
   const bars: Record<string, OhlcvBar[]> = {}, indicators: Record<string, Indicators> = {};
   for (const ticker of universe) {
     const history = market.asOfBefore(ticker, date);
@@ -62,17 +65,31 @@ export function buildDecisionContext(config: RunConfig, date: string, universe: 
     horizon: config.experiment ? { startDate: config.startDate, endDate: config.endDate } : undefined, contributions: structuredClone(config.contributions) };
 }
 
+function validateOpenCodeQualification(decision: AgentDecision, date: string): void {
+  if (decision.outcome !== "completed") return;
+  const qualification = decision.trace?.find((event): event is Record<string, any> => !!event && typeof event === "object" && (event as Record<string, unknown>).type === "model_qualification");
+  const evidence = qualification?.evidence;
+  if (!evidence || evidence.clientVersion !== QUALIFIED_OPENCODE_CLIENT_VERSION || evidence.exactModel !== QUALIFIED_ZEN_MODEL_ID
+    || evidence.zeroCostProven !== true || evidence.noInference !== true || typeof evidence.checkedAt !== "string" || !Number.isFinite(Date.parse(evidence.checkedAt))
+    || typeof evidence.catalogOutputSha256 !== "string" || !/^[a-f0-9]{64}$/.test(evidence.catalogOutputSha256)) {
+    throw new Error("Missing or invalid official OpenCode model qualification evidence for " + date);
+  }
+  try { assertZeroCostCatalogEntry(evidence.catalogEntry); }
+  catch (error) { throw new Error("Invalid zero-cost catalog evidence for " + date + ": " + (error instanceof Error ? error.message : error)); }
+}
+
 /** Checks provider evidence against the actual context, not merely its own checksum. */
 export function validateDecisionEvidence(decision: AgentDecision, contextHash: string, config: RunConfig, date: string, context?: DecisionContext): void {
   if (!decision || !Array.isArray(decision.orders) || !Array.isArray(decision.failedOrders) || typeof decision.rationale !== "string" || typeof decision.boundedStop !== "boolean") throw new Error(`Invalid decision schema for ${date}`);
   validateUsage(decision.usage);
+  if (config.agent === "opencode" && config.protocolVersion === AGENT_PROTOCOL_VERSION) validateOpenCodeQualification(decision, date);
   for (const order of decision.orders) if (!order || typeof order.ticker !== "string" || !["BUY", "SELL"].includes(order.side) || !order.sizing || !["notional", "units"].includes(order.sizing.kind)) throw new Error(`Invalid submitted order schema for ${date}`);
   for (const failure of decision.failedOrders) if (!failure || failure.date !== date || typeof failure.ticker !== "string" || !["BUY", "SELL"].includes(failure.side) || typeof failure.reason !== "string") throw new Error(`Invalid rejected order schema for ${date}`);
   const protocol = decision.trace?.find((event): event is Record<string, unknown> => !!event && typeof event === "object" && (event as Record<string, unknown>).type === "protocol");
   if (protocol) {
     const basePrompt = buildSystemPrompt(config.limits, config.protocolVersion);
     const expectedPrompt = config.agent === "opencode"
-      ? `${basePrompt}\nTrading tool names use the trading_ prefix (for example trading_get_indicators and trading_buy).`
+      ? basePrompt + OPENCODE_PROMPT_SUFFIX
       : basePrompt;
     if (decision.effectiveSystemPrompt !== expectedPrompt) throw new Error(`Decision system prompt does not match benchmark protocol for ${date}`);
     if (protocol.contextHash !== contextHash || protocol.model !== config.model || protocol.provider !== (config.provider ?? "opencode")) throw new Error(`Decision protocol context/model/provider mismatch for ${date}`);

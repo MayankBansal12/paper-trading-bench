@@ -1,8 +1,10 @@
 const [subcommand, ...rest] = process.argv.slice(2);
 function usage(): void {
-  console.error("PaperTrader — three-month historical technical-analysis benchmark");
+  console.error("Nasdaq-100 — frozen three-month technical portfolio-management benchmark");
   console.error("  pnpm run data:import -- --start=YYYY-MM-DD --end=YYYY-MM-DD --out=<snapshot>");
-  console.error("  pnpm run run -- --data-dir=<snapshot> [--provider=opencode] [--model=mimo-v2.5-free]");
+  console.error("  pnpm run run -- --comparison=nasdaq100-20260601-20260831-v7 --preflight");
+  console.error("  pnpm model:preflight");
+  console.error("  pnpm run run -- --comparison=nasdaq100-20260601-20260831-v7 --seed=1");
   console.error("  pnpm run report -- [--dirs=<run1,run2>]");
   console.error("Use run --help or report --help for flags. Initial $500 plus $500 at the start of each later month.");
 }

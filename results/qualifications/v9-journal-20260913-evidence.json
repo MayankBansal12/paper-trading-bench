@@ -1,0 +1,122 @@
+{
+  "checkedAt": "2026-09-13T12:26:52.022097+00:00",
+  "protocol": "v9-evidence-linked-journal",
+  "implementationHash": "d56d702205462cb324f847736aaeb5131a73afc157e4211889f927fef8649396",
+  "sourceArchive": "results/qualifications/v9-journal-20260913-r2-source.tar.gz",
+  "sourceArchiveSha256": "33e252751991bf5ba8dedfdf7fb4cbfd02fbcd51bec42f6d33776128525780de",
+  "automatedTests": {
+    "passed": 335,
+    "failed": 0,
+    "assertions": 4206,
+    "typecheck": "passed"
+  },
+  "run": "results/studies/muse-v9-journal-20260730-0803-r2",
+  "status": "completed",
+  "offlineReplay": "identical; zero inference calls",
+  "metrics": {
+    "startingCapital": 500,
+    "endingNetWorth": 993.43,
+    "totalContributions": 1000,
+    "netProfit": -6.57,
+    "timeWeightedReturnPct": -0.9509,
+    "totalReturnPct": -0.9509,
+    "maxDrawdownPct": -2.4032,
+    "dailyVolatilityPct": 1.7684,
+    "annualizedVolatilityPct": 28.0728,
+    "sharpe": -2.7606,
+    "avgTurnoverPct": 55.1192,
+    "tradeCount": 8,
+    "failedOrderCount": 0,
+    "boundedStopCount": 0,
+    "daysRun": 3
+  },
+  "operational": {
+    "reportedUsage": {
+      "turns": 43,
+      "tokens": 330141,
+      "costUsd": 0,
+      "usageIncompleteAttempts": 2
+    },
+    "attemptDetails": [
+      {
+        "date": "2026-07-30",
+        "attempt": 1,
+        "outcome": "completed",
+        "reason": null,
+        "elapsedMs": 33030,
+        "turns": 6,
+        "brokerToolAttempts": 12,
+        "submittedOrders": 4,
+        "journalEntries": 1,
+        "executedFills": 4
+      },
+      {
+        "date": "2026-07-31",
+        "attempt": 1,
+        "outcome": "completed",
+        "reason": null,
+        "elapsedMs": 22964,
+        "turns": 6,
+        "brokerToolAttempts": 13,
+        "submittedOrders": 0,
+        "journalEntries": 1,
+        "executedFills": 0
+      },
+      {
+        "date": "2026-08-03",
+        "attempt": 1,
+        "outcome": "budget_cutoff",
+        "reason": "Inference request budget exceeded",
+        "elapsedMs": 100544,
+        "turns": 12,
+        "brokerToolAttempts": 22,
+        "submittedOrders": 4,
+        "journalEntries": 0,
+        "executedFills": 0
+      },
+      {
+        "date": "2026-08-03",
+        "attempt": 2,
+        "outcome": "budget_cutoff",
+        "reason": "Inference request budget exceeded",
+        "elapsedMs": 133635,
+        "turns": 12,
+        "brokerToolAttempts": 12,
+        "submittedOrders": 0,
+        "journalEntries": 0,
+        "executedFills": 0
+      },
+      {
+        "date": "2026-08-03",
+        "attempt": 3,
+        "outcome": "completed",
+        "reason": null,
+        "elapsedMs": 40839,
+        "turns": 7,
+        "brokerToolAttempts": 14,
+        "submittedOrders": 4,
+        "journalEntries": 1,
+        "executedFills": 4
+      }
+    ],
+    "attempts": 5,
+    "failed": 2
+  },
+  "journal": {
+    "entries": 3,
+    "committedJournalReads": 2,
+    "evidenceClaims": 21
+  },
+  "manualReview": [
+    "Sampled portfolio, SMA, RSI, OHLCV and volume figures in accepted memos match the cited receipts.",
+    "Second session reads the first memo and explains a hold; third session reads the second memo, exits AAPL after its stated trend-break conditions and deploys the contribution.",
+    "Receipt integrity and required fields do not establish factual entailment, decision quality or hidden reasoning.",
+    "A prior one-day gain described as validating an entry is the model's interpretation, not an evaluator conclusion."
+  ],
+  "limits": [
+    "Unscored three-session environment smoke.",
+    "Two preserved final-day failures reached the 12-request cap; those attempts also contain missing total-token usage events.",
+    "Reported usage is incomplete for the failed attempts.",
+    "Earlier development run muse-v9-journal-20260730-0803 preserves a usage-validation failure and schema-friction cutoff under a different source identity."
+  ]
+}

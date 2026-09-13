@@ -11,7 +11,7 @@ import { computeIndicators } from "../src/data/indicators.ts";
 import { createInitialPortfolio } from "../src/engine/portfolio.ts";
 import { EXECUTION_CONVENTION } from "../src/engine/execution.ts";
 import { AGENT_PROTOCOL_VERSION } from "../src/agent/protocolVersion.ts";
-import { UNIVERSE_VERSION, UNIVERSE_V1 } from "../src/config/universe.ts";
+import { UNIVERSE_V1 } from "../src/config/universe.ts";
 import type { AgentDecision, AgentPort, DecisionContext, RunConfig } from "../src/domain/types.ts";
 
 const LIMITS = { maxTurns: 8, maxToolCalls: 20, timeoutMs: 5000 };
@@ -24,7 +24,7 @@ function baseConfig(overrides: Partial<RunConfig>): RunConfig {
     startDate: null,
     endDate: null,
     startingCapital: 1000,
-    universeVersion: UNIVERSE_VERSION,
+    universeVersion: "v1",
     limits: LIMITS,
     executionConvention: EXECUTION_CONVENTION,
     fixtureVersion: FIXTURE_VERSION,

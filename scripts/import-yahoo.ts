@@ -2,7 +2,7 @@
 import { mkdir, readFile, writeFile, access, rename, rm } from "node:fs/promises";
 import { resolve } from "node:path";
 import { parseArgs } from "node:util";
-import { getUniverse, UNIVERSE_VERSION, UNIVERSE_EXCLUSIONS } from "../src/config/universe.ts";
+import { getUniverse, getUniverseDefinition, UNIVERSE_VERSION, UNIVERSE_EXCLUSIONS } from "../src/config/universe.ts";
 import { ADJUSTMENT_CONVENTION, verifiedFile, loadDataset, sha256, validateDatasetWindow, type DatasetManifest, type DatasetFile } from "../src/data/dataset.ts";
 import { assertDate, exchangeDates, shiftDate, CALENDAR_VERSION } from "../src/data/calendar.ts";
 import { convertYahooChart, yahooSymbol } from "../src/data/yahoo.ts";
@@ -10,6 +10,7 @@ import { convertYahooChart, yahooSymbol } from "../src/data/yahoo.ts";
 interface SnapshotIndex {
   schemaVersion: 1; fetchedAt: string; start: string; end: string; historyStart: string;
   universeVersion?: string; exclusions?: readonly { ticker: string; reason: string; sources: readonly string[] }[];
+  universeDefinition?: ReturnType<typeof getUniverseDefinition>; universeRecord?: DatasetFile;
   derivedFrom?: { manifestSha256: string; excludedTickers: string[] };
   warmupBars: number; universe: string[]; requests: Record<string, { url: string; file: string; sha256: string }>;
 }
@@ -18,7 +19,7 @@ export async function importYahoo(args: string[]): Promise<string> {
     start: { type: "string" }, end: { type: "string" }, out: { type: "string" }, tickers: { type: "string" },
     "universe-version": { type: "string" }, "warmup-bars": { type: "string" }, "history-start": { type: "string" }, "from-snapshot": { type: "string" }, help: { type: "boolean" },
   }, strict: true });
-  if (values.help) return "Usage: bun scripts/import-yahoo.ts --start YYYY-MM-DD --end YYYY-MM-DD --out DIR [--universe-version v2 | --tickers AAPL,MSFT] [--warmup-bars 100] [--history-start YYYY-MM-DD]\nOffline identical rebuild: --from-snapshot EXISTING_DATASET_DIR --out NEW_DIR\nThe destination must not exist. No network is used in snapshot mode. Add --universe-version v2 to explicitly derive a supported subset from a preserved snapshot.";
+  if (values.help) return "Usage: bun scripts/import-yahoo.ts --start YYYY-MM-DD --end YYYY-MM-DD --out DIR [--universe-version v3 | --tickers AAPL,MSFT] [--warmup-bars 100] [--history-start YYYY-MM-DD]\nOffline identical rebuild: --from-snapshot EXISTING_DATASET_DIR --out NEW_DIR\nThe destination must not exist. No network is used in snapshot mode. Add --universe-version v3 to explicitly derive a supported subset from a preserved snapshot.";
   if (!values.out) throw new Error("--out is required");
   if (values.tickers && values["universe-version"]) throw new Error("--tickers and --universe-version are mutually exclusive");
   const out = resolve(values.out);
@@ -46,6 +47,7 @@ export async function importYahoo(args: string[]): Promise<string> {
       index = { ...index, universe: selected, universeVersion: version, exclusions: UNIVERSE_EXCLUSIONS[version] ?? [],
         requests: Object.fromEntries(selected.map(t => [t, index.requests[t]!])),
         derivedFrom: { manifestSha256: sha256(parentBytes), excludedTickers } };
+      index.universeDefinition = getUniverseDefinition(version); delete index.universeRecord;
     }
   } else {
     assertDate(values.start, "--start"); assertDate(values.end, "--end");
@@ -59,7 +61,7 @@ export async function importYahoo(args: string[]): Promise<string> {
     const universeVersion = values.tickers ? "custom" : values["universe-version"] ?? UNIVERSE_VERSION;
     const universe = values.tickers ? values.tickers.split(",").map(s => s.trim()).sort() : [...getUniverse(universeVersion)];
     if (!universe.length || new Set(universe).size !== universe.length || universe.some(t => !/^[A-Z0-9][A-Z0-9.-]{0,15}$/.test(t))) throw new Error("Invalid/duplicate tickers");
-    index = { schemaVersion: 1, fetchedAt: new Date().toISOString(), start: values.start, end: values.end, historyStart, warmupBars, universe, universeVersion, exclusions: UNIVERSE_EXCLUSIONS[universeVersion] ?? [], requests: {} };
+    index = { schemaVersion: 1, fetchedAt: new Date().toISOString(), start: values.start, end: values.end, historyStart, warmupBars, universe, universeVersion, ...(universeVersion === "custom" ? {} : { universeDefinition: getUniverseDefinition(universeVersion) }), exclusions: UNIVERSE_EXCLUSIONS[universeVersion] ?? [], requests: {} };
   }
   const calendar = exchangeDates(index.historyStart, index.end);
   if (calendar.filter(d => d < index.start).length < index.warmupBars) throw new Error("Requested history has insufficient warmup sessions");
@@ -69,6 +71,23 @@ export async function importYahoo(args: string[]): Promise<string> {
   const files: Record<string, DatasetFile> = {}, snapshots: DatasetFile[] = [], actions: DatasetManifest["actions"] = [];
   const adjustments: Record<string, unknown> = {};
   try {
+    if (index.universeVersion === "v3") {
+      index.universeDefinition ??= getUniverseDefinition("v3");
+      const canonicalPath = "sources/universe-v3.json";
+      const bytes = sourceDir && index.universeRecord
+        ? await readFile(resolve(sourceDir, index.universeRecord.path))
+        : await readFile(new URL("../src/config/universes/nasdaq100-2026-06-01-v3.json", import.meta.url));
+      if (index.universeRecord && sha256(bytes) !== index.universeRecord.sha256) throw new Error("Canonical universe record hash mismatch");
+      const record = JSON.parse(bytes.toString()) as { universeVersion?: string; officialSecurities?: string[]; tradableSecurities?: string[]; excludedSecurities?: {ticker:string}[] };
+      if (record.universeVersion !== "v3" || record.officialSecurities?.length !== 101
+        || JSON.stringify(record.tradableSecurities) !== JSON.stringify(index.universe)
+        || JSON.stringify(record.excludedSecurities?.map(x => x.ticker)) !== JSON.stringify((index.exclusions ?? []).map(x => x.ticker))) {
+        throw new Error("Canonical universe record does not match selected membership/exclusions");
+      }
+      await writeFile(resolve(stage, canonicalPath), bytes, { flag: "wx" });
+      index.universeRecord = { path: canonicalPath, sha256: sha256(bytes) };
+      snapshots.push(index.universeRecord);
+    }
     for (const ticker of index.universe) {
       let text: string;
       const file = `sources/${ticker}.json`;
@@ -104,8 +123,11 @@ export async function importYahoo(args: string[]): Promise<string> {
       coverage: { start: index.historyStart, end: index.end }, evaluation: { start: index.start, end: index.end },
       calendar, universe: index.universe, actions, files, snapshots,
       universeVersion: index.universeVersion ?? "custom", exclusions: index.exclusions ?? [],
+      ...(index.universeDefinition ? { universeDefinition: index.universeDefinition } : {}),
+      ...(index.universeRecord ? { universeRecord: index.universeRecord } : {}),
       ...(index.derivedFrom ? { derivedFrom: index.derivedFrom } : {}),
-      importerVersion: "yahoo-raw-v2", warmupBars: index.warmupBars,
+      importerVersion: "yahoo-raw-v3", warmupBars: index.warmupBars,
+      corporateActionReview: { policyVersion: "splits-dividends-only-v2", sourceEvents: ["splits", "dividends", "capitalGains"], unsupportedEvents: ["spin-offs", "rights", "mergers", "cash-in-lieu", "capital-gain distributions"], nonstandardSplitFactors: "fail closed", preCoverageEvents: "discarded because they cannot affect retained raw bars", exclusions: index.exclusions ?? [] },
       sourceAdjustment: "Yahoo OHLC/dividends split-adjusted; volume inverse split-adjusted; adjclose ignored",
       reconstructionSplits: adjustments,
       dividendTiming: "Cash credited on ex-date to prior holdings, after same-day splits; payment-date lag omitted",
