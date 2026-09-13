@@ -1,5 +1,5 @@
 import { hashText, type LiveUsage } from "../agent/trace.ts";
-import { ZEN_FREE_MODELS } from "../agent/piAgent.ts";
+import { QUALIFIED_OPENCODE_CLIENT_VERSION, QUALIFIED_ZEN_MODEL_ID } from "./qualification.ts";
 import { TRADING_TOOL_NAMES } from "../agent/tools.ts";
 
 type ToolPart = { type: "tool"; callID: string; tool: string; state: { status: string; input?: unknown; output?: unknown; error?: unknown } };
@@ -22,11 +22,11 @@ function canonical(value: unknown): string {
  * with multiplicity. Counters are replaced, never added to the provisional
  * event/MCP counters. Caller must fail the day when errors or boundedReason exist.
  */
-export function reconcileClientTools(trace: unknown[], usage: LiveUsage, maxToolCalls: number): ClientToolAudit {
+export function reconcileClientTools(trace: unknown[], usage: LiveUsage, maxToolCalls: number, toolNames: readonly string[] = TRADING_TOOL_NAMES): ClientToolAudit {
   const errors: string[] = [];
   const latest = new Map<string, ToolPart>();
   const mcp: McpAttempt[] = [];
-  const allowed = new Set(TRADING_TOOL_NAMES.map((name) => `trading_${name}`));
+  const allowed = new Set<string>(toolNames.map((name) => `trading_${name}`));
   const terminal = (part: ToolPart) => ["completed", "error"].includes(part.state.status);
   const ingest = (raw: unknown) => {
     if (!object(raw) || raw.type !== "tool") return;
@@ -104,22 +104,23 @@ export function reconcileClientTools(trace: unknown[], usage: LiveUsage, maxTool
 }
 
 /** Validate every observed request, not only the final overwritten prompt file.
- * This adapter's hook/config behavior is qualified against official 1.18.29;
+ * This adapter's hook/config behavior is qualified against official 1.18.30;
  * upgrading the client requires explicitly qualifying a new version.
  */
 export function validateClientRuntimeAudits(
   decision: import("../agent/trace.ts").LiveDecision,
   expectedModel: string,
   expectedDir?: string,
+  toolNames: readonly string[] = TRADING_TOOL_NAMES,
 ): string[] {
   const errors: string[] = [];
-  if (!(ZEN_FREE_MODELS as readonly string[]).some((id) => expectedModel === `opencode/${id}`)) errors.push("Expected model is outside the free allowlist");
+  if (expectedModel !== QUALIFIED_ZEN_MODEL_ID) errors.push("Expected model is not the exact qualified free Muse Spark model");
   if (hashText(decision.effectiveSystemPrompt) !== decision.promptHash) errors.push("Decision prompt hash is inconsistent");
   const audits = (file: string) => decision.trace.filter((e): e is Record<string, any> => object(e) && e.type === "client_audit" && e.file === file).map((e) => e.data);
   const configs = audits("client-config-audit.json");
   const requestFiles = audits("system-prompts.jsonl");
   const singletons = audits("system-prompt.json");
-  const allowed = TRADING_TOOL_NAMES.map((name) => `trading_${name}`).sort();
+  const allowed = toolNames.map((name) => `trading_${name}`).sort();
   const exactPermissions = { "*": "deny", ...Object.fromEntries(allowed.map((name) => [name, "allow"])) };
   if (configs.length !== 1 || !object(configs[0])) errors.push("Missing or duplicate runtime config audit");
   if (requestFiles.length !== 1 || !Array.isArray(requestFiles[0]) || requestFiles[0].length === 0) errors.push("Missing complete per-request prompt audit");
@@ -129,7 +130,7 @@ export function validateClientRuntimeAudits(
   const directory = expectedDir ?? config?.workspace?.directory;
   if (typeof directory !== "string" || !directory.startsWith("/")) errors.push("Missing isolated runtime directory");
   const runtimeCheck = (record: Record<string, any>) => {
-    if (record.runtime?.cliVersion !== "1.18.29" || record.runtime?.versionSource !== "caller preflight opencode --version") errors.push("Unqualified or unobserved official client version");
+    if (record.runtime?.cliVersion !== QUALIFIED_OPENCODE_CLIENT_VERSION || record.runtime?.versionSource !== "caller preflight opencode --version") errors.push("Unqualified or unobserved official client version");
     if (typeof record.runtime?.versions?.bun !== "string" || typeof record.runtime?.executable !== "string") errors.push("Missing runtime process identity");
     if (!object(record.workspace) || record.workspace.directory !== directory || record.workspace.processCwd !== directory) errors.push("Official client runtime escaped isolated directory");
   };

@@ -10,7 +10,14 @@
     "fixtures:generate": "bun run scripts/generate-fixtures.ts",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
-    "data:import": "bun run scripts/import-yahoo.ts"
+    "data:import": "bun run scripts/import-yahoo.ts",
+    "model:preflight": "bun run scripts/qualify-opencode.ts",
+    "control": "bun run scripts/run-deterministic-control.ts",
+    "study:run": "bun run scripts/run-study.ts",
+    "sandbox:provision": "sh scripts/sandbox/provision.sh",
+    "sandbox:check": "bun run scripts/run-study.ts --sandbox-check=true",
+    "study:year": "bun run scripts/run-study-year.ts",
+    "study:control": "bun run scripts/qualify-study-control.ts"
   },
   "dependencies": {
     "@earendil-works/pi-ai": "0.80.2",

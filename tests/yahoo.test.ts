@@ -27,6 +27,13 @@ describe("Yahoo raw conversion",()=>{
     source.chart.result[0]!.events.splits.one={date:timestamp("2024-08-01"),numerator:1061,denominator:1000};
     expect(()=>convertYahooChart(source,"AAPL","2024-01-01","2024-01-03")).toThrow("possible spin-off");
   });
+  test("pre-coverage exotic factors are ignored because they cannot affect retained raw bars",()=>{
+    const source=chart(["2024-01-02"]);
+    source.chart.result[0]!.events.splits.one={date:timestamp("2023-12-01"),numerator:1061,denominator:1000};
+    const converted=convertYahooChart(source,"AAPL","2024-01-01","2024-01-03");
+    expect(converted.allSplits).toEqual([]);
+    expect(converted.bars[0]!.close).toBe(100);
+  });
   test("multiple forward and reverse splits apply strictly after each bar",()=>{
     const source=chart(["2024-01-02","2024-08-01","2024-09-02"]);
     (source.chart.result[0]!.events.splits as any).two={date:timestamp("2024-09-02"),numerator:1,denominator:2};

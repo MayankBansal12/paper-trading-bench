@@ -25,3 +25,8 @@ results/reports/*
 
 # Downloaded market snapshots (may include redistribution-restricted source data)
 datasets/
+
+.sandbox/
+
+# Model transcripts and immutable experiment artifacts
+results/studies/

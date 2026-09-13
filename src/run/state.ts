@@ -19,7 +19,7 @@ import type { RunConfig, RunState } from "../domain/types.ts";
 const RIGID_FIELDS = [
   "model", "seed", "agent", "startDate", "startingCapital", "universeVersion",
   "executionConvention", "fixtureVersion", "protocolVersion",
-  "comparisonProfile", "provider", "freeOnly", "dataDir", "contributions", "warmupBars", "experiment",
+  "comparisonProfile", "behaviorAnalysis", "provider", "freeOnly", "dataDir", "contributions", "warmupBars", "experiment",
 ] as const;
 
 /** FNV-1a over the config's full canonical identity -> short hex id. Same config, same id, always. */
@@ -38,7 +38,7 @@ export function deriveRunId(config: RunConfig): string {
     config.executionConvention,
     config.fixtureVersion,
     config.protocolVersion,
-    config.provider ?? "", config.freeOnly ?? false, config.dataDir ?? "", JSON.stringify(config.contributions ?? []), config.warmupBars ?? "", config.experiment ?? "",
+    config.provider ?? "", JSON.stringify(config.behaviorAnalysis ?? null), config.freeOnly ?? false, config.dataDir ?? "", JSON.stringify(config.contributions ?? []), config.warmupBars ?? "", config.experiment ?? "",
     "accounting-artifacts-v4",
     ...(config.comparisonProfile === undefined ? [] : [config.comparisonProfile]),
   ].join("|");

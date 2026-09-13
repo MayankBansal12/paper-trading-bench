@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "universeVersion": "v3",
+  "index": "Nasdaq-100",
+  "indexSymbol": "NDX",
+  "effectiveDate": "2026-06-01",
+  "frozenThrough": "2026-08-31",
+  "membershipPolicy": "Start-of-period membership frozen throughout the evaluation; later index changes do not alter eligibility.",
+  "shareClassPolicy": "Security-level membership includes both GOOG and GOOGL; equal-weight controls weight securities rather than issuers.",
+  "construction": {
+    "baseSnapshotAsOf": "2026-05-01",
+    "baseSnapshotSha256": "a0dd0736856cee1f530350c642102a90d810704eb1071104a33ca88af2e4a4f4",
+    "baseSnapshotBytes": 885951,
+    "effectiveChanges": [
+      {
+        "effectiveDate": "2026-05-18",
+        "add": "LITE",
+        "remove": "CSGP"
+      }
+    ]
+  },
+  "officialSecurities": [
+    "AAPL", "ABNB", "ADBE", "ADI", "ADP", "ADSK", "AEP", "ALNY", "AMAT", "AMD",
+    "AMGN", "AMZN", "APP", "ARM", "ASML", "AVGO", "AXON", "BKR", "BKNG", "CCEP",
+    "CDNS", "CEG", "CHTR", "CMCSA", "COST", "CPRT", "CRWD", "CSCO", "CSX", "CTAS",
+    "CTSH", "DASH", "DDOG", "DXCM", "EA", "EXC", "FANG", "FAST", "FER", "FTNT",
+    "GEHC", "GILD", "GOOG", "GOOGL", "HON", "IDXX", "INSM", "INTC", "INTU", "ISRG",
+    "KDP", "KHC", "KLAC", "LIN", "LITE", "LRCX", "MAR", "MCHP", "MDLZ", "MELI",
+    "META", "MNST", "MPWR", "MRVL", "MSFT", "MSTR", "MU", "NFLX", "NVDA", "NXPI",
+    "ODFL", "ORLY", "PANW", "PAYX", "PCAR", "PDD", "PEP", "PLTR", "PYPL", "QCOM",
+    "REGN", "ROP", "ROST", "SBUX", "SHOP", "SNDK", "SNPS", "STX", "TMUS", "TRI",
+    "TSLA", "TTWO", "TXN", "VRSK", "VRTX", "WBD", "WDC", "WDAY", "WMT", "XEL", "ZS"
+  ],
+  "excludedSecurities": [
+    {
+      "ticker": "HON",
+      "reason": "The 2026-06-29 Honeywell Aerospace distribution plus HON 1-for-2 reverse split is outside split/dividend-only accounting; no substitute is added."
+    },
+    {
+      "ticker": "EA",
+      "reason": "Yahoo has no finite opening price for the 2026-07-20 exchange session; missing execution data is not imputed or forward-filled."
+    }
+  ],
+  "tradableSecurities": [
+    "AAPL", "ABNB", "ADBE", "ADI", "ADP", "ADSK", "AEP", "ALNY", "AMAT", "AMD",
+    "AMGN", "AMZN", "APP", "ARM", "ASML", "AVGO", "AXON", "BKR", "BKNG", "CCEP",
+    "CDNS", "CEG", "CHTR", "CMCSA", "COST", "CPRT", "CRWD", "CSCO", "CSX", "CTAS",
+    "CTSH", "DASH", "DDOG", "DXCM", "EXC", "FANG", "FAST", "FER", "FTNT", "GEHC",
+    "GILD", "GOOG", "GOOGL", "IDXX", "INSM", "INTC", "INTU", "ISRG", "KDP", "KHC",
+    "KLAC", "LIN", "LITE", "LRCX", "MAR", "MCHP", "MDLZ", "MELI", "META", "MNST",
+    "MPWR", "MRVL", "MSFT", "MSTR", "MU", "NFLX", "NVDA", "NXPI", "ODFL", "ORLY",
+    "PANW", "PAYX", "PCAR", "PDD", "PEP", "PLTR", "PYPL", "QCOM", "REGN", "ROP",
+    "ROST", "SBUX", "SHOP", "SNDK", "SNPS", "STX", "TMUS", "TRI", "TSLA", "TTWO",
+    "TXN", "VRSK", "VRTX", "WBD", "WDC", "WDAY", "WMT", "XEL", "ZS"
+  ],
+  "sources": [
+    {
+      "title": "Nasdaq-100 component weights, data as of 2026-05-01",
+      "url": "https://www.nasdaq.com/docs/2026/05/04/NDX.pdf"
+    },
+    {
+      "title": "Lumentum Holdings Inc. to Join the Nasdaq-100 Index Beginning May 18, 2026",
+      "url": "https://ir.nasdaq.com/node/110416"
+    },
+    {
+      "title": "Nasdaq-100 June 2026 quarterly changes, effective June 22",
+      "url": "https://www.nasdaq.com/press-release/nasdaq-100-indexr-june-2026-quarterly-changes-2026-06-12"
+    },
+    {
+      "title": "Honeywell Aerospace spin-off and reverse split timing",
+      "url": "https://www.honeywell.com/us/en/press/2026/06/honeywell-board-of-directors-sets-record-date-and-announces-expected-timing-for-spin-off-of-honeywell-aerospace-and-honeywell-reverse-stock-split"
+    }
+  ]
+}

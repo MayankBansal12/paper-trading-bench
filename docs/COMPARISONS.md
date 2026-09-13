@@ -1,48 +1,76 @@
-# Controlled model and harness comparisons
+# Controlled comparisons
 
-The first series uses preset `202606-202608-v6`. Its definition is checked into `src/config/comparison.ts`. Treat it as immutable: changed dates, data, budgets, or rules require a new named series, not edits to an existing comparison.
+Historical record: previous `results/runs` artifacts were cleared at user request on 2026-09-13. Their measurements below describe earlier protocols, not current v9 results. See [the active environment](STUDY_ENVIRONMENT.md).
+Comparison identities live in the registry in `src/config/comparison.ts`. An existing profile is immutable: changed membership, data, dates, funding, prompt, budgets, execution, runtime policy, or behavior rules require a new profile ID. Reports fail closed or form separate cohorts; they never pool incompatible runs.
 
-| Setting | Frozen value |
-|---|---|
-| Evaluation | June 1–August 31, 2026; 64 exchange sessions |
-| Dataset SHA-256 | `79066938c91b2968c034edb8cb8a29bf4b416fac39befead9a28f47dbf6550ea` |
-| Universe | v2, 49 stocks; HON excluded for unsupported spin-offs |
-| Funding | $500 initially; $500 July 1; $500 August 3 |
-| Market history | Up to 100 prior bars through the observation close; indicators use the full available prefix |
-| Memory | Five prior trading days; each rationale excerpt at most 1,200 characters |
-| New rationale instruction | Decision, Evidence, Risk, Invalidation; at most 1,200 characters |
-| Daily budget | 12 model turns, 20 attempted tools, 300,000 ms |
-| Tool set | Portfolio, universe, OHLCV, indicators, buy, sell |
-| Execution | Unknown next-session opening price, queue order, immediate executed-sale proceeds |
-| Protocol | `v6-explicit-timing-bounded-memory` |
+## Registry
 
-The current portfolio and actual recent fills/rejections remain available independently of the rationale excerpt. Long model responses are retained verbatim in artifacts and usage; only their inclusion in later prompts is truncated. A response exceeding the requested format/length does not itself become a failed decision. No long-term journal, extra tools, position limits, or stop-loss rules are introduced.
+| Setting | `202606-202608-v6` (historical) | `nasdaq100-20260601-20260831-v7` (active) |
+|---|---|---|
+| Evaluation | 2026-06-01…2026-08-31, 64 sessions | 2026-06-01…2026-08-31, 64 sessions |
+| Dataset hash | `79066938…f6550ea` | `abc104ae…23b2de7` |
+| Universe | v2, 49-stock legacy subset | v3, 99 supported start-of-period Nasdaq-100 securities |
+| Membership | legacy basket | effective 2026-06-01, frozen through 2026-08-31; security-level GOOG/GOOGL |
+| Exclusions | HON | HON unsupported distribution/reverse split; EA missing open; no substitutes |
+| Funding | $500 + $500 July 1 + $500 August 3 | same |
+| Warm-up | 100 sessions | 100 sessions |
+| Memory | five prior days; 1,200 chars/rationale | same bounded memory |
+| Prompt | `v6-explicit-timing-bounded-memory` | `v7-neutral-portfolio-responsibility` |
+| Daily budget | 12 turns / 20 attempts / 300,000 ms | same |
+| Execution | prior-close observation / queued next-open fills / close valuation | same causal atomic convention |
+| Behavior rules | none; never backfilled | `dip-behavior-v1`, locked thresholds/windows |
+| Live model policy | historical replay only under current runner | exact official OpenCode Zen Muse free path |
 
-## Running and retrying
+The v6 builder and prompt hashes are preserved; no historical v5/v6 result acquires v7 analytics by reinterpretation. New real inference requires v7.
+
+## Active profile procedure
+
+Run these gates in order:
 
 ```sh
-# No inference, no credentials needed, no run artifacts written.
-pnpm run run -- --comparison=202606-202608-v6 --preflight
+# Frozen profile/data; no agent, credentials, artifacts, or inference.
+pnpm run run -- --comparison=nasdaq100-20260601-20260831-v7 --preflight
 
-# Future authorized comparison run; not executed as part of preparing the preset.
-pnpm run run -- --comparison=202606-202608-v6 --agent=opencode --model=mimo-v2.5-free --seed=1
+# Current official client/catalog and explicit zero-price evidence; no inference.
+pnpm model:preflight
+
+# One-session qualification, separately labeled and not a benchmark result.
+pnpm run run -- --agent=opencode --provider=opencode --model=muse-spark-1.3-contributor-free --free-only=true --smoke --data-dir=datasets/historical/nasdaq100_202606_202608_v2 --universe-version=v3 --start=2026-06-01 --end=2026-06-01 --warmup-bars=100 --run-id=muse-live-smoke-v7
+
+# Only after every prior gate passes.
+pnpm run run -- --comparison=nasdaq100-20260601-20260831-v7 --seed=1 --run-id=muse-nasdaq100-202606-202608-v7-r1
 ```
 
-`--data-dir` may locate a copy of the same immutable snapshot. Downloading Yahoo again is not guaranteed to reproduce it; a changed hash must fail rather than be silently substituted. Date, budget, universe, capital, warm-up, and smoke flags cannot override the preset. The CLI and runner also validate the pinned protocol and execution convention.
+The exact live path is `opencode/muse-spark-1.3-contributor-free` through official OpenCode 1.18.30. `muse-spark-1.3-free`, Pi, other providers/models, ambiguous pricing, and paid fallback are refused. Catalog qualification is repeated before every daily inference and stored with the decision evidence. All failed attempts remain on disk; retry never hides them.
 
-Model, provider, adapter, replicate (`--seed`), run ID and explicit free/paid policy may vary. Paid access still requires `--free-only=false`; the official OpenCode adapter retains its free allowlist. An equal replicate label is not a shared random seed or a guarantee of deterministic outputs.
+A deterministic full-period fake run may test the harness, but comparison profiles reject fake agents. Label controls separately.
 
-Retry an interrupted run with exactly the same command. Use a new replicate or run ID for a new independent run. Never overwrite or resume a v5 run with v6 instructions. Historical v5 replay remains supported using its original prompt builders; the v5 result stays in a separate cohort.
+## Equal circumstances
 
-## Qualification and interpretation
+Within a cohort, every run must share universe and membership source, dataset and action policy, evaluation and warm-up, contributions, execution convention, prompt protocol, behavior rules, limits, and adapter class. Model and replicate labels may differ only in a profile that permits them. The active profile intentionally locks provider/model/adapter because only one free Muse route is currently qualified.
 
-1. Run no-call preflight, then a short, separately labeled smoke qualification for each new model/adapter. A full-profile preflight does not test authentication, provider compatibility, or actual tool use. Smoke runs deliberately use unprofiled shorter windows and are not comparison scores.
-2. Compare models through the **same adapter**, using this preset and retained dataset. Check actual runtime/model evidence; settings shared across adapters do not guarantee identical provider reasoning defaults or inference behavior.
-3. Compare supported adapters as a separate harness experiment, preferably holding the model/provider constant. Reports intentionally keep different adapters in separate cohorts; inspect these alongside one another as harness results rather than pooling them as model-only scores.
-4. Repeat runs and add separately frozen rising, falling and sideways windows selected before inspecting model results. This one historical window is qualification evidence, not proof of general trading ability.
+The controls use identical sessions and cash flows:
 
-Free Zen models currently require the actual OpenCode client. Pi's direct provider path is not an interchangeable route to those free endpoints. Use a provider/model that supports the intended adapter and qualify it first; do not bypass provider restrictions or silently substitute a different model.
+- Cash retains all principal.
+- Security-equal-weight buy-and-hold purchases all 99 supported securities at the first open and allocates each contribution equally at that contribution open. It never rebalances and retains dividends.
 
-Report every registered attempt, including failures and timeouts: final portfolio, contributions, net profit, time-weighted return, drawdown, concentration, fills/rejections, failed attempts, tokens and reported cost. Incomplete runs are not completed benchmark results. The report already retains failed-attempt resource usage and separates incompatible protocol, dataset, funding and budget settings.
+No official NDX benchmark is added because a reproducible, point-in-time, market-cap-weighted total-return series with matched action/cash-flow/execution semantics is not frozen here. Label the equal-weight control accurately.
 
-This series preserves the original simulation limitations: selected surviving stocks, unsupported spin-offs/delistings, ex-date dividend cash, no fees/slippage, retrospective data corrections, and possible pretrained historical knowledge.
+## Reporting and pre-registered dip behavior
+
+Do not rank models with one synthetic score. Report return/excess, risk, concentration, cash/capital use, turnover/holdings, operations, liquidity diagnostics, and dip events separately.
+
+`dip-behavior-v1` uses the equal-weight control. A trigger occurs at close on a flow-adjusted daily loss of at least 2% or drawdown of at least 5%; five following sessions are suppressed. Model exposure change, net buys, model/reference returns, and excess return are measured over the next five sessions. Trigger-day trading is excluded because its decision was made before the triggering close. Terminal windows without five later sessions are retained but have null forward values.
+
+Incomplete/failed runs are operational evidence, not completed scores. Include all failures, rejections, turns, tools, tokens, elapsed time, and reported cost. Preserve final holdings and cash so accounting can be reconciled.
+
+## Cohort roadmap
+
+A single June–August 2026 path is a qualification experiment. Before examining candidate model outputs, define additional versioned profiles for:
+
+- rising, falling, high-volatility, and range-bound periods;
+- multiple non-overlapping time windows;
+- multiple replicate labels per model/runtime;
+- future eligible free models only after separately proving their exact catalog/runtime path.
+
+Report distributions and uncertainty across predeclared profiles. Separate model comparisons from adapter/runtime experiments. Never select periods, exclusions, dip thresholds, or replicates after seeing which model wins.

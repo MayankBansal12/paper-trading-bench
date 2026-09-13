@@ -2,25 +2,30 @@ import { mkdir, writeFile } from "node:fs/promises";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import { TRADING_TOOL_NAMES } from "../agent/tools.ts";
-import { ZEN_FREE_MODELS } from "../agent/piAgent.ts";
+import { QUALIFIED_OPENCODE_CLIENT_VERSION, QUALIFIED_ZEN_MODEL_ID } from "./qualification.ts";
 
-/** Official OpenCode 1.18.29: custom agent.prompt still receives host-date
+export const OPENCODE_PROMPT_SUFFIX = "\nTrading tool names use the trading_ prefix (for example trading_get_indicators and trading_buy).";
+
+/** Official OpenCode 1.18.30: custom agent.prompt still receives host-date
  * environment text. The supported system transform runs after construction.
  * --pure disables this plugin, so callers MUST omit --pure and use this isolated
  * environment with cwd=dir. No authentication values belong in this config.
  */
-export async function makeClientConfig(dir: string, model: string, systemPrompt: string, mcpUrl: string, clientVersion?: string): Promise<{
+export async function makeClientConfig(dir: string, model: string, systemPrompt: string, mcpUrl: string, clientVersion?: string, options: { toolNames?: readonly string[]; runtimeDir?: string; baseURL?: string } = {}): Promise<{
   config: unknown; env: Record<string, string>; effectiveSystemPrompt: string;
 }> {
-  if (!(ZEN_FREE_MODELS as readonly string[]).some((id) => model === `opencode/${id}`)) {
-    throw new Error(`Official-client config refuses non-allowlisted free model ${model}`);
+  if (model !== QUALIFIED_ZEN_MODEL_ID) {
+    throw new Error("Official-client config refuses anything except " + QUALIFIED_ZEN_MODEL_ID + "; got " + model);
   }
-  const root = resolve(dir);
-  const allowed = TRADING_TOOL_NAMES.map((name) => `trading_${name}`);
+  if (clientVersion !== QUALIFIED_OPENCODE_CLIENT_VERSION) {
+    throw new Error("Official-client config requires qualified OpenCode " + QUALIFIED_OPENCODE_CLIENT_VERSION);
+  }
+  const root = resolve(options.runtimeDir ?? dir);
+  const allowed = (options.toolNames ?? TRADING_TOOL_NAMES).map((name) => `trading_${name}`);
   const permission = { "*": "deny", ...Object.fromEntries(allowed.map((name) => [name, "allow"])) };
-  const effectiveSystemPrompt = `${systemPrompt}\nTrading tool names use the trading_ prefix (for example trading_get_indicators and trading_buy).`;
+  const effectiveSystemPrompt = systemPrompt + OPENCODE_PROMPT_SUFFIX;
   for (const name of ["home", "config", "data", "cache", "state", "extra-config"]) {
-    await mkdir(join(root, name), { recursive: true });
+    await mkdir(join(dir, name), { recursive: true });
   }
   const pluginPath = join(root, "benchmark-plugin.mjs");
   const source = `import { writeFile, appendFile, rename } from "node:fs/promises";
@@ -51,7 +56,7 @@ export default async function benchmarkPlugin(pluginInput = {}) {
       if (config.model !== expected || config.small_model !== expected) throw new Error("Benchmark model configuration drift");
       await writeJson(${JSON.stringify(join(root, "client-config-audit.json"))}, { runtime, workspace, model: config.model,
         small_model: config.small_model, permission: config.permission, agent: config.agent?.bench,
-        mcpNames: Object.keys(config.mcp ?? {}), plugins: config.plugin });
+        mcpNames: Object.keys(config.mcp ?? {}), plugins: config.plugin, baseURL: config.provider?.opencode?.options?.baseURL });
     },
     "experimental.chat.system.transform": async (input, output) => {
       const actualModel = input.model.providerID + "/" + input.model.id;
@@ -78,10 +83,11 @@ export default async function benchmarkPlugin(pluginInput = {}) {
   };
 }
 `;
-  await writeFile(pluginPath, source);
+  await writeFile(join(dir, "benchmark-plugin.mjs"), source);
   const config = {
     $schema: "https://opencode.ai/config.json",
     model, small_model: model, default_agent: "bench", enabled_providers: ["opencode"],
+    ...(options.baseURL ? { provider: { opencode: { options: { baseURL: options.baseURL } } } } : {}),
     share: "disabled", autoupdate: false, instructions: [], snapshot: false,
     compaction: { auto: false, prune: false },
     permission,

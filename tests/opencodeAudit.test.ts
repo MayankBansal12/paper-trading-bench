@@ -3,7 +3,7 @@ import { reconcileClientTools, validateClientRuntimeAudits } from "../src/openco
 import { initialDecision } from "../src/agent/trace.ts";
 function usage() {
   return initialDecision({ date: "2024-03-01", universe: [], bars: {}, indicators: {}, recentDays: [],
-    portfolio: { cash: 500, holdings: {}, holdingsValue: 0, netWorth: 500 }, limits: { maxTurns: 8, maxToolCalls: 10, timeoutMs: 5000 } }, "mimo-v2.5-free", "opencode").usage;
+    portfolio: { cash: 500, holdings: {}, holdingsValue: 0, netWorth: 500 }, limits: { maxTurns: 8, maxToolCalls: 10, timeoutMs: 5000 } }, "muse-spark-1.3-contributor-free", "opencode").usage;
 }
 const part = (id: string, tool: string, status: string, input: unknown = {}) => ({ type: "tool", callID: id, tool, state: { status, input } });
 const audit = (...parts: unknown[]) => ({ type: "client_audit", file: "tool-parts.jsonl", data: parts });
@@ -54,13 +54,13 @@ test("same arguments called twice require two distinct MCP executions", () => {
 });
 
 function validRuntimeDecision() {
-  const d = initialDecision({ date: "2024-03-01", universe: [], bars: {}, indicators: {}, recentDays: [], portfolio: { cash: 500, holdings: {}, holdingsValue: 0, netWorth: 500 }, limits: { maxTurns: 8, maxToolCalls: 10, timeoutMs: 5000 } }, "mimo-v2.5-free", "opencode");
+  const d = initialDecision({ date: "2024-03-01", universe: [], bars: {}, indicators: {}, recentDays: [], portfolio: { cash: 500, holdings: {}, holdingsValue: 0, netWorth: 500 }, limits: { maxTurns: 8, maxToolCalls: 10, timeoutMs: 5000 } }, "muse-spark-1.3-contributor-free", "opencode");
   const toolAllowlist = ["get_portfolio", "get_universe", "get_ohlcv", "get_indicators", "buy", "sell"].map((s) => `trading_${s}`);
   const permission = { "*": "deny", ...Object.fromEntries(toolAllowlist.map((s) => [s, "allow"])) };
-  const model = "opencode/mimo-v2.5-free";
-  const runtime = { cliVersion: "1.18.29", versionSource: "caller preflight opencode --version", versions: { bun: "1.3.14" }, executable: "/official/opencode" };
+  const model = "opencode/muse-spark-1.3-contributor-free";
+  const runtime = { cliVersion: "1.18.30", versionSource: "caller preflight opencode --version", versions: { bun: "1.3.14" }, executable: "/official/opencode" };
   const workspace = { directory: "/tmp/bench-test", processCwd: "/tmp/bench-test", worktree: "/tmp/bench-test" };
-  const prompt = { model, runtime, workspace, resolvedModel: { id: "mimo-v2.5-free", providerID: "opencode", cost: { input: 0, output: 0, cache: { read: 0, write: 0 } } },
+  const prompt = { model, runtime, workspace, resolvedModel: { id: "muse-spark-1.3-contributor-free", providerID: "opencode", cost: { input: 0, output: 0, cache: { read: 0, write: 0 } } },
     effectiveSystemPrompt: d.effectiveSystemPrompt, promptHash: d.promptHash, system: [d.effectiveSystemPrompt], toolAllowlist, sessionID: "one" };
   d.usage.turns = 2;
   d.trace = [
@@ -73,10 +73,10 @@ function validRuntimeDecision() {
   return d;
 }
 test("all runtime request/config audits must agree on free model, exact prompt, tools and isolated cwd", () => {
-  expect(validateClientRuntimeAudits(validRuntimeDecision(), "opencode/mimo-v2.5-free", "/tmp/bench-test")).toEqual([]);
+  expect(validateClientRuntimeAudits(validRuntimeDecision(), "opencode/muse-spark-1.3-contributor-free", "/tmp/bench-test")).toEqual([]);
   const changed = validRuntimeDecision();
   (changed.trace[5] as any).data[0].effectiveSystemPrompt = "Earlier bad prompt";
-  expect(validateClientRuntimeAudits(changed, "opencode/mimo-v2.5-free").join()).toContain("prompt drift");
+  expect(validateClientRuntimeAudits(changed, "opencode/muse-spark-1.3-contributor-free").join()).toContain("prompt drift");
 });
 test("runtime audit fails closed on ambient tools, missing version, wrong directory and nonzero model cache pricing", () => {
   for (const mutate of [
@@ -86,14 +86,14 @@ test("runtime audit fails closed on ambient tools, missing version, wrong direct
     (d: any) => { d.trace[5].data[0].resolvedModel.cost.cache.read = 1; },
   ]) {
     const d = validRuntimeDecision(); mutate(d);
-    expect(validateClientRuntimeAudits(d, "opencode/mimo-v2.5-free", "/tmp/bench-test").length).toBeGreaterThan(0);
+    expect(validateClientRuntimeAudits(d, "opencode/muse-spark-1.3-contributor-free", "/tmp/bench-test").length).toBeGreaterThan(0);
   }
 });
 
 test("unmetered background requests fail the runtime audit even with matching prompts", () => {
   const d = validRuntimeDecision();
   (d.trace[5] as any).data.push(structuredClone((d.trace[5] as any).data[0]));
-  expect(validateClientRuntimeAudits(d, "opencode/mimo-v2.5-free").join()).toContain("fully metered");
+  expect(validateClientRuntimeAudits(d, "opencode/muse-spark-1.3-contributor-free").join()).toContain("fully metered");
 });
 
 test("unmatched MCP refusals remain counted in failed-attempt evidence", () => {

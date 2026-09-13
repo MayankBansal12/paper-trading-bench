@@ -1,93 +1,45 @@
-# Historical dataset protocol
+# Frozen market-data protocol
 
-`loadDataset(dataDir?)` in `dataset.ts` returns an immutable `MarketDataset`.
-Without a directory it loads the legacy 50-ticker synthetic test fixtures. Real
-runs select a manifest directory explicitly. Every load verifies SHA-256 file
-and source-snapshot hashes, schemas, action domains, shared session coverage,
-and the versioned US exchange calendar. The dataset version is the SHA-256 of
-manifest bytes, which contain all data and source hashes. No data is loaded at
-module import time. `FIXTURE_VERSION` is a deprecated legacy fixture label;
-credible run identity must use `dataset.version`.
+`loadDataset(dataDir)` returns an immutable, hash-verified `MarketDataset`. The registered Nasdaq snapshot is `datasets/historical/nasdaq100_202606_202608_v2`, manifest SHA-256 `abc104ae3f2cb258e1c9c9bc996a9f46c14ca83771da5c9acbeb7eaab23b2de7`.
 
-Call `validateDatasetWindow(dataset, start, end, warmupBars, universe)` before
-inference. Requested calendar boundaries must be inside declared coverage;
-weekends/holidays do not shorten the declared range. All tickers must have every
-session, and sufficient bars before the first evaluation session. The calendar
-supports 2000–2030, including exchange holidays, known exceptional closures, and
-early-close sessions. It is a frozen rule set, not a live exchange feed.
+## Registered identity
 
-## Observation and accounting conventions
+- Universe: `v3`, 99 supported securities from Nasdaq-100 membership effective 2026-06-01 and frozen through 2026-08-31.
+- Coverage: 2026-01-06…2026-08-31, 164 exchange sessions.
+- Evaluation: 2026-06-01…2026-08-31, 64 sessions; exactly 100 preceding warm-up sessions.
+- Membership evidence: `sources/universe-v3.json`, SHA-256 `329f6e120d711d54bf53a01c5b2c83557e5395dfeed3948cb7a2fb389f8ced05`, byte-identical to the checked-in canonical record.
+- Price files: 99; source snapshots: 101; importer: `yahoo-raw-v3`.
+- Actions over coverage: 148 dividends and four splits. Evaluation splits are CRWD 4-for-1 on July 2, KLAC 10-for-1 on June 12, and MNST 2-for-1 on August 11.
+- Adjustment convention: `raw-as-traded-ohlcv;split-events;dividend-cash-on-ex-date-v1`.
 
-Stored OHLCV is reconstructed as traded. `openOn` and `closeOn` return raw prices.
-`actionsOn` returns splits before dividends; cash dividends are credited on the
-ex-date to prior holdings after any same-day split. Actual dividend payment-date
-lag is intentionally omitted in this protocol.
+HON is excluded because the June 29 distribution/reverse-split combination is unsupported. EA is excluded because July 20 has no finite source open. There are no substitutes and no price imputations. Both GOOG and GOOGL remain separate eligible securities.
 
-`asOfBefore(ticker, date)` excludes the current and future sessions. It adjusts
-prior prices and volume only for splits effective on or before the decision
-date. Dividend gaps remain visible. Returned rows/actions are copies, so a
-consumer cannot mutate the dataset. Current-day split information is part of the
-pre-open accounting event, not a future observation.
+## Validation
 
-Compute indicators from the **entire causal history prefix**, then independently
-truncate bars for the prompt. RSI uses Wilder's initial arithmetic mean of the
-first 14 changes and recursively smooths every later change. Both-zero averages
-produce neutral RSI 50. SMA/RSI retain full precision; round only for display.
-The seed is anchored at the frozen dataset's history start. At least 60 prior bars
-are required by the historical importer; its default requested minimum is 100,
-and its default one-year history typically provides about 250.
+Loading verifies the manifest schema and SHA, every transformed bar file, every source snapshot, membership record/definition/exclusions, exchange calendar, coverage/evaluation bounds, one bar per security/session, finite OHLCV domains, and action policy. Any mismatch fails before inference.
 
-## Yahoo import and reproduction
+`validateDatasetWindow(dataset, start, end, warmupBars, universe)` rejects missing universe members, insufficient history, truncated periods, and out-of-range dates. Historical runs must explicitly identify the loaded manifest hash in `RunConfig.fixtureVersion`.
 
-```
-bun scripts/import-yahoo.ts --start 2026-06-01 --end 2026-08-31 --out datasets/historical/202606_202608 --universe-version v2
-bun scripts/import-yahoo.ts --from-snapshot datasets/historical/202606_202608 --out /tmp/identical-replay
+Yahoo quote OHLCV is retrospectively split-adjusted. Import reconstructs raw as-traded OHLCV using every supported split on or after the retained coverage start, including events after evaluation when present. A pre-coverage split cannot affect a retained raw bar or holding and is discarded. Adjusted close is ignored. Indicators normalize history only for splits already effective by the decision date, preventing future-action leakage.
+
+Splits alter held units and basis before orders on the effective session. Dividends credit cash to ex-date holders before that session’s orders. Capital-gain distributions, exotic split factors, spin-offs, rights, mergers, cash-in-lieu, missing bars, duplicate events, or unsupported domains fail closed.
+
+## Import and no-network rebuild
+
+A new network import writes only to a nonexistent destination and stages/validates before publication:
+
+```sh
+pnpm data:import -- --start=2026-06-01 --end=2026-08-31 --history-start=2026-01-06 --out=datasets/historical/<new-version> --universe-version=v3
 ```
 
-Destinations must not exist. A staged dataset is validated before publication.
-The importer can explicitly derive a versioned subset from authenticated raw
-snapshots using `--from-snapshot DIR --universe-version v2`; its manifest records
-the parent hash and exclusions. Normal snapshot replay has no network calls and
-produces byte-identical manifest/data/source files. Custom `--tickers` and
-`--universe-version` are mutually exclusive. BRK.B maps explicitly to Yahoo BRK-B.
+Provider history can be revised. A fresh import that differs is a new dataset and requires a new profile; never overwrite `v2` or relax the registered hash.
 
-Yahoo quote OHLC is split-adjusted. Adjusted-close additionally incorporates
-cash distributions and is never used here. Volume is inversely split-adjusted;
-older dividend amounts also reflect later splits. All later splits through the
-snapshot time must be downloaded, even if they occur after evaluation ends,
-to reconstruct raw prices/volumes/dividends correctly. The resulting dataset is
-then trimmed to the historical coverage end. This source reconstruction does not
-expose future actions to the decision API.
+Rebuild the retained raw snapshots without network access:
 
-Empirical verification: Yahoo's Apple 2020-08-07 dividend is 0.205, whereas Apple
-declared 0.82. Multiplication by the later 4-for-1 split restores the as-traded
-cash dividend. The downloaded 2020-08-28 OHLC similarly reconstructs open
-504.04998779296875 and close 499.2300109863281, retaining source precision.
+```sh
+pnpm data:import -- --from-snapshot=datasets/historical/nasdaq100_202606_202608_v2 --out=/tmp/nasdaq100-rebuilt
+```
 
-Sources: [Yahoo adjustment convention](https://help.yahoo.com/kb/SLN28256.html),
-[Yahoo historical prices](https://finance.yahoo.com/quote/AAPL/history/),
-[Apple July 2020 issuer declaration](https://www.apple.com/newsroom/2020/07/apple-reports-third-quarter-results/),
-[NYSE calendar](https://www.nyse.com/trade/hours-calendars).
+The rebuilt `manifest.json` and all descendants must be byte-identical. The importer refuses an existing output path.
 
-## Supported universe and limitations
-
-Universe v1 remains the original synthetic 50. Historical default v2 contains the
-same equities except HON (49). Yahoo encodes Honeywell spin-off adjustments as
-1.061 on 2025-10-30 and 0.9535 on 2026-06-29. Treating those as share ratios would
-lose the SOLS/HONA distributions and mishandle the actual HON 1-for-2 reverse
-split. The historical loader/converter reject nonstandard factors pending issuer
-review; they are not approximated as cash or fictional share splits.
-
-The rejected original 50-ticker snapshot is preserved under
-`datasets/quarantine/202606_202608_HON_unsupported`, with issuer evidence in
-`REJECTED.md`. The valid v2 snapshot excludes HON from warmup and evaluation and
-records the exclusion reason and parent hash. NFLX's 2025-11-17 split is a genuine
-10-for-1 share split, [confirmed by Netflix](https://ir.netflix.net/investor-news-and-events/financial-releases/press-release-details/2025/Netflix-Announces-Ten-For-One-Stock-Split/default.aspx).
-
-The small-rational split gate is conservative screening, not a comprehensive
-corporate-action detector. Other spin-offs, rights, mergers and capital-gain
-distributions are unsupported. An unusual legitimate split may need additional
-issuer review and implementation. Yahoo may revise source history; reproduce
-experiments from frozen snapshots, not a fresh download. The fixed present-day
-universe and exclusion policy introduce selection/survivorship bias; results
-apply to this declared universe and window.
+Downloaded snapshots are ignored by Git because provider redistribution restrictions may apply. Preserve the retained directory as an experiment artifact and back it up with its hash. Synthetic fixtures under `fixtures/ohlcv` exist only for deterministic tests/smokes and cannot qualify as a historical benchmark.
