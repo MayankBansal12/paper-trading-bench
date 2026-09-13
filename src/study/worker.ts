@@ -81,7 +81,7 @@ const bridge = Bun.serve({
             ? undefined
             : await req.arrayBuffer(),
           redirect: "manual",
-          signal: AbortSignal.timeout(300000),
+          // The host's attempt deadline bounds this request and its response stream.
         },
       );
       if (response.headers.get("x-bench-submitted") === "true")

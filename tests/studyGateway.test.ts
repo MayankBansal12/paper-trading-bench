@@ -57,6 +57,9 @@ test("gateway binds provider identity, denies unauthorized content/tools, retain
       ...(method === "POST" ? { body: JSON.stringify(value) } : {}),
     });
   try {
+    const listed = await (await request("/mcp", { jsonrpc: "2.0", id: 1, method: "tools/list" })).json() as any;
+    expect(listed.result.tools.find((t: any) => t.name === "price_history")
+      .inputSchema.properties.lookback.maximum).toBe(1);
     expect((await request("/mcp", {}, "wrong")).status).toBe(403);
     expect((await request("/mcp", null, g.capability, "GET")).status).toBe(405);
     expect(events.some((e) => e.type === "mcp_transport_probe")).toBe(true);

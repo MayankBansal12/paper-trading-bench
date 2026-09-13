@@ -27,7 +27,9 @@ export const POLICY = Object.freeze({
   maxHistory: 252,
   maxHistoryTickers: 8,
   maxOrders: 128,
-  maxAttemptsPerDay: 3,
+  maxAttemptsPerDay: 2,
+  maxConsecutiveInvalidDays: 3,
+  defaultTimeoutMs: 3600000,
   maxEntryChars: 2000,
   maxReadChars: 12000,
   maxRequestBytes: 32768,
@@ -162,6 +164,13 @@ export function deepFreeze<T>(value: T): T {
   return value;
 }
 export const viewHash = (view: SessionView) => contentHash(view);
+/** Every eligible security must support the advertised lookback in full. */
+export function availableHistoryBars(view: SessionView): number {
+  return Math.min(
+    POLICY.maxHistory,
+    ...view.universe.map((ticker) => view.bars[ticker]!.length),
+  );
+}
 /** A host-provided, citable snapshot; loading it consumes no tool call. */
 export function openingPortfolio(view: SessionView) {
   return {
@@ -196,6 +205,7 @@ export function openingContext(
     horizon,
     portfolio: openingPortfolio(view),
     eligibleTickers: view.universe,
+    priceHistory: { maxLookback: availableHistoryBars(view) },
     previousJournal: past.at(-1) ?? null,
     committedJournalEntries: past.length,
   };

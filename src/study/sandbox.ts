@@ -159,6 +159,7 @@ export async function launchSandbox(
     setup,
     socket,
     join(runtime.dir, "worker.ts"),
+    String(Math.max(1, Math.ceil(timeoutMs / 1000))),
   ];
   const child = Bun.spawn(args, {
     stdin: "ignore",

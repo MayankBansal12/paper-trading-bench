@@ -5,6 +5,7 @@ import { resolve, join } from "node:path";
 
 for (const [command, status, exitCode] of [
   ["resume", "incomplete", 1], ["resume", "completed", 0], ["inspect", "incomplete", 0],
+  ["resume", "invalid", 1], ["inspect", "invalid", 0],
 ] as const) test(`${command} ${status} returns exit ${exitCode} with its summary`, async () => {
   const runId = "test-cli-" + randomUUID(), dir = resolve("results/studies", runId);
   mkdirSync(dir, { recursive: true });

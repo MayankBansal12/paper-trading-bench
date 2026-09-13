@@ -5,11 +5,11 @@ A small, repeatable simulation for studying LLM portfolio decisions, stated reas
 Every trading day starts a fresh session with its date and observation cutoff, available cash, holdings and previous-close values, known funding schedule, eligible tickers, and previous committed journal **verbatim**. The model has four tools:
 
 - `market_snapshot(tickers?)`: compact previous closes.
-- `price_history(tickers, lookback)`: bounded batched OHLCV through the host cutoff.
+- `price_history(tickers, lookback)`: exactly the requested OHLCV bars through the host cutoff, bounded by the advertised session limit (`--history`, default 100). Larger requests are rejected.
 - `journal(ticker?, date?, query?, cursor?)`: original committed notes, with combined filters and frozen company-name aliases.
 - `submit_day(orders, journal)`: one ordered batch and a short free-text note. Empty orders means hold. No extra inference turn confirms it.
 
-Turns and tool calls are unlimited. A configurable host watchdog, payload/history bounds, fresh sandbox and exact model/tool/prompt checks remain. The model chooses its allocation and trading style. No browsing, financial reports, indicators, summarizing model, embeddings, strategy judge, or target-weight execution is added.
+Turns and tool calls are unlimited. Each attempt has a configurable 60-minute host watchdog and one automatic retry. Two failed attempts mark that trading day invalid and carry existing positions forward without new orders. The run stops only after three consecutive invalid trading days; valid, retried, invalid and unattempted days remain counted. Payload/history bounds, fresh sandbox and exact model/tool/prompt checks remain. The model chooses its allocation and trading style. No browsing, financial reports, indicators, summarizing model, embeddings, strategy judge, or target-weight execution is added.
 
 **The overnight gap is an environment constraint.** Decisions observe prices only through the previous trading session close. The day's opening price becomes available to execution only after all decisions finish; closing prices then value the portfolio. Dollar orders specify amounts, with share quantities determined by the unknown open. Fixed-share buys can fail for insufficient cash after a gap. Evaluator reports join each order and actual fill to the split-consistent observed close and opening gap. Outcomes never enter the same day's decision context.
 

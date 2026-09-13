@@ -5,7 +5,7 @@ import { assertProviderContext } from "../opencode/context.ts";
 import { OPENCODE_PROMPT_SUFFIX } from "../opencode/config.ts";
 import { systemPrompt } from "./protocol.ts";
 import { STUDY_TOOLS, POLICY } from "./protocol.ts";
-import { SessionTools, toolDefinitions } from "./tools.ts";
+import { SessionTools } from "./tools.ts";
 import { QUALIFIED_ZEN_MODEL } from "../opencode/qualification.ts";
 export async function serveGateway(
   socket: string,
@@ -86,7 +86,7 @@ export async function serveGateway(
           });
         if (body.method === "ping") return reply({});
         if (body.method === "tools/list")
-          return reply({ tools: toolDefinitions });
+          return reply({ tools: tools.definitions });
         if (body.method === "tools/call") {
           const bindingIndex = bindings.findIndex(
             (b) =>

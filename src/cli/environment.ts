@@ -19,7 +19,7 @@ import { deterministicControl } from "../study/control.ts";
 import { qualifySandbox } from "../study/sandbox.ts";
 import { writeFileAtomic } from "../utils/fs.ts";
 export const HELP = `Paper portfolio environment (${STUDY_PROTOCOL})
-  pnpm bench run --run-id ID --data-dir DIR --start DATE --end DATE [--preflight=true] [--control=true] [--smoke=true] [--history=100] [--timeout-ms=300000]
+  pnpm bench run --run-id ID --data-dir DIR --start DATE --end DATE [--preflight=true] [--control=true] [--smoke=true] [--history=100] [--timeout-ms=${POLICY.defaultTimeoutMs}]
   pnpm bench resume --dir results/studies/ID
   pnpm bench inspect --dir results/studies/ID
   pnpm bench verify --dir results/studies/ID
@@ -133,7 +133,7 @@ export async function environmentCLI(command: string, argv: string[]) {
       timeoutMs: parsePositiveInt(
         "timeout-ms",
         flags.get("timeout-ms"),
-        300000,
+        POLICY.defaultTimeoutMs,
       ),
     },
     policy: POLICY,

@@ -5,6 +5,7 @@ import type { OrderRequest } from "../domain/types.ts";
 import { contentHash } from "../core/hash.ts";
 import {
   POLICY,
+  availableHistoryBars,
   deepFreeze,
   openingPortfolio,
   openingContext,
@@ -19,6 +20,10 @@ const ticker = Type.String({ pattern: "^[A-Z][A-Z0-9.-]{0,15}$" });
 const tickers = (max: number) =>
   Type.Array(ticker, { minItems: 1, maxItems: max, uniqueItems: true });
 const positive = Type.Number({ exclusiveMinimum: 0, maximum: 1e9 });
+const priceHistorySchema = (maximum: number) => obj({
+  tickers: tickers(POLICY.maxHistoryTickers),
+  lookback: Type.Integer({ minimum: 1, maximum }),
+});
 export const toolDefinitions = [
   {
     name: "market_snapshot",
@@ -29,11 +34,8 @@ export const toolDefinitions = [
   {
     name: "price_history",
     description:
-      "Batched OHLCV ending at the host observation cutoff; choose depth, never an end date.",
-    inputSchema: obj({
-      tickers: tickers(POLICY.maxHistoryTickers),
-      lookback: Type.Integer({ minimum: 1, maximum: POLICY.maxHistory }),
-    }),
+      "Batched OHLCV ending at the host observation cutoff. Returns exactly lookback bars per ticker; requests above the session's advertised maximum are rejected. Choose depth, never an end date.",
+    inputSchema: priceHistorySchema(POLICY.maxHistory),
   },
   {
     name: "journal",
@@ -65,6 +67,7 @@ export const toolDefinitions = [
   },
 ];
 export class SessionTools {
+  readonly definitions: typeof toolDefinitions;
   private closed = false;
   private calls = 0;
   private receipts = new Set<string>();
@@ -83,6 +86,11 @@ export class SessionTools {
     private deadline: number,
     private onAudit: (e: any) => void = () => {},
   ) {
+    this.definitions = deepFreeze(toolDefinitions.map((tool) =>
+      tool.name === "price_history"
+        ? { ...tool, inputSchema: priceHistorySchema(availableHistoryBars(view)) }
+        : tool,
+    ));
     this.past = deepFreeze(structuredClone(past));
     if (
       past.some(
@@ -148,7 +156,7 @@ export class SessionTools {
         this.closed = true;
         throw new Error(this.boundedReason);
       }
-      const tool = toolDefinitions.find((t) => t.name === name);
+      const tool = this.definitions.find((t) => t.name === name);
       if (!tool) {
         this.integrityError = "Unknown tool";
         throw new Error(this.integrityError);

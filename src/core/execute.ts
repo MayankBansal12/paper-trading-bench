@@ -2,7 +2,7 @@ import type { StudyAttempt } from "../study/agent.ts";
 import type { ContextConfig } from "./context.ts";
 import type { StudyRecord } from "./types.ts";
 import type { MarketDataset } from "../data/dataset.ts";
-import type { PortfolioState, Fill, FailedOrder } from "../domain/types.ts";
+import type { PortfolioState, Fill, FailedOrder, OrderRequest } from "../domain/types.ts";
 import { preparePortfolio, contributionOn } from "../engine/cashFlows.ts";
 import { applyFill, valuePortfolio } from "../engine/portfolio.ts";
 import { executeOrder } from "../engine/execution.ts";
@@ -14,14 +14,33 @@ export function executeAccepted(
   market: MarketDataset,
   universe: readonly string[],
 ): StudyRecord {
-  const date = accepted.scope.date,
-    contribution = contributionOn(config.contributions, date),
+  return executeOrders(accepted.scope.date, accepted.decision.orders, previous, config, market, universe);
+}
+/** Failed decisions place no orders; funding, actions and closing valuation still occur. */
+export function executeInvalidDay(
+  date: string,
+  previous: PortfolioState,
+  config: ContextConfig,
+  market: MarketDataset,
+  universe: readonly string[],
+): StudyRecord {
+  return executeOrders(date, [], previous, config, market, universe);
+}
+function executeOrders(
+  date: string,
+  orders: readonly OrderRequest[],
+  previous: PortfolioState,
+  config: ContextConfig,
+  market: MarketDataset,
+  universe: readonly string[],
+): StudyRecord {
+  const contribution = contributionOn(config.contributions, date),
     actions = market.actionsOn(date);
   let portfolio = preparePortfolio(previous, contribution, actions);
   const before = portfolio.netWorth;
   const fills: Fill[] = [],
     failed: FailedOrder[] = [];
-  for (const order of accepted.decision.orders) {
+  for (const order of orders) {
     if (!universe.includes(order.ticker))
       throw new Error("Accepted order escaped universe");
     const price = market.openOn(order.ticker, date);
