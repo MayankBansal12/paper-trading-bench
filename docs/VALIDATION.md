@@ -1,5 +1,11 @@
 # Benchmark validation
 
+## Session recovery and streaming qualification (PR #6)
+
+The host gateway's default Bun idle timeout could truncate inference streams after a ten-second pause even with a sixty-minute attempt watchdog. A real OpenCode/sandbox fixture with a twelve-second pause reproduced the failure before the fix (four provider requests, no submission, then watchdog cutoff). Setting the gateway server's `idleTimeout: 0` made the same fixture complete in one provider request. The host attempt deadline remains authoritative. Reproduce without remote inference with `bun scripts/qualify-submission.ts --slow-stream-fixture`; the separate `--watchdog-fixture` verifies hard cancellation.
+
+Recovery/history changes are covered by 219 offline tests: exact history bounds; one retry across resume; invalid-day accounting without orders; consecutive-invalid-day stop/reset; and reports aligned by decision date. Corporate-action verification rebuilt all 16,236 bars and 152 events from the registered frozen Yahoo snapshots and exercised all 61 evaluation-period events through opening context and accounting. This verifies reproducibility and accounting, not independent issuer confirmation of every event.
+
 ## Stack review for PRs #3 and #4 (2026-09-13)
 
 Reviewed the session/tool and provider boundaries, journal-to-order binding, failure handling, deterministic cash/accounting, atomic recovery, reporting, CI and repository contents. PR #3's reviewed head is `37d77b8`; PR #4's reviewed implementation is `6add2eb` and includes that parent commit.

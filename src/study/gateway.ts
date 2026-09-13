@@ -25,8 +25,11 @@ export async function serveGateway(
     audit({ type: "gateway_denied", reason });
     return new Response("Request denied", { status });
   };
+  // Bun 1.3.14 honors this for Unix sockets, but its Unix option type omits it.
+  // A server-wide setting is needed: per-request timeout(0) still truncates streams.
+  const socketOptions = { unix: socket, idleTimeout: 0 };
   const server = Bun.serve({
-    unix: socket,
+    ...socketOptions,
     maxRequestBodySize: 2 * 1024 * 1024,
     async fetch(req, server) {
       server.timeout(req, 0); // Host session deadline bounds slow inference on this Unix socket.
