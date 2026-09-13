@@ -7,7 +7,9 @@ import {
   tradeAnalysis,
   datasetGapAnalysis,
 } from "./review.ts";
-import { analyzeStudy } from "./analysis.ts";
+import { analyzeStudy, summarizeAttempts } from "./analysis.ts";
+import { JournalStore } from "./journal.ts";
+import { literalText } from "../report/text.ts";
 import { monthlyDeposits } from "../core/funding.ts";
 import { computeMetrics } from "../engine/metrics.ts";
 import { cashBaseline, buyAndHoldBaseline } from "../engine/baselines.ts";
@@ -31,15 +33,31 @@ export async function writeStudyReview(
     contributions = monthlyDeposits(
       validateDatasetWindow(market, c.start, c.end, c.history),
     );
+  const attempts = summarizeAttempts(new JournalStore(result.dir).all(), result.attempts);
+  const status = [
+    "# Run status", "",
+    `${result.summary.status}: ${result.summary.committedDays}/${result.summary.totalDays} sessions committed; ${result.summary.failures} failed attempts.`, "",
+    "Decision and portfolio metrics below cover committed days only. Failed attempts remain part of the operational record.", "",
+    "| Date | Attempt | Outcome | Committed | Inference requests | Broker calls |",
+    "|---|---:|---|---|---:|---:|",
+    ...attempts.map(a => `| ${a.date} | ${a.attempt} | ${a.outcome} | ${a.committed ? "yes" : "no"} | ${a.observedInferenceRequests} | ${a.observedBrokerCalls} |`),
+    "",
+    ...attempts.filter(a => a.reason).flatMap(a => [
+      `${a.date}, attempt ${a.attempt}:`, "", literalText(String(a.reason)), "",
+    ]),
+  ];
   await writeFileAtomic(
     join(result.dir, "review.md"),
-    renderJournalReview(records, result.attempts, market),
+    status.join("\n") + "\n" + renderJournalReview(records, result.attempts, market),
   );
   if (options.analysis)
     await writeFileAtomic(
       join(result.dir, "analysis.json"),
       JSON.stringify(
         {
+          run: result.summary,
+          attempts,
+          metricsScope: "Committed days only; attempt history includes failures and interruptions.",
           ...analyzeStudy(records, result.attempts),
           trades: records.flatMap((r, i) =>
             tradeAnalysis(r, result.attempts[i]!, market).map((t) => ({

@@ -52,6 +52,8 @@ export async function serveGateway(
       } catch {
         return deny("invalid-json", 400);
       }
+      if (!body || typeof body !== "object" || Array.isArray(body))
+        return deny("invalid-request-object", 400);
       if (url.pathname === "/bind-call") {
         if (Buffer.byteLength(raw) > POLICY.maxRequestBytes)
           return deny("binding-size", 413);

@@ -89,3 +89,36 @@ export function analyzeStudy(records: DailyRecord[], accepted: StudyAttempt[]) {
       "Tool requests and journal citations measure recorded activity; they do not prove attention, decision quality, or hidden reasoning.",
   };
 }
+
+/** Evaluator-only attempt history, including failures and interrupted attempts. */
+export function summarizeAttempts(
+  events: import("./journal.ts").JournalEvent[],
+  accepted: StudyAttempt[],
+) {
+  const committed = new Set(accepted.map(a => `${a.scope.date}:${a.scope.attempt}`));
+  const grouped = new Map<string, typeof events>();
+  for (const e of events) {
+    const key = `${e.scope.date}:${e.scope.attempt}`;
+    if (!grouped.has(key)) grouped.set(key, []);
+    grouped.get(key)!.push(e);
+  }
+  return [...grouped].map(([key, rows]) => {
+    const result = rows.find(e => e.kind === "result");
+    const failed = rows.find(e => e.kind === "failed");
+    const usage = result?.payload.decision?.usage;
+    const observed = rows.filter(e => e.kind === "audit").map(e => e.payload);
+    return {
+      date: rows[0]!.scope.date,
+      attempt: rows[0]!.scope.attempt,
+      committed: committed.has(key),
+      outcome: result?.payload.outcome ?? (failed ? "interrupted" : "unfinished"),
+      reason: result?.payload.reason ?? failed?.payload.reason ?? null,
+      submitted: rows.some(e => e.kind === "submission"),
+      observedInferenceRequests: observed.filter(e => e.type === "inference_request").length,
+      observedBrokerCalls: observed.filter(e => e.type === "tool_attempt").length,
+      elapsedMs: result?.payload.decision?.elapsedMs ?? null,
+      tokens: usage?.totalTokens ?? null,
+      usageCompleteness: usage?.completeness ?? "unavailable",
+    };
+  });
+}

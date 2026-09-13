@@ -90,7 +90,7 @@ export const MAX_UNITS = 1e9;
  * `holdingsValue`/`netWorth` is deliberately NOT re-gated against it and may
  * legitimately exceed it while every contributing position stays
  * cent-exact and individually in-domain (see `valuePortfolio`'s comment in
- * engine/portfolio.ts and PRODUCT.md's round 10 correction). */
+ * engine/portfolio.ts). */
 export const MAX_MONEY_CENTS = BigInt(Math.round(MAX_MONEY_USD * 100));
 
 /** BigInt cents beyond which `Number(cents)` is no longer an exact integer

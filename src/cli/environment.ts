@@ -75,6 +75,7 @@ export async function environmentCLI(command: string, argv: string[]) {
       console.error(join(dir, "review.md"));
     }
     console.log(JSON.stringify(result.summary, null, 2));
+    if (command === "resume" && result.summary.status !== "completed") process.exitCode = 1;
     return;
   }
   if (!["run", "qualify"].includes(command)) throw new Error(HELP);

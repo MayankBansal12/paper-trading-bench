@@ -1,6 +1,6 @@
 # Portfolio and journal environment
 
-Current contract: `v11-portfolio-journal-submit`. Phases 1–4 of [the reviewed simplification](SIMPLIFICATION_PLAN.md) replace the v10 interface and persistence; phase 5 (direct inference adapter) remains deferred. Source/evidence for older cohorts remain archived. Never resume them under v11.
+Current contract: `v11-portfolio-journal-submit`. The four-tool interface and atomic persistence replace v10. A direct inference adapter remains deferred. See [validation and known limitations](VALIDATION.md). Source/evidence for older cohorts remain archived. Never resume them under v11.
 
 ## Session contract
 
@@ -70,6 +70,10 @@ The existing Bubblewrap/systemd boundary retains separate namespaces, no capabil
 ## Commands and study profiles
 
 `pnpm bench help` is the one command guide. `run`, `resume`, `inspect`, `verify`, `review`, `qualify`, and `sandbox-check` use the same active core. The old `study:run` and `study:control` scripts are thin aliases. Data import and no-inference model qualification remain separate preparation commands. Use `bun --env-file=/path/to/existing/.env src/index.ts …` when loading a local host credential file.
+
+`resume` exits nonzero when a session fails to commit. `inspect` and `verify` can successfully validate an incomplete committed prefix; their summary still says `incomplete`.
+
+`review` identifies run completeness and every failed/interrupted attempt. `analysis.json` separates committed-day metrics from all-attempt operational history. Journal prose is rendered literally so model text cannot add active links, images or report headings.
 
 `run --preflight=true` validates without inference. `run --control=true` runs the unchanged mechanical v10 order policy. `run --smoke=true` limits a live qualification to at most five sessions. `review --analysis=true --gaps=true` derives behavior, fills and gaps offline; `--comparisons=true` adds cash, equal-weight, risk/return metrics and an optional `--ndx-data-dir` reference. These descriptive calculations do not assert scored-study eligibility. `qualify --data-dir … --ndx-data-dir … --start … --end …` separately enforces complete calendar-quarter coverage, original pre-quarter membership evidence, supported securities/actions without exclusions, and frozen NDX reference data. The core does not claim a supplied ordinary date range qualifies for comparison. Annual launchers and legacy comparative CLI are archived; offline NDX/equal-weight/metric helpers remain outside the core.
 

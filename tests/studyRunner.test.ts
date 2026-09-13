@@ -220,3 +220,41 @@ test("changed semantics and conflicting atomic publication fail closed", async (
     /replay mismatch/,
   );
 });
+
+
+test("offline reports show uncommitted failures and recovered attempts without treating failed notes as decisions", async () => {
+  const cfg = await c("2024-04-02", "2024-04-03");
+  const { initialStudyDecision } = await import("../src/study/agent.ts");
+  const { writeStudyReview } = await import("../src/study/report.ts");
+  const options = { analysis: true, gaps: false, comparisons: false };
+  const partial = await runStudy(cfg, {
+    control: async (view, journal, past) => {
+      if (!past.length) return deterministicControl(view, journal, past);
+      const tools = new SessionTools(view, journal, past, Date.now() + 1000);
+      tools.call("market_snapshot", {});
+      const decision = initialStudyDecision(view);
+      decision.outcome = "budget_cutoff";
+      decision.boundedStop = true;
+      decision.trace = tools.trace;
+      decision.elapsedMs = 10000;
+      return { outcome: "budget_cutoff", reason: "No submit ![tracker](https://example.invalid)",
+        scope: view.scope, viewHash: contentHash(view), decision, journalEntries: [] };
+    },
+  });
+  await writeStudyReview(cfg, partial, options);
+  const review = readFileSync(join(partial.dir, "review.md"), "utf8");
+  expect(review).toContain("incomplete: 1/2 sessions committed; 1 failed attempts");
+  expect(Bun.markdown.html(review)).not.toContain("<img");
+  const analysis = JSON.parse(readFileSync(join(partial.dir, "analysis.json"), "utf8"));
+  expect(analysis.days).toHaveLength(1);
+  expect(analysis.attempts).toHaveLength(2);
+  expect(analysis.attempts[1]).toMatchObject({ outcome: "budget_cutoff", committed: false, observedBrokerCalls: 1, submitted: false });
+  const recovered = await runStudy(cfg, { control: deterministicControl });
+  await writeStudyReview(cfg, recovered, options);
+  const after = JSON.parse(readFileSync(join(recovered.dir, "analysis.json"), "utf8"));
+  expect(after.run.status).toBe("completed");
+  expect(after.run.failures).toBe(1);
+  expect(after.attempts).toHaveLength(3);
+  expect(after.attempts.map((a: any) => a.committed)).toEqual([true, false, true]);
+  expect(after.days).toHaveLength(2);
+});
