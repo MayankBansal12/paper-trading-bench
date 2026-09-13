@@ -11,7 +11,7 @@ import {
 } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { createHash, randomUUID } from "node:crypto";
-import { contentHash, textHash } from "../run/persist.ts";
+import { contentHash, textHash } from "../core/hash.ts";
 export const SANDBOX_POLICY = "bwrap-systemd-unix-gateway-v2";
 export interface SandboxProcess {
   process: ReturnType<typeof Bun.spawn>;
@@ -62,10 +62,63 @@ export async function sandboxIdentity() {
   };
   return { ...identity, id: contentHash(identity) };
 }
+export interface PreparedSandboxRuntime {
+  dir: string;
+  evidence: Awaited<ReturnType<typeof sandboxIdentity>>;
+  dispose: () => Promise<void>;
+}
+/** Copy and verify trusted executables once; daily launches mount these same files read-only. */
+export async function prepareSandboxRuntime(): Promise<PreparedSandboxRuntime> {
+  const evidence = await sandboxIdentity();
+  const dir = await mkdtemp(join(tmpdir(), "study-immutable-runtime-"));
+  try {
+    for (const [source, name, hash] of [
+      [process.execPath, "bun", evidence.bunHash],
+      [Bun.which("opencode")!, "opencode", evidence.opencodeHash],
+      [
+        resolve("src/study/worker.ts"),
+        "worker.ts",
+        evidence.hashes["src/study/worker.ts"],
+      ],
+      [
+        resolve("scripts/sandbox/launch.sh"),
+        "launch.sh",
+        evidence.hashes["scripts/sandbox/launch.sh"],
+      ],
+      [
+        resolve(".sandbox/seccomp.bpf"),
+        "seccomp.bpf",
+        evidence.hashes[".sandbox/seccomp.bpf"],
+      ],
+    ]) {
+      await copyFile(source!, join(dir, name!));
+      if (
+        createHash("sha256")
+          .update(await readFile(join(dir, name!)))
+          .digest("hex") !== hash
+      )
+        throw new Error("Runtime changed during preparation");
+      await chmod(join(dir, name!), 0o555);
+    }
+    await chmod(dir, 0o555);
+    return {
+      dir,
+      evidence,
+      dispose: async () => {
+        await chmod(dir, 0o755);
+        await rm(dir, { recursive: true, force: true });
+      },
+    };
+  } catch (e) {
+    await rm(dir, { recursive: true, force: true });
+    throw e;
+  }
+}
 export async function launchSandbox(
   setup: string,
   socket: string,
   timeoutMs: number,
+  runtime: PreparedSandboxRuntime,
 ): Promise<SandboxProcess> {
   await chmod(setup, 0o755);
   await chmod(socket, 0o666);
@@ -77,17 +130,9 @@ export async function launchSandbox(
     "sandbox:x:1000:1000::/work/home:/nonexistent\n",
     { mode: 0o444 },
   );
-  for (const [source, name] of [
-    [process.execPath, "bun"],
-    [Bun.which("opencode")!, "opencode"],
-    [resolve("src/study/worker.ts"), "worker.ts"],
-  ]) {
-    await copyFile(source!, join(setup, name!));
-    await chmod(join(setup, name!), 0o555);
-  }
   for (const name of ["launch.json", "benchmark-plugin.mjs"])
     await chmod(join(setup, name), 0o444);
-  const evidence = await sandboxIdentity();
+  const evidence = runtime.evidence;
   const unit = "trading-bench-" + randomUUID();
   const args = [
     "sudo",
@@ -107,13 +152,13 @@ export async function launchSandbox(
     "-p",
     "KillMode=control-group",
     "/bin/sh",
-    resolve("scripts/sandbox/launch.sh"),
-    resolve(".sandbox/seccomp.bpf"),
-    join(setup, "bun"),
-    join(setup, "opencode"),
+    join(runtime.dir, "launch.sh"),
+    join(runtime.dir, "seccomp.bpf"),
+    join(runtime.dir, "bun"),
+    join(runtime.dir, "opencode"),
     setup,
     socket,
-    join(setup, "worker.ts"),
+    join(runtime.dir, "worker.ts"),
   ];
   const child = Bun.spawn(args, {
     stdin: "ignore",
@@ -181,7 +226,8 @@ export function validateSandboxState(checks: any, evidence: any) {
         "Forbidden sandbox access succeeded or was not probed: " + k,
       );
 }
-export async function qualifySandbox() {
+export async function qualifySandbox(prepared?: PreparedSandboxRuntime) {
+  const runtime = prepared ?? (await prepareSandboxRuntime());
   const dir = await mkdtemp(join(tmpdir(), "study-probe-"));
   const socket = join(dir, "gateway.sock");
   const capability = randomUUID();
@@ -204,7 +250,7 @@ export async function qualifySandbox() {
       JSON.stringify({ probe: true, capability }),
     );
     await writeFile(join(dir, "benchmark-plugin.mjs"), "");
-    const run = await launchSandbox(dir, socket, 10000);
+    const run = await launchSandbox(dir, socket, 10000, runtime);
     const timer = setTimeout(() => void run.stop(), 15000);
     try {
       const [out, err, code] = await Promise.all([
@@ -230,5 +276,6 @@ export async function qualifySandbox() {
   } finally {
     server.stop(true);
     await rm(dir, { recursive: true, force: true });
+    if (!prepared) await runtime.dispose();
   }
 }

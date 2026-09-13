@@ -1,9 +1,10 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { AuthStorage } from "@earendil-works/pi-coding-agent";
-import type { LiveDecision } from "../agent/trace.ts";
-import { contentHash, textHash } from "../run/persist.ts";
+import { readFile } from "node:fs/promises";
+import { homedir } from "node:os";
+import { TOKEN_FIELDS, type LiveDecision } from "../core/types.ts";
+import { contentHash, textHash } from "../core/hash.ts";
 import {
   qualifyOfficialOpenCode,
   QUALIFIED_ZEN_MODEL,
@@ -15,11 +16,15 @@ import {
   reconcileClientTools,
   validateClientRuntimeAudits,
 } from "../opencode/audit.ts";
-import { launchSandbox, validateSandboxState } from "./sandbox.ts";
+import {
+  launchSandbox,
+  validateSandboxState,
+  prepareSandboxRuntime,
+  qualifySandbox,
+} from "./sandbox.ts";
 import { serveGateway } from "./gateway.ts";
 import { SessionTools } from "./tools.ts";
-import { assertFinalJournal } from "./memo.ts";
-import { JournalStore, type JournalEntry } from "./journal.ts";
+import { JournalStore, type Submission, type JournalEntry } from "./journal.ts";
 import {
   STUDY_PROTOCOL,
   STUDY_TOOLS,
@@ -37,6 +42,7 @@ export interface StudyAttempt {
   decision: LiveDecision;
   journalEntries: JournalEntry[];
   sandbox?: unknown;
+  submission?: Submission;
 }
 export function initialStudyDecision(view: SessionView): LiveDecision {
   return {
@@ -53,6 +59,8 @@ export function initialStudyDecision(view: SessionView): LiveDecision {
     effectiveSystemPrompt: systemPrompt(view.limits),
     promptHash: "",
     usage: {
+      completeness: "complete",
+      missingSteps: 0,
       turns: 0,
       toolCalls: 0,
       failedToolCalls: 0,
@@ -71,19 +79,70 @@ export function initialStudyDecision(view: SessionView): LiveDecision {
     },
   };
 }
+export async function prepareModelRuntime() {
+  const started = Date.now();
+  const qualification = await qualifyOfficialOpenCode();
+  let apiKey = process.env.OPENCODE_API_KEY;
+  if (!apiKey) {
+    try {
+      const auth = JSON.parse(
+        await readFile(
+          join(homedir(), ".local/share/opencode/auth.json"),
+          "utf8",
+        ),
+      );
+      if (auth.opencode?.type === "api") apiKey = auth.opencode.key;
+    } catch {}
+  }
+  if (!apiKey) {
+    try {
+      const auth = JSON.parse(
+        await readFile(
+          join(
+            process.env.PI_CODING_AGENT_DIR ?? join(homedir(), ".pi/agent"),
+            "auth.json",
+          ),
+          "utf8",
+        ),
+      );
+      if (
+        auth.opencode?.type === "api_key" &&
+        typeof auth.opencode.key === "string" &&
+        !auth.opencode.key.startsWith("!")
+      )
+        apiKey = auth.opencode.key;
+    } catch {}
+  }
+  if (!apiKey) throw new Error("OpenCode credential unavailable");
+  const bundle = await prepareSandboxRuntime();
+  try {
+    const sandboxQualification = await qualifySandbox(bundle);
+    return {
+      qualification,
+      apiKey,
+      bundle,
+      sandboxQualification,
+      setupMs: Date.now() - started,
+      dispose: bundle.dispose,
+    };
+  } catch (e) {
+    await bundle.dispose();
+    throw e;
+  }
+}
 export async function decideStudy(
   view: SessionView,
   journal: JournalStore,
   past: JournalEntry[],
   horizon: SessionHorizon,
   audit: (e: any) => void = () => {},
+  runtime: Awaited<ReturnType<typeof prepareModelRuntime>>,
 ): Promise<StudyAttempt> {
   const started = Date.now(),
     deadline = started + view.limits.timeoutMs;
   const decision = initialStudyDecision(view);
   const tools = new SessionTools(view, journal, past, deadline, (e) => {
     decision.trace.push(e);
-    audit(e);
   });
   let dir: string | undefined,
     gateway: Awaited<ReturnType<typeof serveGateway>> | undefined,
@@ -99,39 +158,19 @@ export async function decideStudy(
     () => stop("Hard session timeout"),
     view.limits.timeoutMs,
   );
-  const bounded = async <T>(pending: Promise<T>): Promise<T> => {
-    let timer: ReturnType<typeof setTimeout>;
-    try {
-      return await Promise.race([
-        pending,
-        new Promise<never>((_, reject) => {
-          timer = setTimeout(
-            () => {
-              stop("Hard session timeout");
-              reject(new Error("Hard session timeout"));
-            },
-            Math.max(0, deadline - Date.now()),
-          );
-        }),
-      ]);
-    } finally {
-      clearTimeout(timer!);
-    }
-  };
   try {
-    const qualification = await bounded(
-      qualifyOfficialOpenCode(Math.min(30000, view.limits.timeoutMs)),
-    );
-    if (cutoff || Date.now() >= deadline)
-      throw new Error("Session expired during qualification");
-    decision.trace.push({
+    const { qualification, apiKey } = runtime;
+    const qualificationEvent = {
       type: "model_qualification",
       evidence: qualification,
+    };
+    decision.trace.push(qualificationEvent);
+    audit(qualificationEvent);
+    audit({
+      type: "runtime_setup",
+      setupMs: runtime.setupMs,
+      sandboxQualification: runtime.sandboxQualification,
     });
-    const apiKey =
-      process.env.OPENCODE_API_KEY ??
-      (await bounded(AuthStorage.create().getApiKey("opencode")));
-    if (!apiKey) throw new Error("OpenCode credential unavailable");
     dir = await mkdtemp(join(tmpdir(), "study-runtime-"));
     gateway = await serveGateway(
       join(dir, "gateway.sock"),
@@ -165,9 +204,9 @@ export async function decideStudy(
       horizon.start,
       horizon.end,
       horizon.contributions,
-      { lastCommittedDate: past.at(-1)?.date ?? null, entries: past.length },
+      past,
     );
-    decision.trace.push({
+    const protocol = {
       type: "protocol",
       version: STUDY_PROTOCOL,
       model: QUALIFIED_ZEN_MODEL,
@@ -177,7 +216,9 @@ export async function decideStudy(
       promptHash: decision.promptHash,
       dailyPrompt: prompt,
       openingPortfolio: openingPortfolio(view),
-    });
+    };
+    decision.trace.push(protocol);
+    audit(protocol);
     await writeFile(
       join(dir, "launch.json"),
       JSON.stringify({
@@ -198,6 +239,7 @@ export async function decideStudy(
       dir,
       join(dir, "gateway.sock"),
       Math.max(1, deadline - Date.now()),
+      runtime.bundle,
     );
     if (cutoff) {
       await run.stop();
@@ -237,6 +279,10 @@ export async function decideStudy(
       run.process.exited,
       stderrPromise,
     ]);
+    for (const event of decision.trace.filter((e) =>
+      ["opencode_event", "opencode_malformed_event"].includes(e.type),
+    ))
+      audit(event);
     tools.revoke();
     gateway.close();
     const events = decision.trace
@@ -246,10 +292,16 @@ export async function decideStudy(
     if (state.length !== 1) throw new Error("Missing/duplicate sandbox state");
     validateSandboxState(state[0].checks, run.evidence);
     const audits = events.filter((e) => e.type === "sandbox_audits");
-    if (audits.length !== 1 || audits[0].exitCode !== 0)
+    if (
+      audits.length !== 1 ||
+      (audits[0].exitCode !== 0 && audits[0].completedSubmission !== true)
+    )
       throw new Error("Missing/failed sandbox client audit");
-    for (const [file, data] of Object.entries(audits[0].files))
-      decision.trace.push({ type: "client_audit", file, data });
+    for (const [file, data] of Object.entries(audits[0].files)) {
+      const event = { type: "client_audit", file, data };
+      decision.trace.push(event);
+      audit(event);
+    }
     const reconciled = reconcileClientTools(
       decision.trace,
       decision.usage,
@@ -262,10 +314,15 @@ export async function decideStudy(
     if (
       code !== 0 ||
       parsed.error ||
-      parsed.finalReason !== "stop" ||
-      !parsed.rationale.trim()
+      !tools.submission() ||
+      tools.integrityError
     )
-      throw new Error(parsed.error ?? "Client did not finish normally");
+      throw new Error(
+        parsed.error ??
+          tools.integrityError ??
+          "Client did not submit a complete decision",
+      );
+    audit(decision.trace.at(-1));
     if (reconciled.errors.length) throw new Error(reconciled.errors.join("; "));
     const errors = validateClientRuntimeAudits(
       decision,
@@ -279,13 +336,14 @@ export async function decideStudy(
       throw new Error("Inference gateway configuration drift");
     if (gateway.count() !== decision.usage.turns)
       throw new Error("Inference gateway request count mismatch");
-    assertFinalJournal(journal.entries(view.scope), tools.orders());
     decision.orders = tools.orders();
-    decision.rationale = parsed.rationale.trim();
+    decision.rationale = tools.submission()!.journal.text;
     decision.outcome = "completed";
   } catch (e) {
     decision.terminalReason =
-      cutoff ?? tools.boundedReason ?? (e instanceof Error ? e.message : "Session failed");
+      cutoff ??
+      tools.boundedReason ??
+      (e instanceof Error ? e.message : "Session failed");
     decision.outcome =
       cutoff || tools.boundedReason ? "budget_cutoff" : "harness_error";
     decision.orders = [];
@@ -295,6 +353,12 @@ export async function decideStudy(
     gateway?.close();
     await run?.stop();
     if (dir) await rm(dir, { recursive: true, force: true });
+  }
+  if (decision.outcome !== "completed" && (gateway?.count() ?? 0) > 0) {
+    decision.usage.completeness = "unavailable";
+    decision.usage.missingSteps = Math.max(1, decision.usage.missingSteps);
+    for (const k of TOKEN_FIELDS) decision.usage[k] = null;
+    decision.usage.costUsd = null;
   }
   decision.submittedOrders = tools.orders();
   decision.elapsedMs = Date.now() - started;
@@ -315,5 +379,6 @@ export async function decideStudy(
     decision,
     journalEntries: journal.entries(view.scope),
     sandbox: run?.evidence,
+    submission: tools.submission(),
   };
 }

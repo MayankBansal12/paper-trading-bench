@@ -3,25 +3,20 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Paper trading benchmark for evaluating LLMs on financial decision-making",
+  "description": "Repeatable simulated portfolio and original journal environment",
   "scripts": {
-    "run": "bun run src/index.ts run",
-    "report": "bun run src/index.ts report",
     "fixtures:generate": "bun run scripts/generate-fixtures.ts",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
     "data:import": "bun run scripts/import-yahoo.ts",
     "model:preflight": "bun run scripts/qualify-opencode.ts",
-    "control": "bun run scripts/run-deterministic-control.ts",
     "study:run": "bun run scripts/run-study.ts",
     "sandbox:provision": "sh scripts/sandbox/provision.sh",
-    "sandbox:check": "bun run scripts/run-study.ts --sandbox-check=true",
-    "study:year": "bun run scripts/run-study-year.ts",
-    "study:control": "bun run scripts/qualify-study-control.ts"
+    "sandbox:check": "bun run src/index.ts sandbox-check",
+    "study:control": "bun run scripts/qualify-study-control.ts",
+    "bench": "bun run src/index.ts"
   },
   "dependencies": {
-    "@earendil-works/pi-ai": "0.80.2",
-    "@earendil-works/pi-coding-agent": "0.80.2",
     "typebox": "1.1.38"
   },
   "devDependencies": {

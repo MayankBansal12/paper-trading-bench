@@ -1,21 +1,8 @@
-const [subcommand, ...rest] = process.argv.slice(2);
-function usage(): void {
-  console.error("Nasdaq-100 — frozen three-month technical portfolio-management benchmark");
-  console.error("  pnpm run data:import -- --start=YYYY-MM-DD --end=YYYY-MM-DD --out=<snapshot>");
-  console.error("  pnpm run run -- --comparison=nasdaq100-20260601-20260831-v7 --preflight");
-  console.error("  pnpm model:preflight");
-  console.error("  pnpm run run -- --comparison=nasdaq100-20260601-20260831-v7 --seed=1");
-  console.error("  pnpm run report -- [--dirs=<run1,run2>]");
-  console.error("Use run --help or report --help for flags. Initial $500 plus $500 at the start of each later month.");
-}
+import { environmentCLI } from "./cli/environment.ts";
+const [command = "help", ...args] = process.argv.slice(2);
 try {
-  if (subcommand === "run") await (await import("./cli/run.ts")).runRun(rest);
-  else if (subcommand === "report") await (await import("./cli/report.ts")).runReport(rest);
-  else if (subcommand === "--help" || subcommand === "-h") usage();
-  else { usage(); process.exitCode = 1; }
-} catch (error) {
-  console.error(`[${subcommand}] FAILED:`, error instanceof Error ? error.message : error);
-  if (error instanceof Error && error.cause instanceof Error) console.error(error.cause.message);
+  await environmentCLI(command, args);
+} catch (e) {
+  console.error(e instanceof Error ? e.message : String(e));
   process.exitCode = 1;
 }
-export {};

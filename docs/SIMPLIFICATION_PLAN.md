@@ -1,6 +1,6 @@
 # Proposal: a focused portfolio and journal environment
 
-Status: planning only, reviewed against v10 on 2026-09-13. No simplification changes have been applied. V10 already has unlimited model turns and a citable opening portfolio. Its 24-tool and 300-second limits remain in effect until a new protocol is implemented.
+Status: phases 1–4 implemented as `v11-portfolio-journal-submit`; qualification evidence is recorded in [SIMPLIFICATION_VALIDATION.md](SIMPLIFICATION_VALIDATION.md). Phase 5 remains deferred. The findings and proposal below preserve the reviewed v10 baseline.
 
 ## Goal and boundary
 

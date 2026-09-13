@@ -12,29 +12,33 @@ import {
 } from "node:fs";
 import { join, dirname } from "node:path";
 import { randomUUID } from "node:crypto";
-import { contentHash } from "../run/persist.ts";
-import { POLICY, scopeFor, type SessionScope } from "./protocol.ts";
-import { assertDecisionMemo, renderDecisionMemo, type DecisionMemo } from "./memo.ts";
-
+import { contentHash } from "../core/hash.ts";
+import type { OrderRequest } from "../domain/types.ts";
+import { scopeFor, type SessionScope } from "./protocol.ts";
 export interface JournalEntry {
   id: string;
   runId: string;
   date: string;
   attempt: number;
   text: string;
-  decision?: DecisionMemo;
-  evidenceIds: string[];
-  requestId: string;
-  ordersHash: string;
+  tickers: string[];
+  evidenceRefs: string[];
+}
+export interface Submission {
+  id: string;
+  providerCallId: string;
+  orders: OrderRequest[];
+  orderIds: string[];
+  journal: JournalEntry;
+  seenEvidenceRefs: string[];
 }
 export interface JournalEvent {
   sequence: number;
   previous: string;
   scope: SessionScope;
   recordedAt: string;
-  kind: "begin" | "append" | "sealed" | "failed";
-  entry?: JournalEntry;
-  payloadHash?: string;
+  kind: "begin" | "audit" | "submission" | "result" | "failed";
+  payload: any;
   hash: string;
 }
 function writeAll(fd: number, text: string) {
@@ -73,35 +77,31 @@ export function durableCreate(path: string, value: unknown): void {
     syncDir(dirname(path));
   }
 }
-const equalScope = (a: SessionScope, b: SessionScope) =>
-  contentHash(a) === contentHash(b);
-const isHash = (s: unknown): s is string =>
-  typeof s === "string" && /^[a-f0-9]{64}$/.test(s);
-
-/** The model never receives this file or its directory. Only the trusted broker writes. */
+/** One append-only, fsynced hash chain. Daily commits are the authority for memory/state.
+ * A truncated tail is refused, never silently repaired; keep it for forensic recovery. */
 export class JournalStore {
   readonly path: string;
   private events: JournalEvent[] = [];
   constructor(readonly dir: string) {
     mkdirSync(dir, { recursive: true });
-    this.path = join(dir, "journal-events.jsonl");
+    this.path = join(dir, "events.jsonl");
     if (!existsSync(this.path)) return;
     if (!lstatSync(this.path).isFile() || lstatSync(this.path).isSymbolicLink())
-      throw new Error("Invalid journal file");
+      throw new Error("Invalid event file");
     const raw = readFileSync(this.path, "utf8");
     if (raw && !raw.endsWith("\n"))
-      throw new Error("Incomplete journal append; quarantine required");
-    for (const line of raw.trim().split("\n").filter(Boolean)) {
-      const event = JSON.parse(line) as JournalEvent;
-      const { hash, ...body } = event;
+      throw new Error("Incomplete event append; quarantine required");
+    for (const line of raw.split("\n").filter(Boolean)) {
+      const e = JSON.parse(line) as JournalEvent;
+      const { hash, ...body } = e;
       if (
-        event.sequence !== this.events.length + 1 ||
-        event.previous !== this.root ||
+        e.sequence !== this.events.length + 1 ||
+        e.previous !== this.root ||
         contentHash(body) !== hash
       )
-        throw new Error("Journal integrity failure");
-      this.validate(event);
-      this.events.push(event);
+        throw new Error("Event integrity failure");
+      this.validate(e);
+      this.events.push(e);
     }
   }
   get root() {
@@ -110,142 +110,101 @@ export class JournalStore {
   all() {
     return structuredClone(this.events);
   }
+  matching(scope: SessionScope) {
+    return structuredClone(
+      this.events.filter((e) => contentHash(e.scope) === contentHash(scope)),
+    );
+  }
   nextAttempt(date: string) {
     return (
+      1 +
       Math.max(
         0,
         ...this.events
           .filter((e) => e.scope.date === date)
           .map((e) => e.scope.attempt),
-      ) + 1
+      )
     );
   }
-  private matching(scope: SessionScope) {
-    return this.events.filter((e) => equalScope(e.scope, scope));
+  submission(scope: SessionScope): Submission | undefined {
+    return this.matching(scope).find((e) => e.kind === "submission")?.payload;
   }
-  status(scope: SessionScope) {
-    return this.matching(scope).at(-1)?.kind;
+  entries(scope: SessionScope): JournalEntry[] {
+    const s = this.submission(scope);
+    return s ? [s.journal] : [];
   }
-  entries(scope: SessionScope) {
+  trace(scope: SessionScope) {
     return this.matching(scope)
-      .filter((e) => e.kind === "append")
-      .map((e) => structuredClone(e.entry!));
+      .filter((e) => e.kind === "audit")
+      .map((e) => e.payload);
   }
   begin(scope: SessionScope) {
-    this.add(scope, "begin");
+    return this.add(scope, "begin", {});
   }
-
-  append(
-    scope: SessionScope,
-    text: string,
-    evidenceIds: string[],
-    requestId: string,
-    ordersHash = contentHash([]),
-    decision?: DecisionMemo,
-  ): JournalEntry {
-    if (!["begin", "append"].includes(this.status(scope) ?? ""))
-      throw new Error("Journal attempt is closed");
-    const entries = this.entries(scope);
-    const duplicate = entries.find((e) => e.requestId === requestId);
-    if (duplicate) {
-      if (
-        duplicate.text !== text ||
-        contentHash(duplicate.evidenceIds) !== contentHash(evidenceIds) ||
-        duplicate.ordersHash !== ordersHash ||
-        contentHash(duplicate.decision ?? null) !== contentHash(decision ?? null)
-      )
-        throw new Error("Conflicting journal request ID");
-      return duplicate;
-    }
-    const entry: JournalEntry = {
-      id: `${scope.date}:${scope.attempt}:j${entries.length + 1}`,
-      runId: scope.runId,
-      date: scope.date,
-      attempt: scope.attempt,
-      text,
-      ...(decision ? { decision: structuredClone(decision) } : {}),
-      evidenceIds: [...evidenceIds],
-      requestId,
-      ordersHash,
-    };
-    this.add(scope, "append", entry);
-    return structuredClone(entry);
+  audit(scope: SessionScope, event: unknown) {
+    return this.add(scope, "audit", event);
   }
-  finish(scope: SessionScope, kind: "sealed" | "failed", payloadHash: string) {
-    if (this.status(scope) === kind) {
-      const e = this.matching(scope).at(-1)!;
-      if (e.payloadHash !== payloadHash)
-        throw new Error("Journal seal differs");
-      return e.hash;
+  submit(scope: SessionScope, submission: Submission) {
+    const old = this.submission(scope);
+    if (old) {
+      if (contentHash(old) !== contentHash(submission))
+        throw new Error("Conflicting second submission");
+      return old;
     }
-    return this.add(scope, kind, undefined, payloadHash).hash;
+    this.add(scope, "submission", submission);
+    return structuredClone(submission);
+  }
+  result(scope: SessionScope, payload: unknown) {
+    return this.add(scope, "result", payload);
+  }
+  fail(scope: SessionScope, reason: string) {
+    return this.add(scope, "failed", { reason });
   }
   private validate(e: JournalEvent) {
-    const scope = e.scope;
     if (
-      !equalScope(scope, scopeFor(scope.runId, scope.date, scope.attempt)) ||
+      contentHash(e.scope) !==
+        contentHash(scopeFor(e.scope.runId, e.scope.date, e.scope.attempt)) ||
       !Number.isFinite(Date.parse(e.recordedAt))
     )
-      throw new Error("Invalid journal scope/timestamp");
-    if (this.events.length && this.events[0]!.scope.runId !== scope.runId)
-      throw new Error("Foreign journal scope");
+      throw new Error("Invalid event scope");
     const last = this.events.at(-1);
+    if (last && last.scope.runId !== e.scope.runId)
+      throw new Error("Foreign run event");
     if (e.kind === "begin") {
-      if (scope.attempt !== this.nextAttempt(scope.date))
-        throw new Error("Noncontiguous journal attempt");
       if (
-        last &&
-        (!["sealed", "failed"].includes(last.kind) ||
-          scope.date < last.scope.date ||
-          (last.kind === "sealed"
-            ? scope.date === last.scope.date
-            : scope.date !== last.scope.date))
+        e.scope.attempt !== this.nextAttempt(e.scope.date) ||
+        (last &&
+          (!["result", "failed"].includes(last.kind) ||
+            e.scope.date < last.scope.date ||
+            (last.kind === "failed" || last.payload.outcome !== "completed"
+              ? e.scope.date !== last.scope.date
+              : e.scope.date === last.scope.date)))
       )
-        throw new Error("Prior attempt must finish before advancing/retrying");
-      if (e.entry || e.payloadHash) throw new Error("Invalid begin event");
+        throw new Error("Invalid attempt sequence");
       return;
     }
     if (
       !last ||
-      !equalScope(last.scope, scope) ||
-      !["begin", "append"].includes(last.kind)
+      contentHash(last.scope) !== contentHash(e.scope) ||
+      ["result", "failed"].includes(last.kind)
     )
-      throw new Error("Cannot change journal terminal state");
-    if (e.kind === "append") {
-      const n = this.entries(scope).length;
-      const v = e.entry;
-      if (
-        !v ||
-        n >= POLICY.maxEntries ||
-        v.id !== `${scope.date}:${scope.attempt}:j${n + 1}` ||
-        v.date !== scope.date ||
-        v.attempt !== scope.attempt ||
-        v.runId !== scope.runId ||
-        typeof v.text !== "string" ||
-        !v.text.trim() ||
-        v.text.length > POLICY.maxEntryChars ||
-        !/^[A-Za-z0-9_-]{1,64}$/.test(v.requestId) ||
-        !Array.isArray(v.evidenceIds) ||
-        v.evidenceIds.length > 16 ||
-        v.evidenceIds.some((id) => typeof id !== "string" || id.length > 100) ||
-        !isHash(v.ordersHash) ||
-        this.entries(scope).some((old) => old.requestId === v.requestId) ||
-        e.payloadHash
+      throw new Error("Attempt is closed");
+    if (!["audit", "submission", "result", "failed"].includes(e.kind))
+      throw new Error("Unknown event kind");
+    if (
+      e.kind === "submission" &&
+      this.events.some(
+        (x) =>
+          x.kind === "submission" &&
+          contentHash(x.scope) === contentHash(e.scope),
       )
-        throw new Error("Invalid journal entry");
-      if (v.decision !== undefined) assertDecisionMemo(v.decision);
-    } else if (
-      !["sealed", "failed"].includes(e.kind) ||
-      !isHash(e.payloadHash) ||
-      e.entry
     )
-      throw new Error("Invalid journal seal");
+      throw new Error("Duplicate durable submission");
   }
   private add(
     scope: SessionScope,
     kind: JournalEvent["kind"],
-    entry?: JournalEntry,
-    payloadHash?: string,
+    payload: unknown,
   ) {
     const body = {
       sequence: this.events.length + 1,
@@ -253,8 +212,7 @@ export class JournalStore {
       scope,
       recordedAt: new Date().toISOString(),
       kind,
-      ...(entry ? { entry } : {}),
-      ...(payloadHash ? { payloadHash } : {}),
+      payload,
     };
     const event = { ...body, hash: contentHash(body) };
     this.validate(event);
@@ -266,35 +224,7 @@ export class JournalStore {
       closeSync(fd);
     }
     syncDir(this.dir);
-    this.events.push(event);
-    return event;
-  }
-  renderDay(scope: SessionScope) {
-    if (this.status(scope) !== "sealed")
-      throw new Error("Only a sealed day can be rendered");
-    const text = this.entries(scope)
-      .map(
-        (e) =>
-          `${e.id}\n${e.text}\n${e.decision ? renderDecisionMemo(e.decision) + "\n" : ""}Evidence IDs: ${e.evidenceIds.join(", ")}\nQueued orders hash: ${e.ordersHash}\n`,
-      )
-      .join("\n");
-    const file = join(this.dir, "journal", `${scope.date}.txt`);
-    mkdirSync(dirname(file), { recursive: true });
-    if (existsSync(file)) {
-      if (
-        lstatSync(file).isSymbolicLink() ||
-        readFileSync(file, "utf8") !== text
-      )
-        throw new Error("Journal rendering differs");
-      return;
-    }
-    const fd = openSync(file, "wx", 0o400);
-    try {
-      writeAll(fd, text);
-      fsyncSync(fd);
-    } finally {
-      closeSync(fd);
-    }
-    syncDir(dirname(file));
+    this.events.push(structuredClone(event));
+    return structuredClone(event);
   }
 }

@@ -1,3 +1,5 @@
+> Historical v7 document. The current v11 contract and commands are in [docs/STUDY_ENVIRONMENT.md](docs/STUDY_ENVIRONMENT.md). Original bytes are preserved in the v10 source archive.
+
 # Benchmark contract
 
 ## Scope and claim boundary

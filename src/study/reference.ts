@@ -1,3 +1,4 @@
+import type { StudyRecord as DailyRecord } from "../core/types.ts";
 import {
   loadDataset,
   validateDatasetWindow,
@@ -6,11 +7,7 @@ import {
 import { buyAndHoldBaseline } from "../engine/baselines.ts";
 import { preparePortfolio } from "../engine/cashFlows.ts";
 import { computeMetrics } from "../engine/metrics.ts";
-import type {
-  Contribution,
-  DailyRecord,
-  EquityPoint,
-} from "../domain/types.ts";
+import type { Contribution, EquityPoint } from "../domain/types.ts";
 
 /** Evaluator-only reference. It is never passed to the model or its broker. */
 export async function loadNDX(

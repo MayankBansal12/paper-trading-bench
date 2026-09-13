@@ -1,0 +1,152 @@
+import { test, expect } from "bun:test";
+import { rmSync } from "node:fs";
+import { join } from "node:path";
+import { setup, payload } from "./studyTestSupport.ts";
+import { serveGateway } from "../src/study/gateway.ts";
+import { systemPrompt, STUDY_TOOLS } from "../src/study/protocol.ts";
+import { OPENCODE_PROMPT_SUFFIX } from "../src/opencode/config.ts";
+import { QUALIFIED_ZEN_MODEL } from "../src/opencode/qualification.ts";
+import { assertProviderContext } from "../src/opencode/context.ts";
+const body = (s: ReturnType<typeof setup>) => ({
+  model: QUALIFIED_ZEN_MODEL,
+  input: [
+    {
+      role: "system",
+      content: systemPrompt(s.view.limits) + OPENCODE_PROMPT_SUFFIX,
+    },
+    { role: "user", content: s.tools.prompt() },
+  ],
+  tools: STUDY_TOOLS.map((name) => ({
+    type: "function",
+    name: `trading_${name}`,
+  })),
+});
+test("gateway binds provider identity, denies unauthorized content/tools, retains raw observations, and blocks extra inference after submit", async () => {
+  const s = setup(),
+    socket = join(s.dir, "gateway.sock"),
+    events: any[] = [],
+    forwarded: any[] = [];
+  const g = await serveGateway(
+    socket,
+    s.tools,
+    "dummy-provider-key",
+    Date.now() + 10000,
+    (e) => events.push(e),
+    (async (url: any, init: any) => {
+      forwarded.push({
+        url,
+        headers: Object.fromEntries(new Headers(init.headers)),
+        body: JSON.parse(init.body),
+      });
+      return new Response("provider-observation");
+    }) as typeof fetch,
+  );
+  const request = (
+    path: string,
+    value: any,
+    token = g.capability,
+    method = "POST",
+  ) =>
+    fetch("http://gateway" + path, {
+      unix: socket,
+      method,
+      headers: {
+        authorization: `Bearer ${token}`,
+        "content-type": "application/json",
+      },
+      ...(method === "POST" ? { body: JSON.stringify(value) } : {}),
+    });
+  try {
+    expect((await request("/mcp", {}, "wrong")).status).toBe(403);
+    expect((await request("/mcp", null, g.capability, "GET")).status).toBe(405);
+    expect(events.some((e) => e.type === "mcp_transport_probe")).toBe(true);
+    for (const patch of [
+      { model: "paid" },
+      { previous_response_id: "remote" },
+      { tools: [{ type: "web_search" }] },
+      {
+        input: [
+          {
+            role: "user",
+            content: [{ type: "input_image", image_url: "https://future" }],
+          },
+        ],
+      },
+    ])
+      expect(
+        (await request("/inference/responses", { ...body(s), ...patch }))
+          .status,
+      ).toBe(403);
+    for (let i = 0; i < 28; i++)
+      expect(
+        await (await request("/inference/responses", body(s))).text(),
+      ).toBe("provider-observation");
+    expect(g.count()).toBe(28);
+    expect(forwarded[0].headers.authorization).toBe(
+      "Bearer dummy-provider-key",
+    );
+    expect(JSON.stringify(events)).not.toContain("dummy-provider-key");
+    expect(events.some((e) => e.type === "inference_chunk")).toBe(true);
+    expect(events.find((e) => e.type === "inference_request").body).toEqual(
+      body(s),
+    );
+    const args = payload();
+    expect(
+      (
+        await request("/bind-call", {
+          callID: "actual-call",
+          tool: "trading_submit_day",
+          args,
+        })
+      ).status,
+    ).toBe(200);
+    const reply = (await (
+      await request("/mcp", {
+        jsonrpc: "2.0",
+        id: 1,
+        method: "tools/call",
+        params: { name: "submit_day", arguments: args },
+      })
+    ).json()) as any;
+    expect(reply.result.isError).toBeUndefined();
+    expect(s.tools.submission()!.providerCallId).toBe("actual-call");
+    expect((await request("/inference/responses", body(s))).status).toBe(409);
+    expect(g.count()).toBe(28);
+  } finally {
+    g.close();
+    rmSync(s.dir, { recursive: true, force: true });
+  }
+});
+test("actual provider context attestation rejects hidden prompt changes and missing/duplicate effective tools", () => {
+  const s = setup();
+  try {
+    const original = body(s),
+      system = systemPrompt(s.view.limits) + OPENCODE_PROMPT_SUFFIX;
+    expect(() =>
+      assertProviderContext(original, system, s.tools.prompt(), STUDY_TOOLS),
+    ).not.toThrow();
+    const altered = structuredClone(original);
+    altered.input[1]!.content += "Future opening prices supplied.";
+    expect(() =>
+      assertProviderContext(altered, system, s.tools.prompt(), STUDY_TOOLS),
+    ).toThrow();
+    expect(() =>
+      assertProviderContext(
+        { ...original, tools: original.tools.slice(1) },
+        system,
+        s.tools.prompt(),
+        STUDY_TOOLS,
+      ),
+    ).toThrow();
+    expect(() =>
+      assertProviderContext(
+        { ...original, tools: [...original.tools, original.tools[0]] },
+        system,
+        s.tools.prompt(),
+        STUDY_TOOLS,
+      ),
+    ).toThrow();
+  } finally {
+    rmSync(s.dir, { recursive: true, force: true });
+  }
+});

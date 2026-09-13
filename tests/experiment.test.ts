@@ -39,28 +39,17 @@ describe("three-month experiment contract", () => {
     expect(parseBooleanFlag("free-only", "false", true)).toBe(false);
     expect(() => parseBooleanFlag("smoke", "yes")).toThrow(/true or false/);
   });
-  test("short windows require explicit smoke labeling", () => {
-    const result = cli(["--start=2024-01-02", "--end=2024-01-03", "--data-dir=fixtures/ohlcv"]);
-    expect(result.code).not.toBe(0); expect(result.error).toMatch(/three complete calendar months/); expect(result.error).toMatch(/--smoke/);
+  test("new core accepts ordinary short windows with no scored-quarter label", () => {
+    const p=Bun.spawnSync(["bun","src/index.ts","run","--run-id=cli-preflight","--data-dir=fixtures/ohlcv","--start=2024-04-02","--end=2024-04-03","--history=60","--preflight=true"]);
+    expect(p.exitCode).toBe(0);expect(p.stdout.toString()).toContain('"sessions": 2');
   });
-  test("benchmarks require exactly $500 initial capital and at least 60 warm-up bars", () => {
-    for (const flag of ["--starting-capital=1000", "--warmup-bars=59"]) {
-      const result = cli(["--start=2024-01-01", "--end=2024-03-31", flag]);
-      expect(result.code).not.toBe(0); expect(result.error).toMatch(/\$500 initial capital, and at least 60 warm-up bars/);
+  test("retired tool quota/model/agent flags are rejected", () => {
+    for(const flag of ["--max-tool-calls=24","--model=paid","--agent=fake"]){
+      const p=Bun.spawnSync(["bun","src/index.ts","run",flag]);expect(p.exitCode).not.toBe(0);expect(p.stderr.toString()).toContain("Unknown flag");
     }
   });
-  test("synthetic data cannot be reported as a full historical benchmark", () => {
-    const result = cli(["--start=2024-01-01", "--end=2024-03-31", "--data-dir=fixtures/ohlcv"]);
-    expect(result.code).not.toBe(0); expect(result.error).toMatch(/requires historical data/);
-  });
-  test("smoke keeps warm-up validation unless explicitly lowered", () => {
-    const result = cli(["--smoke", "--start=2024-01-02", "--end=2024-01-03", "--data-dir=fixtures/ohlcv"]);
-    expect(result.code).not.toBe(0); expect(result.error).toMatch(/Insufficient warmup/);
-  });
-  test("explicit report directories fail loudly when invalid", () => {
-    const p = Bun.spawnSync(["bun", "run", "src/index.ts", "report", "--dirs=/tmp/nonexistent-accounting-benchmark-report"], { cwd: PROJECT_ROOT, stdout: "pipe", stderr: "pipe" });
-    expect(p.exitCode).not.toBe(0);
-    const malformed = Bun.spawnSync(["bun", "run", "src/index.ts", "report", "--dirs=,"], { cwd: PROJECT_ROOT, stdout: "pipe", stderr: "pipe" });
-    expect(malformed.exitCode).not.toBe(0); expect(malformed.stderr.toString()).toMatch(/nonempty run directories/);
+  test("new CLI keeps minimum warmup and hard history bounds", () => {
+    const p=Bun.spawnSync(["bun","src/index.ts","run","--run-id=cli-preflight","--data-dir=fixtures/ohlcv","--start=2024-04-02","--end=2024-04-03","--history=59","--preflight=true"]);
+    expect(p.exitCode).not.toBe(0);expect(p.stderr.toString()).toContain("History must be 60..252");
   });
 });
