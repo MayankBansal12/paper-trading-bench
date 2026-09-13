@@ -1,6 +1,7 @@
 import type { DailyRecord } from "../domain/types.ts";
 import type { StudyAttempt } from "./agent.ts";
 import { renderDecisionMemo } from "./memo.ts";
+import { literalText } from "../report/text.ts";
 
 const safe = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 /** Evaluator-only: joins pretrade statements with subsequent actual fills and marks. */
@@ -10,7 +11,7 @@ export function renderJournalReview(records: DailyRecord[], accepted: StudyAttem
     const r = records.find(r => r.date === a.scope.date)!;
     const final = a.journalEntries.at(-1)!;
     lines.push(`## ${a.scope.date}`, "", `Observed through **${a.scope.observationDate} close**. Attempt ${a.scope.attempt}.`, "",
-      safe(final.text), "", safe(renderDecisionMemo(final.decision!)).replace(/\n/g, "\n\n"), "",
+      literalText(final.text), "", literalText(renderDecisionMemo(final.decision!)), "",
       `[Accepted memo and tool receipts](accepted/${a.scope.date}.json) · [Execution ledger](daily/${a.scope.date}.json)`, "",
       "### Actual execution after the memo", "",
       `Contribution: $${(r.contribution ?? 0).toFixed(2)}. Queued orders: ${a.decision.orders.length}. Fills: ${r.fills.length}. Rejected: ${r.failedOrders.length}.`, "");
