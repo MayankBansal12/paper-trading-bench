@@ -1,5 +1,15 @@
 # Benchmark validation
 
+## v12 journal retrieval (2026-09-14)
+
+New cohorts use `v12-portfolio-journal-submit`. Journal reads apply case-insensitive, whitespace-separated AND keywords across original prose and optional tags; ticker filters also find standalone symbols in prose. Results are newest first, pages fill the note-character budget, empty searches include a bounded recent date/ticker index, and out-of-range cursors include restart guidance. The opening context preloads the latest three committed notes. Optional validated tags survive submission, replay and derived reports. The [environment contract](STUDY_ENVIRONMENT.md#journal-retrieval-and-tags-v12) specifies the matching and bounds.
+
+Validation: `pnpm typecheck` and the full `pnpm test` suite passed (239 tests, zero failures). After the final cursor-guidance/index-budget refinement, typecheck and all 35 affected retrieval, tool, runner and report tests passed again. Coverage includes nonadjacent keywords, text/tag matches, ticker boundaries and aliases, whole-note pagination, metadata-heavy response bounds, first-day/empty-search recovery, optional/invalid tags, immutable preloads, durable delivery/replay, safe report rendering and rejection of v11 configuration. A five-session tagged-journal control recovers a crash after the durable result, without another decision or changed event log.
+
+A read-only check of the retained `muse-spark-free-2026-full` trace reconstructed its 166 committed notes and replayed all 12 originally empty journal reads against the new retrieval logic, using each decision's own committed prefix. Seven now return notes; four use cursors beyond the matching results and receive restart guidance; one still has no keyword match and receives the recent index. This verifies retrieval behavior on recorded inputs, not the relevance of every returned note or a change in investment behavior.
+
+The investment mandate, cash wording and execution rules are unchanged. Retrieval, tags and preloading form one v12 bundle; no live model cohort was launched to measure its behavioral effects. Existing v11 artifacts were read only and require their original source for resume/replay.
+
 ## Independent-quarter eval correction (2026-09-14)
 
 The current evaluation is April 1, 2025–March 31, 2026, implemented by `bench eval` and `study:run`. Each model's four runs execute concurrently, with separate runtime/session state and serialized aggregate-report writes. Every qualified model receives separate 2025 Q2, Q3, Q4 and 2026 Q1 runs: 62, 64, 64 and 61 exchange sessions (251 total). See the [evaluation contract](EVALUATION.md).

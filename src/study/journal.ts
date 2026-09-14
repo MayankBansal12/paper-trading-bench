@@ -22,6 +22,7 @@ export interface JournalEntry {
   attempt: number;
   text: string;
   tickers: string[];
+  tags?: string[];
   evidenceRefs: string[];
 }
 export interface Submission {

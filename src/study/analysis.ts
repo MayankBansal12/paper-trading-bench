@@ -59,6 +59,7 @@ export function analyzeStudy(records: DailyRecord[], accepted: StudyAttempt[]) {
         id: e.id,
         evidenceIds: e.evidenceRefs,
         tickers: e.tickers,
+        tags: e.tags ?? [],
       })),
       note: a.journalEntries.at(-1)?.text ?? null,
       distinctEvidenceReceipts: new Set(

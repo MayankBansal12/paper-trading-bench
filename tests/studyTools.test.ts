@@ -165,11 +165,11 @@ test("journal filters combine ticker aliases, exact dates and text, returning fu
   const first = data(
     s.tools.call("journal", { ticker: "Apple", query: "REASSESSMENT" }),
   );
-  expect(first.entries).toEqual(past.slice(0, 4));
-  expect(first.nextCursor).toBe(4);
+  expect(first.entries).toEqual([...past].reverse());
+  expect(first.nextCursor).toBeNull();
   expect(
     data(s.tools.call("journal", { ticker: "apple inc.", cursor: 4 })).entries,
-  ).toEqual(past.slice(4));
+  ).toEqual(past.slice(0, 2).reverse());
   expect(
     data(
       s.tools.call("journal", {

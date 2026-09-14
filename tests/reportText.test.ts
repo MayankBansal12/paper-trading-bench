@@ -15,7 +15,7 @@ test("decision reviews keep hostile original notes literal while preserving host
   const a: any = {
     scope: { date: "2026-07-30", observationDate: "2026-07-29", attempt: 1 },
     decision: { orders: [], elapsedMs: 100, trace: [], usage: { turns: 1, totalTokens: null, costUsd: null } },
-    journalEntries: [{ text: hostile, tickers: [], evidenceRefs: [], decision: {
+    journalEntries: [{ text: hostile, tickers: [], tags: [hostile], evidenceRefs: [], decision: {
       thesis: hostile, evidence: [{ claim: hostile, receiptIds: ["opening"] }],
       allocation: "Cash", alternatives: "Hold", risks: "Risk", invalidation: "Review", continuity: "First day",
     } }],

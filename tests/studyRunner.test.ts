@@ -7,7 +7,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { resolve, join } from "node:path";
-import { config, payload } from "./studyTestSupport.ts";
+import { config, payload, data } from "./studyTestSupport.ts";
 import {
   runStudy,
   prepareStudyData,
@@ -16,7 +16,9 @@ import {
 import { deterministicControl } from "../src/study/control.ts";
 import { SessionTools } from "../src/study/tools.ts";
 import { JournalStore, durableCreate } from "../src/study/journal.ts";
-import { makeView, scopeFor } from "../src/study/protocol.ts";
+import { makeView, scopeFor, STUDY_PROTOCOL, openingPortfolio } from "../src/study/protocol.ts";
+import { initialStudyDecision } from "../src/study/agent.ts";
+import { writeStudyReview } from "../src/study/report.ts";
 import { buildDecisionContext } from "../src/core/context.ts";
 import { createInitialPortfolio } from "../src/engine/portfolio.ts";
 import { contentHash } from "../src/core/hash.ts";
@@ -208,7 +210,7 @@ test("changed semantics and conflicting atomic publication fail closed", async (
   const r = await runStudy(cfg, { control: deterministicControl });
   await expect(
     runStudy(
-      { ...cfg, protocol: "v10-unlimited-turns-portfolio-context" },
+      { ...cfg, protocol: "v11-portfolio-journal-submit" },
       { readOnly: true },
     ),
   ).rejects.toThrow(/old cohorts/);
@@ -423,3 +425,58 @@ for (const phase of ["after-result", "after-commit"] as const)
     expect(result.summary.portfolio.cash).toBe(99800);
     expect((await runStudy(cfg, { readOnly: true })).summary).toEqual(result.summary);
   });
+
+test("v12 tagged journals, keyword reads and three-note preloads survive day commits and crash recovery", async () => {
+  const cfg = await c("2024-04-02", "2024-04-08");
+  let decisions = 0;
+  await expect(runStudy(cfg, {
+    control: async (view, journal, past) => {
+      decisions++;
+      const tools = new SessionTools(view, journal, past, Date.now() + 10000);
+      const protocol = {
+        type: "protocol", version: STUDY_PROTOCOL, viewHash: contentHash(view),
+        openingPortfolio: openingPortfolio(view), dailyPrompt: tools.prompt(),
+      };
+      journal.audit(view.scope, protocol);
+      const ticker = view.universe[0]!;
+      const response = data(tools.call("journal", { ticker, query: "trim risk" }));
+      expect(response.entries).toEqual([...past].reverse());
+      expect(data(tools.call("journal", { query: "no-such-keyword" })).availableIndex.totalEntries).toBe(past.length);
+      for (const note of past.slice(-3)) expect(tools.prompt()).toContain(note.text);
+      const result = tools.call("submit_day", {
+        orders: [],
+        journal: {
+          text: view.scope.date + ": Trim " + ticker + " if the rule breaks.\nKeep this original line.",
+          tickers: [], tags: ["risk-review", "rule-" + ticker.toLowerCase()],
+        },
+      });
+      expect(result.isError).toBeUndefined();
+      const decision = initialStudyDecision(view);
+      decision.outcome = "completed";
+      decision.rationale = tools.submission()!.journal.text;
+      decision.trace = [protocol, ...tools.trace];
+      for (const field of ["toolCalls", "attemptedToolCalls", "admittedToolCalls", "successfulToolCalls"] as const)
+        decision.usage[field] = 3;
+      return {
+        outcome: "completed", scope: view.scope, viewHash: contentHash(view), decision,
+        submission: tools.submission(), journalEntries: journal.entries(view.scope),
+      };
+    },
+    fault: (phase, date) => {
+      if (phase === "after-result" && date === cfg.end) throw Error("v12 recovery check");
+    },
+  })).rejects.toThrow("v12 recovery check");
+  expect(decisions).toBe(5);
+  const result = await runStudy(cfg, {
+    control: async () => { throw Error("Must recover without another decision"); },
+  });
+  expect(result.summary.validDays).toBe(5);
+  expect(result.summary.journalEntries).toBe(5);
+  const raw = readFileSync(join(result.dir, "events.jsonl"), "utf8");
+  expect((await runStudy(cfg, { readOnly: true })).summary).toEqual(result.summary);
+  expect(readFileSync(join(result.dir, "events.jsonl"), "utf8")).toBe(raw);
+  await writeStudyReview(cfg, result, { analysis: true, gaps: false, comparisons: false });
+  const analysis = JSON.parse(readFileSync(join(result.dir, "analysis.json"), "utf8"));
+  expect(analysis.days[0].journalEntries[0].tags).toEqual(["risk-review", "rule-aapl"]);
+  expect(readFileSync(join(result.dir, "review.md"), "utf8")).toContain("risk-review, rule-aapl");
+});

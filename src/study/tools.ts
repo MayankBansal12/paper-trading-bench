@@ -14,6 +14,7 @@ import {
 } from "./protocol.ts";
 import { JournalStore, type JournalEntry, type Submission } from "./journal.ts";
 import { journalSchema, assertJournalNote } from "./memo.ts";
+import { readJournal } from "./retrieval.ts";
 const obj = (p: Record<string, any>) =>
   Type.Object(p, { additionalProperties: false });
 const ticker = Type.String({ pattern: "^[A-Z][A-Z0-9.-]{0,15}$" });
@@ -40,7 +41,7 @@ export const toolDefinitions = [
   {
     name: "journal",
     description:
-      "Own committed past notes, verbatim. Combine canonical ticker or frozen company name, exact date and case-insensitive text filters; paginate using nextCursor.",
+      "Own committed past notes, verbatim, newest first. Combine canonical ticker or frozen company name, exact past date and whitespace-separated query keywords: ALL keywords must occur in text or optional tags, case-insensitively. Ticker filters match declared tickers or standalone symbols in prose. Pages fill a 12,000-character note budget; use nextCursor with the same filters. Zero matches include a bounded recent date/ticker index and retry guidance.",
     inputSchema: obj({
       ticker: Type.Optional(Type.String({ minLength: 1, maxLength: 200 })),
       date: Type.Optional(Type.String({ pattern: "^\\d{4}-\\d{2}-\\d{2}$" })),
@@ -51,7 +52,7 @@ export const toolDefinitions = [
   {
     name: "submit_day",
     description:
-      "Final ordered trade batch and short journal. Empty orders means hold. Choose exactly one of notionalUsd (dollars) or units (shares) per order. Valid submission ends model work; no follow-up response.",
+      "Final ordered trade batch and short free-text journal. Optional tags: up to 8 unique lowercase slugs (letters/digits separated by hyphens, max 48 characters each), e.g. phase-defensive or rule-tsla-428, for later keyword search. No required prose or Markdown structure. Empty orders means hold. Choose exactly one of notionalUsd (dollars) or units (shares) per order. Valid submission ends model work; no follow-up response.",
     inputSchema: obj({
       orders: Type.Array(
         obj({
@@ -207,27 +208,9 @@ export class SessionTools {
           );
           if (!resolved.length) throw new Error("Security unavailable");
         }
-        const rows = this.past.filter(
-          (e) =>
-            (!a.date || e.date === a.date) &&
-            (!resolved || e.tickers.some((t) => resolved.includes(t))) &&
-            (!a.query || e.text.toLowerCase().includes(a.query.toLowerCase())),
-        );
-        const start = a.cursor ?? 0,
-          entries: JournalEntry[] = [];
-        let chars = 0;
-        for (const e of rows.slice(start, start + 4)) {
-          if (chars + e.text.length > POLICY.maxReadChars) break;
-          entries.push(e);
-          chars += e.text.length;
-        }
-        data = {
-          entries,
-          nextCursor:
-            start + entries.length < rows.length
-              ? start + entries.length
-              : null,
-        };
+        data = readJournal(this.past, this.view.universe, {
+          date: a.date, tickers: resolved, query: a.query, cursor: a.cursor,
+        });
       } else {
         assertJournalNote(a.journal);
         if (a.journal.tickers.some((t) => !this.view.universe.includes(t)))
@@ -262,6 +245,7 @@ export class SessionTools {
             attempt: this.view.scope.attempt,
             text: a.journal.text,
             tickers: [...a.journal.tickers],
+            ...(a.journal.tags === undefined ? {} : { tags: [...a.journal.tags] }),
             evidenceRefs: [...cited],
           },
           seenEvidenceRefs: [...this.receipts],

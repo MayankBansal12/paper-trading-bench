@@ -1,13 +1,13 @@
 # Portfolio and journal environment
 
-Current contract: `v11-portfolio-journal-submit`. The four-tool interface and atomic persistence replace v10. A direct inference adapter remains deferred. See [validation and known limitations](VALIDATION.md). Source/evidence for older cohorts remain archived. Never resume them under v11.
+Current contract: `v12-portfolio-journal-submit`. v12 adds deterministic keyword retrieval, optional tags and a three-note preload to the four-tool interface. A direct inference adapter remains deferred. See [validation and known limitations](VALIDATION.md). Source/evidence for older cohorts remain archived. Never resume them under v12.
 
 ## Record availability
 
 | Record or capability | Current status |
 |---|---|
 | Host audit log | Implemented: `events.jsonl` retains context, provider traffic, tool requests/results, submissions and failures. |
-| Original model journal | Implemented: one note per valid committed decision, previous note preloaded, older own notes searchable with `journal`. |
+| Original model journal | Implemented: one note per valid committed decision, latest three notes preloaded, older own notes searchable with `journal`. |
 | Actual fills, rejections and portfolio accounting | Implemented in atomic day commits and evaluator reports. Opening context supplies the resulting portfolio. |
 | Model-facing `action_log` tool and detailed adjustment receipts | Planned: the model cannot currently query its execution ledger or retrieve a structured fill/rejection receipt. |
 | Annual orchestration and additional model adapters | Planned. |
@@ -20,13 +20,13 @@ Each fresh attempt preloads:
 2. Cash, holdings (units, average cost, observable close and value), holdings value and net worth, after due contributions/actions.
 3. Known funding schedule: $50,000 initially and $50,000 on the first represented session of each later month.
 4. Eligible canonical tickers.
-5. The last committed original journal note verbatim, with its identity/date/tags, or an explicit first-day marker.
+5. The latest three committed original journal notes verbatim, newest first, with their identities, dates, tickers and optional tags, or an explicit first-day marker.
 
 The investment mandate uses an ongoing horizon. The supplied date range bounds evaluation and reporting; the prompt asks the model to keep assessing opportunities through the final session and forbids using the approaching quarter/end date alone as a reason to sell, build cash or avoid new positions. Cash remains a valid allocation for investment reasons. Performance uses cash plus holdings marked at the daily close, including on the final date; there is no forced liquidation or cash-only terminal valuation. This clarification changes the implementation identity and requires a new cohort. Earlier runs must be inspected/replayed with their original source and prompt; no existing evidence is rewritten. The prompt does not promise additional simulated dates beyond the supplied range.
 
 Eligible tickers are supplied on every session as the complete allowed universe, with no ranking or recommended subset. This defines the available action space; it is not a stock recommendation. `market_snapshot` defaults to that same universe and orders outside it are rejected. Scored quarterly studies separately require membership evidence predating the quarter. A retrospectively filtered supported-data run remains an environment study.
 
-No failed-attempt note, foreign run, future note, conversation transcript, evaluator outcome or model-generated summary is memory. A note is stated reasons, not private internal reasoning. Original free text remains searchable. Frozen source security names normalize to ticker aliases; ambiguous issuer names can match multiple eligible share classes. Ticker tags remain canonical symbols.
+No failed-attempt note, foreign run, future note, conversation transcript, evaluator outcome or model-generated summary is memory. A note is stated reasons, not private internal reasoning. Original free text remains searchable. Frozen source security names normalize to ticker aliases; ambiguous issuer names can match multiple eligible share classes. The tickers field retains canonical symbols; optional search tags are separate.
 
 ## Four tools
 
@@ -34,16 +34,38 @@ No failed-attempt note, foreign run, future note, conversation transcript, evalu
 |---|---|
 | `market_snapshot` | Optional unique ticker list; otherwise all eligible securities. Previous close and cutoff only. |
 | `price_history` | Required unique eligible ticker list (up to the loaded universe size) and integer lookback up to the advertised session limit (at most 252). Returns exactly that many OHLCV bars per ticker or rejects the request. No caller-selected end date. |
-| `journal` | Optional ticker/company name, exact past date and case-insensitive literal text, combined as filters; integer cursor. Up to four original notes per page and explicit next cursor. |
-| `submit_day` | Up to 128 orders, in execution order, plus `{text, tickers, evidence_refs?}`. Each order has canonical ticker, `BUY`/`SELL`, and exactly one positive `notionalUsd` or `units`. Empty orders means hold. |
+| `journal` | Optional ticker/company name, exact past date and whitespace-separated query keywords, combined as filters; integer cursor. All keywords must match text or tags, case-insensitively. Full notes newest first, a 12,000-character note budget per page, and explicit next cursor; zero matches include a bounded recent index. |
+| `submit_day` | Up to 128 orders, in execution order, plus `{text, tickers, tags?, evidence_refs?}`. Each order has canonical ticker, `BUY`/`SELL`, and exactly one positive `notionalUsd` or `units`. Empty orders means hold. |
 
 `--history` sets both the required warmup and the session history ceiling (default 100; allowed 60–252). The opening context's `priceHistory.maxLookback`, `maxTickers` and `maxResponseBytes`, together with the live tool schema, expose the available limits. There is no fixed eight-stock batch cap: large batches are accepted when their complete response fits 512 KiB. Oversized replies are rejected with instructions to request fewer tickers or bars; they are never truncated. A request for 120 bars in a 100-bar run is rejected with a validation error; it never silently returns 100. Start a new run with `--history=120` or higher to permit that lookback, provided the dataset has enough warmup. This history-contract fix changes the implementation identity; earlier cohorts still require their original source for replay/resume.
 
-Journal text must be nonblank and at most 2,000 characters. Ticker tags can be empty for general cash notes. Up to 16 optional evidence references must identify current-session opening context/portfolio or successful read-tool responses. Seven-section memos, nested claims, separate summaries and model-generated request IDs are gone. The prompt asks for reasons, changes, sizing/cash considerations and reconsideration conditions; analytical depth is evaluated offline rather than a prose-schema gate.
+Journal text must be nonblank and at most 2,000 characters. The tickers array can be empty for general cash notes. Up to 16 optional evidence references must identify current-session opening context/portfolio or successful read-tool responses. Seven-section memos, nested claims, separate summaries and model-generated request IDs are gone. The prompt asks for reasons, changes, sizing/cash considerations and reconsideration conditions; analytical depth is evaluated offline rather than a prose-schema gate.
 
 The host records every supplied context/read receipt separately from the model's explicit citations. Neither a receipt nor a tag proves attention, causal influence or factual entailment. Provider call identity, host order IDs, actual submissions, fills and cash remain available for analysis.
 
 Turns and attempted tool calls have no count ceiling. Calls are counted. Each attempt has a configurable watchdog, default 3,600,000 ms (60 minutes), allowed 1–3,600,000 ms. Requests are bounded to 32 KiB, tool responses to 512 KiB, histories to 252 bars, journal reads to 12,000 text characters, and client output to 16 MiB. A date permits two attempts total (one original attempt plus one automatic retry), each with its own watchdog. If both fail, that trading day is committed as `invalid` with no orders: due deposits, dividends and splits still apply, and holdings are valued at the close. The run continues with its last valid journal and updated portfolio. A valid decision resets the consecutive-invalid-day count. Three consecutive invalid trading days stop the quarter/run with status `invalid`; later dates are not simulated. Weekends and exchange holidays are not trading days. The summary distinguishes accounted day commits from valid decisions and retains attempted, retried, invalid and unattempted counts plus each invalid date and reason. Resume never grants a third attempt. At the default, two full attempts can take up to two hours for one trading day. The host attempt deadline also bounds forwarded requests; the bridge has no separate five-minute cutoff. Both HTTP bridge and host gateway disable Bun’s default idle timeout so a pause in a valid stream cannot silently cut it short. The sandbox CPU allowance follows the remaining attempt budget. Other operational bounds can still interrupt a session.
+
+## Journal retrieval and tags (v12)
+
+The tool accepts multiple keywords in the existing query string; no extra keyword-array field is needed. For example:
+
+```json
+{"ticker": "MU", "query": "trim sell"}
+```
+
+Query matching trims outer whitespace, splits on whitespace and requires every keyword to occur as a substring in either the original text or an optional tag. Keywords can occur in any order, far apart, or across text and tags. Matching is case-insensitive; there is no stemming, synonym expansion, phrase syntax, fuzzy matching or semantic retrieval. A whitespace-only query is rejected with guidance to omit it when browsing.
+
+Ticker/company-name filters resolve eligible symbols using the frozen aliases, then match either the declared tickers array or complete ticker tokens in the note's prose. Matching is case-insensitive and preserves internal dots/hyphens: `$MU` and `BRK.B` match their symbols; `momentum` does not match `MU`, and `BRK.B` does not match `BRK`. Company aliases resolve the filter; they do not add inferred ticker tags to stored notes.
+
+Results are newest first. Pass the returned `nextCursor` with the same filters to continue; it is an offset in that filtered ordering. Pages contain complete original entries whose text totals at most 12,000 characters. An additional serialized-metadata budget can end a page earlier to keep the complete tool response below 512 KiB. Notes are never truncated, and there is no four-entry ceiling.
+
+When no entries match, the reply retains `entries: []` and `nextCursor: null` and includes `availableIndex: {entries, totalEntries, truncated}` plus retry guidance. This index ignores the unsuccessful filters and lists at most 20 recent committed dates with their declared/prose-mentioned tickers and optional tags, bounded to 12,000 serialized characters. It includes no journal text, failed-attempt notes or future data. Use an indexed date, fewer keywords, or omit filters and paginate to browse older notes. A cursor beyond the matching results returns an empty page, `matchingEntries` and a hint to restart at cursor 0; it does not imply that the original filters had no matches. The first session explicitly reports that no committed notes exist.
+
+The optional submission field `tags` accepts up to eight unique lowercase slugs, each 1–48 characters, with letters/digits separated by single hyphens. Examples: `phase-defensive`, `rule-tsla-428`. Tags are stored unchanged beside the note, searched alongside prose, included in preloads/read receipts, and shown in derived Markdown reviews and JSON analysis. Omitting tags or supplying an empty list is valid. Invalid tags reject the whole submission before persistence; notes retain free prose without a required Markdown template. Reports render original text and tags literally.
+
+The opening context exposes `recentJournals` (up to three original entries, newest first) and `committedJournalEntries`. Invalid days contribute no entry; the preload uses the latest valid committed decisions. Tags and all preloaded metadata are covered by the context receipt hash.
+
+These changes use a new protocol, policy/schema and implementation identity. They cannot be applied when resuming v11 runs; use the original source for those cohorts. The investment mandate and cash wording remain as before. Retrieval, tags and the preload are bundled in v12, so behavioral comparisons with v11 measure that bundle; they cannot attribute a change in cash allocation to any one component. No new cash-allocation instruction, conditional order type or journal-edit operation is introduced.
 
 ## Observation and execution timing
 
