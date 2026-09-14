@@ -34,7 +34,9 @@ import {
 } from "./agent.ts";
 import { validateAccepted } from "./accept.ts";
 export { validateAccepted, validateOpeningContext } from "./accept.ts";
+import { qualifiedRoute, QUALIFIED_ZEN_MODEL_ID } from "../opencode/qualification.ts";
 export interface StudyConfig {
+  model?: string;
   protocol: string;
   kind: "environment" | "smoke" | "quarter" | "control";
   runId: string;
@@ -61,6 +63,8 @@ export interface Day {
 }
 const read = (p: string) => JSON.parse(readFileSync(p, "utf8"));
 export async function prepareStudyData(c: StudyConfig) {
+  if (c.kind === "control" && c.model !== undefined) throw new Error("Control cannot select a model route");
+  if (c.kind !== "control") qualifiedRoute(c.model ?? QUALIFIED_ZEN_MODEL_ID);
   if (
     c.protocol !== STUDY_PROTOCOL ||
     contentHash(c.policy) !== contentHash(POLICY) ||
@@ -253,7 +257,7 @@ export async function runStudy(
           if (!options.control && c.kind === "control")
             throw new Error("Control requires explicit deterministic transport");
           if (!options.control && !runtime) {
-            runtime = await prepareModelRuntime();
+            runtime = await prepareModelRuntime(c.model);
             const runtimePath = join(dir, "runtime.json");
             if (existsSync(runtimePath)) {
               if (

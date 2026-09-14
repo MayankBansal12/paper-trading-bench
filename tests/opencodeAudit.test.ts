@@ -3,6 +3,8 @@ import {
   reconcileClientTools,
   validateClientRuntimeAudits,
 } from "../src/opencode/audit.ts";
+import { QUALIFIED_ROUTES, type QualifiedRoute } from "../src/opencode/qualification.ts";
+import { catalogFixture } from "./opencodeFixtures.ts";
 import { initialDecision } from "./helpers.ts";
 function usage() {
   return initialDecision(
@@ -164,7 +166,7 @@ test("same arguments called twice require two distinct MCP executions", () => {
   expect(u.successfulToolCalls).toBe(2);
 });
 
-function validRuntimeDecision() {
+function validRuntimeDecision(route: QualifiedRoute = QUALIFIED_ROUTES[0]!) {
   const d = initialDecision(
     {
       date: "2024-03-01",
@@ -188,7 +190,7 @@ function validRuntimeDecision() {
     "*": "deny",
     ...Object.fromEntries(toolAllowlist.map((s) => [s, "allow"])),
   };
-  const model = "opencode/muse-spark-1.3-contributor-free";
+  const model = route.id;
   const runtime = {
     cliVersion: "1.18.30",
     versionSource: "caller preflight opencode --version",
@@ -205,9 +207,7 @@ function validRuntimeDecision() {
     runtime,
     workspace,
     resolvedModel: {
-      id: "muse-spark-1.3-contributor-free",
-      providerID: "opencode",
-      cost: { input: 0, output: 0, cache: { read: 0, write: 0 } },
+      ...catalogFixture(route),
     },
     effectiveSystemPrompt: d.effectiveSystemPrompt,
     promptHash: d.promptHash,
@@ -229,6 +229,7 @@ function validRuntimeDecision() {
         workspace,
         model,
         small_model: model,
+        enabled_providers: [route.provider],
         permission,
         agent: {
           model,
@@ -326,4 +327,19 @@ test("unmatched MCP refusals remain counted in failed-attempt evidence", () => {
     failedToolCalls: 1,
     admittedToolCalls: 0,
   });
+});
+
+for (const route of QUALIFIED_ROUTES) test(`${route.id}: runtime audits require exact provider and route`, () => {
+  expect(validateClientRuntimeAudits(validRuntimeDecision(route), route.id, "/tmp/bench-test")).toEqual([]);
+  for (const mutate of [
+    (d: any) => { d.trace[4].data.enabled_providers = ["other"]; },
+    (d: any) => { d.trace[4].data.small_model = QUALIFIED_ROUTES.find(r => r.id !== route.id)!.id; },
+    (d: any) => { d.trace[5].data[0].resolvedModel.api.url = "https://unqualified.test"; },
+    (d: any) => { d.trace[5].data[0].resolvedModel.cost.tiers = {}; },
+    (d: any) => { d.trace[5].data[0].resolvedModel.capabilities.toolcall = false; },
+  ]) {
+    const d = validRuntimeDecision(route); mutate(d);
+    expect(validateClientRuntimeAudits(d, route.id).length).toBeGreaterThan(0);
+  }
+  expect(validateClientRuntimeAudits(validRuntimeDecision(route), "unknown/model").join()).toContain("not a qualified route");
 });

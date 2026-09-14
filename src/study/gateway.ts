@@ -6,16 +6,21 @@ import { OPENCODE_PROMPT_SUFFIX } from "../opencode/config.ts";
 import { systemPrompt } from "./protocol.ts";
 import { STUDY_TOOLS, POLICY } from "./protocol.ts";
 import { SessionTools } from "./tools.ts";
-import { QUALIFIED_ZEN_MODEL } from "../opencode/qualification.ts";
+import { qualifiedRoute, QUALIFIED_ZEN_MODEL_ID } from "../opencode/qualification.ts";
+import { CODEX_RESPONSES_URL, type ProviderCredential } from "../opencode/credentials.ts";
 export async function serveGateway(
   socket: string,
   tools: SessionTools,
-  apiKey: string,
+  credential: string | ProviderCredential,
   deadline: number,
   audit: (event: any) => void,
   forward: typeof fetch = fetch,
   onBudgetCutoff: (reason: string) => void = () => {},
+  model: string = QUALIFIED_ZEN_MODEL_ID,
 ) {
+  const route = qualifiedRoute(model);
+  if (route.auth === "oauth" && (typeof credential === "string" || credential.mode !== "oauth"))
+    throw new Error("Qualified OpenAI route requires host OAuth; no API-key fallback");
   const capability = randomUUID();
   let closed = false,
     inferences = 0;
@@ -128,7 +133,8 @@ export async function serveGateway(
           headers: { "x-bench-submitted": "true" },
         });
       }
-      if (body.model !== QUALIFIED_ZEN_MODEL) return deny("model");
+      if (body.model !== route.model) return deny("model");
+      if (route.provider === "openai" && url.pathname !== "/inference/responses") return deny("provider-route");
       // Provider-hosted retrieval is also outside the experiment. No URL media,
       // uploaded files, response continuations, external MCP or server-side tools.
       const contentSafe = (value: any): boolean =>
@@ -238,17 +244,21 @@ export async function serveGateway(
         if (
           name === "user-agent" ||
           name === "accept" ||
+          (route.provider === "openai" && name === "session-id") ||
           name.startsWith("x-opencode-") ||
           name.startsWith("x-stainless-")
         )
           headers.set(name, value);
-      headers.set("authorization", `Bearer ${apiKey}`);
       headers.set("content-type", "application/json");
       headers.set("accept-encoding", "identity");
       try {
+        const authHeaders = typeof credential === "string"
+          ? new Headers({ authorization: `Bearer ${credential}` })
+          : await credential.authorize(abort.signal);
+        authHeaders.forEach((value, name) => headers.set(name, value));
         const response = await forward(
-          "https://opencode.ai/zen/v1" +
-            url.pathname.slice("/inference".length),
+          route.provider === "openai" ? CODEX_RESPONSES_URL
+            : route.apiURL + url.pathname.slice("/inference".length),
           {
             method: "POST",
             headers,

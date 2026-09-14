@@ -26,3 +26,30 @@ for (const [command, status, exitCode] of [
     expect(JSON.parse(out).status).toBe(status);
   } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+test("each qualified route is selectable through the unchanged five-session smoke path", async () => {
+  const { QUALIFIED_MODEL_IDS } = await import("../src/opencode/qualification.ts");
+  for (const model of QUALIFIED_MODEL_IDS) {
+    const script = `import { mock } from "bun:test";
+      mock.module(${JSON.stringify(resolve("src/data/dataset.ts"))}, () => ({ loadDataset: async () => ({ version: "offline" }) }));
+      mock.module(${JSON.stringify(resolve("src/study/runner.ts"))}, () => ({
+        prepareStudyData: async config => ({ dates: [config.start] }),
+        runStudy: async config => {
+          if (config.model !== ${JSON.stringify(model)} || config.kind !== "smoke") throw Error("Route lost");
+          return { summary: { status: "completed", model: config.model }, dir: "/offline" };
+        },
+      }));
+      const { environmentCLI } = await import(${JSON.stringify(resolve("src/cli/environment.ts"))});
+      await environmentCLI("run", ["--run-id=offline-smoke", "--data-dir=/offline", "--start=2025-04-01", "--end=2025-04-01", "--smoke=true", ${JSON.stringify("--model=" + model)}]);`;
+    const child = Bun.spawn([process.execPath, "-e", script], { stdout: "pipe", stderr: "pipe" });
+    const [out, err, code] = await Promise.all([new Response(child.stdout).text(), new Response(child.stderr).text(), child.exited]);
+    expect(code).toBe(0); expect(err.trim()).toBe("/offline");
+    expect(JSON.parse(out).model).toBe(model);
+  }
+});
+
+test("single-run preparation rejects unknown routes and control/model mixing before reading data", async () => {
+  const { prepareStudyData } = await import("../src/study/runner.ts");
+  await expect(prepareStudyData({ kind: "smoke", model: "openai/unknown" } as any)).rejects.toThrow("Unqualified");
+  await expect(prepareStudyData({ kind: "control", model: "openai/gpt-5.6-luna" } as any)).rejects.toThrow("Control cannot select");
+});

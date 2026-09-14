@@ -21,7 +21,7 @@ import { writeFileAtomic } from "../utils/fs.ts";
 export const HELP = `Paper portfolio environment (${STUDY_PROTOCOL})
   pnpm bench eval --eval-id ID --data-dir DIR [--models MODEL_IDS] [--preflight=true | --resume=true | --verify=true] [--control=true]
     April 2025–March 2026: four separate runs in parallel per model, each with $50,000 fresh cash and empty memory.
-  pnpm bench run --run-id ID --data-dir DIR --start DATE --end DATE [--preflight=true] [--control=true] [--smoke=true] [--history=100] [--timeout-ms=${POLICY.defaultTimeoutMs}]
+  pnpm bench run --run-id ID --data-dir DIR --start DATE --end DATE [--preflight=true] [--control=true] [--smoke=true] [--model MODEL_ID] [--history=100] [--timeout-ms=${POLICY.defaultTimeoutMs}]
   pnpm bench resume --dir results/studies/ID
   pnpm bench inspect --dir results/studies/ID
   pnpm bench verify --dir results/studies/ID
@@ -98,6 +98,7 @@ export async function environmentCLI(command: string, argv: string[]) {
           "timeout-ms",
           "control",
           "smoke",
+          "model",
           "preflight",
         ],
     command,
@@ -118,6 +119,7 @@ export async function environmentCLI(command: string, argv: string[]) {
   if (control && smoke) throw new Error("Choose control or smoke");
   const c: StudyConfig = {
     protocol: STUDY_PROTOCOL,
+    ...(flags.has("model") ? { model: flags.get("model")! } : {}),
     kind:
       command === "qualify"
         ? "quarter"

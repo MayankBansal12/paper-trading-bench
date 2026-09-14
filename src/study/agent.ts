@@ -1,16 +1,16 @@
 import { mkdtemp, rm, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
-import { readFile } from "node:fs/promises";
-import { homedir } from "node:os";
 import { TOKEN_FIELDS, type LiveDecision } from "../core/types.ts";
 import { contentHash, textHash } from "../core/hash.ts";
 import {
   qualifyOfficialOpenCode,
-  QUALIFIED_ZEN_MODEL,
+  writeQualification,
+  qualifiedRoute,
   QUALIFIED_ZEN_MODEL_ID,
 } from "../opencode/qualification.ts";
-import { makeClientConfig } from "../opencode/config.ts";
+import { loadProviderCredential } from "../opencode/credentials.ts";
+import { makeClientConfig, gatewayClientAuth } from "../opencode/config.ts";
 import { readEvents } from "../opencode/events.ts";
 import {
   reconcileClientTools,
@@ -79,47 +79,19 @@ export function initialStudyDecision(view: SessionView): LiveDecision {
     },
   };
 }
-export async function prepareModelRuntime() {
+export async function prepareModelRuntime(model: string = QUALIFIED_ZEN_MODEL_ID) {
   const started = Date.now();
-  const qualification = await qualifyOfficialOpenCode();
-  let apiKey = process.env.OPENCODE_API_KEY;
-  if (!apiKey) {
-    try {
-      const auth = JSON.parse(
-        await readFile(
-          join(homedir(), ".local/share/opencode/auth.json"),
-          "utf8",
-        ),
-      );
-      if (auth.opencode?.type === "api") apiKey = auth.opencode.key;
-    } catch {}
-  }
-  if (!apiKey) {
-    try {
-      const auth = JSON.parse(
-        await readFile(
-          join(
-            process.env.PI_CODING_AGENT_DIR ?? join(homedir(), ".pi/agent"),
-            "auth.json",
-          ),
-          "utf8",
-        ),
-      );
-      if (
-        auth.opencode?.type === "api_key" &&
-        typeof auth.opencode.key === "string" &&
-        !auth.opencode.key.startsWith("!")
-      )
-        apiKey = auth.opencode.key;
-    } catch {}
-  }
-  if (!apiKey) throw new Error("OpenCode credential unavailable");
+  const route = qualifiedRoute(model);
+  const credential = await loadProviderCredential(route);
+  const qualification = await qualifyOfficialOpenCode(30_000, model);
+  await writeQualification(qualification);
   const bundle = await prepareSandboxRuntime();
   try {
     const sandboxQualification = await qualifySandbox(bundle);
     return {
       qualification,
-      apiKey,
+      credential,
+      route,
       bundle,
       sandboxQualification,
       setupMs: Date.now() - started,
@@ -159,7 +131,7 @@ export async function decideStudy(
     view.limits.timeoutMs,
   );
   try {
-    const { qualification, apiKey } = runtime;
+    const { qualification, credential, route } = runtime;
     const qualificationEvent = {
       type: "model_qualification",
       evidence: qualification,
@@ -175,7 +147,7 @@ export async function decideStudy(
     gateway = await serveGateway(
       join(dir, "gateway.sock"),
       tools,
-      apiKey,
+      credential,
       deadline,
       (e) => {
         decision.trace.push(e);
@@ -183,14 +155,15 @@ export async function decideStudy(
       },
       fetch,
       stop,
+      route.id,
     );
     const setup = await makeClientConfig(
       dir,
-      QUALIFIED_ZEN_MODEL_ID,
+      route.id,
       systemPrompt(view.limits),
       gateway.mcpURL,
       qualification.clientVersion,
-      { toolNames: STUDY_TOOLS, runtimeDir: "/work", baseURL: gateway.baseURL },
+      { toolNames: STUDY_TOOLS, runtimeDir: "/work", baseURL: gateway.baseURL, catalogEntry: qualification.catalogEntry },
     );
     // MCP authorization is scoped to this socket/session, not a provider credential.
     const config = setup.config as any;
@@ -209,8 +182,8 @@ export async function decideStudy(
     const protocol = {
       type: "protocol",
       version: STUDY_PROTOCOL,
-      model: QUALIFIED_ZEN_MODEL,
-      provider: "opencode",
+      model: route.model,
+      provider: route.provider,
       viewHash: contentHash(view),
       systemPrompt: decision.effectiveSystemPrompt,
       promptHash: decision.promptHash,
@@ -222,13 +195,15 @@ export async function decideStudy(
     await writeFile(
       join(dir, "launch.json"),
       JSON.stringify({
-        model: QUALIFIED_ZEN_MODEL_ID,
+        model: route.id,
+        auth: gatewayClientAuth(route.id, gateway.capability),
         prompt,
         env: {
           ...setup.env,
           PATH: "/runtime",
           LANG: "C.UTF-8",
-          OPENCODE_API_KEY: gateway.capability,
+          [route.authEnv]: gateway.capability,
+          BENCH_GATEWAY_TOKEN: gateway.capability,
           OPENCODE_CONFIG_CONTENT: JSON.stringify(config),
         },
       }),
@@ -326,7 +301,7 @@ export async function decideStudy(
     if (reconciled.errors.length) throw new Error(reconciled.errors.join("; "));
     const errors = validateClientRuntimeAudits(
       decision,
-      QUALIFIED_ZEN_MODEL_ID,
+      route.id,
       "/work",
       STUDY_TOOLS,
     );

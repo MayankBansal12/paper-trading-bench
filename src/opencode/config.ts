@@ -4,8 +4,18 @@ import { pathToFileURL } from "node:url";
 import { STUDY_TOOLS as TRADING_TOOL_NAMES } from "../study/protocol.ts";
 import {
   QUALIFIED_OPENCODE_CLIENT_VERSION,
-  QUALIFIED_ZEN_MODEL_ID,
+  qualifiedRoute,
+  assertZeroCostCatalogEntry,
+  type CatalogModelEvidence,
 } from "./qualification.ts";
+
+/** Select the official OAuth request format without giving the sandbox host tokens.
+ * Default auth plugins remain disabled; only the host can refresh credentials. */
+export function gatewayClientAuth(model: string, capability: string) {
+  return qualifiedRoute(model).auth === "oauth" ? {
+    openai: { type: "oauth", access: capability, refresh: "host-gateway-only", expires: Number.MAX_SAFE_INTEGER },
+  } : undefined;
+}
 
 export const OPENCODE_PROMPT_SUFFIX =
   "\nTrading tool names use the trading_ prefix (for example trading_market_snapshot and trading_submit_day).";
@@ -25,20 +35,15 @@ export async function makeClientConfig(
     toolNames?: readonly string[];
     runtimeDir?: string;
     baseURL?: string;
+    catalogEntry?: CatalogModelEvidence;
   } = {},
 ): Promise<{
   config: unknown;
   env: Record<string, string>;
   effectiveSystemPrompt: string;
 }> {
-  if (model !== QUALIFIED_ZEN_MODEL_ID) {
-    throw new Error(
-      "Official-client config refuses anything except " +
-        QUALIFIED_ZEN_MODEL_ID +
-        "; got " +
-        model,
-    );
-  }
+  const route = qualifiedRoute(model);
+  if (options.catalogEntry) assertZeroCostCatalogEntry(options.catalogEntry, model);
   if (clientVersion !== QUALIFIED_OPENCODE_CLIENT_VERSION) {
     throw new Error(
       "Official-client config requires qualified OpenCode " +
@@ -68,6 +73,10 @@ export async function makeClientConfig(
   const source = `import { writeFile, appendFile, rename } from "node:fs/promises";
 import { createHash } from "node:crypto";
 const expected = ${JSON.stringify(model)};
+const provider = ${JSON.stringify(route.provider)};
+// Use the freshly qualified metadata inside the isolated home. OAuth pricing and
+// limits are supplied by the official host catalog; no credential is copied.
+const catalogEntry = ${JSON.stringify(options.catalogEntry ?? null)};
 const clientVersion = ${JSON.stringify(clientVersion ?? null)};
 const runtime = { cliVersion: clientVersion, versionSource: clientVersion ? "caller preflight opencode --version" : "not provided",
   executable: process.execPath, versions: process.versions };
@@ -83,6 +92,15 @@ export default async function benchmarkPlugin(pluginInput = {}) {
   const workspace = { directory: pluginInput.directory, worktree: pluginInput.worktree, processCwd: process.cwd() };
   if (pluginInput.directory !== ${JSON.stringify(root)}) throw new Error("Benchmark client directory escaped isolation");
   return {
+    ...(catalogEntry ? { provider: { id: provider, models: async () => ({ [catalogEntry.id]: catalogEntry }) } } : {}),
+    "chat.headers": async (input, output) => {
+      if (provider === "openai") output.headers["session-id"] = input.sessionID;
+    },
+    "chat.params": async (input, output) => {
+      // Match the official Codex OAuth plugin's transport setting. Reasoning
+      // options are left at the official client's defaults for every route.
+      if (provider === "openai") output.maxOutputTokens = undefined;
+    },
     event: async ({ event }) => {
       const part = event.properties?.part;
       if (event.type === "message.part.updated" && part?.type === "tool") {
@@ -92,8 +110,8 @@ export default async function benchmarkPlugin(pluginInput = {}) {
     config: async (config) => {
       if (config.model !== expected || config.small_model !== expected) throw new Error("Benchmark model configuration drift");
       await writeJson(${JSON.stringify(join(root, "client-config-audit.json"))}, { runtime, workspace, model: config.model,
-        small_model: config.small_model, permission: config.permission, agent: config.agent?.bench,
-        mcpNames: Object.keys(config.mcp ?? {}), plugins: config.plugin, baseURL: config.provider?.opencode?.options?.baseURL });
+        small_model: config.small_model, enabled_providers: config.enabled_providers, permission: config.permission, agent: config.agent?.bench,
+        mcpNames: Object.keys(config.mcp ?? {}), plugins: config.plugin, baseURL: config.provider?.[provider]?.options?.baseURL });
     },
     "experimental.chat.system.transform": async (input, output) => {
       const actualModel = input.model.providerID + "/" + input.model.id;
@@ -116,7 +134,7 @@ export default async function benchmarkPlugin(pluginInput = {}) {
     "tool.execute.before": async (input, output) => {
       await appendFile(${JSON.stringify(join(root, "tool-attempts.jsonl"))}, JSON.stringify({ ...input, args: output.args }) + "\\n");
       if (!allowed.includes(input.tool)) throw new Error("Benchmark refuses non-trading tool: " + input.tool);
-      const bound = await fetch("http://127.0.0.1:8765/bind-call", {method:"POST", headers:{authorization:"Bearer " + process.env.OPENCODE_API_KEY,"content-type":"application/json"}, body:JSON.stringify({callID:input.callID, tool:input.tool, args:output.args})});
+      const bound = await fetch("http://127.0.0.1:8765/bind-call", {method:"POST", headers:{authorization:"Bearer " + process.env.BENCH_GATEWAY_TOKEN,"content-type":"application/json"}, body:JSON.stringify({callID:input.callID, tool:input.tool, args:output.args})});
       if (!bound.ok) throw new Error("Provider call binding failed");
     },
   };
@@ -128,9 +146,9 @@ export default async function benchmarkPlugin(pluginInput = {}) {
     model,
     small_model: model,
     default_agent: "bench",
-    enabled_providers: ["opencode"],
+    enabled_providers: [route.provider],
     ...(options.baseURL
-      ? { provider: { opencode: { options: { baseURL: options.baseURL } } } }
+      ? { provider: { [route.provider]: { options: { baseURL: options.baseURL } } } }
       : {}),
     share: "disabled",
     autoupdate: false,
