@@ -7,15 +7,15 @@ import { loadDataset } from "../data/dataset.ts";
 import { computeMetrics } from "../engine/metrics.ts";
 import { acquireRunLock } from "../run/lock.ts";
 import { writeFileAtomic } from "../utils/fs.ts";
-import { QUALIFIED_ZEN_MODEL_ID } from "../opencode/qualification.ts";
+import { QUALIFIED_MODEL_IDS } from "../opencode/qualification.ts";
 import { deterministicControl } from "./control.ts";
 import { implementationIdentity } from "./identity.ts";
 import { durableCreate } from "./journal.ts";
 import { POLICY, STUDY_PROTOCOL } from "./protocol.ts";
 import { prepareStudyData, runStudy, type StudyConfig } from "./runner.ts";
 
-export const EVALUATION_VERSION = "independent-quarters-apr2025-mar2026-v2";
-export const EVALUATION_MODELS = Object.freeze([QUALIFIED_ZEN_MODEL_ID]);
+export const EVALUATION_VERSION = "independent-quarters-apr2025-mar2026-v3";
+export const EVALUATION_MODELS = QUALIFIED_MODEL_IDS;
 export const CONTROL_MODEL = "deterministic-control";
 export const EVALUATION_QUARTERS = Object.freeze([
   Object.freeze({ label: "2025-Q2", start: "2025-04-01", end: "2025-06-30" }),
@@ -70,6 +70,7 @@ export async function prepareEvaluation(input: EvaluationInput) {
       protocol: STUDY_PROTOCOL,
       kind: job.model === CONTROL_MODEL ? "control" : "environment",
       runId: job.runId,
+      ...(job.model === CONTROL_MODEL ? {} : { model: job.model }),
       dataDir,
       datasetHash: market.version,
       universeVersion: "dataset",
@@ -94,7 +95,7 @@ export async function prepareEvaluation(input: EvaluationInput) {
     start: EVALUATION_QUARTERS[0]!.start,
     end: EVALUATION_QUARTERS.at(-1)!.end,
     models,
-    execution: { parallelQuartersPerModel: 4, models: "sequential", state: "independent-runs" },
+    execution: { parallelQuartersPerModel: 4, models: "parallel", state: "independent-runs" },
     initialization: {
       startingCapital: STARTING_CAPITAL, holdings: {}, journalEntries: 0,
       priorAttempts: 0, consecutiveInvalidDays: 0,
@@ -224,40 +225,38 @@ export async function runEvaluation(input: EvaluationInput, options: {
       ));
       return writes;
     };
-    for (const model of plan.models) {
-      const batch = plan.jobs.map((job, index) => ({ job, index })).filter(j => j.job.model === model);
-      if (!options.readOnly) {
-        for (const { index } of batch) quarters[index]!.status = "running";
-        await persist();
-      }
-      const settled = await Promise.allSettled(batch.map(async ({ job, index }) => {
-        const childExists = existsSync(resolve("results/studies", job.runId, "manifest.json"));
-        try {
-          if (!options.readOnly || childExists) {
-            // Four independent runner invocations are active together. Each owns its
-            // portfolio, journal, attempts, sandbox and runtime; no result is passed
-            // to another quarter. Resume restores only this run ID's own state.
-            const result = await runStudy(job.config, {
-              readOnly: options.readOnly,
-              ...(job.model === CONTROL_MODEL && !options.readOnly
-                ? { control: options.control ?? deterministicControl } : {}),
-            });
-            quarters[index] = quarterResult(job, result);
-          }
-        } catch (e) {
-          if (options.readOnly) throw e;
-          quarters[index] = { ...quarters[index]!, status: "error", error: String(e) };
-        }
-        if (!options.readOnly) await persist();
-      }));
-      // Keep the evaluation lock until all four runs and report writes settle,
-      // including when a verification or report write fails.
-      const failed = settled.flatMap((r, index) => r.status === "rejected" ? [new Error(
-        `${batch[index]!.job.label} (${batch[index]!.job.runId}): ${r.reason instanceof Error ? r.reason.message : String(r.reason)}`,
-        { cause: r.reason },
-      )] : []);
-      if (failed.length) throw new AggregateError(failed, `Quarter execution failed:\n${failed.map(e => e.message).join("\n")}`);
+    const batch = plan.jobs.map((job, index) => ({ job, index }));
+    if (!options.readOnly) {
+      for (const { index } of batch) quarters[index]!.status = "running";
+      await persist();
     }
+    const settled = await Promise.allSettled(batch.map(async ({ job, index }) => {
+      const childExists = existsSync(resolve("results/studies", job.runId, "manifest.json"));
+      try {
+        if (!options.readOnly || childExists) {
+          // All model/quarter runner invocations are active together. Each owns its
+          // portfolio, journal, attempts, sandbox and runtime; no result is passed
+          // to another quarter. Resume restores only this run ID's own state.
+          const result = await runStudy(job.config, {
+            readOnly: options.readOnly,
+            ...(job.model === CONTROL_MODEL && !options.readOnly
+              ? { control: options.control ?? deterministicControl } : {}),
+          });
+          quarters[index] = quarterResult(job, result);
+        }
+      } catch (e) {
+        if (options.readOnly) throw e;
+        quarters[index] = { ...quarters[index]!, status: "error", error: String(e) };
+      }
+      if (!options.readOnly) await persist();
+    }));
+    // Keep the evaluation lock until all model/quarter runs and report writes settle,
+    // including when a verification or report write fails.
+    const failed = settled.flatMap((r, index) => r.status === "rejected" ? [new Error(
+      `${batch[index]!.job.label} (${batch[index]!.job.runId}): ${r.reason instanceof Error ? r.reason.message : String(r.reason)}`,
+      { cause: r.reason },
+    )] : []);
+    if (failed.length) throw new AggregateError(failed, `Quarter execution failed:\n${failed.map(e => e.message).join("\n")}`);
     return { dir, plan, report: evaluationReport(plan, quarters) };
   } finally { await release(); }
 }

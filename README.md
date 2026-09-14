@@ -24,7 +24,7 @@ pnpm bench run --run-id control-v12 --control=true \
 pnpm bench verify --dir results/studies/control-v12
 pnpm bench review --dir results/studies/control-v12 --analysis=true --gaps=true
 
-# Exact free Muse/OpenCode route only; OPENCODE_API_KEY is host-side.
+# Refresh catalog evidence for all three qualified routes; no inference.
 pnpm model:preflight
 pnpm sandbox:check
 pnpm bench run --run-id muse-v12-smoke --smoke=true \
@@ -32,6 +32,8 @@ pnpm bench run --run-id muse-v12-smoke --smoke=true \
 pnpm bench resume --dir results/studies/muse-v12-smoke
 pnpm bench inspect --dir results/studies/muse-v12-smoke
 ```
+
+Qualified model routes are `opencode/muse-spark-1.3-contributor-free` and `opencode/muse-spark-1.2-contributor-free` through OpenCode Zen, and `openai/gpt-5.6-luna` through OpenCode's OpenAI provider with host Codex OAuth. All use official OpenCode **1.18.30** and its default reasoning settings. Fresh catalog evidence must prove each exact active route has zero input/output/cache cost and tool-call support. `eval` defaults to all three routes (12 concurrent model/quarter jobs); `--models` selects a qualified subset. Single runs and the existing `--smoke=true` path accept `--model MODEL_ID`, defaulting to Muse 1.3. Provider credentials remain on the host; the sandbox receives only a scoped gateway capability. See [qualification and authentication](docs/EVALUATION.md#model-route-qualification) for evidence commands and OAuth setup.
 
 The benchmark evaluation now uses **April 2025–March 2026**, with **four separate quarterly runs executing in parallel for each qualified model**. Use `pnpm study:run --eval-id ID --data-dir DIR` (or `pnpm bench eval`); add `--preflight=true` to validate all quarters without inference. Each run starts with $50,000, no holdings, empty journals, its own runtime and fresh failure counters. See the [evaluation contract and commands](docs/EVALUATION.md) for funding, resume, reporting and data-readiness requirements. The retained January–August dataset lacks pre-April 2025 warmup and is rejected.
 
