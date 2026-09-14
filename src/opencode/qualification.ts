@@ -1,10 +1,29 @@
-import { createHash } from "node:crypto";
+import { mkdir, writeFile } from "node:fs/promises";
+import { resolve, dirname } from "node:path";
+import { createHash, randomUUID } from "node:crypto";
 
 export const QUALIFIED_OPENCODE_CLIENT_VERSION = "1.18.30";
 export const QUALIFIED_ZEN_PROVIDER = "opencode";
 export const QUALIFIED_ZEN_MODEL = "muse-spark-1.3-contributor-free";
 export const QUALIFIED_ZEN_MODEL_ID =
   QUALIFIED_ZEN_PROVIDER + "/" + QUALIFIED_ZEN_MODEL;
+
+/** Admission is still conditional on a fresh, exact, active zero-cost catalog check. */
+export const QUALIFIED_ROUTES = Object.freeze([
+  Object.freeze({ id: QUALIFIED_ZEN_MODEL_ID, provider: "opencode", model: QUALIFIED_ZEN_MODEL,
+    apiURL: "https://opencode.ai/zen/v1", authEnv: "OPENCODE_API_KEY", auth: "api" }),
+  Object.freeze({ id: "opencode/muse-spark-1.2-contributor-free", provider: "opencode", model: "muse-spark-1.2-contributor-free",
+    apiURL: "https://opencode.ai/zen/v1", authEnv: "OPENCODE_API_KEY", auth: "api" }),
+  Object.freeze({ id: "openai/gpt-5.6-luna", provider: "openai", model: "gpt-5.6-luna",
+    apiURL: "", authEnv: "OPENAI_API_KEY", auth: "oauth" }),
+]);
+export type QualifiedRoute = (typeof QUALIFIED_ROUTES)[number];
+export const QUALIFIED_MODEL_IDS: readonly string[] = Object.freeze(QUALIFIED_ROUTES.map(r => r.id));
+export function qualifiedRoute(model: string): QualifiedRoute {
+  const route = QUALIFIED_ROUTES.find(r => r.id === model);
+  if (!route) throw new Error(`Unqualified model route: ${model}; refuses anything except ${QUALIFIED_MODEL_IDS.join(", ")}`);
+  return route;
+}
 
 export interface CatalogModelEvidence {
   id: string;
@@ -32,7 +51,7 @@ export interface OpenCodeQualificationEvidence {
   checkedAt: string;
   clientVersion: string;
   versionCommand: "opencode --version";
-  catalogCommand: "opencode models opencode --verbose --refresh";
+  catalogCommand: string;
   catalogAttempts: CatalogQualificationAttempt[];
   catalogOutputSha256: string;
   exactModel: string;
@@ -62,24 +81,23 @@ function extractJsonObject(text: string, start: number): string {
 
 export function parseQualifiedCatalogEntry(
   output: string,
+  model: string = QUALIFIED_ZEN_MODEL_ID,
 ): CatalogModelEvidence {
-  const marker = QUALIFIED_ZEN_MODEL_ID + "\n";
-  const markerAt = output.indexOf(marker);
-  if (markerAt < 0)
-    throw new Error(
-      "Exact model " +
-        QUALIFIED_ZEN_MODEL_ID +
-        " is absent from the refreshed OpenCode catalog",
-    );
-  const objectAt = output.indexOf("{", markerAt + marker.length);
-  if (objectAt < 0)
+  const route = qualifiedRoute(model);
+  const normalized = output.replace(/\r\n/g, "\n");
+  const lines = normalized.split("\n");
+  const matches = lines.flatMap((line, index) => line === route.id ? [index] : []);
+  if (matches.length !== 1)
+    throw new Error(`Exact model ${route.id} is absent or duplicated in the refreshed OpenCode catalog`);
+  const metadata = lines.slice(matches[0]! + 1).join("\n").trimStart();
+  if (!metadata.startsWith("{"))
     throw new Error("Exact model catalog entry has no verbose metadata");
   const parsed = JSON.parse(
-    extractJsonObject(output, objectAt),
+    extractJsonObject(metadata, 0),
   ) as CatalogModelEvidence;
   if (
-    parsed.id !== QUALIFIED_ZEN_MODEL ||
-    parsed.providerID !== QUALIFIED_ZEN_PROVIDER
+    parsed.id !== route.model ||
+    parsed.providerID !== route.provider
   )
     throw new Error(
       "Exact model catalog identity does not match the requested ID",
@@ -87,18 +105,28 @@ export function parseQualifiedCatalogEntry(
   return parsed;
 }
 
-export function assertZeroCostCatalogEntry(entry: CatalogModelEvidence): void {
+export function assertZeroCostCatalogEntry(
+  entry: CatalogModelEvidence, model: string = QUALIFIED_ZEN_MODEL_ID,
+): void {
+  const route = qualifiedRoute(model);
+  if (entry?.id !== route.model || entry.providerID !== route.provider || entry.api?.id !== route.model)
+    throw new Error("Exact model catalog identity does not match the requested ID");
+  for (const key of ["options", "headers"] as const) {
+    const value = entry[key];
+    if (value !== undefined && (!value || typeof value !== "object" || Array.isArray(value) || Object.keys(value).length))
+      throw new Error("Exact model catalog has non-default options or headers");
+  }
   const cost = entry?.cost;
   if (entry.status !== "active")
     throw new Error("Exact model catalog entry is not active");
-  if (!entry.name?.toLowerCase().includes("free"))
+  if (route.provider === "opencode" && !entry.name?.toLowerCase().includes("free"))
     throw new Error("Exact model catalog name does not identify a free entry");
   if (
-    entry.api?.url !== "https://opencode.ai/zen/v1" ||
+    entry.api?.url !== route.apiURL ||
     entry.api?.npm !== "@ai-sdk/openai"
   )
     throw new Error(
-      "Exact model is not routed through the qualified OpenCode Zen provider adapter",
+      "Exact model is not routed through the qualified provider adapter",
     );
   if (entry.capabilities?.toolcall !== true)
     throw new Error(
@@ -139,9 +167,7 @@ async function command(
     throw new Error(
       argv.join(" ") +
         " failed with exit " +
-        exitCode +
-        ": " +
-        stderr.slice(0, 1000),
+        exitCode,
     );
   return { stdout, stderr };
 }
@@ -151,9 +177,12 @@ async function command(
  * currently returned exact active zero-price entry. Every attempt is retained. */
 export async function qualifyOfficialOpenCode(
   timeoutMs = 30_000,
+  model: string = QUALIFIED_ZEN_MODEL_ID,
+  runCommand: typeof command = command,
 ): Promise<OpenCodeQualificationEvidence> {
+  const route = qualifiedRoute(model);
   const version = (
-    await command(["opencode", "--version"], Math.min(timeoutMs, 5_000))
+    await runCommand(["opencode", "--version"], Math.min(timeoutMs, 5_000))
   ).stdout.trim();
   if (version !== QUALIFIED_OPENCODE_CLIENT_VERSION)
     throw new Error(
@@ -168,16 +197,16 @@ export async function qualifyOfficialOpenCode(
     | undefined;
   for (let attempt = 1; attempt <= 3; attempt++) {
     try {
-      const catalog = await command(
-        ["opencode", "models", "opencode", "--verbose", "--refresh"],
+      const catalog = await runCommand(
+        ["opencode", "models", route.provider, "--verbose", "--refresh"],
         timeoutMs,
       );
       const outputSha256 = createHash("sha256")
         .update(catalog.stdout)
         .digest("hex");
       try {
-        const entry = parseQualifiedCatalogEntry(catalog.stdout);
-        assertZeroCostCatalogEntry(entry);
+        const entry = parseQualifiedCatalogEntry(catalog.stdout, model);
+        assertZeroCostCatalogEntry(entry, model);
         attempts.push({
           attempt,
           checkedAt: new Date().toISOString(),
@@ -215,12 +244,23 @@ export async function qualifyOfficialOpenCode(
     checkedAt: new Date().toISOString(),
     clientVersion: version,
     versionCommand: "opencode --version",
-    catalogCommand: "opencode models opencode --verbose --refresh",
+    catalogCommand: `opencode models ${route.provider} --verbose --refresh`,
     catalogAttempts: attempts,
     catalogOutputSha256: accepted.outputSha256,
-    exactModel: QUALIFIED_ZEN_MODEL_ID,
+    exactModel: model,
     catalogEntry: accepted.entry,
     zeroCostProven: true,
     noInference: true,
   };
+}
+
+/** Durable catalog-only evidence, separate from model transcripts. */
+export async function writeQualification(evidence: OpenCodeQualificationEvidence, out?: string) {
+  assertZeroCostCatalogEntry(evidence.catalogEntry, evidence.exactModel);
+  const path = out ?? resolve("results/qualifications",
+    `${evidence.exactModel.replaceAll("/", "-")}-${new Date().toISOString().replaceAll(":", "-")}-${randomUUID()}.json`);
+  await mkdir(dirname(path), { recursive: true });
+  await writeFile(path, JSON.stringify({ schemaVersion: 1, purpose: "no-call-live-model-qualification",
+    exactModel: evidence.exactModel, inferenceCalls: 0, evidence }, null, 2) + "\n", { flag: "wx" });
+  return path;
 }

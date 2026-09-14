@@ -1,24 +1,16 @@
-import { mkdir, writeFile } from "node:fs/promises";
-import { dirname, resolve } from "node:path";
-import { qualifyOfficialOpenCode, QUALIFIED_ZEN_MODEL_ID } from "../src/opencode/qualification.ts";
+import { resolve } from "node:path";
+import { parseFlags } from "../src/cli/args.ts";
+import { assertKnownFlags, assertNoPositionals } from "../src/cli/validate.ts";
+import { qualifyOfficialOpenCode, qualifiedRoute, QUALIFIED_MODEL_IDS, writeQualification } from "../src/opencode/qualification.ts";
 
-function outputPath(argv: string[]): string {
-  const flag = argv.find(argument => argument.startsWith("--out="));
-  if (flag) return resolve(flag.slice("--out=".length));
-  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-  return resolve("results", "qualifications", `opencode-muse-${stamp}.json`);
+const { flags, positionals } = parseFlags(process.argv.slice(2));
+assertNoPositionals(positionals, "model:preflight");
+assertKnownFlags(flags, ["model", "out"], "model:preflight");
+if (flags.has("out") && !flags.has("model")) throw new Error("--out requires a single --model");
+const models = flags.has("model") ? [qualifiedRoute(flags.get("model")!).id] : QUALIFIED_MODEL_IDS;
+for (const model of models) {
+  const evidence = await qualifyOfficialOpenCode(30_000, model);
+  const out = await writeQualification(evidence, flags.has("out") ? resolve(flags.get("out")!) : undefined);
+  console.log(JSON.stringify({ out, exactModel: model, inferenceCalls: 0 }));
 }
-
-const out = outputPath(process.argv.slice(2));
-const evidence = await qualifyOfficialOpenCode();
-const artifact = {
-  schemaVersion: 1,
-  purpose: "no-call-live-model-qualification",
-  exactModel: QUALIFIED_ZEN_MODEL_ID,
-  inferenceCalls: 0,
-  evidence,
-};
-await mkdir(dirname(out), { recursive: true });
-await writeFile(out, JSON.stringify(artifact, null, 2) + "\n", { flag: "wx" });
-console.log(JSON.stringify({ out, ...artifact }, null, 2));
 console.error("[model-preflight] Exact active zero-cost catalog/runtime evidence written; no inference performed.");
