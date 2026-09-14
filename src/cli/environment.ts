@@ -19,6 +19,8 @@ import { deterministicControl } from "../study/control.ts";
 import { qualifySandbox } from "../study/sandbox.ts";
 import { writeFileAtomic } from "../utils/fs.ts";
 export const HELP = `Paper portfolio environment (${STUDY_PROTOCOL})
+  pnpm bench eval --eval-id ID --data-dir DIR [--models MODEL_IDS] [--preflight=true | --resume=true | --verify=true] [--control=true]
+    April 2025–March 2026: four separate runs in parallel per model, each with $50,000 fresh cash and empty memory.
   pnpm bench run --run-id ID --data-dir DIR --start DATE --end DATE [--preflight=true] [--control=true] [--smoke=true] [--history=100] [--timeout-ms=${POLICY.defaultTimeoutMs}]
   pnpm bench resume --dir results/studies/ID
   pnpm bench inspect --dir results/studies/ID
@@ -35,6 +37,10 @@ export async function environmentCLI(command: string, argv: string[]) {
   if (["help", "--help", "-h"].includes(command) || argv.includes("--help")) {
     console.log(HELP);
     return;
+  }
+  if (command === "eval") {
+    const { evaluationCLI } = await import("./evaluation.ts");
+    return evaluationCLI(argv);
   }
   const { flags, positionals } = parseFlags(argv);
   assertNoPositionals(positionals, command);

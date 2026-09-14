@@ -33,6 +33,8 @@ pnpm bench resume --dir results/studies/muse-v11-smoke
 pnpm bench inspect --dir results/studies/muse-v11-smoke
 ```
 
+The benchmark evaluation now uses **April 2025–March 2026**, with **four separate quarterly runs executing in parallel for each qualified model**. Use `pnpm study:run --eval-id ID --data-dir DIR` (or `pnpm bench eval`); add `--preflight=true` to validate all quarters without inference. Each run starts with $50,000, no holdings, empty journals, its own runtime and fresh failure counters. See the [evaluation contract and commands](docs/EVALUATION.md) for funding, resume, reporting and data-readiness requirements. The retained January–August dataset lacks pre-April 2025 warmup and is rejected.
+
 Initial cash is $50,000; the first represented session of each later month receives $50,000. The core accepts any valid supplied date range. `bench qualify` separately checks calendar-quarter membership/NDX eligibility. Smoke/control results do not qualify as scored comparative studies.
 
 The prompt asks for an ongoing investment horizon: the end date is an evaluation/reporting boundary, and investments should still be assessed through the final session. Quarter-end alone is no reason to liquidate or avoid new positions. Performance includes cash plus the closing value of unsold holdings; the engine never automatically liquidates them. Holding cash for investment reasons remains allowed. This prompt clarification changes the implementation identity and applies to new cohorts; existing runs retain their original prompts and require their original source for replay.

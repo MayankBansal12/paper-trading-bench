@@ -1,5 +1,15 @@
 # Benchmark validation
 
+## Independent-quarter eval correction (2026-09-14)
+
+The current evaluation is April 1, 2025–March 31, 2026, implemented by `bench eval` and `study:run`. Each model's four runs execute concurrently, with separate runtime/session state and serialized aggregate-report writes. Every qualified model receives separate 2025 Q2, Q3, Q4 and 2026 Q1 runs: 62, 64, 64 and 61 exchange sessions (251 total). See the [evaluation contract](EVALUATION.md).
+
+Validation passed: `pnpm typecheck` and the full `pnpm test` suite (230 tests, 1,859 assertions), including ten evaluation tests. The new tests block each first session until all four have started, proving concurrency. They execute four full quarterly controls and verify $50,000 opening cash, zero holdings, empty journals, independent event/commit roots, fresh attempt/failure counters, two $50,000 monthly deposits per quarter, retained closing holdings, and exact resume/replay. A separate full-year control test exhausts three invalid days in the first quarter and proves the remaining quarters still initialize and complete independently. Concurrent-failure coverage proves a failed quarter does not stop peers, the evaluation lock remains held while peers run, and all four report rows survive simultaneous completion. CLI verification identifies the damaged quarter and the underlying replay error. Tests also reject truncated final-quarter data before any earlier-quarter execution, unqualified models, missing warmup, existing foreign child state and changed resume configuration.
+
+Full-year reports sum independent dollar outcomes and label mean quarterly TWR; no continuous annual portfolio is constructed. Missing/stopped/incomplete quarters withhold the year score.
+
+The earlier `muse-spark-free-2026-full` result covers January 2–August 31, 2026 with continuous state. It is not a four-quarter result. Its dataset starts on April 1, 2025, so the new preflight rejects it with `Insufficient warmup for AAPL: need 100 bars before 2025-04-01`. A new frozen dataset is required before live inference. This correction performed no new model inference; full-year regression data is controlled test data. The previous run's active engine identity is unchanged and its evidence remains intact.
+
 ## Latest completed Muse Spark run (2026-09-13)
 
 The Q2 environment run `muse-spark-free-2026q2-d03db5b`, source `d03db5bd04a2b5e9936368e72600cad1fc94ce84`, completed April 1–June 30, 2026. `bun src/index.ts verify --dir results/studies/muse-spark-free-2026q2-d03db5b` successfully verified its event/commit chain and replayed its accounting on the original source before the ongoing-horizon prompt change.
