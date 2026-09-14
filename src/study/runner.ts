@@ -287,7 +287,7 @@ export async function runStudy(
           // Controls persist the same raw prompt/tool boundary as the model adapter.
           if (result.outcome === "completed")
             try {
-              validateAccepted(result, view, c.kind === "control", past, horizon);
+              validateAccepted(result, view, c.kind === "control", past, horizon, c.model);
             } catch (e) {
               result = {
                 ...result,
@@ -326,7 +326,7 @@ export async function runStudy(
         if (c.kind !== "control" &&
             (accepted.sandbox as any)?.id !== read(join(dir, "runtime.json")).id)
           throw new Error("Accepted sandbox differs from frozen runtime");
-        validateAccepted(accepted, view, c.kind === "control", past, horizon);
+        validateAccepted(accepted, view, c.kind === "control", past, horizon, c.model);
         submissionEventHash = store.matching(accepted.scope).find((e) => e.kind === "submission")!.hash;
         record = executeAccepted(accepted, portfolio, config, market, universe);
       } else {

@@ -13,6 +13,7 @@ import {
 } from "./protocol.ts";
 import {
   QUALIFIED_ZEN_MODEL_ID,
+  qualifiedRoute,
   QUALIFIED_OPENCODE_CLIENT_VERSION,
   assertZeroCostCatalogEntry,
 } from "../opencode/qualification.ts";
@@ -61,6 +62,7 @@ export function validateAccepted(
   control = false,
   past: JournalEntry[] = [],
   horizon?: SessionHorizon,
+  expectedModel: string = QUALIFIED_ZEN_MODEL_ID,
 ) {
   if (
     a.outcome !== "completed" ||
@@ -98,6 +100,10 @@ export function validateAccepted(
     throw new Error("Missing session horizon for prompt verification");
   validateOpeningContext(a, view, past, horizon);
   if (control) return;
+  const route = qualifiedRoute(expectedModel);
+  const protocol = a.decision.trace.find(e => e.type === "protocol");
+  if (protocol?.provider !== route.provider || protocol.model !== route.model)
+    throw new Error("Protocol model differs from configured route");
   verifyClientTelemetry(a.decision);
   const denied = a.decision.trace.find((e) => e.type === "gateway_denied");
   if (denied) throw new Error("Gateway authorization failure");
@@ -121,7 +127,10 @@ export function validateAccepted(
     throw new Error("Inference accounting differs on replay");
   for (const request of a.decision.trace.filter(
     (e) => e.type === "inference_request",
-  ))
+  )) {
+    if (request.model !== route.model || request.body?.model !== route.model ||
+        !(route.provider === "openai" ? ["/inference/responses"] : ["/inference/responses", "/inference/chat/completions"]).includes(request.route))
+      throw new Error("Inference model or endpoint differs from configured route");
     assertProviderContext(
       request.body,
       systemPrompt(view.limits) + OPENCODE_PROMPT_SUFFIX,
@@ -134,16 +143,19 @@ export function validateAccepted(
       ),
       STUDY_TOOLS,
     );
-  const q = a.decision.trace.find(
-    (e: any) => e.type === "model_qualification",
-  ) as any;
+  }
+  const qualifications = a.decision.trace.filter(e => e.type === "model_qualification");
+  const q = qualifications[0] as any;
   if (
-    q?.evidence?.exactModel !== QUALIFIED_ZEN_MODEL_ID ||
+    qualifications.length !== 1 ||
+    q?.evidence?.exactModel !== route.id ||
     q.evidence.clientVersion !== QUALIFIED_OPENCODE_CLIENT_VERSION ||
-    q.evidence.zeroCostProven !== true
+    q.evidence.zeroCostProven !== true ||
+    q.evidence.noInference !== true ||
+    q.evidence.catalogCommand !== `opencode models ${route.provider} --verbose --refresh`
   )
     throw new Error("Missing exact free-model qualification");
-  assertZeroCostCatalogEntry(q.evidence.catalogEntry);
+  assertZeroCostCatalogEntry(q.evidence.catalogEntry, route.id);
   if (
     a.decision.effectiveSystemPrompt !==
     systemPrompt(view.limits) + OPENCODE_PROMPT_SUFFIX
@@ -151,7 +163,7 @@ export function validateAccepted(
     throw new Error("Study prompt drift");
   const errs = validateClientRuntimeAudits(
     a.decision,
-    QUALIFIED_ZEN_MODEL_ID,
+    route.id,
     "/work",
     STUDY_TOOLS,
   );

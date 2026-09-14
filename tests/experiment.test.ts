@@ -44,10 +44,12 @@ describe("three-month experiment contract", () => {
     const p=Bun.spawnSync(["bun","src/index.ts","run","--run-id=cli-preflight","--data-dir=fixtures/ohlcv","--start=2024-04-02","--end=2024-04-03","--history=60","--preflight=true"]);
     expect(p.exitCode).toBe(0);expect(p.stdout.toString()).toContain('"sessions": 2');
   });
-  test("retired tool quota/model/agent flags are rejected", () => {
-    for(const flag of ["--max-tool-calls=24","--model=paid","--agent=fake"]){
+  test("retired tool quota/agent flags and unqualified model routes are rejected", () => {
+    for(const flag of ["--max-tool-calls=24","--agent=fake"]){
       const p=Bun.spawnSync(["bun","src/index.ts","run",flag]);expect(p.exitCode).not.toBe(0);expect(p.stderr.toString()).toContain("Unknown flag");
     }
+    const model=Bun.spawnSync(["bun","src/index.ts","run","--model=paid"]);
+    expect(model.exitCode).not.toBe(0);expect(model.stderr.toString()).toContain("Unqualified model route");
   });
   test("new CLI keeps minimum warmup and hard history bounds", () => {
     const p=Bun.spawnSync(["bun","src/index.ts","run","--run-id=cli-preflight","--data-dir=fixtures/ohlcv","--start=2024-04-02","--end=2024-04-03","--history=59","--preflight=true"]);
