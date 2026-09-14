@@ -16,13 +16,13 @@ Current contract: `v12-portfolio-journal-submit`. v12 adds deterministic keyword
 
 Each fresh attempt preloads:
 
-1. Simulated date, previous trading-session close cutoff, and supplied date range.
+1. Simulated date and previous trading-session close cutoff. The run's start and end dates are not shown.
 2. Cash, holdings (units, average cost, observable close and value), holdings value and net worth, after due contributions/actions.
-3. Known funding schedule: $50,000 initially and $50,000 on the first represented session of each later month.
+3. Deposits already received (`depositsReceived`), including today's. The system prompt states the rule: $50,000 initially and $50,000 on the first trading session of each following month. Future deposit dates are not listed.
 4. Eligible canonical tickers.
 5. The latest three committed original journal notes verbatim, newest first, with their identities, dates, tickers and optional tags, or an explicit first-day marker.
 
-The investment mandate uses an ongoing horizon. The supplied date range bounds evaluation and reporting; the prompt asks the model to keep assessing opportunities through the final session and forbids using the approaching quarter/end date alone as a reason to sell, build cash or avoid new positions. Cash remains a valid allocation for investment reasons. Performance uses cash plus holdings marked at the daily close, including on the final date; there is no forced liquidation or cash-only terminal valuation. This clarification changes the implementation identity and requires a new cohort. Earlier runs must be inspected/replayed with their original source and prompt; no existing evidence is rewritten. The prompt does not promise additional simulated dates beyond the supplied range.
+The investment mandate describes an ongoing account. The supplied date range bounds evaluation and reporting but is withheld from the model: neither the prompt nor the session context mentions a start date, end date or horizon. Earlier cohorts cited the approaching quarter end in their notes even when told to disregard it. In the final month the model may expect another deposit that the evaluation never reaches; this is an accepted consequence of withholding the end date. Cash remains a valid allocation for investment reasons. Performance uses cash plus holdings marked at the daily close, including on the final date; there is no forced liquidation or cash-only terminal valuation. This clarification changes the implementation identity and requires a new cohort. Earlier runs must be inspected/replayed with their original source and prompt; no existing evidence is rewritten. The prompt does not promise additional simulated dates beyond the supplied range.
 
 Eligible tickers are supplied on every session as the complete allowed universe, with no ranking or recommended subset. This defines the available action space; it is not a stock recommendation. `market_snapshot` defaults to that same universe and orders outside it are rejected. Scored quarterly studies separately require membership evidence predating the quarter. A retrospectively filtered supported-data run remains an environment study.
 

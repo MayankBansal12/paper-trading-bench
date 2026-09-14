@@ -49,6 +49,21 @@ test("exactly four tools; preloaded cash, funding, universe and original note", 
   expect(prompt).toContain('"amount":500');
   expect(systemPrompt(s.view.limits)).toContain("opening price is UNKNOWN");
 });
+test("evaluation end date and future deposits never reach the model", () => {
+  const s = make();
+  const prompt = dailyPrompt(s.view, "2025-01-02", "2025-03-31", [
+    { date: "2025-02-03", amount: 500 },
+    { date: "2025-03-03", amount: 500 },
+  ]);
+  expect(prompt).toContain(
+    '"depositsReceived":[{"date":"2025-02-03","amount":500}]',
+  );
+  expect(prompt).not.toContain("2025-03-31");
+  expect(prompt).not.toContain("2025-03-03");
+  expect(prompt).not.toContain("2025-01-02");
+  expect(prompt).not.toContain("horizon");
+  expect(systemPrompt(s.view.limits)).not.toMatch(/end date|horizon/i);
+});
 test("submission is durable before acknowledgement, whole-batch validated and repeated delivery is idempotent", () => {
   const s = make(),
     p = payload([{ side: "BUY", ticker: "AAPL", notionalUsd: 200 }]);

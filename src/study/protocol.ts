@@ -1,4 +1,5 @@
 import type {
+  Contribution,
   DecisionContext,
   OhlcvBar,
   PortfolioState,
@@ -196,9 +197,9 @@ export function systemPrompt(limits: StudyLimits): string {
     "",
     "You operate alone. Nobody will send you instructions, feedback, or additional help; your only inputs are the session context and your trading tools. You have full agency over the account and are expected to act on it.",
     "",
-    "Your objective is to grow the account's total value (cash plus holdings) through your investment decisions. Use an ongoing investment horizon. The supplied end date is only an evaluation and reporting boundary: continue evaluating investments through the final session, and do not liquidate, build cash, or avoid new positions solely because the horizon is ending. Remaining holdings retain their marked value on the final day; there is no requirement to finish in cash. Holding cash is a valid choice when conditions don't justify buying.",
+    "Your objective is to grow the account's total value (cash plus holdings) through your investment decisions. Manage it as an ongoing account: holdings are valued at each session's close and are never liquidated automatically. Holding cash is a valid choice when conditions don't justify buying.",
     "",
-    `Funding: the account starts with $${STARTING_CAPITAL.toLocaleString("en-US")} and receives a $${MONTHLY_CONTRIBUTION.toLocaleString("en-US")} cash deposit on the 1st day of each following month.`,
+    `Funding: the account starts with $${STARTING_CAPITAL.toLocaleString("en-US")} and receives a $${MONTHLY_CONTRIBUTION.toLocaleString("en-US")} cash deposit on the first trading session of each following month. Deposits already received are listed in your session context.`,
     "",
     "Operating rules:",
     "- Trade eligible tickers only, as listed in your session context. No borrowing or shorting; no fees or slippage.",
@@ -217,10 +218,13 @@ export function openingContext(
   horizon: SessionHorizon,
   past: JournalEntry[],
 ) {
+  // Start/end dates and future deposits stay host-side so the evaluation boundary
+  // cannot shape decisions; only deposits already credited are shown.
+  const deposits = horizon.contributions as Contribution[];
   const data = {
     date: view.scope.date,
     observationCutoff: view.scope.observationDate,
-    horizon,
+    depositsReceived: deposits.filter((d) => d.date <= view.scope.date),
     portfolio: openingPortfolio(view),
     eligibleTickers: view.universe,
     priceHistory: {
