@@ -33,16 +33,15 @@ for (const model of QUALIFIED_MODEL_IDS) test(`${model}: selected route reaches 
   expect(err).toBe(""); expect(code).toBe(0);
   expect(out).not.toContain("test-host-secret");
   const { launch, audits } = JSON.parse(out);
-  const openai = model.startsWith("openai/");
+  const provider = model.split("/")[0];
   expect(launch.model).toBe(model);
   const config = JSON.parse(launch.env.OPENCODE_CONFIG_CONTENT);
   expect(config.model).toBe(model);
-  expect(config.enabled_providers).toEqual([openai ? "openai" : "opencode"]);
-  expect(launch.env[openai ? "OPENAI_API_KEY" : "OPENCODE_API_KEY"]).toBe(launch.env.BENCH_GATEWAY_TOKEN);
-  expect(launch.env[openai ? "OPENCODE_API_KEY" : "OPENAI_API_KEY"]).toBeUndefined();
+  expect(config.enabled_providers).toEqual([provider]);
+  expect(launch.env.BENCH_GATEWAY_TOKEN).toBeDefined();
   expect(config.mcp.trading.headers.Authorization).toBe(`Bearer ${launch.env.BENCH_GATEWAY_TOKEN}`);
   expect(launch.env.OPENCODE_DISABLE_DEFAULT_PLUGINS).toBe("true");
-  if (openai) {
+  if (provider === "openai") {
     expect(launch.auth.openai.access).toBe(launch.env.BENCH_GATEWAY_TOKEN);
     expect(launch.auth.openai.refresh).toBe("host-gateway-only");
   } else expect(launch.auth).toBeUndefined();

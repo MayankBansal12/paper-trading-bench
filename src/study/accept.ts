@@ -15,7 +15,7 @@ import {
   QUALIFIED_ZEN_MODEL_ID,
   qualifiedRoute,
   QUALIFIED_OPENCODE_CLIENT_VERSION,
-  assertZeroCostCatalogEntry,
+  assertCatalogEntry,
 } from "../opencode/qualification.ts";
 import { OPENCODE_PROMPT_SUFFIX } from "../opencode/config.ts";
 import {
@@ -150,12 +150,12 @@ export function validateAccepted(
     qualifications.length !== 1 ||
     q?.evidence?.exactModel !== route.id ||
     q.evidence.clientVersion !== QUALIFIED_OPENCODE_CLIENT_VERSION ||
-    q.evidence.zeroCostProven !== true ||
+    q.evidence.pricingProven !== true ||
     q.evidence.noInference !== true ||
     q.evidence.catalogCommand !== `opencode models ${route.provider} --verbose --refresh`
   )
     throw new Error("Missing exact free-model qualification");
-  assertZeroCostCatalogEntry(q.evidence.catalogEntry, route.id);
+  assertCatalogEntry(q.evidence.catalogEntry, route.id);
   if (
     a.decision.effectiveSystemPrompt !==
     systemPrompt(view.limits) + OPENCODE_PROMPT_SUFFIX

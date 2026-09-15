@@ -5,7 +5,7 @@ import { STUDY_TOOLS as TRADING_TOOL_NAMES } from "../study/protocol.ts";
 import {
   QUALIFIED_OPENCODE_CLIENT_VERSION,
   qualifiedRoute,
-  assertZeroCostCatalogEntry,
+  assertCatalogEntry,
   type CatalogModelEvidence,
 } from "./qualification.ts";
 
@@ -43,7 +43,7 @@ export async function makeClientConfig(
   effectiveSystemPrompt: string;
 }> {
   const route = qualifiedRoute(model);
-  if (options.catalogEntry) assertZeroCostCatalogEntry(options.catalogEntry, model);
+  if (options.catalogEntry) assertCatalogEntry(options.catalogEntry, model);
   if (clientVersion !== QUALIFIED_OPENCODE_CLIENT_VERSION) {
     throw new Error(
       "Official-client config requires qualified OpenCode " +

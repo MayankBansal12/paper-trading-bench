@@ -44,7 +44,7 @@ for (const route of QUALIFIED_ROUTES) test(`${route.id}: completed decisions and
     const checks = { namespaces, status: "NoNewPrivs: 1\nSeccomp: 2\nCapEff: 0000", cwd: "/work", scratch: "writable",
       ...Object.fromEntries(["/home/ai/.env", "/home/ai/code/paper-trading-bench/README.md", "/proc/1/root/home/ai", "/etc/shadow", "/var/run/docker.sock", "external", "write:/runtime/worker.ts", "write:/work/benchmark-plugin.mjs"].map(p => [p, "denied"])) };
     decision.trace.push(
-      { type: "model_qualification", evidence: { exactModel: route.id, clientVersion: "1.18.30", zeroCostProven: true,
+      { type: "model_qualification", evidence: { exactModel: route.id, clientVersion: "1.18.30", pricingProven: true,
         noInference: true, catalogCommand: `opencode models ${route.provider} --verbose --refresh`, catalogEntry: catalogFixture(route) } },
       { type: "inference_request", model: route.model, route: "/inference/responses", body: {
         model: route.model, instructions: decision.effectiveSystemPrompt, input: [{ role: "user", content: daily }],

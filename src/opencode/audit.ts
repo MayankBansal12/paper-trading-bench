@@ -349,17 +349,17 @@ export function validateClientRuntimeAudits(
     )
       errors.push("Observed request model drift");
     if (record.resolvedModel?.api?.id !== route?.model ||
-        record.resolvedModel?.api?.npm !== "@ai-sdk/openai" ||
+        record.resolvedModel?.api?.npm !== route?.npm ||
         record.resolvedModel?.api?.url !== route?.apiURL ||
         record.resolvedModel?.capabilities?.toolcall !== true)
       errors.push("Observed provider adapter or tool capability drift");
     const cost = record.resolvedModel?.cost;
     if (
       !object(cost) ||
-      cost.input !== 0 ||
-      cost.output !== 0 ||
-      cost.cache?.read !== 0 ||
-      cost.cache?.write !== 0 ||
+      cost.input !== route?.cost.input ||
+      cost.output !== route?.cost.output ||
+      cost.cache?.read !== route?.cost.cacheRead ||
+      cost.cache?.write !== route?.cost.cacheWrite ||
       (cost.tiers !== undefined && (!Array.isArray(cost.tiers) || cost.tiers.length !== 0))
     )
       errors.push("Observed model has unverified/nonzero pricing");
