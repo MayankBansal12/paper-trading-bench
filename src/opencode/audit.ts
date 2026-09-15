@@ -353,7 +353,9 @@ export function validateClientRuntimeAudits(
         record.resolvedModel?.api?.url !== route?.apiURL ||
         record.resolvedModel?.capabilities?.toolcall !== true)
       errors.push("Observed provider adapter or tool capability drift");
-    const cost = record.resolvedModel?.cost;
+    const cost = record.resolvedModel?.cost as
+      | { input: number; output: number; cache?: { read: number; write: number }; tiers?: unknown }
+      | undefined;
     if (
       !object(cost) ||
       cost.input !== route?.cost.input ||
