@@ -48,3 +48,5 @@ A run has an immutable manifest, one durable checksummed `events.jsonl`, and ato
 See the [current contract and command guide](docs/STUDY_ENVIRONMENT.md), [validation and known limitations](docs/VALIDATION.md), and [historical archive](archive/README.md). Dataset snapshots are ignored local inputs; the retained June–August 2026 archive is suitable for environment qualification, not a full-calendar-quarter membership claim. No live-data fetch is part of a decision.
 
 The [read-only viewer](docs/VIEWER.md) groups runs by model cohort, shows year/quarter stats, and drills into individual sessions and agent tool traces: `bun scripts/visualizer.ts --port 4173`.
+
+The [September 15 Luna validation](results/published/luna-main-20260915/README.md) preserves historical replay evidence, current live-smoke outcomes, and audit-bundle checksums. Agent changes and run evidence must go through PRs; see [AGENTS.md](AGENTS.md).
