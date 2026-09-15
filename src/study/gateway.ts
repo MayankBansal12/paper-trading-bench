@@ -6,7 +6,7 @@ import { OPENCODE_PROMPT_SUFFIX } from "../opencode/config.ts";
 import { systemPrompt } from "./protocol.ts";
 import { STUDY_TOOLS, POLICY } from "./protocol.ts";
 import { SessionTools } from "./tools.ts";
-import { qualifiedRoute, QUALIFIED_ZEN_MODEL_ID } from "../opencode/qualification.ts";
+import { qualifiedRoute, QUALIFIED_ZEN_MODEL_ID, QUALIFIED_OPENCODE_CLIENT_VERSION } from "../opencode/qualification.ts";
 import { CODEX_RESPONSES_URL, type ProviderCredential } from "../opencode/credentials.ts";
 export async function serveGateway(
   socket: string,
@@ -22,6 +22,10 @@ export async function serveGateway(
   if (route.auth === "oauth" && (typeof credential === "string" || credential.mode !== "oauth"))
     throw new Error("Qualified OpenAI route requires host OAuth; no API-key fallback");
   const capability = randomUUID();
+  // The Go edge tier requires a routable session marker and a client user agent
+  // it recognizes; the sandbox client's headers are not guaranteed to carry
+  // either, so the host gateway sets them itself for this route.
+  const edgeSession = randomUUID();
   let closed = false,
     inferences = 0;
   const abort = new AbortController();
@@ -256,6 +260,10 @@ export async function serveGateway(
           ? new Headers({ authorization: `Bearer ${credential}` })
           : await credential.authorize(abort.signal);
         authHeaders.forEach((value, name) => headers.set(name, value));
+        if (route.provider === "opencode-go") {
+          headers.set("user-agent", `opencode/${QUALIFIED_OPENCODE_CLIENT_VERSION}`);
+          headers.set("x-opencode-session", edgeSession);
+        }
         const response = await forward(
           route.provider === "openai" ? CODEX_RESPONSES_URL
             : route.apiURL + url.pathname.slice("/inference".length),

@@ -111,10 +111,8 @@ function eventReader(
         fail("Invalid usage in client event");
         return;
       }
-      if (part.cost != null && part.cost !== 0) {
-        fail("Free-only client reported nonzero cost");
-        return;
-      }
+      // Reported cost is validated for class and finiteness here; the free-only
+      // zero assertion is enforced at acceptance against the route pin.
       const usage = decision.usage;
       if (values.some((v) => v == null) || part.cost == null) {
         usage.completeness = "unavailable";

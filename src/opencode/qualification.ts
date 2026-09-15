@@ -8,14 +8,22 @@ export const QUALIFIED_ZEN_MODEL = "muse-spark-1.3-contributor-free";
 export const QUALIFIED_ZEN_MODEL_ID =
   QUALIFIED_ZEN_PROVIDER + "/" + QUALIFIED_ZEN_MODEL;
 
-/** Admission is still conditional on a fresh, exact, active zero-cost catalog check. */
+/** Admission is conditional on a fresh, exact, active catalog check whose
+ * published pricing matches the route's pinned cost exactly. The first three
+ * routes pin zero cost; glm-5.3-flash is the first admitted paid route. */
 export const QUALIFIED_ROUTES = Object.freeze([
   Object.freeze({ id: QUALIFIED_ZEN_MODEL_ID, provider: "opencode", model: QUALIFIED_ZEN_MODEL,
-    apiURL: "https://opencode.ai/zen/v1", authEnv: "OPENCODE_API_KEY", auth: "api" }),
+    apiURL: "https://opencode.ai/zen/v1", npm: "@ai-sdk/openai", authEnv: "OPENCODE_API_KEY", auth: "api",
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 } }),
   Object.freeze({ id: "opencode/muse-spark-1.2-contributor-free", provider: "opencode", model: "muse-spark-1.2-contributor-free",
-    apiURL: "https://opencode.ai/zen/v1", authEnv: "OPENCODE_API_KEY", auth: "api" }),
+    apiURL: "https://opencode.ai/zen/v1", npm: "@ai-sdk/openai", authEnv: "OPENCODE_API_KEY", auth: "api",
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 } }),
   Object.freeze({ id: "openai/gpt-5.6-luna", provider: "openai", model: "gpt-5.6-luna",
-    apiURL: "", authEnv: "OPENAI_API_KEY", auth: "oauth" }),
+    apiURL: "", npm: "@ai-sdk/openai", authEnv: "OPENAI_API_KEY", auth: "oauth",
+    cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 } }),
+  Object.freeze({ id: "opencode-go/glm-5.3-flash", provider: "opencode-go", model: "glm-5.3-flash",
+    apiURL: "https://opencode.ai/zen/go/v1", npm: "@ai-sdk/openai-compatible", authEnv: "OPENCODE_API_KEY", auth: "api",
+    cost: { input: 0.15, output: 0.5, cacheRead: 0.03, cacheWrite: 0 } }),
 ]);
 export type QualifiedRoute = (typeof QUALIFIED_ROUTES)[number];
 export const QUALIFIED_MODEL_IDS: readonly string[] = Object.freeze(QUALIFIED_ROUTES.map(r => r.id));
@@ -56,7 +64,7 @@ export interface OpenCodeQualificationEvidence {
   catalogOutputSha256: string;
   exactModel: string;
   catalogEntry: CatalogModelEvidence;
-  zeroCostProven: true;
+  pricingProven: true;
   noInference: true;
 }
 
@@ -105,7 +113,7 @@ export function parseQualifiedCatalogEntry(
   return parsed;
 }
 
-export function assertZeroCostCatalogEntry(
+export function assertCatalogEntry(
   entry: CatalogModelEvidence, model: string = QUALIFIED_ZEN_MODEL_ID,
 ): void {
   const route = qualifiedRoute(model);
@@ -116,14 +124,13 @@ export function assertZeroCostCatalogEntry(
     if (value !== undefined && (!value || typeof value !== "object" || Array.isArray(value) || Object.keys(value).length))
       throw new Error("Exact model catalog has non-default options or headers");
   }
-  const cost = entry?.cost;
   if (entry.status !== "active")
     throw new Error("Exact model catalog entry is not active");
   if (route.provider === "opencode" && !entry.name?.toLowerCase().includes("free"))
     throw new Error("Exact model catalog name does not identify a free entry");
   if (
     entry.api?.url !== route.apiURL ||
-    entry.api?.npm !== "@ai-sdk/openai"
+    entry.api?.npm !== route.npm
   )
     throw new Error(
       "Exact model is not routed through the qualified provider adapter",
@@ -132,17 +139,18 @@ export function assertZeroCostCatalogEntry(
     throw new Error(
       "Exact model catalog entry does not prove tool-call support",
     );
+  const cost = entry?.cost;
   if (
     !cost ||
-    cost.input !== 0 ||
-    cost.output !== 0 ||
-    cost.cache?.read !== 0 ||
-    cost.cache?.write !== 0 ||
+    cost.input !== route.cost.input ||
+    cost.output !== route.cost.output ||
+    cost.cache?.read !== route.cost.cacheRead ||
+    cost.cache?.write !== route.cost.cacheWrite ||
     (cost.tiers !== undefined &&
       (!Array.isArray(cost.tiers) || cost.tiers.length !== 0))
   ) {
     throw new Error(
-      "Exact model catalog pricing is absent, tiered, or nonzero",
+      "Exact model catalog pricing does not match the pinned route cost",
     );
   }
 }
@@ -206,7 +214,7 @@ export async function qualifyOfficialOpenCode(
         .digest("hex");
       try {
         const entry = parseQualifiedCatalogEntry(catalog.stdout, model);
-        assertZeroCostCatalogEntry(entry, model);
+        assertCatalogEntry(entry, model);
         attempts.push({
           attempt,
           checkedAt: new Date().toISOString(),
@@ -249,14 +257,14 @@ export async function qualifyOfficialOpenCode(
     catalogOutputSha256: accepted.outputSha256,
     exactModel: model,
     catalogEntry: accepted.entry,
-    zeroCostProven: true,
+    pricingProven: true,
     noInference: true,
   };
 }
 
 /** Durable catalog-only evidence, separate from model transcripts. */
 export async function writeQualification(evidence: OpenCodeQualificationEvidence, out?: string) {
-  assertZeroCostCatalogEntry(evidence.catalogEntry, evidence.exactModel);
+  assertCatalogEntry(evidence.catalogEntry, evidence.exactModel);
   const path = out ?? resolve("results/qualifications",
     `${evidence.exactModel.replaceAll("/", "-")}-${new Date().toISOString().replaceAll(":", "-")}-${randomUUID()}.json`);
   await mkdir(dirname(path), { recursive: true });

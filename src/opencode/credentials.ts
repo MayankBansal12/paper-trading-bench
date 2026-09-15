@@ -63,6 +63,15 @@ export async function loadProviderCredential(route: QualifiedRoute, options: {
     const bearer = key;
     return { mode: "api", authorize: async () => new Headers({ authorization: `Bearer ${bearer}` }) };
   }
+  if (route.provider === "opencode-go") {
+    let key = env.OPENCODE_GO_API_KEY;
+    if (!key) {
+      try { const a = (await readAuth(authPath))["opencode-go"]; if (a?.type === "api" && text(a.key)) key = a.key; } catch {}
+    }
+    if (!key) throw new Error("OpenCode Go credential unavailable");
+    const bearer = key;
+    return { mode: "api", authorize: async () => new Headers({ authorization: `Bearer ${bearer}` }) };
+  }
   oauth(await readAuth(authPath)); // Fail before preparing any sandbox.
   return {
     mode: "oauth",

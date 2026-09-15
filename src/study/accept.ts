@@ -15,7 +15,7 @@ import {
   QUALIFIED_ZEN_MODEL_ID,
   qualifiedRoute,
   QUALIFIED_OPENCODE_CLIENT_VERSION,
-  assertZeroCostCatalogEntry,
+  assertCatalogEntry,
 } from "../opencode/qualification.ts";
 import { OPENCODE_PROMPT_SUFFIX } from "../opencode/config.ts";
 import {
@@ -73,11 +73,16 @@ export function validateAccepted(
     !a.journalEntries.length
   )
     throw new Error("Accepted decision is incomplete or mismatched");
+  const routeCost = qualifiedRoute(expectedModel).cost;
+  const free = routeCost.input === 0 && routeCost.output === 0 && routeCost.cacheRead === 0 && routeCost.cacheWrite === 0;
+  const costUsd = a.decision.usage.costUsd;
   if (
     !a.decision.rationale.trim() ||
-    (a.decision.usage.costUsd !== null && a.decision.usage.costUsd !== 0)
+    (costUsd !== null &&
+      (!Number.isFinite(costUsd) || costUsd < 0 ||
+        (free && costUsd !== 0)))
   )
-    throw new Error("Missing rationale or nonzero cost");
+    throw new Error("Missing rationale or cost outside the route pricing class");
   validateUsage(a.decision.usage);
   if (
     a.journalEntries.length !== 1 ||
@@ -150,12 +155,12 @@ export function validateAccepted(
     qualifications.length !== 1 ||
     q?.evidence?.exactModel !== route.id ||
     q.evidence.clientVersion !== QUALIFIED_OPENCODE_CLIENT_VERSION ||
-    q.evidence.zeroCostProven !== true ||
+    q.evidence.pricingProven !== true ||
     q.evidence.noInference !== true ||
     q.evidence.catalogCommand !== `opencode models ${route.provider} --verbose --refresh`
   )
     throw new Error("Missing exact free-model qualification");
-  assertZeroCostCatalogEntry(q.evidence.catalogEntry, route.id);
+  assertCatalogEntry(q.evidence.catalogEntry, route.id);
   if (
     a.decision.effectiveSystemPrompt !==
     systemPrompt(view.limits) + OPENCODE_PROMPT_SUFFIX

@@ -13,4 +13,4 @@ for (const model of models) {
   const out = await writeQualification(evidence, flags.has("out") ? resolve(flags.get("out")!) : undefined);
   console.log(JSON.stringify({ out, exactModel: model, inferenceCalls: 0 }));
 }
-console.error("[model-preflight] Exact active zero-cost catalog/runtime evidence written; no inference performed.");
+console.error("[model-preflight] Exact active catalog-priced route evidence written; no inference performed.");
