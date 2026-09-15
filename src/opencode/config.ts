@@ -5,7 +5,7 @@ import { STUDY_TOOLS as TRADING_TOOL_NAMES } from "../study/protocol.ts";
 import {
   QUALIFIED_OPENCODE_CLIENT_VERSION,
   qualifiedRoute,
-  assertZeroCostCatalogEntry,
+  assertCatalogEntry,
   type CatalogModelEvidence,
 } from "./qualification.ts";
 
@@ -43,7 +43,7 @@ export async function makeClientConfig(
   effectiveSystemPrompt: string;
 }> {
   const route = qualifiedRoute(model);
-  if (options.catalogEntry) assertZeroCostCatalogEntry(options.catalogEntry, model);
+  if (options.catalogEntry) assertCatalogEntry(options.catalogEntry, model);
   if (clientVersion !== QUALIFIED_OPENCODE_CLIENT_VERSION) {
     throw new Error(
       "Official-client config requires qualified OpenCode " +
@@ -95,6 +95,14 @@ export default async function benchmarkPlugin(pluginInput = {}) {
     ...(catalogEntry ? { provider: { id: provider, models: async () => ({ [catalogEntry.id]: catalogEntry }) } } : {}),
     "chat.headers": async (input, output) => {
       if (provider === "openai") output.headers["session-id"] = input.sessionID;
+      // Mirror the official client's opencode-* provider headers; the Go tier
+      // rejects requests without a routable session and its edge may filter
+      // unknown user agents.
+      if (provider === "opencode-go") {
+        output.headers["user-agent"] = \`opencode/\${clientVersion}\`;
+        output.headers["x-opencode-session"] = input.sessionID;
+        output.headers["x-opencode-client"] = ${JSON.stringify(QUALIFIED_OPENCODE_CLIENT_VERSION)};
+      }
     },
     "chat.params": async (input, output) => {
       // Match the official Codex OAuth plugin's transport setting. Reasoning

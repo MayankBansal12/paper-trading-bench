@@ -46,10 +46,10 @@ function input(start = "2024-10-01", end = "2026-03-31"): EvaluationInput {
 }
 
 test("every model receives exactly the same four disjoint quarters across the year boundary", () => {
-  const models = ["provider/model-a", "provider-model-a", "provider/model-b"];
+  const models = ["provider/model-a", "provider-model-a", "provider/model-b", "provider/model-c"];
   const jobs = evaluationSchedule("matrix", models);
-  expect(jobs).toHaveLength(12);
-  expect(new Set(jobs.map(j => j.runId)).size).toBe(12);
+  expect(jobs).toHaveLength(16);
+  expect(new Set(jobs.map(j => j.runId)).size).toBe(16);
   for (const model of models) {
     expect(jobs.filter(j => j.model === model).map(({ label, start, end }) => ({ label, start, end })))
       .toEqual([
@@ -64,11 +64,11 @@ test("every model receives exactly the same four disjoint quarters across the ye
   expect(() => evaluationSchedule("empty", [])).toThrow("nonempty");
 });
 
-test("preflight freezes a separate model/quarter config and checks funding for all sixteen model/control jobs", async () => {
+test("preflight freezes a separate model/quarter config and checks funding for all twenty model/control jobs", async () => {
   const c = input();
   c.models = [...EVALUATION_MODELS, CONTROL_MODEL];
   const plan = await prepareEvaluation(c);
-  expect(plan.jobs).toHaveLength(16);
+  expect(plan.jobs).toHaveLength(20);
   expect(plan.execution).toEqual({ parallelQuartersPerModel: 4, models: "parallel", state: "independent-runs" });
   for (const model of c.models) {
     const jobs = plan.jobs.filter(j => j.model === model);
@@ -215,7 +215,7 @@ test("eval CLI preflight has zero inference and refuses dates, truncation and mo
   expect(child.exitCode).toBe(0);
   const parsed = JSON.parse(child.stdout.toString());
   expect(parsed.modelCalls).toBe(0);
-  expect(parsed.plan.jobs).toHaveLength(12);
+  expect(parsed.plan.jobs).toHaveLength(16);
   expect(parsed.plan.start).toBe("2025-04-01");
   expect(parsed.plan.end).toBe("2026-03-31");
   for (const flag of ["--end=2026-08-31", "--start=2026-01-01", "--models=unqualified"]) {
@@ -275,15 +275,16 @@ test("verify reports the damaged quarter and underlying replay error through the
   expect(child.stderr.toString()).toContain("Event integrity failure");
 });
 
-test("default plan is three qualified models and subsets retain exact route identity", async () => {
+test("default plan is four qualified models and subsets retain exact route identity", async () => {
   const c = input();
   const plan = await prepareEvaluation({ ...c, models: undefined });
   expect(plan.models).toEqual([
     "opencode/muse-spark-1.3-contributor-free",
     "opencode/muse-spark-1.2-contributor-free",
     "openai/gpt-5.6-luna",
+    "opencode-go/glm-5.3-flash",
   ]);
-  expect(plan.jobs).toHaveLength(12);
+  expect(plan.jobs).toHaveLength(16);
   for (const model of plan.models) {
     const subset = await prepareEvaluation({ ...c, models: [model] });
     expect(subset.jobs).toHaveLength(4);
@@ -291,7 +292,7 @@ test("default plan is three qualified models and subsets retain exact route iden
   }
 });
 
-test("all twelve model jobs start concurrently with their own model configuration, without inference", async () => {
+test("all sixteen model jobs start concurrently with their own model configuration, without inference", async () => {
   const c = input();
   // Subprocess-local module mock keeps this test offline and cannot replace the
   // real runner in another test. The barrier detects model-at-a-time scheduling.
@@ -306,7 +307,7 @@ test("all twelve model jobs start concurrently with their own model configuratio
       prepareStudyData: prepared,
       runStudy: async config => {
         started.push({ model: config.model, runId: config.runId, start: config.start });
-        if (started.length === 12) { clearTimeout(timer); barrier.resolve(); }
+        if (started.length === 16) { clearTimeout(timer); barrier.resolve(); }
         await barrier.promise;
         throw Error("Offline model runner fixture");
       },
@@ -318,8 +319,8 @@ test("all twelve model jobs start concurrently with their own model configuratio
   const [out, err, code] = await Promise.all([new Response(child.stdout).text(), new Response(child.stderr).text(), child.exited]);
   expect(err).toBe(""); expect(code).toBe(0);
   const result = JSON.parse(out);
-  expect(result.started).toHaveLength(12);
-  expect(new Set(result.started.map((j: any) => j.runId)).size).toBe(12);
+  expect(result.started).toHaveLength(16);
+  expect(new Set(result.started.map((j: any) => j.runId)).size).toBe(16);
   for (const model of EVALUATION_MODELS) expect(result.started.filter((j: any) => j.model === model)).toHaveLength(4);
   expect(result.report.quarters.every((q: any) => q.error.includes("Offline model runner fixture"))).toBe(true);
 }, 10000);
