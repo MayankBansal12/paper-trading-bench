@@ -22,7 +22,7 @@ export const QUALIFIED_ROUTES = Object.freeze([
     apiURL: "", npm: "@ai-sdk/openai", authEnv: "OPENAI_API_KEY", auth: "oauth",
     cost: { input: 0, output: 0, cacheRead: 0, cacheWrite: 0 } }),
   Object.freeze({ id: "opencode-go/glm-5.3-flash", provider: "opencode-go", model: "glm-5.3-flash",
-    apiURL: "https://opencode.ai/zen/go/v1", npm: "@ai-sdk/openai-compatible", authEnv: "OPENCODE_GO_API_KEY", auth: "api",
+    apiURL: "https://opencode.ai/zen/go/v1", npm: "@ai-sdk/openai-compatible", authEnv: "OPENCODE_API_KEY", auth: "api",
     cost: { input: 0.15, output: 0.5, cacheRead: 0.03, cacheWrite: 0 } }),
 ]);
 export type QualifiedRoute = (typeof QUALIFIED_ROUTES)[number];

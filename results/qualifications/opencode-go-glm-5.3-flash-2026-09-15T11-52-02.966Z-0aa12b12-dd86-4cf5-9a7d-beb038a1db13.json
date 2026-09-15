@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "purpose": "no-call-live-model-qualification",
+  "exactModel": "opencode-go/glm-5.3-flash",
+  "inferenceCalls": 0,
+  "evidence": {
+    "checkedAt": "2026-09-15T11:52:02.966Z",
+    "clientVersion": "1.18.30",
+    "versionCommand": "opencode --version",
+    "catalogCommand": "opencode models opencode-go --verbose --refresh",
+    "catalogAttempts": [
+      {
+        "attempt": 1,
+        "checkedAt": "2026-09-15T11:52:02.966Z",
+        "stdoutSha256": "87d63337b10ecc094fd834fe5d56c31536fed0a142092afeab0f9e436cf5bc06",
+        "matched": true
+      }
+    ],
+    "catalogOutputSha256": "87d63337b10ecc094fd834fe5d56c31536fed0a142092afeab0f9e436cf5bc06",
+    "exactModel": "opencode-go/glm-5.3-flash",
+    "catalogEntry": {
+      "id": "glm-5.3-flash",
+      "providerID": "opencode-go",
+      "name": "GLM-5.3-Flash",
+      "family": "glm",
+      "api": {
+        "id": "glm-5.3-flash",
+        "url": "https://opencode.ai/zen/go/v1",
+        "npm": "@ai-sdk/openai-compatible"
+      },
+      "status": "active",
+      "headers": {},
+      "options": {},
+      "cost": {
+        "input": 0.15,
+        "output": 0.5,
+        "cache": {
+          "read": 0.03,
+          "write": 0
+        }
+      },
+      "limit": {
+        "context": 1000000,
+        "output": 131072
+      },
+      "capabilities": {
+        "temperature": true,
+        "reasoning": true,
+        "attachment": true,
+        "toolcall": true,
+        "input": {
+          "text": true,
+          "audio": false,
+          "image": true,
+          "video": true,
+          "pdf": true
+        },
+        "output": {
+          "text": true,
+          "audio": false,
+          "image": false,
+          "video": false,
+          "pdf": false
+        },
+        "interleaved": {
+          "field": "reasoning_content"
+        }
+      },
+      "release_date": "2026-08-26",
+      "variants": {
+        "low": {
+          "reasoningEffort": "low"
+        },
+        "high": {
+          "reasoningEffort": "high"
+        },
+        "max": {
+          "reasoningEffort": "max"
+        }
+      }
+    },
+    "pricingProven": true,
+    "noInference": true
+  }
+}
