@@ -73,11 +73,16 @@ export function validateAccepted(
     !a.journalEntries.length
   )
     throw new Error("Accepted decision is incomplete or mismatched");
+  const routeCost = qualifiedRoute(expectedModel).cost;
+  const free = routeCost.input === 0 && routeCost.output === 0 && routeCost.cacheRead === 0 && routeCost.cacheWrite === 0;
+  const costUsd = a.decision.usage.costUsd;
   if (
     !a.decision.rationale.trim() ||
-    (a.decision.usage.costUsd !== null && a.decision.usage.costUsd !== 0)
+    (costUsd !== null &&
+      (!Number.isFinite(costUsd) || costUsd < 0 ||
+        (free && costUsd !== 0)))
   )
-    throw new Error("Missing rationale or nonzero cost");
+    throw new Error("Missing rationale or cost outside the route pricing class");
   validateUsage(a.decision.usage);
   if (
     a.journalEntries.length !== 1 ||
