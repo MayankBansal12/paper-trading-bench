@@ -1,5 +1,55 @@
 # Benchmark validation
 
+## v12 journal retrieval (2026-09-14)
+
+New cohorts use `v12-portfolio-journal-submit`. Journal reads apply case-insensitive, whitespace-separated AND keywords across original prose and optional tags; ticker filters also find standalone symbols in prose. Results are newest first, pages fill the note-character budget, empty searches include a bounded recent date/ticker index, and out-of-range cursors include restart guidance. The opening context preloads the latest three committed notes. Optional validated tags survive submission, replay and derived reports. The [environment contract](STUDY_ENVIRONMENT.md#journal-retrieval-and-tags-v12) specifies the matching and bounds.
+
+Validation: `pnpm typecheck` and the full `pnpm test` suite passed (239 tests, zero failures). After the final cursor-guidance/index-budget refinement, typecheck and all 35 affected retrieval, tool, runner and report tests passed again. Coverage includes nonadjacent keywords, text/tag matches, ticker boundaries and aliases, whole-note pagination, metadata-heavy response bounds, first-day/empty-search recovery, optional/invalid tags, immutable preloads, durable delivery/replay, safe report rendering and rejection of v11 configuration. A five-session tagged-journal control recovers a crash after the durable result, without another decision or changed event log.
+
+A read-only check of the retained `muse-spark-free-2026-full` trace reconstructed its 166 committed notes and replayed all 12 originally empty journal reads against the new retrieval logic, using each decision's own committed prefix. Seven now return notes; four use cursors beyond the matching results and receive restart guidance; one still has no keyword match and receives the recent index. This verifies retrieval behavior on recorded inputs, not the relevance of every returned note or a change in investment behavior.
+
+The investment mandate, cash wording and execution rules are unchanged. Retrieval, tags and preloading form one v12 bundle; no live model cohort was launched to measure its behavioral effects. Existing v11 artifacts were read only and require their original source for resume/replay.
+
+## Independent-quarter eval correction (2026-09-14)
+
+The current evaluation is April 1, 2025–March 31, 2026, implemented by `bench eval` and `study:run`. Each model's four runs execute concurrently, with separate runtime/session state and serialized aggregate-report writes. Every qualified model receives separate 2025 Q2, Q3, Q4 and 2026 Q1 runs: 62, 64, 64 and 61 exchange sessions (251 total). See the [evaluation contract](EVALUATION.md).
+
+Validation passed: `pnpm typecheck` and the full `pnpm test` suite (230 tests, 1,859 assertions), including ten evaluation tests. The new tests block each first session until all four have started, proving concurrency. They execute four full quarterly controls and verify $50,000 opening cash, zero holdings, empty journals, independent event/commit roots, fresh attempt/failure counters, two $50,000 monthly deposits per quarter, retained closing holdings, and exact resume/replay. A separate full-year control test exhausts three invalid days in the first quarter and proves the remaining quarters still initialize and complete independently. Concurrent-failure coverage proves a failed quarter does not stop peers, the evaluation lock remains held while peers run, and all four report rows survive simultaneous completion. CLI verification identifies the damaged quarter and the underlying replay error. Tests also reject truncated final-quarter data before any earlier-quarter execution, unqualified models, missing warmup, existing foreign child state and changed resume configuration.
+
+Full-year reports sum independent dollar outcomes and label mean quarterly TWR; no continuous annual portfolio is constructed. Missing/stopped/incomplete quarters withhold the year score.
+
+The earlier `muse-spark-free-2026-full` result covers January 2–August 31, 2026 with continuous state. It is not a four-quarter result. Its dataset starts on April 1, 2025, so the new preflight rejects it with `Insufficient warmup for AAPL: need 100 bars before 2025-04-01`. A new frozen dataset is required before live inference. This correction performed no new model inference; full-year regression data is controlled test data. The previous run's active engine identity is unchanged and its evidence remains intact.
+
+## Latest completed Muse Spark run (2026-09-13)
+
+The Q2 environment run `muse-spark-free-2026q2-d03db5b`, source `d03db5bd04a2b5e9936368e72600cad1fc94ce84`, completed April 1–June 30, 2026. `bun src/index.ts verify --dir results/studies/muse-spark-free-2026q2-d03db5b` successfully verified its event/commit chain and replayed its accounting on the original source before the ongoing-horizon prompt change.
+
+| Verified record | Result |
+|---|---|
+| Decisions and accounting | 62/62 valid days; no retries, invalid days or failed attempts |
+| Orders | 26 fills; no rejected orders |
+| Original journal | 62 committed notes |
+| Audit records | 6,092 audit events, including 222 tool attempts/results and 210 inference requests/responses |
+| Funding | $500 initially plus $500 on May 1 and June 1; $1,500 total |
+| Final cash / holdings value / net worth | $1,415.31 / $0 / $1,415.31 |
+| Derived performance | −$84.69 net profit; −1.5314% time-weighted return |
+
+The model sold all remaining 2.367672 NVDA shares on June 25 for $473.72 and submitted empty order batches on June 26, 29 and 30. Its notes cited both price deterioration and the approaching horizon; the final note explicitly said there was “no time to recover.” This supports an end-date influence on its stated decisions, without proving the same trades would differ under another prompt. It had previously moved entirely to cash on June 8 and reinvested on June 16 and June 22, so it did not simply stop investing for all of June. The engine applied no automatic liquidation.
+
+Local evidence: [original notes and fills](../results/studies/muse-spark-free-2026q2-d03db5b/review.md), [final day ledger](../results/studies/muse-spark-free-2026q2-d03db5b/days/2026-06-30.json), [analysis](../results/studies/muse-spark-free-2026q2-d03db5b/analysis.json) and [descriptive comparisons](../results/studies/muse-spark-free-2026q2-d03db5b/comparisons.json). These generated artifacts remain local and ignored by Git.
+
+The current prompt explicitly treats the end date as a reporting boundary, keeps final holdings in total net worth and discourages end-date-only liquidation or avoidance of new investments. It requires a new cohort; no live run has yet tested its behavioral effect. Typecheck and the existing offline suite pass after the prompt/documentation change: 220 tests, 0 failures, 1,468 assertions. Original Q2 artifacts remain bound to `d03db5b` and must be replayed with that source.
+
+Funding changed after the Q2 run: new cohorts start with $50,000 and receive $50,000 on the first represented session of each later month (previously $500/$500). The Q2 figures above document the historical $500 funding and are not comparable to new-cohort dollar results.
+
+Audit logging and model journal memory are implemented. Only the separate model-facing execution-history tool remains planned; see the [current record availability and backlog](STUDY_ENVIRONMENT.md). This completed run exercises live monthly funding boundaries on `d03db5b`; the earlier qualification limits below describe their own historical cohorts. The Q2 run's `environment` profile and supported-security dataset do not establish full-membership scored-quarter eligibility.
+
+## Session recovery and streaming qualification (PR #6)
+
+The host gateway's default Bun idle timeout could truncate inference streams after a ten-second pause even with a sixty-minute attempt watchdog. A real OpenCode/sandbox fixture with a twelve-second pause reproduced the failure before the fix (four provider requests, no submission, then watchdog cutoff). Setting the gateway server's `idleTimeout: 0` made the same fixture complete in one provider request. The host attempt deadline remains authoritative. Reproduce without remote inference with `bun scripts/qualify-submission.ts --slow-stream-fixture`; the separate `--watchdog-fixture` verifies hard cancellation.
+
+Recovery/history changes are covered by 219 offline tests: exact history bounds; one retry across resume; invalid-day accounting without orders; consecutive-invalid-day stop/reset; and reports aligned by decision date. Corporate-action verification rebuilt all 16,236 bars and 152 events from the registered frozen Yahoo snapshots and exercised all 61 evaluation-period events through opening context and accounting. This verifies reproducibility and accounting, not independent issuer confirmation of every event.
+
 ## Stack review for PRs #3 and #4 (2026-09-13)
 
 Reviewed the session/tool and provider boundaries, journal-to-order binding, failure handling, deterministic cash/accounting, atomic recovery, reporting, CI and repository contents. PR #3's reviewed head is `37d77b8`; PR #4's reviewed implementation is `6add2eb` and includes that parent commit.

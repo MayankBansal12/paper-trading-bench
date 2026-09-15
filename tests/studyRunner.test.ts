@@ -7,7 +7,7 @@ import {
   writeFileSync,
 } from "node:fs";
 import { resolve, join } from "node:path";
-import { config, payload } from "./studyTestSupport.ts";
+import { config, payload, data } from "./studyTestSupport.ts";
 import {
   runStudy,
   prepareStudyData,
@@ -16,7 +16,9 @@ import {
 import { deterministicControl } from "../src/study/control.ts";
 import { SessionTools } from "../src/study/tools.ts";
 import { JournalStore, durableCreate } from "../src/study/journal.ts";
-import { makeView, scopeFor } from "../src/study/protocol.ts";
+import { makeView, scopeFor, STUDY_PROTOCOL, openingPortfolio } from "../src/study/protocol.ts";
+import { initialStudyDecision } from "../src/study/agent.ts";
+import { writeStudyReview } from "../src/study/report.ts";
 import { buildDecisionContext } from "../src/core/context.ts";
 import { createInitialPortfolio } from "../src/engine/portfolio.ts";
 import { contentHash } from "../src/core/hash.ts";
@@ -78,7 +80,7 @@ for (const phase of ["after-result", "after-commit"] as const)
     });
     expect(replay.summary.committedDays).toBe(2);
     expect(replay.summary.fills).toBe(2);
-    expect(replay.days.map((d) => d.record.contribution)).toEqual([0, 500]);
+    expect(replay.days.map((d) => d.record.contribution)).toEqual([0, 50000]);
     expect((await runStudy(cfg, { readOnly: true })).summary).toEqual(
       replay.summary,
     );
@@ -102,7 +104,7 @@ test("crash after durable submission but before integrity completion executes no
   const result = await runStudy(cfg, {
     control: async (view, journal, past) => {
       expect(view.scope.attempt).toBe(2);
-      expect(view.portfolio.cash).toBe(500);
+      expect(view.portfolio.cash).toBe(50000);
       expect(past).toEqual([]);
       return deterministicControl(view, journal, past);
     },
@@ -160,9 +162,12 @@ test("broker/result/context integrity errors invalidate complete submissions", a
         return a;
       },
     });
-    expect(result.summary.committedDays).toBe(0);
+    expect(result.summary.committedDays).toBe(1);
+    expect(result.summary.validDays).toBe(0);
+    expect(result.days[0]!.status).toBe("invalid");
     expect(result.summary.fills).toBe(0);
-    expect(result.summary.failures).toBe(1);
+    expect(result.summary.failures).toBe(2);
+    expect(result.summary.status).toBe("completed");
   }
 });
 test("next-day prompt includes exact original note and changed cash/holdings; forged preload rejected", async () => {
@@ -170,7 +175,7 @@ test("next-day prompt includes exact original note and changed cash/holdings; fo
   const result = await runStudy(cfg, {
     control: async (view, journal, past) => {
       if (past.length) {
-        expect(view.portfolio.cash).toBe(900);
+        expect(view.portfolio.cash).toBe(99900);
         expect(view.portfolio.holdings.AAPL!.units).toBeGreaterThan(0);
       }
       return deterministicControl(view, journal, past);
@@ -205,7 +210,7 @@ test("changed semantics and conflicting atomic publication fail closed", async (
   const r = await runStudy(cfg, { control: deterministicControl });
   await expect(
     runStudy(
-      { ...cfg, protocol: "v10-unlimited-turns-portfolio-context" },
+      { ...cfg, protocol: "v11-portfolio-journal-submit" },
       { readOnly: true },
     ),
   ).rejects.toThrow(/old cohorts/);
@@ -227,7 +232,10 @@ test("offline reports show uncommitted failures and recovered attempts without t
   const { initialStudyDecision } = await import("../src/study/agent.ts");
   const { writeStudyReview } = await import("../src/study/report.ts");
   const options = { analysis: true, gaps: false, comparisons: false };
-  const partial = await runStudy(cfg, {
+  await expect(runStudy(cfg, {
+    fault: (phase, date) => {
+      if (phase === "after-result" && date === cfg.end) throw Error("Interrupted before automatic retry");
+    },
     control: async (view, journal, past) => {
       if (!past.length) return deterministicControl(view, journal, past);
       const tools = new SessionTools(view, journal, past, Date.now() + 1000);
@@ -240,10 +248,11 @@ test("offline reports show uncommitted failures and recovered attempts without t
       return { outcome: "budget_cutoff", reason: "No submit ![tracker](https://example.invalid)",
         scope: view.scope, viewHash: contentHash(view), decision, journalEntries: [] };
     },
-  });
+  })).rejects.toThrow("Interrupted before automatic retry");
+  const partial = await runStudy(cfg, { readOnly: true });
   await writeStudyReview(cfg, partial, options);
   const review = readFileSync(join(partial.dir, "review.md"), "utf8");
-  expect(review).toContain("incomplete: 1/2 sessions committed; 1 failed attempts");
+  expect(review).toContain("incomplete: 1/2 valid decisions; 1 days accounted; 1 failed attempts");
   expect(Bun.markdown.html(review)).not.toContain("<img");
   const analysis = JSON.parse(readFileSync(join(partial.dir, "analysis.json"), "utf8"));
   expect(analysis.days).toHaveLength(1);
@@ -257,4 +266,217 @@ test("offline reports show uncommitted failures and recovered attempts without t
   expect(after.attempts).toHaveLength(3);
   expect(after.attempts.map((a: any) => a.committed)).toEqual([true, false, true]);
   expect(after.days).toHaveLength(2);
+});
+
+async function timedOutAfterSubmission(
+  view: Parameters<typeof deterministicControl>[0],
+  journal: JournalStore,
+  past: Parameters<typeof deterministicControl>[2],
+) {
+  const { initialStudyDecision } = await import("../src/study/agent.ts");
+  const tools = new SessionTools(view, journal, past, Date.now() + 10000);
+  tools.call("submit_day", {
+    orders: [{ side: "BUY", ticker: "AAPL", notionalUsd: 100 }],
+    journal: { text: "Uncommitted failed-attempt note.", tickers: ["AAPL"] },
+  });
+  const decision = initialStudyDecision(view);
+  decision.outcome = "budget_cutoff";
+  decision.boundedStop = true;
+  decision.elapsedMs = view.limits.timeoutMs;
+  decision.trace = tools.trace;
+  return {
+    outcome: "budget_cutoff", reason: "Hard session timeout", scope: view.scope,
+    viewHash: contentHash(view), decision, journalEntries: journal.entries(view.scope),
+    submission: tools.submission(),
+  };
+}
+
+test("automatic retry uses fresh committed memory and applies funding/fills only once", async () => {
+  const cfg = await c("2024-04-30", "2024-05-01");
+  const openingCash: number[] = [];
+  const result = await runStudy(cfg, {
+    control: async (view, journal, past) => {
+      expect(past.some(e => e.text.includes("Uncommitted"))).toBe(false);
+      if (view.scope.date === cfg.end) {
+        openingCash.push(view.portfolio.cash);
+        if (view.scope.attempt === 1) return timedOutAfterSubmission(view, journal, past);
+      }
+      return deterministicControl(view, journal, past);
+    },
+  });
+  expect(openingCash).toEqual([99900, 99900]);
+  expect(result.summary).toMatchObject({
+    status: "completed", committedDays: 2, totalDays: 2, attemptedDays: 2,
+    retriedDays: 1, invalidDays: 0, unattemptedDays: 0, attempts: 3, failures: 1, fills: 2,
+  });
+  expect(result.days.map(d => d.record.contribution)).toEqual([0, 50000]);
+  expect(result.summary.portfolio.cash).toBe(99800);
+  expect(result.attempts.map(a => a.scope.attempt)).toEqual([1, 2]);
+  expect((await runStudy(cfg, { readOnly: true })).summary).toEqual(result.summary);
+});
+
+test("three consecutive invalid days stop the quarter and resume never grants further attempts", async () => {
+  const cfg = await c("2024-04-02", "2024-04-08");
+  let calls = 0;
+  const result = await runStudy(cfg, {
+    control: async (view, journal, past) => {
+      calls++;
+      if (view.scope.date !== cfg.start) return timedOutAfterSubmission(view, journal, past);
+      return deterministicControl(view, journal, past);
+    },
+  });
+  expect(calls).toBe(7);
+  expect(result.summary).toMatchObject({
+    status: "invalid", stopped: true, committedDays: 4, validDays: 1, totalDays: 5, attemptedDays: 4,
+    retriedDays: 3, invalidDays: 3, unattemptedDays: 1, attempts: 7, failures: 6, fills: 1,
+    consecutiveInvalidDays: 3, maxConsecutiveInvalidDays: 3,
+  });
+  expect(result.summary.invalidSessions.map(d => d.date)).toEqual(["2024-04-03", "2024-04-04", "2024-04-05"]);
+  expect(result.days.map(d => d.status)).toEqual(["completed", "invalid", "invalid", "invalid"]);
+  for (const day of result.days.slice(1)) {
+    expect(day.failureEventHashes).toHaveLength(2);
+    expect(day.submissionEventHash).toBeNull();
+    expect(day.record.fills).toEqual([]);
+  }
+  const resumed = await runStudy(cfg, {
+    control: async () => { throw Error("Stopped quarter must never be reattempted"); },
+  });
+  expect(resumed.summary).toEqual(result.summary);
+  expect((await runStudy(cfg, { readOnly: true })).summary).toEqual(result.summary);
+  const { writeStudyReview } = await import("../src/study/report.ts");
+  await writeStudyReview(cfg, result, { analysis: true, gaps: false, comparisons: true });
+  const report = readFileSync(join(result.dir, "review.md"), "utf8");
+  expect(report).toContain("invalid: 1/5 valid decisions; 4 days accounted; 6 failed attempts");
+  expect(report).toContain("3 invalid after exhausted attempts; 1 not attempted");
+  expect(report).toContain("Invalid trading day: both attempts failed");
+  const path = join(result.dir, "days", "2024-04-04.json");
+  const forged = JSON.parse(readFileSync(path, "utf8"));
+  forged.failureEventHashes[0] = "0".repeat(64);
+  writeFileSync(path, JSON.stringify(forged));
+  await expect(runStudy(cfg, { readOnly: true })).rejects.toThrow("Daily replay mismatch");
+});
+
+test("invalid days retain daily valuation and deposits; valid days reset the failure streak", async () => {
+  const cfg = await c("2024-04-29", "2024-05-03");
+  const p = await prepareStudyData(cfg);
+  const invalid = new Set(["2024-04-30", "2024-05-01", "2024-05-03"]);
+  const result = await runStudy(cfg, {
+    control: async (view, journal, past) => {
+      expect(past.some(e => e.text.includes("Uncommitted"))).toBe(false);
+      if (invalid.has(view.scope.date)) return timedOutAfterSubmission(view, journal, past);
+      if (view.scope.date === "2024-05-02") {
+        expect(past.map(e => e.date)).toEqual(["2024-04-29"]);
+        expect(view.portfolio.cash).toBe(99900);
+        expect(view.portfolio.holdings.AAPL!.lastClose).toBe(p.market.closeOn("AAPL", "2024-05-01"));
+      }
+      return deterministicControl(view, journal, past);
+    },
+  });
+  expect(result.summary).toMatchObject({
+    status: "completed", stopped: false, committedDays: 5, validDays: 2, totalDays: 5,
+    invalidDays: 3, maxConsecutiveInvalidDays: 2, consecutiveInvalidDays: 1,
+    attempts: 8, failures: 6, retriedDays: 3, fills: 2, unattemptedDays: 0,
+  });
+  expect(result.days.map(d => d.record.contribution)).toEqual([0, 0, 50000, 0, 0]);
+  expect(result.summary.portfolio.cash).toBe(99800);
+  expect(result.attempts.map(a => a.scope.date)).toEqual(["2024-04-29", "2024-05-02"]);
+  expect((await runStudy(cfg, { readOnly: true })).summary).toEqual(result.summary);
+  const { writeStudyReview } = await import("../src/study/report.ts");
+  await writeStudyReview(cfg, result, { analysis: true, comparisons: true, gaps: false });
+  const analysis = JSON.parse(readFileSync(join(result.dir, "analysis.json"), "utf8"));
+  expect(analysis.days.map((d: any) => d.date)).toEqual(["2024-04-29", "2024-05-02"]);
+  expect(analysis.trades.map((t: any) => t.date)).toEqual(["2024-04-29", "2024-05-02"]);
+  expect(analysis.trades[1].actualFill.price).toBe(p.market.openOn("AAPL", "2024-05-02"));
+  expect(analysis.invalidDecisionDays).toBe(3);
+  expect(analysis.noTradeDays).toBe(0);
+  expect(analysis.portfolioObservationDays).toBe(5);
+  const comparison = JSON.parse(readFileSync(join(result.dir, "comparisons.json"), "utf8"));
+  expect(comparison.metrics.daysRun).toBe(5);
+  expect(comparison.metrics.totalContributions).toBe(100000);
+  expect(comparison.invalidDays).toBe(3);
+});
+
+for (const phase of ["after-result", "after-commit"] as const)
+  test(`invalid-day crash ${phase} recovers without a third attempt or duplicate funding`, async () => {
+    const cfg = await c("2024-04-30", "2024-05-02");
+    let failed = 0;
+    await expect(runStudy(cfg, {
+      control: async (view, journal, past) => {
+        if (view.scope.date === "2024-05-01") {
+          failed++;
+          return timedOutAfterSubmission(view, journal, past);
+        }
+        return deterministicControl(view, journal, past);
+      },
+      fault: (at, date) => {
+        if (at === phase && date === "2024-05-01" && failed === 2) throw Error("invalid-day crash");
+      },
+    })).rejects.toThrow("invalid-day crash");
+    const result = await runStudy(cfg, {
+      control: async (view, journal, past) => {
+        expect(view.scope.date).toBe("2024-05-02");
+        expect(past.map(e => e.date)).toEqual(["2024-04-30"]);
+        return deterministicControl(view, journal, past);
+      },
+    });
+    expect(result.summary).toMatchObject({ status: "completed", validDays: 2, invalidDays: 1, failures: 2, attempts: 4 });
+    expect(result.days.map(d => d.status)).toEqual(["completed", "invalid", "completed"]);
+    expect(result.days.map(d => d.record.contribution)).toEqual([0, 50000, 0]);
+    expect(result.summary.portfolio.cash).toBe(99800);
+    expect((await runStudy(cfg, { readOnly: true })).summary).toEqual(result.summary);
+  });
+
+test("v12 tagged journals, keyword reads and three-note preloads survive day commits and crash recovery", async () => {
+  const cfg = await c("2024-04-02", "2024-04-08");
+  let decisions = 0;
+  await expect(runStudy(cfg, {
+    control: async (view, journal, past) => {
+      decisions++;
+      const tools = new SessionTools(view, journal, past, Date.now() + 10000);
+      const protocol = {
+        type: "protocol", version: STUDY_PROTOCOL, viewHash: contentHash(view),
+        openingPortfolio: openingPortfolio(view), dailyPrompt: tools.prompt(),
+      };
+      journal.audit(view.scope, protocol);
+      const ticker = view.universe[0]!;
+      const response = data(tools.call("journal", { ticker, query: "trim risk" }));
+      expect(response.entries).toEqual([...past].reverse());
+      expect(data(tools.call("journal", { query: "no-such-keyword" })).availableIndex.totalEntries).toBe(past.length);
+      for (const note of past.slice(-3)) expect(tools.prompt()).toContain(note.text);
+      const result = tools.call("submit_day", {
+        orders: [],
+        journal: {
+          text: view.scope.date + ": Trim " + ticker + " if the rule breaks.\nKeep this original line.",
+          tickers: [], tags: ["risk-review", "rule-" + ticker.toLowerCase()],
+        },
+      });
+      expect(result.isError).toBeUndefined();
+      const decision = initialStudyDecision(view);
+      decision.outcome = "completed";
+      decision.rationale = tools.submission()!.journal.text;
+      decision.trace = [protocol, ...tools.trace];
+      for (const field of ["toolCalls", "attemptedToolCalls", "admittedToolCalls", "successfulToolCalls"] as const)
+        decision.usage[field] = 3;
+      return {
+        outcome: "completed", scope: view.scope, viewHash: contentHash(view), decision,
+        submission: tools.submission(), journalEntries: journal.entries(view.scope),
+      };
+    },
+    fault: (phase, date) => {
+      if (phase === "after-result" && date === cfg.end) throw Error("v12 recovery check");
+    },
+  })).rejects.toThrow("v12 recovery check");
+  expect(decisions).toBe(5);
+  const result = await runStudy(cfg, {
+    control: async () => { throw Error("Must recover without another decision"); },
+  });
+  expect(result.summary.validDays).toBe(5);
+  expect(result.summary.journalEntries).toBe(5);
+  const raw = readFileSync(join(result.dir, "events.jsonl"), "utf8");
+  expect((await runStudy(cfg, { readOnly: true })).summary).toEqual(result.summary);
+  expect(readFileSync(join(result.dir, "events.jsonl"), "utf8")).toBe(raw);
+  await writeStudyReview(cfg, result, { analysis: true, gaps: false, comparisons: false });
+  const analysis = JSON.parse(readFileSync(join(result.dir, "analysis.json"), "utf8"));
+  expect(analysis.days[0].journalEntries[0].tags).toEqual(["risk-review", "rule-aapl"]);
+  expect(readFileSync(join(result.dir, "review.md"), "utf8")).toContain("risk-review, rule-aapl");
 });

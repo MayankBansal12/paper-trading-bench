@@ -57,6 +57,9 @@ test("gateway binds provider identity, denies unauthorized content/tools, retain
       ...(method === "POST" ? { body: JSON.stringify(value) } : {}),
     });
   try {
+    const listed = await (await request("/mcp", { jsonrpc: "2.0", id: 1, method: "tools/list" })).json() as any;
+    expect(listed.result.tools.find((t: any) => t.name === "price_history")
+      .inputSchema.properties.lookback.maximum).toBe(1);
     expect((await request("/mcp", {}, "wrong")).status).toBe(403);
     expect((await request("/mcp", null, g.capability, "GET")).status).toBe(405);
     expect(events.some((e) => e.type === "mcp_transport_probe")).toBe(true);
@@ -157,4 +160,41 @@ test("actual provider context attestation rejects hidden prompt changes and miss
   } finally {
     rmSync(s.dir, { recursive: true, force: true });
   }
+});
+
+for (const route of (await import("../src/opencode/qualification.ts")).QUALIFIED_ROUTES)
+  test(`${route.id}: gateway pins provider, replaces sandbox authorization, and rejects cross-route calls`, async () => {
+    const s = setup(), socket = join(s.dir, "gateway.sock"), events: any[] = [], forwarded: any[] = [];
+    const credential = { mode: route.auth as "api" | "oauth", authorize: async () => new Headers({
+      authorization: "Bearer test-host-secret", ...(route.auth === "oauth" ? { "chatgpt-account-id": "test-host-account" } : {}),
+    }) };
+    const g = await serveGateway(socket, s.tools, credential, Date.now() + 10000, e => events.push(e),
+      (async (url: any, init: any) => { forwarded.push({ url, init }); return new Response("offline-provider-response"); }) as typeof fetch,
+      () => {}, route.id);
+    const request = (model: string, path = "/responses") => fetch("http://gateway/inference" + path, {
+      unix: socket, method: "POST", headers: { authorization: `Bearer ${g.capability}`, "chatgpt-account-id": "spoofed" },
+      body: JSON.stringify({ ...body(s), model }),
+    });
+    try {
+      expect((await request("unqualified-model")).status).toBe(403);
+      if (route.auth === "oauth") expect((await request(route.model, "/chat/completions")).status).toBe(403);
+      const response = await request(route.model);
+      expect(await response.text()).toBe("offline-provider-response");
+      expect(forwarded).toHaveLength(1);
+      expect(forwarded[0].url).toBe(route.provider === "openai" ? "https://chatgpt.com/backend-api/codex/responses" : route.apiURL + "/responses");
+      const headers = new Headers(forwarded[0].init.headers);
+      expect(headers.get("authorization")).toBe("Bearer test-host-secret");
+      expect(headers.get("chatgpt-account-id")).toBe(route.auth === "oauth" ? "test-host-account" : null);
+      expect(JSON.stringify(events)).not.toContain("test-host-secret");
+      expect(JSON.stringify(events)).not.toContain("test-host-account");
+      expect(JSON.parse(forwarded[0].init.body)).toEqual({ ...body(s), model: route.model });
+    } finally { g.close(); rmSync(s.dir, { recursive: true, force: true }); }
+  });
+
+test("gateway refuses unqualified routes and API-key fallback for OAuth-priced Luna", async () => {
+  const s = setup();
+  try {
+    for (const [model, error] of [["openai/other", "Unqualified"], ["openai/gpt-5.6-luna", "requires host OAuth"]])
+      await expect(serveGateway(join(s.dir, "gateway.sock"), s.tools, "test-key", Date.now() + 1000, () => {}, fetch, () => {}, model)).rejects.toThrow(error);
+  } finally { rmSync(s.dir, { recursive: true, force: true }); }
 });

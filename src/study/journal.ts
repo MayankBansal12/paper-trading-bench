@@ -14,7 +14,7 @@ import { join, dirname } from "node:path";
 import { randomUUID } from "node:crypto";
 import { contentHash } from "../core/hash.ts";
 import type { OrderRequest } from "../domain/types.ts";
-import { scopeFor, type SessionScope } from "./protocol.ts";
+import { POLICY, scopeFor, type SessionScope } from "./protocol.ts";
 export interface JournalEntry {
   id: string;
   runId: string;
@@ -22,6 +22,7 @@ export interface JournalEntry {
   attempt: number;
   text: string;
   tickers: string[];
+  tags?: string[];
   evidenceRefs: string[];
 }
 export interface Submission {
@@ -177,7 +178,9 @@ export class JournalStore {
           (!["result", "failed"].includes(last.kind) ||
             e.scope.date < last.scope.date ||
             (last.kind === "failed" || last.payload.outcome !== "completed"
-              ? e.scope.date !== last.scope.date
+              ? last.scope.attempt < POLICY.maxAttemptsPerDay
+                ? e.scope.date !== last.scope.date
+                : e.scope.date === last.scope.date
               : e.scope.date === last.scope.date)))
       )
         throw new Error("Invalid attempt sequence");

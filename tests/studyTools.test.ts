@@ -49,6 +49,21 @@ test("exactly four tools; preloaded cash, funding, universe and original note", 
   expect(prompt).toContain('"amount":500');
   expect(systemPrompt(s.view.limits)).toContain("opening price is UNKNOWN");
 });
+test("evaluation end date and future deposits never reach the model", () => {
+  const s = make();
+  const prompt = dailyPrompt(s.view, "2025-01-02", "2025-03-31", [
+    { date: "2025-02-03", amount: 500 },
+    { date: "2025-03-03", amount: 500 },
+  ]);
+  expect(prompt).toContain(
+    '"depositsReceived":[{"date":"2025-02-03","amount":500}]',
+  );
+  expect(prompt).not.toContain("2025-03-31");
+  expect(prompt).not.toContain("2025-03-03");
+  expect(prompt).not.toContain("2025-01-02");
+  expect(prompt).not.toContain("horizon");
+  expect(systemPrompt(s.view.limits)).not.toMatch(/end date|horizon/i);
+});
 test("submission is durable before acknowledgement, whole-batch validated and repeated delivery is idempotent", () => {
   const s = make(),
     p = payload([{ side: "BUY", ticker: "AAPL", notionalUsd: 200 }]);
@@ -165,11 +180,11 @@ test("journal filters combine ticker aliases, exact dates and text, returning fu
   const first = data(
     s.tools.call("journal", { ticker: "Apple", query: "REASSESSMENT" }),
   );
-  expect(first.entries).toEqual(past.slice(0, 4));
-  expect(first.nextCursor).toBe(4);
+  expect(first.entries).toEqual([...past].reverse());
+  expect(first.nextCursor).toBeNull();
   expect(
     data(s.tools.call("journal", { ticker: "apple inc.", cursor: 4 })).entries,
-  ).toEqual(past.slice(4));
+  ).toEqual(past.slice(0, 2).reverse());
   expect(
     data(
       s.tools.call("journal", {

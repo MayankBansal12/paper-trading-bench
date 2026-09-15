@@ -102,9 +102,9 @@ describe("NYSE calendar",()=>{
 
 test("versioned historical universe excludes HON while preserving the legacy universe",async()=>{
   const {getUniverse,UNIVERSE_VERSION,UNIVERSE_EXCLUSIONS}=await import("../src/config/universe.ts");
-  expect(UNIVERSE_VERSION).toBe("v3");expect(getUniverse("v1")).toHaveLength(50);expect(getUniverse("v2")).toHaveLength(49);expect(getUniverse("v3")).toHaveLength(99);
+  expect(UNIVERSE_VERSION).toBe("v3");expect(getUniverse("v1")).toHaveLength(50);expect(getUniverse("v2")).toHaveLength(49);expect(getUniverse("v3")).toHaveLength(96);
   expect(getUniverse("v2")).toEqual(getUniverse("v1").filter(t=>t!=="HON"));
   expect(UNIVERSE_EXCLUSIONS.v2?.[0]?.ticker).toBe("HON");
-  expect(UNIVERSE_EXCLUSIONS.v3?.map(x=>x.ticker)).toEqual(["HON","EA"]);
+  expect(UNIVERSE_EXCLUSIONS.v3?.map(x=>x.ticker)).toEqual(["HON","EA","CMCSA","SNDK","WDC"]);
   expect(getUniverse("v3")).toContain("GOOG");expect(getUniverse("v3")).toContain("GOOGL");
 });

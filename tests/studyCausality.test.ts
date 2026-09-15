@@ -108,7 +108,7 @@ test("changing every future price and future split leaves all current financial 
       const tools = new SessionTools(view, journal, [], Date.now() + 10000);
       return [
         tools.call("market_snapshot", { tickers: ["AAPL"] }),
-        tools.call("price_history", { tickers: ["AAPL"], lookback: 252 }),
+        tools.call("price_history", { tickers: ["AAPL"], lookback: view.bars.AAPL!.length }),
         tools.call("journal", {}),
       ];
     });

@@ -10,7 +10,7 @@ import {
 import { analyzeStudy, summarizeAttempts } from "./analysis.ts";
 import { JournalStore } from "./journal.ts";
 import { literalText } from "../report/text.ts";
-import { monthlyDeposits } from "../core/funding.ts";
+import { monthlyDeposits, STARTING_CAPITAL } from "../core/funding.ts";
 import { computeMetrics } from "../engine/metrics.ts";
 import { cashBaseline, buyAndHoldBaseline } from "../engine/baselines.ts";
 import { loadNDX, compareNDX } from "./reference.ts";
@@ -34,10 +34,12 @@ export async function writeStudyReview(
       validateDatasetWindow(market, c.start, c.end, c.history),
     );
   const attempts = summarizeAttempts(new JournalStore(result.dir).all(), result.attempts);
+  const acceptedByDate = new Map(result.attempts.map((a) => [a.scope.date, a]));
   const status = [
     "# Run status", "",
-    `${result.summary.status}: ${result.summary.committedDays}/${result.summary.totalDays} sessions committed; ${result.summary.failures} failed attempts.`, "",
-    "Decision and portfolio metrics below cover committed days only. Failed attempts remain part of the operational record.", "",
+    `${result.summary.status}: ${result.summary.validDays}/${result.summary.totalDays} valid decisions; ${result.summary.committedDays} days accounted; ${result.summary.failures} failed attempts.`, "",
+    `${result.summary.attemptedDays} trading days attempted; ${result.summary.retriedDays} retried; ${result.summary.invalidDays} invalid after exhausted attempts; ${result.summary.unattemptedDays} not attempted.`, "",
+    "Portfolio metrics include every accounted day, including deposits, corporate actions and market movement on invalid days. Decision metrics cover valid decisions only. Failed attempts remain in the operational record; quarters stopped after three consecutive invalid days are incomplete-period results.", "",
     "| Date | Attempt | Outcome | Committed | Inference requests | Broker calls |",
     "|---|---:|---|---|---:|---:|",
     ...attempts.map(a => `| ${a.date} | ${a.attempt} | ${a.outcome} | ${a.committed ? "yes" : "no"} | ${a.observedInferenceRequests} | ${a.observedBrokerCalls} |`),
@@ -57,14 +59,13 @@ export async function writeStudyReview(
         {
           run: result.summary,
           attempts,
-          metricsScope: "Committed days only; attempt history includes failures and interruptions.",
+          metricsScope: "Portfolio metrics include all accounted days, including invalid days carried forward without orders. Decision metrics cover valid decisions only.",
+          invalidSessions: result.summary.invalidSessions,
           ...analyzeStudy(records, result.attempts),
-          trades: records.flatMap((r, i) =>
-            tradeAnalysis(r, result.attempts[i]!, market).map((t) => ({
-              date: r.date,
-              ...t,
-            })),
-          ),
+          trades: records.flatMap((r) => {
+            const accepted = acceptedByDate.get(r.date);
+            return accepted ? tradeAnalysis(r, accepted, market).map((t) => ({ date: r.date, ...t })) : [];
+          }),
         },
         null,
         2,
@@ -90,15 +91,15 @@ export async function writeStudyReview(
     }));
     const metrics = computeMetrics(
       curve,
-      500,
+      STARTING_CAPITAL,
       result.summary.fills,
       result.summary.rejectedOrders,
       0,
       records.map((r) => r.turnoverPct),
     );
-    const cash = cashBaseline(500, dates, contributions),
+    const cash = cashBaseline(STARTING_CAPITAL, dates, contributions),
       buyAndHold = await buyAndHoldBaseline(
-        500,
+        STARTING_CAPITAL,
         market.universe,
         dates,
         contributions,
@@ -118,6 +119,11 @@ export async function writeStudyReview(
         {
           eligibility:
             "Descriptive offline references; this calculation does not assert scored-study eligibility",
+          runStatus: result.summary.status,
+          validDays: result.summary.validDays,
+          invalidDays: result.summary.invalidDays,
+          accountedDays: result.summary.committedDays,
+          metricsScope: "All accounted days, including no-order valuation on invalid days.",
           metrics,
           cash,
           buyAndHold,

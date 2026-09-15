@@ -31,6 +31,7 @@ export function analyzeStudy(records: DailyRecord[], accepted: StudyAttempt[]) {
         )
       : 0,
   );
+  const validDates = new Set(accepted.map((a) => a.scope.date));
   const days = accepted.map((a) => {
     const calls = a.decision.trace.filter(
       (e: any) => e.type === "tool_attempt",
@@ -58,6 +59,7 @@ export function analyzeStudy(records: DailyRecord[], accepted: StudyAttempt[]) {
         id: e.id,
         evidenceIds: e.evidenceRefs,
         tickers: e.tickers,
+        tags: e.tags ?? [],
       })),
       note: a.journalEntries.at(-1)?.text ?? null,
       distinctEvidenceReceipts: new Set(
@@ -76,7 +78,9 @@ export function analyzeStudy(records: DailyRecord[], accepted: StudyAttempt[]) {
     meanHoldings: mean(counts),
     meanLargestHoldingPct: mean(topWeights),
     meanRiskyAssetHHI: mean(hhi),
-    noTradeDays: records.filter((r) => !r.fills.length).length,
+    noTradeDays: records.filter((r) => validDates.has(r.date) && !r.fills.length).length,
+    invalidDecisionDays: records.filter((r) => !validDates.has(r.date)).length,
+    portfolioObservationDays: records.length,
     buyNotional: records
       .flatMap((r) => r.fills)
       .filter((f) => f.side === "BUY")

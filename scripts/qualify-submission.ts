@@ -10,6 +10,8 @@ import { createInitialPortfolio } from "../src/engine/portfolio.ts";
 import { makeView, scopeFor } from "../src/study/protocol.ts";
 import { JournalStore } from "../src/study/journal.ts";
 const watchdogFixture = process.argv.includes("--watchdog-fixture");
+const slowStreamFixture = process.argv.includes("--slow-stream-fixture");
+if (watchdogFixture && slowStreamFixture) throw new Error("Choose one fixture mode");
 const config = {
   start: "2024-04-02",
   end: "2024-04-02",
@@ -119,15 +121,22 @@ try {
       { type: "response.output_item.done", output_index: 0, item },
       { type: "response.completed", response },
     ];
-    return new Response(
-      events
-        .map(
-          (e, i) =>
-            `event: ${e.type}\ndata: ${JSON.stringify({ ...e, sequence_number: i })}\n\n`,
-        )
-        .join(""),
-      { headers: { "content-type": "text/event-stream" } },
+    const frames = events.map((e, i) =>
+      `event: ${e.type}\ndata: ${JSON.stringify({ ...e, sequence_number: i })}\n\n`,
     );
+    let streamTimer: ReturnType<typeof setTimeout>;
+    const body = slowStreamFixture ? new ReadableStream<Uint8Array>({
+      start(controller) {
+        controller.enqueue(new TextEncoder().encode(frames[0]!));
+        // Reproduce a valid inference stream that pauses beyond Bun's default 10s.
+        streamTimer = setTimeout(() => {
+          controller.enqueue(new TextEncoder().encode(frames.slice(1).join("")));
+          controller.close();
+        }, 12_000);
+      },
+      cancel() { clearTimeout(streamTimer); },
+    }) : frames.join("");
+    return new Response(body, { headers: { "content-type": "text/event-stream" } });
   }) as typeof fetch;
   const result = await decideStudy(
     view,
@@ -148,6 +157,7 @@ try {
     outcome: result.outcome,
     reason: result.reason,
     providerFixtureRequests: requests,
+    slowStreamPauseMs: slowStreamFixture ? 12_000 : 0,
     orders: result.decision.orders,
     usage: result.decision.usage,
   };

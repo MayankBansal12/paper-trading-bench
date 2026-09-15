@@ -17,9 +17,12 @@ import {
 } from "../study/runner.ts";
 import { deterministicControl } from "../study/control.ts";
 import { qualifySandbox } from "../study/sandbox.ts";
+import { qualifiedRoute } from "../opencode/qualification.ts";
 import { writeFileAtomic } from "../utils/fs.ts";
 export const HELP = `Paper portfolio environment (${STUDY_PROTOCOL})
-  pnpm bench run --run-id ID --data-dir DIR --start DATE --end DATE [--preflight=true] [--control=true] [--smoke=true] [--history=100] [--timeout-ms=300000]
+  pnpm bench eval --eval-id ID --data-dir DIR [--models MODEL_IDS] [--preflight=true | --resume=true | --verify=true] [--control=true]
+    April 2025–March 2026: four separate runs in parallel per model, each with $50,000 fresh cash and empty memory.
+  pnpm bench run --run-id ID --data-dir DIR --start DATE --end DATE [--preflight=true] [--control=true] [--smoke=true] [--model MODEL_ID] [--history=100] [--timeout-ms=${POLICY.defaultTimeoutMs}]
   pnpm bench resume --dir results/studies/ID
   pnpm bench inspect --dir results/studies/ID
   pnpm bench verify --dir results/studies/ID
@@ -28,13 +31,17 @@ export const HELP = `Paper portfolio environment (${STUDY_PROTOCOL})
   pnpm bench sandbox-check
 
 Fresh context, four tools and one final submission per day. Unlimited turns/tools.
-Starts with $500; each later represented month receives $500. Future opens remain unknown.
+Starts with $50,000; each later represented month receives $50,000. Future opens remain unknown.
 Control/smoke qualify the environment, not scored model comparisons.
 Historical protocols require their frozen archived source.`;
 export async function environmentCLI(command: string, argv: string[]) {
   if (["help", "--help", "-h"].includes(command) || argv.includes("--help")) {
     console.log(HELP);
     return;
+  }
+  if (command === "eval") {
+    const { evaluationCLI } = await import("./evaluation.ts");
+    return evaluationCLI(argv);
   }
   const { flags, positionals } = parseFlags(argv);
   assertNoPositionals(positionals, command);
@@ -92,10 +99,12 @@ export async function environmentCLI(command: string, argv: string[]) {
           "timeout-ms",
           "control",
           "smoke",
+          "model",
           "preflight",
         ],
     command,
   );
+  if (flags.has("model")) qualifiedRoute(flags.get("model")!);
   const start = parseDateFlag("start", flags.get("start")),
     end = parseDateFlag("end", flags.get("end"));
   if (
@@ -110,6 +119,8 @@ export async function environmentCLI(command: string, argv: string[]) {
   const control = parseBooleanFlag("control", flags.get("control")),
     smoke = parseBooleanFlag("smoke", flags.get("smoke"));
   if (control && smoke) throw new Error("Choose control or smoke");
+  // Field order matches the evaluation child-config literal so resumed runs
+  // hash identically; contentHash is key-order sensitive.
   const c: StudyConfig = {
     protocol: STUDY_PROTOCOL,
     kind:
@@ -121,6 +132,7 @@ export async function environmentCLI(command: string, argv: string[]) {
             ? "smoke"
             : "environment",
     runId: flags.get("run-id") ?? "qualification",
+    ...(flags.has("model") ? { model: flags.get("model")! } : {}),
     dataDir,
     datasetHash: market.version,
     universeVersion: "dataset",
@@ -133,7 +145,7 @@ export async function environmentCLI(command: string, argv: string[]) {
       timeoutMs: parsePositiveInt(
         "timeout-ms",
         flags.get("timeout-ms"),
-        300000,
+        POLICY.defaultTimeoutMs,
       ),
     },
     policy: POLICY,

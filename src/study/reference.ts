@@ -8,6 +8,7 @@ import { buyAndHoldBaseline } from "../engine/baselines.ts";
 import { preparePortfolio } from "../engine/cashFlows.ts";
 import { computeMetrics } from "../engine/metrics.ts";
 import type { Contribution, EquityPoint } from "../domain/types.ts";
+import { STARTING_CAPITAL } from "../core/funding.ts";
 
 /** Evaluator-only reference. It is never passed to the model or its broker. */
 export async function loadNDX(
@@ -38,7 +39,7 @@ export async function compareNDX(
 ) {
   const dates = records.map((r) => r.date);
   const reference = await buyAndHoldBaseline(
-    500,
+    STARTING_CAPITAL,
     ["NDX"],
     dates,
     contributions,
@@ -46,7 +47,7 @@ export async function compareNDX(
   );
   const metrics = computeMetrics(
     reference.equityCurve,
-    500,
+    STARTING_CAPITAL,
     reference.tradeCount,
     0,
     0,
@@ -59,14 +60,14 @@ export async function compareNDX(
   }));
   const model = computeMetrics(
     modelCurve,
-    500,
+    STARTING_CAPITAL,
     records.reduce((n, r) => n + r.fills.length, 0),
     records.reduce((n, r) => n + r.failedOrders.length, 0),
     0,
     records.map((r) => r.turnoverPct),
   );
   const returns = (curve: readonly EquityPoint[]) => {
-    let previous = 500;
+    let previous = STARTING_CAPITAL;
     return curve.map((p) => {
       const denominator = previous + (p.contribution ?? 0);
       const r = denominator > 0 ? p.netWorth / denominator - 1 : 0;

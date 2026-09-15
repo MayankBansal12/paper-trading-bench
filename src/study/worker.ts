@@ -81,7 +81,7 @@ const bridge = Bun.serve({
             ? undefined
             : await req.arrayBuffer(),
           redirect: "manual",
-          signal: AbortSignal.timeout(300000),
+          // The host's attempt deadline bounds this request and its response stream.
         },
       );
       if (response.headers.get("x-bench-submitted") === "true")
@@ -99,6 +99,12 @@ if (launch.probe) {
   await emit({ type: "sandbox_probe", status: r.status, body: await r.text() });
   bridge.stop(true);
   process.exit(0);
+}
+// A synthetic OAuth record selects OpenCode's native OAuth request layout.
+// It contains only this socket's capability; refresh/access credentials stay host-side.
+if (launch.auth) {
+  await mkdir("/work/data/opencode", { recursive: true });
+  await writeFile("/work/data/opencode/auth.json", JSON.stringify(launch.auth), { mode: 0o600 });
 }
 child = Bun.spawn(
   [

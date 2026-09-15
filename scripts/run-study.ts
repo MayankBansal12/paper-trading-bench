@@ -1,2 +1,2 @@
 import { environmentCLI } from "../src/cli/environment.ts";
-await environmentCLI("run",process.argv.slice(2));
+await environmentCLI("eval",process.argv.slice(2));

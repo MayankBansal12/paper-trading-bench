@@ -50,9 +50,20 @@ export function renderJournalReview(
     "The previous-close/next-open gap is an environment constraint. Dollar orders specify amounts; resulting shares depend on the unknown open. Fixed-share buys may fail for insufficient cash.",
     "",
   ];
-  for (const [i, a] of accepted.entries()) {
-    const r = records[i]!,
-      note = a.journalEntries[0]!;
+  const acceptedByDate = new Map(accepted.map((a) => [a.scope.date, a]));
+  let previousNote: string | undefined;
+  for (const r of records) {
+    const a = acceptedByDate.get(r.date);
+    if (!a) {
+      lines.push(
+        `## ${r.date}`, "",
+        "Invalid trading day: both attempts failed. No orders executed; existing positions were carried forward and valued at the close.", "",
+        `[Atomic day commit](days/${r.date}.json) · [Failed attempts](events.jsonl)`, "",
+        `Contribution $${r.contribution ?? 0}; closing cash $${r.portfolioAfter.cash}; closing equity $${r.portfolioAfter.netWorth}.`, "",
+      );
+      continue;
+    }
+    const note = a.journalEntries[0]!;
     lines.push(
       `## ${a.scope.date}`,
       "",
@@ -60,11 +71,15 @@ export function renderJournalReview(
       "",
       "Previous original note:",
       "",
-      literalText(accepted[i - 1]?.journalEntries[0]?.text ?? "First day; none."),
+      literalText(previousNote ?? "First day; none."),
       "",
       "Committed original note:",
       "",
       literalText(note.text),
+      "",
+      "Journal tags:",
+      "",
+      literalText(note.tags?.join(", ") || "none"),
       "",
       `Ticker tags: ${note.tickers.join(", ") || "none"}. Explicit citations: ${note.evidenceRefs.join(", ") || "none"}.`,
       "",
@@ -92,6 +107,7 @@ export function renderJournalReview(
       `Usage: ${a.decision.usage.turns} model turns; tokens ${a.decision.usage.totalTokens ?? "unavailable"}; reported cost ${a.decision.usage.costUsd ?? "unavailable"}.`,
       "",
     );
+    previousNote = note.text;
   }
   return lines.join("\n") + "\n";
 }

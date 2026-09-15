@@ -5,6 +5,7 @@ import type { OrderRequest } from "../domain/types.ts";
 import { contentHash } from "../core/hash.ts";
 import {
   POLICY,
+  availableHistoryBars,
   deepFreeze,
   openingPortfolio,
   openingContext,
@@ -13,12 +14,17 @@ import {
 } from "./protocol.ts";
 import { JournalStore, type JournalEntry, type Submission } from "./journal.ts";
 import { journalSchema, assertJournalNote } from "./memo.ts";
+import { readJournal } from "./retrieval.ts";
 const obj = (p: Record<string, any>) =>
   Type.Object(p, { additionalProperties: false });
 const ticker = Type.String({ pattern: "^[A-Z][A-Z0-9.-]{0,15}$" });
-const tickers = (max: number) =>
-  Type.Array(ticker, { minItems: 1, maxItems: max, uniqueItems: true });
+const tickers = (max?: number) =>
+  Type.Array(ticker, { minItems: 1, ...(max === undefined ? {} : { maxItems: max }), uniqueItems: true });
 const positive = Type.Number({ exclusiveMinimum: 0, maximum: 1e9 });
+const priceHistorySchema = (maximum: number, maximumTickers?: number) => obj({
+  tickers: tickers(maximumTickers),
+  lookback: Type.Integer({ minimum: 1, maximum }),
+});
 export const toolDefinitions = [
   {
     name: "market_snapshot",
@@ -29,16 +35,13 @@ export const toolDefinitions = [
   {
     name: "price_history",
     description:
-      "Batched OHLCV ending at the host observation cutoff; choose depth, never an end date.",
-    inputSchema: obj({
-      tickers: tickers(POLICY.maxHistoryTickers),
-      lookback: Type.Integer({ minimum: 1, maximum: POLICY.maxHistory }),
-    }),
+      "OHLCV through the previous session close. Request any eligible ticker batch and exactly lookback bars per ticker, within the advertised history limit. Responses are limited to 512 KiB; split oversized requests into smaller batches or use fewer bars. No end-date input.",
+    inputSchema: priceHistorySchema(POLICY.maxHistory),
   },
   {
     name: "journal",
     description:
-      "Own committed past notes, verbatim. Combine canonical ticker or frozen company name, exact date and case-insensitive text filters; paginate using nextCursor.",
+      "Own committed past notes, verbatim, newest first. Combine canonical ticker or frozen company name, exact past date and whitespace-separated query keywords: ALL keywords must occur in text or optional tags, case-insensitively. Ticker filters match declared tickers or standalone symbols in prose. Pages fill a 12,000-character note budget; use nextCursor with the same filters. Zero matches include a bounded recent date/ticker index and retry guidance.",
     inputSchema: obj({
       ticker: Type.Optional(Type.String({ minLength: 1, maxLength: 200 })),
       date: Type.Optional(Type.String({ pattern: "^\\d{4}-\\d{2}-\\d{2}$" })),
@@ -49,7 +52,7 @@ export const toolDefinitions = [
   {
     name: "submit_day",
     description:
-      "Final ordered trade batch and short journal. Empty orders means hold. Choose exactly one of notionalUsd (dollars) or units (shares) per order. Valid submission ends model work; no follow-up response.",
+      "Final ordered trade batch and short free-text journal. Optional tags: up to 8 unique lowercase slugs (letters/digits separated by hyphens, max 48 characters each), e.g. phase-defensive or rule-tsla-428, for later keyword search. No required prose or Markdown structure. Empty orders means hold. Choose exactly one of notionalUsd (dollars) or units (shares) per order. Valid submission ends model work; no follow-up response.",
     inputSchema: obj({
       orders: Type.Array(
         obj({
@@ -65,6 +68,7 @@ export const toolDefinitions = [
   },
 ];
 export class SessionTools {
+  readonly definitions: typeof toolDefinitions;
   private closed = false;
   private calls = 0;
   private receipts = new Set<string>();
@@ -83,6 +87,11 @@ export class SessionTools {
     private deadline: number,
     private onAudit: (e: any) => void = () => {},
   ) {
+    this.definitions = deepFreeze(toolDefinitions.map((tool) =>
+      tool.name === "price_history"
+        ? { ...tool, inputSchema: priceHistorySchema(availableHistoryBars(view), view.universe.length) }
+        : tool,
+    ));
     this.past = deepFreeze(structuredClone(past));
     if (
       past.some(
@@ -148,7 +157,7 @@ export class SessionTools {
         this.closed = true;
         throw new Error(this.boundedReason);
       }
-      const tool = toolDefinitions.find((t) => t.name === name);
+      const tool = this.definitions.find((t) => t.name === name);
       if (!tool) {
         this.integrityError = "Unknown tool";
         throw new Error(this.integrityError);
@@ -199,27 +208,9 @@ export class SessionTools {
           );
           if (!resolved.length) throw new Error("Security unavailable");
         }
-        const rows = this.past.filter(
-          (e) =>
-            (!a.date || e.date === a.date) &&
-            (!resolved || e.tickers.some((t) => resolved.includes(t))) &&
-            (!a.query || e.text.toLowerCase().includes(a.query.toLowerCase())),
-        );
-        const start = a.cursor ?? 0,
-          entries: JournalEntry[] = [];
-        let chars = 0;
-        for (const e of rows.slice(start, start + 4)) {
-          if (chars + e.text.length > POLICY.maxReadChars) break;
-          entries.push(e);
-          chars += e.text.length;
-        }
-        data = {
-          entries,
-          nextCursor:
-            start + entries.length < rows.length
-              ? start + entries.length
-              : null,
-        };
+        data = readJournal(this.past, this.view.universe, {
+          date: a.date, tickers: resolved, query: a.query, cursor: a.cursor,
+        });
       } else {
         assertJournalNote(a.journal);
         if (a.journal.tickers.some((t) => !this.view.universe.includes(t)))
@@ -254,6 +245,7 @@ export class SessionTools {
             attempt: this.view.scope.attempt,
             text: a.journal.text,
             tickers: [...a.journal.tickers],
+            ...(a.journal.tags === undefined ? {} : { tags: [...a.journal.tags] }),
             evidenceRefs: [...cited],
           },
           seenEvidenceRefs: [...this.receipts],
@@ -285,7 +277,9 @@ export class SessionTools {
         content: [{ type: "text", text: JSON.stringify({ receipt, data }) }],
       };
       if (Buffer.byteLength(JSON.stringify(result)) > POLICY.maxResponseBytes)
-        throw new Error("Response size limit exceeded");
+        throw new Error(name === "price_history"
+          ? "History response exceeds 512 KiB; request fewer tickers or a shorter lookback. No partial history was returned."
+          : "Response size limit exceeded");
       if (name !== "submit_day") this.receipts.add(callId);
     } catch (e) {
       result = {

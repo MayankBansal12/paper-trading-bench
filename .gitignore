@@ -30,3 +30,4 @@ datasets/
 
 # Model transcripts and immutable experiment artifacts
 results/studies/
+results/evaluations/

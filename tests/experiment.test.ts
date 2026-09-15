@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { resolve } from "node:path";
-import { defaultWindow, defaultDataDir, isThreeMonthWindow, monthlyDeposits, parseBooleanFlag } from "../src/cli/experiment.ts";
+import { defaultWindow, defaultDataDir, isThreeMonthWindow, parseBooleanFlag } from "../src/cli/experiment.ts";
+import { monthlyDeposits, MONTHLY_CONTRIBUTION } from "../src/core/funding.ts";
 import { PROJECT_ROOT } from "../src/utils/paths.ts";
 
 function cli(args: string[]) {
@@ -24,8 +25,8 @@ describe("three-month experiment contract", () => {
   });
   test("deposits occur on first represented session of months two and three, including holidays/weekends", () => {
     const dates = ["2024-08-01", "2024-08-02", "2024-08-30", "2024-09-03", "2024-09-04", "2024-09-30", "2024-10-01", "2024-10-02"];
-    expect(monthlyDeposits(dates)).toEqual([{ date: "2024-09-03", amount: 500 }, { date: "2024-10-01", amount: 500 }]);
-    expect(monthlyDeposits(["2024-12-31", "2025-01-02"])).toEqual([{ date: "2025-01-02", amount: 500 }]);
+    expect(monthlyDeposits(dates)).toEqual([{ date: "2024-09-03", amount: MONTHLY_CONTRIBUTION }, { date: "2024-10-01", amount: MONTHLY_CONTRIBUTION }]);
+    expect(monthlyDeposits(["2024-12-31", "2025-01-02"])).toEqual([{ date: "2025-01-02", amount: MONTHLY_CONTRIBUTION }]);
     expect(monthlyDeposits(["2024-01-02", "2024-01-03"])).toEqual([]);
     expect(monthlyDeposits([])).toEqual([]);
   });
@@ -43,10 +44,12 @@ describe("three-month experiment contract", () => {
     const p=Bun.spawnSync(["bun","src/index.ts","run","--run-id=cli-preflight","--data-dir=fixtures/ohlcv","--start=2024-04-02","--end=2024-04-03","--history=60","--preflight=true"]);
     expect(p.exitCode).toBe(0);expect(p.stdout.toString()).toContain('"sessions": 2');
   });
-  test("retired tool quota/model/agent flags are rejected", () => {
-    for(const flag of ["--max-tool-calls=24","--model=paid","--agent=fake"]){
+  test("retired tool quota/agent flags and unqualified model routes are rejected", () => {
+    for(const flag of ["--max-tool-calls=24","--agent=fake"]){
       const p=Bun.spawnSync(["bun","src/index.ts","run",flag]);expect(p.exitCode).not.toBe(0);expect(p.stderr.toString()).toContain("Unknown flag");
     }
+    const model=Bun.spawnSync(["bun","src/index.ts","run","--model=paid"]);
+    expect(model.exitCode).not.toBe(0);expect(model.stderr.toString()).toContain("Unqualified model route");
   });
   test("new CLI keeps minimum warmup and hard history bounds", () => {
     const p=Bun.spawnSync(["bun","src/index.ts","run","--run-id=cli-preflight","--data-dir=fixtures/ohlcv","--start=2024-04-02","--end=2024-04-03","--history=59","--preflight=true"]);

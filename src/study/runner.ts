@@ -8,8 +8,8 @@ import {
 import { getUniverse } from "../config/universe.ts";
 import { contentHash } from "../core/hash.ts";
 import { buildDecisionContext, type ContextConfig } from "../core/context.ts";
-import { monthlyDeposits } from "../core/funding.ts";
-import { executeAccepted } from "../core/execute.ts";
+import { monthlyDeposits, STARTING_CAPITAL } from "../core/funding.ts";
+import { executeAccepted, executeInvalidDay } from "../core/execute.ts";
 import type { StudyRecord, StudyLimits } from "../core/types.ts";
 import { createInitialPortfolio } from "../engine/portfolio.ts";
 import { acquireRunLock } from "../run/lock.ts";
@@ -34,7 +34,9 @@ import {
 } from "./agent.ts";
 import { validateAccepted } from "./accept.ts";
 export { validateAccepted, validateOpeningContext } from "./accept.ts";
+import { qualifiedRoute, QUALIFIED_ZEN_MODEL_ID } from "../opencode/qualification.ts";
 export interface StudyConfig {
+  model?: string;
   protocol: string;
   kind: "environment" | "smoke" | "quarter" | "control";
   runId: string;
@@ -52,12 +54,17 @@ export interface Day {
   date: string;
   previous: string;
   resultEventHash: string;
-  submissionEventHash: string;
+  submissionEventHash: string | null;
+  status: "completed" | "invalid";
+  failureEventHashes: string[];
+  reason: string | null;
   record: StudyRecord;
   hash: string;
 }
 const read = (p: string) => JSON.parse(readFileSync(p, "utf8"));
 export async function prepareStudyData(c: StudyConfig) {
+  if (c.kind === "control" && c.model !== undefined) throw new Error("Control cannot select a model route");
+  if (c.kind !== "control") qualifiedRoute(c.model ?? QUALIFIED_ZEN_MODEL_ID);
   if (
     c.protocol !== STUDY_PROTOCOL ||
     contentHash(c.policy) !== contentHash(POLICY) ||
@@ -115,7 +122,7 @@ export async function prepareStudyData(c: StudyConfig) {
       config,
       dates[0]!,
       universe,
-      createInitialPortfolio(500),
+      createInitialPortfolio(STARTING_CAPITAL),
       [],
       market,
     ),
@@ -202,8 +209,9 @@ export async function runStudy(
     const past: JournalEntry[] = [],
       days: Day[] = [],
       attempts: StudyAttempt[] = [];
-    let portfolio = createInitialPortfolio(500),
+    let portfolio = createInitialPortfolio(STARTING_CAPITAL),
       failure: string | undefined;
+    let consecutiveInvalidDays = 0, maxConsecutiveInvalidDays = 0;
     const files = existsSync(join(dir, "days"))
       ? readdirSync(join(dir, "days"))
           .filter((f) => f.endsWith(".json"))
@@ -213,6 +221,10 @@ export async function runStudy(
       throw new Error("Days are not a contiguous prefix");
     // Reusable runtime is prepared lazily before the first new attempt, outside every daily watchdog.
     for (const date of dates) {
+      if (consecutiveInvalidDays >= POLICY.maxConsecutiveInvalidDays) {
+        if (files.length > days.length) throw new Error("Day commits extend beyond the invalid-day stop");
+        break;
+      }
       const dayPath = join(dir, "days", `${date}.json`);
       let terminal = store
         .all()
@@ -223,8 +235,12 @@ export async function runStudy(
             e.payload.outcome === "completed",
         )
         .at(-1);
-      if (!terminal && existsSync(dayPath))
-        throw new Error("Commit missing completed result");
+      const closedFailures = () => store.all().filter((e) =>
+        e.scope.date === date && (e.kind === "failed" ||
+          (e.kind === "result" && e.payload.outcome !== "completed")),
+      );
+      if (!terminal && closedFailures().length !== POLICY.maxAttemptsPerDay && existsSync(dayPath))
+        throw new Error("Commit missing completed result or exhausted failures");
       if (!terminal && !options.readOnly) {
         const last = store.all().at(-1);
         if (
@@ -235,99 +251,98 @@ export async function runStudy(
             last.scope,
             "Interrupted before complete integrity audit; submission cannot execute",
           );
-        if (!options.control && c.kind === "control")
-          throw new Error("Control requires explicit deterministic transport");
-        if (!options.control && !runtime) {
-          runtime = await prepareModelRuntime();
-          const runtimePath = join(dir, "runtime.json");
-          if (existsSync(runtimePath)) {
-            if (
-              contentHash(read(runtimePath)) !==
-              contentHash(runtime.bundle.evidence)
-            )
-              throw new Error("Runtime changed; start a new cohort");
-          } else durableCreate(runtimePath, runtime.bundle.evidence);
-        }
-        const scope = scopeFor(c.runId, date, store.nextAttempt(date));
-        const view = makeView(
-          buildDecisionContext(config, date, universe, portfolio, [], market),
-          scope,
-          aliases,
-        );
-        store.begin(scope);
-        let result = options.control
-          ? await options.control(view, store, [...past])
-          : await decideStudy(
-              view,
-              store,
-              [...past],
-              horizon,
-              (e) => store.audit(scope, e),
-              runtime!,
-            );
-        // Controls persist the same raw prompt/tool boundary as the model adapter.
-        if (result.outcome === "completed")
-          try {
-            validateAccepted(result, view, c.kind === "control", past, horizon);
-          } catch (e) {
-            result = {
-              ...result,
-              outcome: "harness_error",
-              reason: String(e),
-              decision: {
-                ...result.decision,
-                outcome: "harness_error",
-                orders: [],
-              },
-            };
+        // A fresh attempt starts from the last committed state, never failed memory.
+        // Persisted attempts count across process restarts; resume cannot grant a third.
+        while (!terminal && store.nextAttempt(date) <= POLICY.maxAttemptsPerDay) {
+          if (!options.control && c.kind === "control")
+            throw new Error("Control requires explicit deterministic transport");
+          if (!options.control && !runtime) {
+            runtime = await prepareModelRuntime(c.model);
+            const runtimePath = join(dir, "runtime.json");
+            if (existsSync(runtimePath)) {
+              if (
+                contentHash(read(runtimePath)) !==
+                contentHash(runtime.bundle.evidence)
+              )
+                throw new Error("Runtime changed; start a new cohort");
+            } else durableCreate(runtimePath, runtime.bundle.evidence);
           }
-        terminal = store.result(scope, resultPayload(result));
-        options.fault?.("after-result", date);
-        if (result.outcome !== "completed") {
-          failure = result.reason ?? result.outcome;
-          break;
+          const scope = scopeFor(c.runId, date, store.nextAttempt(date));
+          const view = makeView(
+            buildDecisionContext(config, date, universe, portfolio, [], market),
+            scope,
+            aliases,
+          );
+          store.begin(scope);
+          let result = options.control
+            ? await options.control(view, store, [...past])
+            : await decideStudy(
+                view,
+                store,
+                [...past],
+                horizon,
+                (e) => store.audit(scope, e),
+                runtime!,
+              );
+          // Controls persist the same raw prompt/tool boundary as the model adapter.
+          if (result.outcome === "completed")
+            try {
+              validateAccepted(result, view, c.kind === "control", past, horizon, c.model);
+            } catch (e) {
+              result = {
+                ...result,
+                outcome: "harness_error",
+                reason: String(e),
+                decision: {
+                  ...result.decision,
+                  outcome: "harness_error",
+                  orders: [],
+                },
+              };
+            }
+          const resultEvent = store.result(scope, resultPayload(result));
+          options.fault?.("after-result", date);
+          if (result.outcome === "completed") terminal = resultEvent;
         }
       }
-      if (!terminal) {
-        const last = store
-          .all()
-          .filter((e) => e.scope.date === date)
-          .at(-1);
-        if (last)
-          failure =
-            last.payload.reason ??
-            (last.kind === "result"
-              ? last.payload.outcome
-              : "Unfinished attempt requires recovery");
+      const failures = closedFailures();
+      const exhausted = failures.length === POLICY.maxAttemptsPerDay &&
+        failures.every((e, i) => e.scope.attempt === i + 1);
+      if (!terminal && !exhausted) {
+        const last = store.all().filter((e) => e.scope.date === date).at(-1);
+        if (last) failure = last.payload.reason ?? "Unfinished attempt requires recovery";
         break;
       }
-      const accepted = restoreAttempt(store, terminal);
-      const view = makeView(
-        buildDecisionContext(config, date, universe, portfolio, [], market),
-        accepted.scope,
-        aliases,
-      );
-      if (
-        c.kind !== "control" &&
-        (accepted.sandbox as any)?.id !== read(join(dir, "runtime.json")).id
-      )
-        throw new Error("Accepted sandbox differs from frozen runtime");
-      validateAccepted(accepted, view, c.kind === "control", past, horizon);
-      const submission = store
-        .matching(accepted.scope)
-        .find((e) => e.kind === "submission")!;
-      const record = executeAccepted(
-        accepted,
-        portfolio,
-        config,
-        market,
-        universe,
-      );
+      let accepted: StudyAttempt | undefined;
+      let submissionEventHash: string | null = null;
+      let record: StudyRecord;
+      let reason: string | null = null;
+      if (terminal) {
+        accepted = restoreAttempt(store, terminal);
+        const view = makeView(
+          buildDecisionContext(config, date, universe, portfolio, [], market),
+          accepted.scope, aliases,
+        );
+        if (c.kind !== "control" &&
+            (accepted.sandbox as any)?.id !== read(join(dir, "runtime.json")).id)
+          throw new Error("Accepted sandbox differs from frozen runtime");
+        validateAccepted(accepted, view, c.kind === "control", past, horizon, c.model);
+        submissionEventHash = store.matching(accepted.scope).find((e) => e.kind === "submission")!.hash;
+        record = executeAccepted(accepted, portfolio, config, market, universe);
+      } else {
+        // Bind the no-order ledger to both durable failures, never their submissions.
+        terminal = failures.at(-1)!;
+        reason = terminal.payload.reason ?? terminal.payload.outcome ?? "Attempts exhausted";
+        record = executeInvalidDay(date, portfolio, config, market, universe);
+      }
       const body = {
         date,
         previous: days.at(-1)?.hash ?? "0".repeat(64),
         resultEventHash: terminal.hash,
-        submissionEventHash: submission.hash,
+        submissionEventHash,
+        status: accepted ? "completed" as const : "invalid" as const,
+        failureEventHashes: accepted ? [] : failures.map((e) => e.hash),
+        reason,
         record,
       };
       const day = { ...body, hash: contentHash(body) };
@@ -339,18 +354,43 @@ export async function runStudy(
       else durableCreate(dayPath, day);
       options.fault?.("after-commit", date);
       days.push(day);
-      attempts.push(accepted);
       portfolio = record.portfolioAfter;
-      past.push(...accepted.journalEntries);
+      if (accepted) {
+        attempts.push(accepted);
+        past.push(...accepted.journalEntries);
+        consecutiveInvalidDays = 0;
+      } else {
+        consecutiveInvalidDays++;
+        maxConsecutiveInvalidDays = Math.max(maxConsecutiveInvalidDays, consecutiveInvalidDays);
+        if (consecutiveInvalidDays >= POLICY.maxConsecutiveInvalidDays)
+          failure = `${POLICY.maxConsecutiveInvalidDays} consecutive invalid trading days through ${date}: ${reason}`;
+      }
     }
-    const resultEvents = store.all().filter((e) => e.kind === "result");
+    const events = store.all();
+    const resultEvents = events.filter((e) => e.kind === "result");
+    const begins = events.filter((e) => e.kind === "begin");
+    const attemptedDates = new Set(begins.map((e) => e.scope.date));
+    const retriedDates = new Set(begins.filter((e) => e.scope.attempt > 1).map((e) => e.scope.date));
+    const stopped = consecutiveInvalidDays >= POLICY.maxConsecutiveInvalidDays;
+    const invalidSessions = days.filter((d) => d.status === "invalid").map((d) => ({
+      date: d.date, attempts: POLICY.maxAttemptsPerDay, reason: d.reason,
+    }));
     const summary = {
       protocol: STUDY_PROTOCOL,
       kind: c.kind,
-      status: days.length === dates.length ? "completed" : "incomplete",
+      status: stopped ? "invalid" : days.length === dates.length ? "completed" : "incomplete",
       failure: failure ?? null,
       committedDays: days.length,
+      validDays: attempts.length,
+      consecutiveInvalidDays,
+      maxConsecutiveInvalidDays,
+      stopped,
       totalDays: dates.length,
+      attemptedDays: attemptedDates.size,
+      retriedDays: retriedDates.size,
+      invalidDays: invalidSessions.length,
+      unattemptedDays: dates.length - attemptedDates.size,
+      invalidSessions,
       portfolio,
       fills: days.reduce((n, d) => n + d.record.fills.length, 0),
       rejectedOrders: days.reduce(
@@ -360,10 +400,8 @@ export async function runStudy(
       journalEntries: past.length,
       eventRoot: store.root,
       commitRoot: days.at(-1)?.hash ?? null,
-      attempts: store.all().filter((e) => e.kind === "begin").length,
-      failures: store
-        .all()
-        .filter(
+      attempts: begins.length,
+      failures: events.filter(
           (e) =>
             e.kind === "failed" ||
             (e.kind === "result" && e.payload.outcome !== "completed"),

@@ -2,7 +2,7 @@ import { textHash as hashText } from "../core/hash.ts";
 import type { LiveUsage } from "../core/types.ts";
 import {
   QUALIFIED_OPENCODE_CLIENT_VERSION,
-  QUALIFIED_ZEN_MODEL_ID,
+  qualifiedRoute,
 } from "./qualification.ts";
 import { STUDY_TOOLS as TRADING_TOOL_NAMES } from "../study/protocol.ts";
 
@@ -230,10 +230,9 @@ export function validateClientRuntimeAudits(
   toolNames: readonly string[] = TRADING_TOOL_NAMES,
 ): string[] {
   const errors: string[] = [];
-  if (expectedModel !== QUALIFIED_ZEN_MODEL_ID)
-    errors.push(
-      "Expected model is not the exact qualified free Muse Spark model",
-    );
+  let route;
+  try { route = qualifiedRoute(expectedModel); }
+  catch { errors.push("Expected model is not a qualified route"); }
   if (hashText(decision.effectiveSystemPrompt) !== decision.promptHash)
     errors.push("Decision prompt hash is inconsistent");
   const audits = (file: string) =>
@@ -287,6 +286,8 @@ export function validateClientRuntimeAudits(
   };
   if (config) {
     runtimeCheck(config);
+    if (canonical(config.enabled_providers) !== canonical([route?.provider]))
+      errors.push("Runtime enabled provider drift");
     if (
       config.model !== expectedModel ||
       config.small_model !== expectedModel ||
@@ -347,6 +348,11 @@ export function validateClientRuntimeAudits(
         expectedModel
     )
       errors.push("Observed request model drift");
+    if (record.resolvedModel?.api?.id !== route?.model ||
+        record.resolvedModel?.api?.npm !== "@ai-sdk/openai" ||
+        record.resolvedModel?.api?.url !== route?.apiURL ||
+        record.resolvedModel?.capabilities?.toolcall !== true)
+      errors.push("Observed provider adapter or tool capability drift");
     const cost = record.resolvedModel?.cost;
     if (
       !object(cost) ||
@@ -354,7 +360,7 @@ export function validateClientRuntimeAudits(
       cost.output !== 0 ||
       cost.cache?.read !== 0 ||
       cost.cache?.write !== 0 ||
-      (cost.tiers?.length ?? 0) !== 0
+      (cost.tiers !== undefined && (!Array.isArray(cost.tiers) || cost.tiers.length !== 0))
     )
       errors.push("Observed model has unverified/nonzero pricing");
     if (
