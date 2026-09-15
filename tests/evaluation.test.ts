@@ -356,7 +356,9 @@ for (const concurrency of [1, 2]) test(`bounded queue admits at most ${concurren
   }
   const result = await running;
   expect(peak).toBe(concurrency);
-  expect(started).toEqual(result.plan.jobs.map(j => j.runId));
+  // Concurrent first-wave jobs may start in either order; assert set membership, not order.
+  expect(started).toHaveLength(result.plan.jobs.length);
+  expect([...started].sort()).toEqual(result.plan.jobs.map(j => j.runId).sort());
   expect(result.report.quarters.every(q => q.status === "error" && q.error?.includes("Offline quarter failure"))).toBe(true);
   expect(result.report.models[0]!.year).toBeNull();
   expect(JSON.parse(readFileSync(join(result.dir, "summary.json"), "utf8"))).toEqual(result.report);
