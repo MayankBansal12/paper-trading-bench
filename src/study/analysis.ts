@@ -1,5 +1,6 @@
 import type { StudyRecord as DailyRecord } from "../core/types.ts";
 import type { StudyAttempt } from "./agent.ts";
+import { attemptDiagnostics } from "../report/attemptDiagnostics.ts";
 
 /** Descriptive ledger facts, without a favored strategy or inferred hidden reasoning. */
 export function analyzeStudy(records: DailyRecord[], accepted: StudyAttempt[]) {
@@ -111,12 +112,14 @@ export function summarizeAttempts(
     const failed = rows.find(e => e.kind === "failed");
     const usage = result?.payload.decision?.usage;
     const observed = rows.filter(e => e.kind === "audit").map(e => e.payload);
+    const outcome = result?.payload.outcome ?? (failed ? "interrupted" : "unfinished");
+    const reason = result?.payload.reason ?? failed?.payload.reason ?? null;
     return {
       date: rows[0]!.scope.date,
       attempt: rows[0]!.scope.attempt,
       committed: committed.has(key),
-      outcome: result?.payload.outcome ?? (failed ? "interrupted" : "unfinished"),
-      reason: result?.payload.reason ?? failed?.payload.reason ?? null,
+      outcome, reason,
+      ...attemptDiagnostics(outcome, reason, observed),
       submitted: rows.some(e => e.kind === "submission"),
       observedInferenceRequests: observed.filter(e => e.type === "inference_request").length,
       observedBrokerCalls: observed.filter(e => e.type === "tool_attempt").length,

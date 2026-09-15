@@ -24,10 +24,11 @@ for (const route of QUALIFIED_ROUTES) test(`${route.id}: completed decisions and
     const protocol = { type: "protocol", version: STUDY_PROTOCOL, model: route.model, provider: route.provider,
       viewHash: contentHash(s.view), openingPortfolio: openingPortfolio(s.view), dailyPrompt: daily };
     decision.trace = [protocol, ...s.tools.trace];
+    const priced = route.cost.output > 0;
     const parsed = await readEvents(new Response([
       { type: "step_start" },
       { type: "tool_use", part: { type: "tool", callID, tool: "trading_submit_day", state: { status: "completed", input: args } } },
-      { type: "step_finish", part: { reason: "tool-calls", cost: 0,
+      { type: "step_finish", part: { reason: "tool-calls", cost: priced ? 0.003 : 0,
         tokens: { input: 1, output: 1, reasoning: 0, total: 2, cache: { read: 0, write: 0 } } } },
     ].map(e => JSON.stringify(e)).join("\n")).body!, decision, null, reason => { throw Error(reason); });
     expect(parsed.error).toBeUndefined();
@@ -66,8 +67,13 @@ for (const route of QUALIFIED_ROUTES) test(`${route.id}: completed decisions and
     expect(() => validateAccepted(attempt, s.view, false, [], horizon, route.id)).not.toThrow();
     expect(() => validateAccepted(structuredClone(attempt), s.view, false, [], horizon, route.id)).not.toThrow();
     const other = QUALIFIED_ROUTES.find(r => r.id !== route.id)!;
-    expect(() => validateAccepted(structuredClone(attempt), s.view, false, [], horizon, other.id)).toThrow("configured route");
+    expect(() => validateAccepted(structuredClone(attempt), s.view, false, [], horizon, other.id)).toThrow();
     expect(() => validateAccepted(structuredClone(attempt), s.view, false, [], horizon, "unknown/model")).toThrow("Unqualified");
+    for (const cost of [...[NaN, Infinity, -1], ...(priced ? [] : [0.01])]) {
+      const changed = structuredClone(attempt);
+      changed.decision.usage.costUsd = cost;
+      expect(() => validateAccepted(changed, s.view, false, [], horizon, route.id)).toThrow("pricing class");
+    }
     for (const mutate of [
       (trace: any[]) => { trace.find(e => e.type === "model_qualification").evidence.exactModel = other.id; },
       (trace: any[]) => { trace.find(e => e.type === "model_qualification").evidence.noInference = false; },

@@ -14,7 +14,7 @@ import { durableCreate } from "./journal.ts";
 import { POLICY, STUDY_PROTOCOL } from "./protocol.ts";
 import { prepareStudyData, runStudy, type StudyConfig } from "./runner.ts";
 
-export const EVALUATION_VERSION = "independent-quarters-apr2025-mar2026-v3";
+export const EVALUATION_VERSION = "independent-quarters-apr2025-mar2026-v4";
 export const EVALUATION_MODELS = QUALIFIED_MODEL_IDS;
 export const CONTROL_MODEL = "deterministic-control";
 export const EVALUATION_QUARTERS = Object.freeze([
@@ -30,6 +30,7 @@ export interface EvaluationInput {
   models?: readonly string[];
   history?: number;
   timeoutMs?: number;
+  concurrency?: number;
 }
 
 /** Every model uses the same Cartesian product; there is no continuous-year path. */
@@ -52,6 +53,9 @@ export function evaluationSchedule(evalId: string, models: readonly string[]) {
 export async function prepareEvaluation(input: EvaluationInput) {
   const models = [...(input.models ?? EVALUATION_MODELS)];
   const schedule = evaluationSchedule(input.evalId, models);
+  const concurrency = input.concurrency ?? schedule.length;
+  if (!Number.isSafeInteger(concurrency) || concurrency < 1 || concurrency > schedule.length)
+    throw new Error(`Concurrency must be an integer from 1 to ${schedule.length}`);
   for (const model of models)
     if (model !== CONTROL_MODEL && !EVALUATION_MODELS.includes(model))
       throw new Error(`Unqualified evaluation model: ${model}. Qualified routes: ${EVALUATION_MODELS.join(", ")}`);
@@ -95,7 +99,7 @@ export async function prepareEvaluation(input: EvaluationInput) {
     start: EVALUATION_QUARTERS[0]!.start,
     end: EVALUATION_QUARTERS.at(-1)!.end,
     models,
-    execution: { parallelQuartersPerModel: 4, models: "parallel", state: "independent-runs" },
+    execution: { maxConcurrentRuns: concurrency, scheduling: "model-then-quarter-queue", state: "independent-runs" },
     initialization: {
       startingCapital: STARTING_CAPITAL, holdings: {}, journalEntries: 0,
       priorAttempts: 0, consecutiveInvalidDays: 0,
@@ -226,17 +230,17 @@ export async function runEvaluation(input: EvaluationInput, options: {
       return writes;
     };
     const batch = plan.jobs.map((job, index) => ({ job, index }));
-    if (!options.readOnly) {
-      for (const { index } of batch) quarters[index]!.status = "running";
-      await persist();
-    }
-    const settled = await Promise.allSettled(batch.map(async ({ job, index }) => {
+    if (!options.readOnly) await persist();
+    const execute = async ({ job, index }: (typeof batch)[number]) => {
       const childExists = existsSync(resolve("results/studies", job.runId, "manifest.json"));
+      if (!options.readOnly) {
+        quarters[index]!.status = "running";
+        await persist();
+      }
       try {
         if (!options.readOnly || childExists) {
-          // All model/quarter runner invocations are active together. Each owns its
-          // portfolio, journal, attempts, sandbox and runtime; no result is passed
-          // to another quarter. Resume restores only this run ID's own state.
+          // Every admitted job owns its portfolio, journal, attempts, sandbox and
+          // runtime. Queueing changes host concurrency, never quarter state.
           const result = await runStudy(job.config, {
             readOnly: options.readOnly,
             ...(job.model === CONTROL_MODEL && !options.readOnly
@@ -249,6 +253,21 @@ export async function runEvaluation(input: EvaluationInput, options: {
         quarters[index] = { ...quarters[index]!, status: "error", error: String(e) };
       }
       if (!options.readOnly) await persist();
+    };
+    // A failed job releases its slot without cancelling the remaining quarters.
+    // Keep results in plan order even when completion order differs.
+    const settled: PromiseSettledResult<void>[] = new Array(batch.length);
+    let next = 0;
+    await Promise.all(Array.from({ length: plan.execution.maxConcurrentRuns }, async () => {
+      while (next < batch.length) {
+        const index = next++;
+        try {
+          await execute(batch[index]!);
+          settled[index] = { status: "fulfilled", value: undefined };
+        } catch (reason) {
+          settled[index] = { status: "rejected", reason };
+        }
+      }
     }));
     // Keep the evaluation lock until all model/quarter runs and report writes settle,
     // including when a verification or report write fails.

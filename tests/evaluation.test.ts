@@ -69,7 +69,7 @@ test("preflight freezes a separate model/quarter config and checks funding for a
   c.models = [...EVALUATION_MODELS, CONTROL_MODEL];
   const plan = await prepareEvaluation(c);
   expect(plan.jobs).toHaveLength(20);
-  expect(plan.execution).toEqual({ parallelQuartersPerModel: 4, models: "parallel", state: "independent-runs" });
+  expect(plan.execution).toEqual({ maxConcurrentRuns: 20, scheduling: "model-then-quarter-queue", state: "independent-runs" });
   for (const model of c.models) {
     const jobs = plan.jobs.filter(j => j.model === model);
     expect(jobs.map(j => j.sessions)).toEqual([62, 64, 64, 61]);
@@ -104,6 +104,8 @@ test("missing pre-April history and unqualified routes fail preflight", async ()
   await expect(prepareEvaluation({ ...c, models: ["opencode/paid-or-unqualified"] })).rejects.toThrow("Unqualified");
   await expect(prepareEvaluation({ ...c, history: 59 })).rejects.toThrow("History");
   await expect(prepareEvaluation({ ...c, timeoutMs: 3600001 })).rejects.toThrow("Timeout");
+  for (const concurrency of [0, -1, 1.5, NaN, Infinity, 5])
+    await expect(prepareEvaluation({ ...c, concurrency })).rejects.toThrow("Concurrency");
 });
 
 test("four concurrent runs own fresh balances, holdings, journals, funding, attempts and chains; resume only their own state", async () => {
@@ -218,7 +220,10 @@ test("eval CLI preflight has zero inference and refuses dates, truncation and mo
   expect(parsed.plan.jobs).toHaveLength(16);
   expect(parsed.plan.start).toBe("2025-04-01");
   expect(parsed.plan.end).toBe("2026-03-31");
-  for (const flag of ["--end=2026-08-31", "--start=2026-01-01", "--models=unqualified"]) {
+  const serial = Bun.spawnSync([...base, "--preflight=true", "--concurrency=1"], { stdout: "pipe", stderr: "pipe" });
+  expect(serial.exitCode).toBe(0);
+  expect(JSON.parse(serial.stdout.toString()).plan.execution.maxConcurrentRuns).toBe(1);
+  for (const flag of ["--end=2026-08-31", "--start=2026-01-01", "--models=unqualified", "--concurrency=0", "--concurrency=1.5", "--concurrency=17"]) {
     const p = Bun.spawnSync([...base, "--preflight=true", flag], { stdout: "pipe", stderr: "pipe" });
     expect(p.exitCode).toBe(1);
   }
@@ -302,7 +307,7 @@ test("all sixteen model jobs start concurrently with their own model configurati
     const prepared = actual.prepareStudyData;
     const started = [];
     const barrier = Promise.withResolvers();
-    const timer = setTimeout(() => barrier.reject(Error("Twelve jobs did not start concurrently")), 5000);
+    const timer = setTimeout(() => barrier.reject(Error("Sixteen jobs did not start concurrently")), 5000);
     mock.module(runnerPath, () => ({
       prepareStudyData: prepared,
       runStudy: async config => {
@@ -324,3 +329,42 @@ test("all sixteen model jobs start concurrently with their own model configurati
   for (const model of EVALUATION_MODELS) expect(result.started.filter((j: any) => j.model === model)).toHaveLength(4);
   expect(result.report.quarters.every((q: any) => q.error.includes("Offline model runner fixture"))).toBe(true);
 }, 10000);
+
+for (const concurrency of [1, 2]) test(`bounded queue admits at most ${concurrency} runs, retains pending state and survives failed quarters`, async () => {
+  const c = { ...input(), concurrency };
+  const started: string[] = [];
+  let active = 0, peak = 0;
+  const firstWave = Promise.withResolvers<void>(), release = Promise.withResolvers<void>();
+  const timeout = setTimeout(() => firstWave.reject(Error("Queue did not start")), 5000);
+  const running = runEvaluation(c, { control: async (view, store, past) => {
+    started.push(view.scope.runId); active++; peak = Math.max(peak, active);
+    expect(view.portfolio).toEqual(createInitialPortfolio(50000));
+    expect(view.scope.attempt).toBe(1); expect(past).toEqual([]); expect(store.all()).toHaveLength(1);
+    if (started.length === concurrency) firstWave.resolve();
+    try { await release.promise; throw Error("Offline quarter failure"); }
+    finally { active--; }
+  } });
+  try {
+    await firstWave.promise;
+    const snapshot = JSON.parse(readFileSync(resolve("results/evaluations", c.evalId, "summary.json"), "utf8"));
+    expect(snapshot.quarters.map((q: any) => q.status)).toEqual(Array.from({ length: 4 }, (_, i) => i < concurrency ? "running" : "pending"));
+    const jobs = evaluationSchedule(c.evalId, c.models!);
+    for (const job of jobs.slice(concurrency)) expect(existsSync(resolve("results/studies", job.runId, "manifest.json"))).toBe(false);
+    await expect(runEvaluation(c, { resume: true })).rejects.toThrow("locked by another process");
+  } finally {
+    clearTimeout(timeout); release.resolve(); await running;
+  }
+  const result = await running;
+  expect(peak).toBe(concurrency);
+  // Concurrent first-wave jobs may start in either order; assert set membership, not order.
+  expect(started).toHaveLength(result.plan.jobs.length);
+  expect([...started].sort()).toEqual(result.plan.jobs.map(j => j.runId).sort());
+  expect(result.report.quarters.every(q => q.status === "error" && q.error?.includes("Offline quarter failure"))).toBe(true);
+  expect(result.report.models[0]!.year).toBeNull();
+  expect(JSON.parse(readFileSync(join(result.dir, "summary.json"), "utf8"))).toEqual(result.report);
+  await expect(runEvaluation({ ...c, concurrency: concurrency === 1 ? 2 : 1 }, { resume: true })).rejects.toThrow("changed");
+  // Verification with the frozen schedule is read-only, even for interrupted jobs.
+  const logs = result.plan.jobs.map(j => readFileSync(resolve("results/studies", j.runId, "events.jsonl"), "utf8"));
+  expect((await runEvaluation(c, { readOnly: true })).report.status).toBe("incomplete");
+  expect(result.plan.jobs.map(j => readFileSync(resolve("results/studies", j.runId, "events.jsonl"), "utf8"))).toEqual(logs);
+}, 15000);
