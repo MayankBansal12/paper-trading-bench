@@ -119,9 +119,10 @@ export async function environmentCLI(command: string, argv: string[]) {
   const control = parseBooleanFlag("control", flags.get("control")),
     smoke = parseBooleanFlag("smoke", flags.get("smoke"));
   if (control && smoke) throw new Error("Choose control or smoke");
+  // Field order matches the evaluation child-config literal so resumed runs
+  // hash identically; contentHash is key-order sensitive.
   const c: StudyConfig = {
     protocol: STUDY_PROTOCOL,
-    ...(flags.has("model") ? { model: flags.get("model")! } : {}),
     kind:
       command === "qualify"
         ? "quarter"
@@ -131,6 +132,7 @@ export async function environmentCLI(command: string, argv: string[]) {
             ? "smoke"
             : "environment",
     runId: flags.get("run-id") ?? "qualification",
+    ...(flags.has("model") ? { model: flags.get("model")! } : {}),
     dataDir,
     datasetHash: market.version,
     universeVersion: "dataset",
