@@ -72,16 +72,15 @@ through a new PR. Preserve these failures and the stopped historical quarters.
 
 - [provenance.json](provenance.json): source/runtime/dataset identities, quarter
   roots, validation results and archive location/checksum.
-- [compatibility.json](compatibility.json): all 12 config comparisons and changed
-  versus unchanged implementation files.
-- [smoke-verification.json](smoke-verification.json): all three live outcomes,
-  original summaries, HTTP responses, tool counts and successful artifact replay.
-- [smoke-exit-verification.json](smoke-exit-verification.json): corrected CLI
-  outcomes and confirmation that terminal artifacts did not change.
-- [sandbox-verification.json](sandbox-verification.json): qualified sandbox and
-  executable identities. Fresh catalog evidence is in `results/qualifications/`.
+- [historical-verification.json](historical-verification.json): the freshly
+  reconstructed verification report for all 12 historical quarters.
 - [artifact-files.sha256](artifact-files.sha256): 596 individual bundle file hashes.
 - [audit-bundle.sha256](audit-bundle.sha256): checksum for the compressed bundle.
+
+The remaining receipts (config-compatibility comparisons across all 12 children,
+per-smoke HTTP/tool outcomes, sandbox and executable identities, and the corrected
+CLI exit outcomes) are summarized in this README and in `provenance.json`; the
+full receipts are preserved inside the checksummed local bundle.
 
 The local bundle is `results/archives/luna-spark-main-20260915.tar.gz` on the
 benchmark host. It contains the 12 historical runs, original evaluation records,
