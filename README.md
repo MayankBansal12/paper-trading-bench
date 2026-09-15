@@ -49,4 +49,4 @@ See the [current contract and command guide](docs/STUDY_ENVIRONMENT.md), [valida
 
 The [read-only viewer](docs/VIEWER.md) groups runs by model cohort, shows year/quarter stats, and drills into individual sessions and agent tool traces: `bun scripts/visualizer.ts --port 4173`.
 
-The [September 15 Luna/Spark validation](results/published/luna-spark-main-20260915/README.md) preserves historical replay evidence, current live-smoke outcomes, and audit-bundle checksums. Agent changes and run evidence must go through PRs; see [AGENTS.md](AGENTS.md).
+The [September 15 Luna validation](results/published/luna-main-20260915/README.md) preserves historical replay evidence, current live-smoke outcomes, and audit-bundle checksums. Agent changes and run evidence must go through PRs; see [AGENTS.md](AGENTS.md).

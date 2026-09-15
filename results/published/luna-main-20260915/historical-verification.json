@@ -1,0 +1,532 @@
+{
+  "version": "independent-quarters-apr2025-mar2026-v3",
+  "evalId": "models-v12-2025q2-2026q1",
+  "start": "2025-04-01",
+  "end": "2026-03-31",
+  "status": "complete",
+  "interpretation": "Four independent quarterly portfolios per model. Dollar outcomes are summed; mean quarterly TWR is not an annual compounded return. Independent account balances must not be plotted as one equity curve. These environment results do not establish scored NDX membership eligibility.",
+  "models": [
+    {
+      "model": "openai/gpt-5.6-luna",
+      "complete": true,
+      "completedQuarters": 4,
+      "accountedSessions": 251,
+      "validDays": 251,
+      "invalidDays": 0,
+      "retriedDays": 6,
+      "plannedContributions": 600000,
+      "accountedContributions": 600000,
+      "year": {
+        "totalContributions": 600000,
+        "sumOfQuarterEndingEquities": 605288.15,
+        "netProfit": 5288.15,
+        "profitOnContributionsPct": 0.88,
+        "meanQuarterTimeWeightedReturnPct": 3.27
+      }
+    }
+  ],
+  "quarters": [
+    {
+      "runId": "models-v12-2025q2-2026q1-openai-gpt-5-6-luna-65a8fc1dec61-2025-Q2",
+      "model": "openai/gpt-5.6-luna",
+      "label": "2025-Q2",
+      "start": "2025-04-01",
+      "end": "2025-06-30",
+      "status": "completed",
+      "summary": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "status": "completed",
+        "failure": null,
+        "committedDays": 62,
+        "validDays": 62,
+        "consecutiveInvalidDays": 0,
+        "maxConsecutiveInvalidDays": 0,
+        "stopped": false,
+        "totalDays": 62,
+        "attemptedDays": 62,
+        "retriedDays": 1,
+        "invalidDays": 0,
+        "unattemptedDays": 0,
+        "invalidSessions": [],
+        "portfolio": {
+          "cash": 12996.12,
+          "holdings": {
+            "MSFT": {
+              "units": 68.611549,
+              "avgCost": 439.26,
+              "lastClose": 497.4100036621094,
+              "value": 34128.07
+            },
+            "NVDA": {
+              "units": 110.574403,
+              "avgCost": 123.96,
+              "lastClose": 157.99000549316406,
+              "value": 17469.65
+            },
+            "AVGO": {
+              "units": 35.623453,
+              "avgCost": 240.21,
+              "lastClose": 275.6499938964844,
+              "value": 9819.6
+            },
+            "ZS": {
+              "units": 40.355062,
+              "avgCost": 277.55,
+              "lastClose": 313.94000244140625,
+              "value": 12669.07
+            },
+            "INTU": {
+              "units": 11.289615,
+              "avgCost": 726.85,
+              "lastClose": 787.6300048828125,
+              "value": 8892.04
+            },
+            "LRCX": {
+              "units": 121.892788,
+              "avgCost": 91.16,
+              "lastClose": 97.33999633789062,
+              "value": 11865.04
+            },
+            "KLAC": {
+              "units": 0.11513,
+              "avgCost": 894.89,
+              "lastClose": 895.7399749755859,
+              "value": 103.13
+            },
+            "AMD": {
+              "units": 69.423353,
+              "avgCost": 129.64,
+              "lastClose": 141.89999389648438,
+              "value": 9851.17
+            },
+            "ARM": {
+              "units": 95.55447,
+              "avgCost": 146.52,
+              "lastClose": 161.74000549316406,
+              "value": 15454.98
+            },
+            "STX": {
+              "units": 30.264092,
+              "avgCost": 132.17,
+              "lastClose": 144.3300018310547,
+              "value": 4368.02
+            },
+            "DASH": {
+              "units": 25.710956,
+              "avgCost": 233.36,
+              "lastClose": 246.50999450683594,
+              "value": 6338.01
+            },
+            "CEG": {
+              "units": 18.752258,
+              "avgCost": 319.96,
+              "lastClose": 322.760009765625,
+              "value": 6052.48
+            },
+            "ASML": {
+              "units": 4.897465,
+              "avgCost": 816.75,
+              "lastClose": 801.3900146484375,
+              "value": 3924.78
+            },
+            "META": {
+              "units": 14.874038,
+              "avgCost": 739.54,
+              "lastClose": 738.0900268554688,
+              "value": 10978.38
+            }
+          },
+          "holdingsValue": 151914.42,
+          "netWorth": 164910.54
+        },
+        "fills": 268,
+        "rejectedOrders": 7,
+        "journalEntries": 62,
+        "eventRoot": "028cbcf38cb1fb9ad49a955c015717444a84faa17be898c79cc9e9d424ca28ba",
+        "commitRoot": "3c8dd6a45287627bf268d1cce237847a1e4f23d4ace2a5fdf260e3a924a3de00",
+        "attempts": 63,
+        "failures": 1,
+        "usageUnavailableAttempts": 0
+      },
+      "error": null,
+      "metrics": {
+        "startingCapital": 50000,
+        "endingNetWorth": 164910.54,
+        "totalContributions": 150000,
+        "netProfit": 14910.54,
+        "timeWeightedReturnPct": 10.4562,
+        "totalReturnPct": 10.4562,
+        "maxDrawdownPct": -11.3057,
+        "dailyVolatilityPct": 1.474,
+        "annualizedVolatilityPct": 23.3997,
+        "sharpe": 1.8442,
+        "avgTurnoverPct": 12.2174,
+        "tradeCount": 268,
+        "failedOrderCount": 7,
+        "boundedStopCount": 0,
+        "daysRun": 62
+      }
+    },
+    {
+      "runId": "models-v12-2025q2-2026q1-openai-gpt-5-6-luna-65a8fc1dec61-2025-Q3",
+      "model": "openai/gpt-5.6-luna",
+      "label": "2025-Q3",
+      "start": "2025-07-01",
+      "end": "2025-09-30",
+      "status": "completed",
+      "summary": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "status": "completed",
+        "failure": null,
+        "committedDays": 64,
+        "validDays": 64,
+        "consecutiveInvalidDays": 0,
+        "maxConsecutiveInvalidDays": 0,
+        "stopped": false,
+        "totalDays": 64,
+        "attemptedDays": 64,
+        "retriedDays": 1,
+        "invalidDays": 0,
+        "unattemptedDays": 0,
+        "invalidSessions": [],
+        "portfolio": {
+          "cash": 20492.41,
+          "holdings": {
+            "NVDA": {
+              "units": 61.031515,
+              "avgCost": 163.23,
+              "lastClose": 186.5800018310547,
+              "value": 11387.26
+            },
+            "AVGO": {
+              "units": 20.148774,
+              "avgCost": 304.09,
+              "lastClose": 329.9100036621094,
+              "value": 6647.28
+            },
+            "GOOG": {
+              "units": 143.387309,
+              "avgCost": 203.19,
+              "lastClose": 243.5500030517578,
+              "value": 34921.98
+            },
+            "AAPL": {
+              "units": 91.112214,
+              "avgCost": 235.97,
+              "lastClose": 254.6300048828125,
+              "value": 23199.9
+            },
+            "PANW": {
+              "units": 100.690758,
+              "avgCost": 188.7,
+              "lastClose": 203.6199951171875,
+              "value": 20502.65
+            },
+            "QCOM": {
+              "units": 73.487587,
+              "avgCost": 163.29,
+              "lastClose": 166.36000061035156,
+              "value": 12225.4
+            },
+            "MU": {
+              "units": 78.753147,
+              "avgCost": 139.67,
+              "lastClose": 167.32000732421875,
+              "value": 13176.98
+            },
+            "MSFT": {
+              "units": 25.319273,
+              "avgCost": 513.44,
+              "lastClose": 517.9500122070312,
+              "value": 13114.12
+            },
+            "AMAT": {
+              "units": 17.216671,
+              "avgCost": 174.25,
+              "lastClose": 204.74000549316406,
+              "value": 3524.94
+            }
+          },
+          "holdingsValue": 138700.51,
+          "netWorth": 159192.92
+        },
+        "fills": 99,
+        "rejectedOrders": 2,
+        "journalEntries": 64,
+        "eventRoot": "a095285785b20de8da1b15cf10be50dfd525c3a819f502ce8571ddd757de24cf",
+        "commitRoot": "4c91c8b5c63e1fff55e0f72f8cd95f13ee0d5a69f2ec9b047e507085952918ba",
+        "attempts": 65,
+        "failures": 1,
+        "usageUnavailableAttempts": 0
+      },
+      "error": null,
+      "metrics": {
+        "startingCapital": 50000,
+        "endingNetWorth": 159192.92,
+        "totalContributions": 150000,
+        "netProfit": 9192.92,
+        "timeWeightedReturnPct": 9.1701,
+        "totalReturnPct": 9.1701,
+        "maxDrawdownPct": -2.8917,
+        "dailyVolatilityPct": 0.8204,
+        "annualizedVolatilityPct": 13.023,
+        "sharpe": 2.7187,
+        "avgTurnoverPct": 7.9801,
+        "tradeCount": 99,
+        "failedOrderCount": 2,
+        "boundedStopCount": 0,
+        "daysRun": 64
+      }
+    },
+    {
+      "runId": "models-v12-2025q2-2026q1-openai-gpt-5-6-luna-65a8fc1dec61-2025-Q4",
+      "model": "openai/gpt-5.6-luna",
+      "label": "2025-Q4",
+      "start": "2025-10-01",
+      "end": "2025-12-31",
+      "status": "completed",
+      "summary": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "status": "completed",
+        "failure": null,
+        "committedDays": 64,
+        "validDays": 64,
+        "consecutiveInvalidDays": 0,
+        "maxConsecutiveInvalidDays": 0,
+        "stopped": false,
+        "totalDays": 64,
+        "attemptedDays": 64,
+        "retriedDays": 3,
+        "invalidDays": 0,
+        "unattemptedDays": 0,
+        "invalidSessions": [],
+        "portfolio": {
+          "cash": 37081.89,
+          "holdings": {
+            "GOOG": {
+              "units": 62.205396,
+              "avgCost": 290.55,
+              "lastClose": 313.79998779296875,
+              "value": 19520.05
+            },
+            "AMZN": {
+              "units": 14.682158,
+              "avgCost": 232.24,
+              "lastClose": 230.82000732421875,
+              "value": 3388.94
+            },
+            "META": {
+              "units": 30.006624,
+              "avgCost": 649.85,
+              "lastClose": 660.0900268554688,
+              "value": 19807.07
+            },
+            "MSFT": {
+              "units": 21.527082,
+              "avgCost": 486.42,
+              "lastClose": 483.6199951171875,
+              "value": 10410.93
+            },
+            "ADBE": {
+              "units": 31.076523,
+              "avgCost": 353.96,
+              "lastClose": 349.989990234375,
+              "value": 10876.47
+            },
+            "NVDA": {
+              "units": 102.150195,
+              "avgCost": 186,
+              "lastClose": 186.5,
+              "value": 19051.01
+            },
+            "LRCX": {
+              "units": 39.535253,
+              "avgCost": 177.06,
+              "lastClose": 171.17999267578125,
+              "value": 6767.64
+            },
+            "MU": {
+              "units": 38.77436,
+              "avgCost": 283.69,
+              "lastClose": 285.4100036621094,
+              "value": 11066.59
+            },
+            "KLAC": {
+              "units": 3.927456,
+              "avgCost": 1273.09,
+              "lastClose": 1215.0800323486328,
+              "value": 4772.17
+            },
+            "AMAT": {
+              "units": 11.502204,
+              "avgCost": 260.82,
+              "lastClose": 256.989990234375,
+              "value": 2955.95
+            },
+            "AVGO": {
+              "units": 5.735274,
+              "avgCost": 348.72,
+              "lastClose": 346.1000061035156,
+              "value": 1984.98
+            }
+          },
+          "holdingsValue": 110601.8,
+          "netWorth": 147683.69
+        },
+        "fills": 185,
+        "rejectedOrders": 0,
+        "journalEntries": 64,
+        "eventRoot": "686f19a74bb15e30840334077c75f7b0d18b4185704f6ca2c6c08e3d3a38dad2",
+        "commitRoot": "7325da47779d53a4e099a810415b76263f84c6392aa4f78bfd4258bf2a3bec34",
+        "attempts": 67,
+        "failures": 3,
+        "usageUnavailableAttempts": 2
+      },
+      "error": null,
+      "metrics": {
+        "startingCapital": 50000,
+        "endingNetWorth": 147683.69,
+        "totalContributions": 150000,
+        "netProfit": -2316.31,
+        "timeWeightedReturnPct": 1.9344,
+        "totalReturnPct": 1.9344,
+        "maxDrawdownPct": -8.7387,
+        "dailyVolatilityPct": 1.3273,
+        "annualizedVolatilityPct": 21.0696,
+        "sharpe": 0.4614,
+        "avgTurnoverPct": 10.6874,
+        "tradeCount": 185,
+        "failedOrderCount": 0,
+        "boundedStopCount": 0,
+        "daysRun": 64
+      }
+    },
+    {
+      "runId": "models-v12-2025q2-2026q1-openai-gpt-5-6-luna-65a8fc1dec61-2026-Q1",
+      "model": "openai/gpt-5.6-luna",
+      "label": "2026-Q1",
+      "start": "2026-01-01",
+      "end": "2026-03-31",
+      "status": "completed",
+      "summary": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "status": "completed",
+        "failure": null,
+        "committedDays": 61,
+        "validDays": 61,
+        "consecutiveInvalidDays": 0,
+        "maxConsecutiveInvalidDays": 0,
+        "stopped": false,
+        "totalDays": 61,
+        "attemptedDays": 61,
+        "retriedDays": 1,
+        "invalidDays": 0,
+        "unattemptedDays": 0,
+        "invalidSessions": [],
+        "portfolio": {
+          "cash": 82898.11,
+          "holdings": {
+            "MSFT": {
+              "units": 5.407421,
+              "avgCost": 406.26,
+              "lastClose": 370.1700134277344,
+              "value": 2001.67
+            },
+            "PANW": {
+              "units": 104.245011,
+              "avgCost": 165.69,
+              "lastClose": 160.32000732421875,
+              "value": 16712.56
+            },
+            "PLTR": {
+              "units": 20.689651,
+              "avgCost": 154.15,
+              "lastClose": 146.27999877929688,
+              "value": 3026.48
+            },
+            "AMZN": {
+              "units": 8.768353,
+              "avgCost": 214.99,
+              "lastClose": 208.27000427246094,
+              "value": 1826.18
+            },
+            "CRWD": {
+              "units": 15.246754,
+              "avgCost": 437.23,
+              "lastClose": 390.4100036621094,
+              "value": 5952.49
+            },
+            "GOOG": {
+              "units": 10.415093,
+              "avgCost": 306.75,
+              "lastClose": 286.8599853515625,
+              "value": 2987.67
+            },
+            "AMD": {
+              "units": 25.148776,
+              "avgCost": 204.27,
+              "lastClose": 203.42999267578125,
+              "value": 5116.02
+            },
+            "NVDA": {
+              "units": 10.313551,
+              "avgCost": 184.05,
+              "lastClose": 174.39999389648438,
+              "value": 1798.68
+            },
+            "MU": {
+              "units": 14.327183,
+              "avgCost": 439.75,
+              "lastClose": 337.8399963378906,
+              "value": 4840.3
+            },
+            "AMAT": {
+              "units": 0.717742,
+              "avgCost": 344.19,
+              "lastClose": 341.7900085449219,
+              "value": 245.32
+            },
+            "LRCX": {
+              "units": 28.529054,
+              "avgCost": 223.78,
+              "lastClose": 213.66000366210938,
+              "value": 6095.52
+            }
+          },
+          "holdingsValue": 50602.89,
+          "netWorth": 133501
+        },
+        "fills": 272,
+        "rejectedOrders": 4,
+        "journalEntries": 61,
+        "eventRoot": "06731e55c6f7f4c70bc0d354d10b62e4cf6c95ed75d286c2358a585dec5ca3ca",
+        "commitRoot": "1b9271e4dcc5fe6417fb85443633cbd7378fc36da8fa54ab53ccc8371d32686b",
+        "attempts": 62,
+        "failures": 1,
+        "usageUnavailableAttempts": 0
+      },
+      "error": null,
+      "metrics": {
+        "startingCapital": 50000,
+        "endingNetWorth": 133501,
+        "totalContributions": 150000,
+        "netProfit": -16499,
+        "timeWeightedReturnPct": -8.4782,
+        "totalReturnPct": -8.4782,
+        "maxDrawdownPct": -17.5349,
+        "dailyVolatilityPct": 1.2517,
+        "annualizedVolatilityPct": 19.8705,
+        "sharpe": -1.7433,
+        "avgTurnoverPct": 18.2417,
+        "tradeCount": 272,
+        "failedOrderCount": 4,
+        "boundedStopCount": 0,
+        "daysRun": 61
+      }
+    }
+  ]
+}
