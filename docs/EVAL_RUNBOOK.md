@@ -4,6 +4,28 @@ This is the shared preparation for a model evaluation on another host. The curre
 runtime is OpenCode; the Claude Code adapter will be developed and qualified on
 `mayank-RedmiBook-15` before Sonnet can use the same execution/reporting flow.
 
+## Pull requests for agent work and run evidence
+
+Deliver every agent code change through a branch and PR; never push directly to
+`main`. Run each evaluation from a clean, pinned revision. Include every live
+benchmark run in a results PR, including smoke tests, interrupted runs and provider
+failures. The PR should identify its source, commands, exact model, dataset/runtime
+hashes, coverage and replay result, and link the checksummed audit bundle. A failed
+smoke is evidence to retain, not a result to quietly replace with a successful retry.
+
+Historical results remain tied to their original implementation after merges.
+Use a separate checkout of that source and verify a copy of the artifacts. Publish
+the newly derived summary in the results PR; do not rewrite the frozen manifests
+or replay guards. A stale orchestrator `summary.json` is not authoritative coverage.
+Check day commits and reconstruct the summary with the pinned verifier.
+
+Compare saved child configs and the source that controls prompts, tools, data
+cutoffs, journals and accounting before claiming comparable conditions. Matching
+configs alone do not prove behavior is unchanged, and neither a matching config
+nor a successful replay proves a provider is currently available. Confirm current
+availability with a separate bounded smoke. Preserve an incomplete model's partial
+results and leave its annual score unavailable.
+
 ## 1. Freeze the checkout and runtime
 
 Use a dedicated worktree at the reviewed commit, then record `git rev-parse HEAD`
@@ -83,8 +105,11 @@ pnpm bench review --dir results/studies/glm-adapter-smoke --analysis=true
 Check actual valid decisions, exact requested/resolved model, four trading tools,
 usage availability, durable accepted submissions and successful replay. A process
 that exited successfully or created three day files is insufficient: day files can
-also represent explicit invalid-day accounting. Use a fresh evaluation ID for the
-full run; smoke state is never adopted as quarterly model memory.
+also represent explicit invalid-day accounting. Smoke `run` and `resume` exit
+nonzero unless every planned day is valid; ordinary cohort completion still counts
+invalid days as accounted sessions. Read-only `verify` checks artifact integrity,
+so it can succeed for an invalid smoke; inspect its coverage too. Use a fresh
+evaluation ID for the full run; smoke state is never adopted as quarterly model memory.
 
 For Claude Code, first implement the adapter, local subscription transport,
 model/prompt/tool audits, stream/usage parsing and sandbox support. Test fresh

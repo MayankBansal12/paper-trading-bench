@@ -83,7 +83,7 @@ export async function environmentCLI(command: string, argv: string[]) {
       console.error(join(dir, "review.md"));
     }
     console.log(JSON.stringify(result.summary, null, 2));
-    if (command === "resume" && result.summary.status !== "completed") process.exitCode = 1;
+    if (command === "resume" && executionFailed(c, result.summary)) process.exitCode = 1;
     return;
   }
   if (!["run", "qualify"].includes(command)) throw new Error(HELP);
@@ -184,5 +184,16 @@ export async function environmentCLI(command: string, argv: string[]) {
   );
   console.log(JSON.stringify(result.summary, null, 2));
   console.error(result.dir);
-  if (result.summary.status !== "completed") process.exitCode = 1;
+  if (executionFailed(c, result.summary)) process.exitCode = 1;
+}
+
+// Accounting every day is enough to complete a cohort, but a smoke qualifies
+// the live route only when every planned day produced a valid decision.
+function executionFailed(
+  config: StudyConfig,
+  summary: Awaited<ReturnType<typeof runStudy>>["summary"],
+) {
+  return summary.status !== "completed" ||
+    (config.kind === "smoke" &&
+      (summary.totalDays < 1 || summary.validDays !== summary.totalDays));
 }

@@ -31,3 +31,6 @@ datasets/
 # Model transcripts and immutable experiment artifacts
 results/studies/
 results/evaluations/
+
+# Checksummed audit bundles are referenced by compact results PRs.
+results/archives/

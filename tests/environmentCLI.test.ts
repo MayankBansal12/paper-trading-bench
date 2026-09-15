@@ -36,7 +36,7 @@ test("each qualified route is selectable through the unchanged five-session smok
         prepareStudyData: async config => ({ dates: [config.start] }),
         runStudy: async config => {
           if (config.model !== ${JSON.stringify(model)} || config.kind !== "smoke") throw Error("Route lost");
-          return { summary: { status: "completed", model: config.model }, dir: "/offline" };
+          return { summary: { status: "completed", validDays: 1, totalDays: 1, model: config.model }, dir: "/offline" };
         },
       }));
       const { environmentCLI } = await import(${JSON.stringify(resolve("src/cli/environment.ts"))});
@@ -53,3 +53,41 @@ test("single-run preparation rejects unknown routes and control/model mixing bef
   await expect(prepareStudyData({ kind: "smoke", model: "openai/unknown" } as any)).rejects.toThrow("Unqualified");
   await expect(prepareStudyData({ kind: "control", model: "openai/gpt-5.6-luna" } as any)).rejects.toThrow("Control cannot select");
 });
+
+for (const command of ["run", "resume", "inspect", "verify"] as const)
+  for (const kind of ["smoke", "environment"] as const)
+    for (const validDays of [0, 1, 2])
+      test(`${command} ${kind}: ${validDays}/2 valid days has the correct exit status`, async () => {
+        const runId = "test-smoke-exit-" + randomUUID();
+        const dir = resolve("results/studies", runId);
+        const summary = {
+          status: "completed", totalDays: 2, committedDays: 2,
+          validDays, invalidDays: 2 - validDays,
+        };
+        mkdirSync(dir, { recursive: true });
+        writeFileSync(join(dir, "manifest.json"), JSON.stringify({ config: { runId, kind } }));
+        try {
+          const args = command === "run"
+            ? ["--run-id", runId, "--data-dir=/offline", "--start=2025-04-01", "--end=2025-04-02",
+                ...(kind === "smoke" ? ["--smoke=true"] : [])]
+            : ["--dir", dir];
+          const script = `import { mock } from "bun:test";
+            mock.module(${JSON.stringify(resolve("src/data/dataset.ts"))}, () => ({
+              loadDataset: async () => ({ version: "offline" }),
+            }));
+            mock.module(${JSON.stringify(resolve("src/study/runner.ts"))}, () => ({
+              prepareStudyData: async () => ({ dates: ["2025-04-01", "2025-04-02"] }),
+              runStudy: async () => ({ summary: ${JSON.stringify(summary)}, dir: "/offline" }),
+            }));
+            const { environmentCLI } = await import(${JSON.stringify(resolve("src/cli/environment.ts"))});
+            await environmentCLI(${JSON.stringify(command)}, ${JSON.stringify(args)});`;
+          const child = Bun.spawn([process.execPath, "-e", script], { stdout: "pipe", stderr: "pipe" });
+          const [code, out, err] = await Promise.all([
+            child.exited, new Response(child.stdout).text(), new Response(child.stderr).text(),
+          ]);
+          const failedSmoke = kind === "smoke" && validDays < 2 && ["run", "resume"].includes(command);
+          expect(code).toBe(failedSmoke ? 1 : 0);
+          expect(JSON.parse(out)).toEqual(summary);
+          expect(err.trim()).toBe(command === "run" ? "/offline" : "");
+        } finally { rmSync(dir, { recursive: true, force: true }); }
+      });

@@ -1,0 +1,127 @@
+{
+  "currentRevision": "3d2f9302af41628994d20d1f79316e865e51d42c",
+  "historicalImplementation": "fa3300df661d2709a782da0bbf161d702145c186291a6031ca2b8958254eeb7a",
+  "currentImplementation": "57b356e2bfc33e13d259a437c5f7cb0906151b31f572cc08b1b2281f24bc40f8",
+  "historicalVersion": "independent-quarters-apr2025-mar2026-v3",
+  "currentVersion": "independent-quarters-apr2025-mar2026-v4",
+  "jobs": [
+    {
+      "runId": "models-v12-2025q2-2026q1-opencode-muse-spark-1-3-c-567712ad39ee-2025-Q2",
+      "historicalConfigHash": "3bf41848c715c7427e5c0bcf71c7cb42417f1ae7bde83670524a958f324e66a9",
+      "currentConfigHash": "3bf41848c715c7427e5c0bcf71c7cb42417f1ae7bde83670524a958f324e66a9",
+      "equal": true
+    },
+    {
+      "runId": "models-v12-2025q2-2026q1-opencode-muse-spark-1-3-c-567712ad39ee-2025-Q3",
+      "historicalConfigHash": "683755f0dfc012273a28c63de15cd99e9ae4ba129ee24efd3b9967271cf97d56",
+      "currentConfigHash": "683755f0dfc012273a28c63de15cd99e9ae4ba129ee24efd3b9967271cf97d56",
+      "equal": true
+    },
+    {
+      "runId": "models-v12-2025q2-2026q1-opencode-muse-spark-1-3-c-567712ad39ee-2025-Q4",
+      "historicalConfigHash": "e6e04b55cf160b359e5aaeef4fb6973352bf6dafc985fd4fb1079babd5ab23f5",
+      "currentConfigHash": "e6e04b55cf160b359e5aaeef4fb6973352bf6dafc985fd4fb1079babd5ab23f5",
+      "equal": true
+    },
+    {
+      "runId": "models-v12-2025q2-2026q1-opencode-muse-spark-1-3-c-567712ad39ee-2026-Q1",
+      "historicalConfigHash": "459d0aac5173cd4b75592fa0873a910d1a88a9c58780419012e66e7799a8b46f",
+      "currentConfigHash": "459d0aac5173cd4b75592fa0873a910d1a88a9c58780419012e66e7799a8b46f",
+      "equal": true
+    },
+    {
+      "runId": "models-v12-2025q2-2026q1-opencode-muse-spark-1-2-c-dbe4a38d623c-2025-Q2",
+      "historicalConfigHash": "c596adee24248f11fa6525ffce030298479ae2bee5429aab3a065a93fff633f4",
+      "currentConfigHash": "c596adee24248f11fa6525ffce030298479ae2bee5429aab3a065a93fff633f4",
+      "equal": true
+    },
+    {
+      "runId": "models-v12-2025q2-2026q1-opencode-muse-spark-1-2-c-dbe4a38d623c-2025-Q3",
+      "historicalConfigHash": "02e2b8da9b4873fe6f2b03caac08d8f9a23392c6b9ed9e39ff99ddfa58058156",
+      "currentConfigHash": "02e2b8da9b4873fe6f2b03caac08d8f9a23392c6b9ed9e39ff99ddfa58058156",
+      "equal": true
+    },
+    {
+      "runId": "models-v12-2025q2-2026q1-opencode-muse-spark-1-2-c-dbe4a38d623c-2025-Q4",
+      "historicalConfigHash": "4230115f03e901a5b2d26bef6e766a106fce1923736041f70c2541ea4aa1b781",
+      "currentConfigHash": "4230115f03e901a5b2d26bef6e766a106fce1923736041f70c2541ea4aa1b781",
+      "equal": true
+    },
+    {
+      "runId": "models-v12-2025q2-2026q1-opencode-muse-spark-1-2-c-dbe4a38d623c-2026-Q1",
+      "historicalConfigHash": "126413ebc2d861c63e509d08c0c09ad1347b5d29688fada15a0ea74e5f4700cb",
+      "currentConfigHash": "126413ebc2d861c63e509d08c0c09ad1347b5d29688fada15a0ea74e5f4700cb",
+      "equal": true
+    },
+    {
+      "runId": "models-v12-2025q2-2026q1-openai-gpt-5-6-luna-65a8fc1dec61-2025-Q2",
+      "historicalConfigHash": "1fb60f4a285840a7158c773432db84b5993e35344c48a706a4ead25a82d3a207",
+      "currentConfigHash": "1fb60f4a285840a7158c773432db84b5993e35344c48a706a4ead25a82d3a207",
+      "equal": true
+    },
+    {
+      "runId": "models-v12-2025q2-2026q1-openai-gpt-5-6-luna-65a8fc1dec61-2025-Q3",
+      "historicalConfigHash": "3a657d45a7394273e88dea34bfee29d6f201b903188fd9ca7db9b2abf30b88df",
+      "currentConfigHash": "3a657d45a7394273e88dea34bfee29d6f201b903188fd9ca7db9b2abf30b88df",
+      "equal": true
+    },
+    {
+      "runId": "models-v12-2025q2-2026q1-openai-gpt-5-6-luna-65a8fc1dec61-2025-Q4",
+      "historicalConfigHash": "c1e34a015fe9e9137c0180bfb3086ececeec24bb56138664aab0047638227887",
+      "currentConfigHash": "c1e34a015fe9e9137c0180bfb3086ececeec24bb56138664aab0047638227887",
+      "equal": true
+    },
+    {
+      "runId": "models-v12-2025q2-2026q1-openai-gpt-5-6-luna-65a8fc1dec61-2026-Q1",
+      "historicalConfigHash": "7ea3cd34f0a7a8c87aab191b39fc971176a00fc388ae5b739b1032ac6f4fd3bb",
+      "currentConfigHash": "7ea3cd34f0a7a8c87aab191b39fc971176a00fc388ae5b739b1032ac6f4fd3bb",
+      "equal": true
+    }
+  ],
+  "changedFiles": [
+    "src/opencode/audit.ts",
+    "src/opencode/config.ts",
+    "src/opencode/credentials.ts",
+    "src/opencode/events.ts",
+    "src/opencode/qualification.ts",
+    "src/study/accept.ts",
+    "src/study/gateway.ts"
+  ],
+  "unchangedFiles": [
+    "package.json",
+    "pnpm-lock.yaml",
+    "scripts/sandbox/launch.sh",
+    "scripts/sandbox/seccomp.c",
+    "src/config/universe.ts",
+    "src/core/context.ts",
+    "src/core/execute.ts",
+    "src/core/funding.ts",
+    "src/core/hash.ts",
+    "src/core/types.ts",
+    "src/data/calendar.ts",
+    "src/data/dataset.ts",
+    "src/domain/types.ts",
+    "src/engine/cashFlows.ts",
+    "src/engine/execution.ts",
+    "src/engine/money.ts",
+    "src/engine/portfolio.ts",
+    "src/engine/sizing.ts",
+    "src/opencode/context.ts",
+    "src/run/lock.ts",
+    "src/study/agent.ts",
+    "src/study/identity.ts",
+    "src/study/journal.ts",
+    "src/study/memo.ts",
+    "src/study/protocol.ts",
+    "src/study/retrieval.ts",
+    "src/study/runner.ts",
+    "src/study/sandbox.ts",
+    "src/study/tools.ts",
+    "src/study/verify.ts",
+    "src/study/worker.ts",
+    "src/utils/fs.ts",
+    "src/utils/paths.ts"
+  ],
+  "checkedAt": "2026-09-15T20:32:10.720966+00:00",
+  "interpretation": "All saved job configurations match. Seven adapter/acceptance files changed and were reviewed separately; matching configurations do not make the implementations interchangeable for replay."
+}

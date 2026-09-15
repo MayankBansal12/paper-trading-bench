@@ -1,0 +1,26 @@
+{
+  "policy": "bwrap-systemd-unix-gateway-v2",
+  "bwrap": "bubblewrap 0.9.0",
+  "hashes": {
+    "scripts/sandbox/launch.sh": "8f65ca2af099e8744a98ad9ad8ef1236ad43dda107b9427355800822832499e6",
+    "src/study/worker.ts": "9604def933793d2c819fc4624a4cbb89b488738fffde8e46fec03cd9ee0c235b",
+    ".sandbox/seccomp.bpf": "791d20edbc3fa44a193adcfe6774c739f80e6806742cfbbdab3f0c8b4fba70e0"
+  },
+  "opencodeHash": "87bd160e053af86b5b409daabf71f8dc05bbc3a2a3a5f563f36011cdf706a999",
+  "bunHash": "9fd36f87e4b90b07632b987a2e4ec81ca15a62c81bf983190cea6d715be2ad74",
+  "bwrapHash": "52231e1caf55bcbc667b269f49c63599a6f7db4767ae6a039580d0ff853db712",
+  "kernel": "6.17.0-1022-azure",
+  "limits": {
+    "memoryBytes": 2147483648,
+    "tasks": 128,
+    "tmpBytes": 67108864,
+    "workBytes": 134217728
+  },
+  "id": "af47d0e2bae4aa973db021c03760d76b2ea6a42209e419fa059aa29ac12780a3",
+  "qualified": true,
+  "probe": {
+    "type": "sandbox_probe",
+    "status": 200,
+    "body": "scoped-gateway"
+  }
+}
