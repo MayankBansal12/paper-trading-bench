@@ -40,9 +40,10 @@ export async function writeStudyReview(
     `${result.summary.status}: ${result.summary.validDays}/${result.summary.totalDays} valid decisions; ${result.summary.committedDays} days accounted; ${result.summary.failures} failed attempts.`, "",
     `${result.summary.attemptedDays} trading days attempted; ${result.summary.retriedDays} retried; ${result.summary.invalidDays} invalid after exhausted attempts; ${result.summary.unattemptedDays} not attempted.`, "",
     "Portfolio metrics include every accounted day, including deposits, corporate actions and market movement on invalid days. Decision metrics cover valid decisions only. Failed attempts remain in the operational record; quarters stopped after three consecutive invalid days are incomplete-period results.", "",
-    "| Date | Attempt | Outcome | Committed | Inference requests | Broker calls |",
-    "|---|---:|---|---|---:|---:|",
-    ...attempts.map(a => `| ${a.date} | ${a.attempt} | ${a.outcome} | ${a.committed ? "yes" : "no"} | ${a.observedInferenceRequests} | ${a.observedBrokerCalls} |`),
+    "Failure categories describe retained evidence, not proven root causes. Tool-validation errors and recovered provider errors do not independently mark an attempt or day invalid.", "",
+    "| Date | Attempt | Outcome | Failure category | Committed | Inference requests | Broker calls | Tool errors |",
+    "|---|---:|---|---|---|---:|---:|---:|",
+    ...attempts.map(a => `| ${a.date} | ${a.attempt} | ${a.outcome} | ${a.failureCategory ?? "—"} | ${a.committed ? "yes" : "no"} | ${a.observedInferenceRequests} | ${a.observedBrokerCalls} | ${a.toolValidationErrors} |`),
     "",
     ...attempts.filter(a => a.reason).flatMap(a => [
       `${a.date}, attempt ${a.attempt}:`, "", literalText(String(a.reason)), "",

@@ -1,6 +1,6 @@
 # April 2025–March 2026 evaluation
 
-The benchmark evaluation launches four separate runs of each qualified model concurrently, one per calendar quarter. Use `pnpm bench eval` (also `pnpm study:run`). Dates are fixed, so neither command accepts `--start` or `--end`.
+The benchmark evaluation schedules four separate runs of each qualified model, one per calendar quarter. Use `pnpm bench eval` (also `pnpm study:run`). All selected jobs run concurrently by default; `--concurrency N` bounds the number of active model/quarter runs globally. Dates are fixed, so neither command accepts `--start` or `--end`.
 
 | Quarter | Evaluation dates | Sessions |
 | --- | --- | ---: |
@@ -26,6 +26,10 @@ pnpm bench eval --eval-id apr2025-mar2026-control --data-dir /path/to/frozen/yea
 # Execute every currently qualified model.
 pnpm study:run --eval-id apr2025-mar2026 --data-dir /path/to/frozen/year-dataset
 
+# Laptop-friendly: one independent quarter at a time, one selected route.
+pnpm study:run --eval-id glm-serial --data-dir /path/to/frozen/year-dataset \
+  --models opencode-go/glm-5.3-flash --concurrency=1
+
 # Explicitly resume each child from only its own durable state.
 pnpm bench eval --eval-id apr2025-mar2026 --data-dir /path/to/frozen/year-dataset --resume=true
 
@@ -33,7 +37,11 @@ pnpm bench eval --eval-id apr2025-mar2026 --data-dir /path/to/frozen/year-datase
 pnpm bench eval --eval-id apr2025-mar2026 --data-dir /path/to/frozen/year-dataset --verify=true
 ```
 
-Omit `--models` to run all three qualified routes, or pass a comma-separated subset. Unknown/unqualified routes are rejected, and there is no paid fallback. The model runtime checks the selected exact free route before inference. `--control=true` selects a separate control cohort and cannot produce model-labeled results.
+Omit `--models` to run all four qualified routes, including catalog-priced GLM, or pass a comma-separated subset. Unknown/unqualified routes are rejected; routes never fall back to another model. The model runtime checks the selected exact route and pinned prices before inference. `--control=true` selects a separate control cohort and cannot produce model-labeled results.
+
+`--concurrency` must be an integer from 1 through the number of selected jobs. It defaults to the job count (16 for all four routes, 4 for one model/control). Jobs enter in model-list order and chronological quarter order. Each slot is held for the whole quarter, including its setup, run and report publication. Pending quarters remain `pending` and have no child runtime/directory until admitted. Failed quarters release their slots so queued peers still run; the evaluation lock covers the entire queue. The selected concurrency is recorded in the immutable plan: use the same flag on `--resume=true` and `--verify=true`. An omitted flag on a serial resume is configuration drift, not permission to launch four jobs.
+
+This scheduler is evaluation version `independent-quarters-apr2025-mar2026-v4`. Earlier evaluation manifests retain their original orchestration/source for resume and verification. Per-session v12 accounting, attempts and tool limits are unchanged.
 
 The lower-level `bench run` command remains available for a single supplied environment/control/smoke window. It does not produce this annual evaluation. Do not pass a year-long range to it and reinterpret its continuous portfolio as independent quarters.
 
@@ -44,8 +52,9 @@ The lower-level `bench run` command remains available for a single supplied envi
 | `opencode/muse-spark-1.3-contributor-free` | OpenCode Zen (`opencode`) | `OPENCODE_API_KEY` or official API-key auth entry |
 | `opencode/muse-spark-1.2-contributor-free` | OpenCode Zen (`opencode`) | Same Zen credential |
 | `openai/gpt-5.6-luna` | OpenAI (`openai`), Codex OAuth transport | OpenCode's host `openai` OAuth auth entry |
+| `opencode-go/glm-5.3-flash` | OpenCode Go (`opencode-go`) | `OPENCODE_GO_API_KEY` or official `opencode-go` API-key auth entry |
 
-All routes require official client **1.18.30**, an exact model/provider/API ID match from `opencode models <provider> --verbose --refresh`, active status, tool-call capability, and explicit zero input, output, cache-read and cache-write prices with no pricing tiers. The Zen adapter additionally requires its free catalog name and exact Zen endpoint. Luna requires the official OpenAI adapter and its observed empty catalog API URL; the host gateway pins its OAuth destination to `https://chatgpt.com/backend-api/codex/responses`. The registry never treats a similarly named model or another provider as an equivalent route.
+All routes require official client **1.18.30**, an exact model/provider/API ID match from `opencode models <provider> --verbose --refresh`, active status, tool-call capability, and exact pinned input, output, cache-read and cache-write prices with no pricing tiers. The two Muse routes and Luna pin all four prices to zero. GLM pins **$0.15 input / $0.50 output / $0.03 cache-read / $0 cache-write per million tokens**. Price drift fails qualification. Its adapter is `@ai-sdk/openai-compatible` at `https://opencode.ai/zen/go/v1`; other routes use `@ai-sdk/openai`. The Zen adapter additionally requires its free catalog name and exact Zen endpoint. Luna requires the official OpenAI adapter and its observed empty catalog API URL; the host gateway pins its OAuth destination to `https://chatgpt.com/backend-api/codex/responses`. The registry never treats a similarly named model or another provider as an equivalent route.
 
 ```sh
 # Refresh and retain separate evidence JSON for every route, without inference.
@@ -64,13 +73,15 @@ pnpm bench eval --eval-id two-models --data-dir /path/to/frozen/year-dataset \
   --models opencode/muse-spark-1.2-contributor-free,openai/gpt-5.6-luna
 ```
 
-Catalog qualification makes **no inference calls**. Each artifact in `results/qualifications/` retains the version, command, attempt timestamps, output hashes and accepted catalog entry. Up to three catalog attempts expose transient omissions; missing or nonzero evidence fails closed. Runtime preparation repeats this check and writes fresh evidence. Committed catalog evidence is a dated observation, not a replacement for the runtime gate. Live smokes are a separate, explicitly invoked step; adding these routes did not run them.
+Catalog qualification makes **no inference calls**. Each artifact in `results/qualifications/` retains the version, command, attempt timestamps, output hashes and accepted catalog entry. Up to three catalog attempts expose transient omissions; missing or mismatched pricing evidence fails closed. Runtime preparation repeats this check and writes fresh evidence with `pricingProven: true`. Committed catalog evidence is a dated observation, not a replacement for the runtime gate. Live smokes are a separate, explicitly invoked step. Reported cost must be finite and nonnegative for GLM, and zero for a free route; unavailable cost remains null rather than invented zero.
 
 All routes use default reasoning settings: no selected variant or reasoning-level override is supplied. The isolated client receives the freshly qualified catalog metadata, including OAuth pricing and limits. Config and per-request audits check the exact main/small/agent model, enabled provider, adapter, costs, tool capability, prompt and tool allowlist. Each child manifest freezes its selected route for resume.
 
 ### Host credentials and sandbox transport
 
 For Zen, load the existing host `.env` containing `OPENCODE_API_KEY` or use the official `opencode` API credential in the host auth store. The prior plain Pi API-key entry remains supported. Credential values are never put in the client config or audit records.
+
+For Go, the host reads `OPENCODE_GO_API_KEY` or the official host auth store's `opencode-go` API entry. The Zen credential does not substitute for a Go credential. Inside the sandbox, the official Go client expects **`OPENCODE_API_KEY`**, which contains only the scoped gateway capability. The gateway inserts the real Go credential and stable per-attempt `x-opencode-session` / pinned-client user-agent headers. No host credential is included in that session marker.
 
 For Luna, run `opencode auth login` on the host and select OpenAI's ChatGPT/Codex OAuth login if authentication is absent. The already authenticated host needs no additional API key. The broker reads `${XDG_DATA_HOME:-~/.local/share}/opencode/auth.json`, refreshes expired OAuth credentials on the host, and atomically persists rotated tokens with mode `0600`, preserving other provider entries. Benchmark refreshes are serialized across quarters/processes. Authentication or refresh failure stops forwarding; no paid API-key fallback is available for OAuth-qualified pricing. An API-key route would require its own fresh zero-cost qualification; an `OPENAI_API_KEY` alone cannot substitute for this OAuth route. See [OpenAI authentication](https://learn.chatgpt.com/docs/auth) and the [pinned OpenCode OAuth implementation](https://github.com/anomalyco/opencode/blob/v1.18.30/packages/opencode/src/plugin/openai/codex.ts).
 
@@ -80,14 +91,14 @@ Refresh errors omit response bodies and credential values. If a killed process l
 
 ## Isolation and funding
 
-Each model/quarter is a distinct run with its own run ID, directory, immutable manifest, event chain and daily commit chain. The same model has four runs active in parallel; each run processes its own trading sessions chronologically. All selected models are scheduled together: three models × four quarters gives 12 concurrent jobs. Every run starts independently with:
+Each model/quarter is a distinct run with its own run ID, directory, immutable manifest, event chain and daily commit chain. Each run processes its own trading sessions chronologically. Four models × four quarters gives 16 jobs; up to the frozen concurrency are active together. Every run starts independently when it enters the queue's active set:
 
 - $50,000 cash, no positions or cost bases.
 - Empty journals and decision history, fresh attempt counters and zero consecutive failures.
 - Its own model runtime and daily isolated client sessions.
 - $50,000 deposits on the first exchange session of its second and third months.
 
-No ending balances, P&L, holdings, evidence receipts, journals or failures are supplied to another child. Only that child's own state is restored during explicit resume. A stopped/failed quarter does not stop or delay its concurrently running peers. A new evaluation refuses pre-existing child directories; configuration, data or implementation drift requires a new evaluation ID.
+No ending balances, P&L, holdings, evidence receipts, journals or failures are supplied to another child. Only that child's own state is restored during explicit resume. A stopped/failed quarter does not cancel its peers; queued quarters start as slots become free. A new evaluation refuses pre-existing child directories; configuration, data or implementation drift requires a new evaluation ID.
 
 Quarter-end positions remain marked at the closing price for that quarter's result. There is no forced liquidation: every other quarter already has its own independently initialized account.
 
@@ -103,6 +114,6 @@ If any quarter is missing, errored, stopped or incomplete, the year score is `nu
 
 The previous `muse-spark-free-2026-full` run was a single continuous January 2–August 31, 2026 environment study. It did not complete four quarters and is not a result for this evaluation.
 
-Its retained dataset, `datasets/historical/nasdaq100_2026q1-q3_v1`, starts coverage on April 1, 2025 and has no earlier warmup bars. It fails the new preflight. None of the retained datasets currently covers the required April 2025 start with its preceding history; a new frozen dataset is required before a model rerun. Do not shorten the evaluation, fabricate price history or silently drop securities to get past this guard.
+Its retained dataset, `datasets/historical/nasdaq100_2026q1-q3_v1`, starts coverage on April 1, 2025 and has no earlier warmup bars. It fails the new preflight. The replacement frozen dataset, `datasets/historical/nasdaq100_2025q2-2026q1_v1`, covers April 1, 2024–March 31, 2026 and is used by the current yearly environment cohorts. It is a local gitignored input, so transfer it separately to another host and verify the dataset hash in all four prepared child configs. Do not refetch or modify it during a cohort.
 
 The environment's frozen supported-security universe does not establish membership as of each historical quarter. Complete pre-quarter membership/reference qualification remains a separate requirement for scored Nasdaq-100 comparisons, enforced by `bench qualify`. This launcher does not claim that eligibility.

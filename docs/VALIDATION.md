@@ -1,5 +1,29 @@
 # Benchmark validation
 
+## Bounded execution and shared machine readiness (2026-09-15)
+
+Evaluation scheduler v4 records `maxConcurrentRuns` and admits model/quarter jobs
+through a bounded queue. Offline tests exercise serial and two-slot execution,
+pending versus running report state, independent initial accounts, queue progress
+after failures, lock lifetime, unchanged chronological report order, read-only
+verification and rejection of concurrency drift on resume. Default all-job
+concurrency retains its sixteen-model/quarter barrier test.
+
+Validation passed: `pnpm typecheck` and **285 tests, zero failures**. Additional
+regressions prove acceptance/replay of nonzero GLM cost, rejection of nonzero free
+route cost and invalid numeric costs, dedicated Go credential selection, stable Go
+session headers, and distinct evaluator failure diagnostics. Corrected tool errors
+remain observations on otherwise successful attempts, not failure categories.
+
+The real frozen yearly dataset also passed v4 serial preflight with **zero model
+calls**, 62/64/64/61 sessions, $600,000 total planned funding, and the same dataset
+hash in every child:
+`5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901`.
+See the [execution runbook](EVAL_RUNBOOK.md) for pinned-machine setup, smoke,
+monitoring, resume, verification and results publication. Claude Code remains a
+separate adapter qualification on the RedmiBook. The diagnostics are reporting-only;
+the existing v12 attempt/invalid-day policy is retained explicitly.
+
 ## v12 journal retrieval (2026-09-14)
 
 New cohorts use `v12-portfolio-journal-submit`. Journal reads apply case-insensitive, whitespace-separated AND keywords across original prose and optional tags; ticker filters also find standalone symbols in prose. Results are newest first, pages fill the note-character budget, empty searches include a bounded recent date/ticker index, and out-of-range cursors include restart guidance. The opening context preloads the latest three committed notes. Optional validated tags survive submission, replay and derived reports. The [environment contract](STUDY_ENVIRONMENT.md#journal-retrieval-and-tags-v12) specifies the matching and bounds.

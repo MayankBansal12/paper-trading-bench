@@ -185,6 +185,12 @@ for (const route of (await import("../src/opencode/qualification.ts")).QUALIFIED
       const headers = new Headers(forwarded[0].init.headers);
       expect(headers.get("authorization")).toBe("Bearer test-host-secret");
       expect(headers.get("chatgpt-account-id")).toBe(route.auth === "oauth" ? "test-host-account" : null);
+      if (route.provider === "opencode-go") {
+        expect(headers.get("user-agent")).toBe("opencode/1.18.30");
+        expect(headers.get("x-opencode-session")).toMatch(/^[0-9a-f-]{36}$/);
+        await (await request(route.model)).text();
+        expect(new Headers(forwarded[1].init.headers).get("x-opencode-session")).toBe(headers.get("x-opencode-session"));
+      }
       expect(JSON.stringify(events)).not.toContain("test-host-secret");
       expect(JSON.stringify(events)).not.toContain("test-host-account");
       expect(JSON.parse(forwarded[0].init.body)).toEqual({ ...body(s), model: route.model });

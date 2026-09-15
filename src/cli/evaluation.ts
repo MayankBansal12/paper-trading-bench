@@ -7,7 +7,7 @@ import { POLICY } from "../study/protocol.ts";
 export async function evaluationCLI(argv: string[]) {
   const { flags, positionals } = parseFlags(argv);
   assertNoPositionals(positionals, "eval");
-  assertKnownFlags(flags, ["eval-id", "data-dir", "models", "control", "history", "timeout-ms", "preflight", "resume", "verify"], "eval");
+  assertKnownFlags(flags, ["eval-id", "data-dir", "models", "control", "history", "timeout-ms", "concurrency", "preflight", "resume", "verify"], "eval");
   if (!flags.get("eval-id") || !flags.get("data-dir"))
     throw new Error("Required: --eval-id, --data-dir. Evaluation is fixed to April 2025–March 2026, in four independent quarters.");
   const control = parseBooleanFlag("control", flags.get("control"));
@@ -22,6 +22,7 @@ export async function evaluationCLI(argv: string[]) {
     models: control ? [CONTROL_MODEL] : flags.get("models")?.split(",").map(m => m.trim()) ?? EVALUATION_MODELS,
     history: parsePositiveInt("history", flags.get("history"), 100),
     timeoutMs: parsePositiveInt("timeout-ms", flags.get("timeout-ms"), POLICY.defaultTimeoutMs),
+    ...(flags.has("concurrency") ? { concurrency: parsePositiveInt("concurrency", flags.get("concurrency"), 1) } : {}),
   };
   if (preflight) {
     console.log(JSON.stringify({ plan: await prepareEvaluation(input), modelCalls: 0 }, null, 2));

@@ -20,8 +20,9 @@ import { qualifySandbox } from "../study/sandbox.ts";
 import { qualifiedRoute } from "../opencode/qualification.ts";
 import { writeFileAtomic } from "../utils/fs.ts";
 export const HELP = `Paper portfolio environment (${STUDY_PROTOCOL})
-  pnpm bench eval --eval-id ID --data-dir DIR [--models MODEL_IDS] [--preflight=true | --resume=true | --verify=true] [--control=true]
-    April 2025–March 2026: four separate runs in parallel per model, each with $50,000 fresh cash and empty memory.
+  pnpm bench eval --eval-id ID --data-dir DIR [--models MODEL_IDS] [--concurrency N] [--preflight=true | --resume=true | --verify=true] [--control=true]
+    April 2025–March 2026: four independent quarters per model, each with $50,000 fresh cash and empty memory.
+    Defaults to all jobs concurrently. Use --concurrency=1 for serial execution; preserve this value on resume/verify.
   pnpm bench run --run-id ID --data-dir DIR --start DATE --end DATE [--preflight=true] [--control=true] [--smoke=true] [--model MODEL_ID] [--history=100] [--timeout-ms=${POLICY.defaultTimeoutMs}]
   pnpm bench resume --dir results/studies/ID
   pnpm bench inspect --dir results/studies/ID

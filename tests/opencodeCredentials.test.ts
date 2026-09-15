@@ -6,6 +6,7 @@ import { loadProviderCredential } from "../src/opencode/credentials.ts";
 import { QUALIFIED_ROUTES } from "../src/opencode/qualification.ts";
 
 const zen = QUALIFIED_ROUTES[0]!, luna = QUALIFIED_ROUTES[2]!;
+const go = QUALIFIED_ROUTES.find(r => r.provider === "opencode-go")!;
 const token = (claims: unknown) => `test.${Buffer.from(JSON.stringify(claims)).toString("base64url")}.signature`;
 const signal = () => new AbortController().signal;
 async function fixture(auth: unknown) {
@@ -50,6 +51,19 @@ test("Luna keeps OAuth host-side, does no refresh on load, and cannot fall back 
     expect(calls).toBe(0);
     await writeFile(f.authPath, JSON.stringify({ openai: { type: "api", key: "test-paid-key" } }));
     await expect(loadProviderCredential(luna, { ...f, env: { OPENAI_API_KEY: "test-paid-key" }, forward })).rejects.toThrow("No API-key fallback");
+  } finally { await f.dispose(); }
+});
+
+test("Go uses its dedicated host credential and never substitutes the Zen credential", async () => {
+  const f = await fixture({ "opencode-go": { type: "api", key: "test-go-store" }, opencode: { type: "api", key: "test-zen-store" } });
+  try {
+    const env = await loadProviderCredential(go, { ...f, env: { OPENCODE_GO_API_KEY: "test-go-env", OPENCODE_API_KEY: "test-zen-env" } });
+    expect((await env.authorize(signal())).get("authorization")).toBe("Bearer test-go-env");
+    const store = await loadProviderCredential(go, f);
+    expect((await store.authorize(signal())).get("authorization")).toBe("Bearer test-go-store");
+    expect(JSON.stringify(store)).toBe('{"mode":"api"}');
+    await writeFile(f.authPath, JSON.stringify({ opencode: { type: "api", key: "test-zen-store" } }));
+    await expect(loadProviderCredential(go, { ...f, env: { OPENCODE_API_KEY: "test-zen-env" } })).rejects.toThrow("OpenCode Go credential unavailable");
   } finally { await f.dispose(); }
 });
 
