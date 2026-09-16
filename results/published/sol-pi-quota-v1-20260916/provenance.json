@@ -1,0 +1,27 @@
+{
+  "model": "pi/openai-codex/gpt-5.6-sol",
+  "sourceRevision": "6fab5f38034405e06195a236fc4f556401db5280",
+  "sourceCheckout": "/home/ai/.bb/thread-storage/pi-sequence/source-6fab5f3",
+  "datasetPath": "/home/ai/code/paper-trading-bench/datasets/historical/nasdaq100_2025q2-2026q1_v1",
+  "datasetHash": "5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901",
+  "availabilityPolicy": "quota-pause-v1",
+  "concurrency": 1,
+  "plannedSessions": 251,
+  "reasoning": "medium",
+  "subscriptionCost": null,
+  "originalCohort": "astra-pi-quota-v1-20260916",
+  "originalResultsPR": "https://github.com/MayankBansal12/paper-trading-bench/pull/16",
+  "auditBundles": [
+    {
+      "label": "initial",
+      "path": "/home/ai/code/paper-trading-bench/results/archives/sol-quota-recovery-20260916/audit-initial.tar.gz",
+      "sha256": "c3b0214345eb008fbbc103f9cf19d5b653920586f9eb7a211271ba85047073fd",
+      "bytes": 8084944
+    }
+  ],
+  "status": "queued",
+  "phase": "smoke",
+  "updatedAt": "2026-09-16T21:24:18.471471+00:00",
+  "notBefore": null,
+  "error": null
+}
