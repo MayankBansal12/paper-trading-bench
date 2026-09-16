@@ -97,7 +97,7 @@ def cli(cfg, args, label):
 
 
 def eval_args(cfg):
-    return ["eval", "--eval-id", cfg["evalId"], "--models", MODEL,
+    return ["eval", "--eval-id", cfg["evalId"], "--models", cfg.get("model", MODEL),
             "--concurrency=1", "--pause-on-quota=true", "--data-dir", cfg["dataset"]]
 
 
@@ -137,11 +137,11 @@ def publish(cfg, state, report=None, label="initial"):
             for p in art.glob(pattern):
                 bundle.add(p, arcname="execution/" + p.name)
     previous = read(out / "provenance.json") if (out / "provenance.json").exists() else {
-        "model": MODEL, "sourceRevision": cfg["revision"], "sourceCheckout": str(source),
+        "model": cfg.get("model", MODEL), "sourceRevision": cfg["revision"], "sourceCheckout": str(source),
         "datasetPath": cfg["dataset"], "datasetHash": cfg["datasetHash"],
         "availabilityPolicy": "quota-pause-v1", "concurrency": 1,
         "plannedSessions": 251, "reasoning": "medium", "subscriptionCost": None,
-        "originalCohort": "astra-pi-v12-20260916", "originalResultsPR": cfg["originalResultsPR"],
+        "originalCohort": cfg.get("originalCohort", "astra-pi-v12-20260916"), "originalResultsPR": cfg["originalResultsPR"],
         "auditBundles": [],
     }
     previous.update(status=state["status"], phase=state["phase"], updatedAt=now(),
@@ -160,6 +160,7 @@ def publish(cfg, state, report=None, label="initial"):
     write(out / "provenance.json", previous)
     if report is not None:
         write(out / f"{label}-summary.json", report)
+    display = cfg.get("displayName", "Astra")
     description = f"State: **{state['status']}**, phase: **{state['phase']}**."
     if state.get("notBefore"):
         description += f" Next model attempt no earlier than **{state['notBefore']}**."
@@ -176,12 +177,12 @@ def publish(cfg, state, report=None, label="initial"):
                             f"mean quarterly TWR **{year['meanQuarterTimeWeightedReturnPct']:.2f}%**.")
         else:
             description += " No annual score is available yet."
-    text = f"""# Quota-aware Astra recovery
+    text = f"""# Quota-aware {display} evaluation
 
 {description}
 
-This is a **new cohort**. The stopped original cohort and its failed attempts remain
-unchanged in [the original results PR]({cfg['originalResultsPR']}).
+This is a **new cohort**. Earlier cohorts and their attempts remain
+unchanged in [the prior results PR]({cfg['originalResultsPR']}).
 
 The pinned `quota-pause-v1` scheduling policy pauses the entire serial queue after
 an explicit provider usage-limit response. It waits for the recorded reset plus
@@ -189,8 +190,8 @@ five minutes, or six hours plus five minutes if no reset is supplied. The failed
 attempt remains counted; no manifest, chain, invalid day, or retry allowance is
 rewritten. Each day still allows at most two attempts.
 
-The BB automation checks every 15 minutes, avoids duplicate workers, resumes the
-same pinned cohort after cooldown, verifies every settled checkpoint, and publishes
+The exact-time BB coordinator avoids duplicate workers, resumes the same pinned
+cohort at its recorded quota reset plus buffer, verifies every settled checkpoint, and publishes
 evidence. It pauses itself after verified completion or an unexpected blocker.
 The live model smoke must pass before the annual run starts. The annual dataset is
 April 2025–March 2026, in four independent accounts (62/64/64/61 sessions), with one
@@ -210,7 +211,7 @@ outcomes are captured in the checkpoint summaries and archived execution receipt
 """
     (out / "README.md").write_text(text)
     command(["git", "add", str(rel)], cwd=publication)
-    command(["git", "commit", "-m", "Record Astra recovery checkpoint " + label], cwd=publication)
+    command(["git", "commit", "-m", "Record " + display + " checkpoint " + label], cwd=publication)
     command(["git", "push", "-u", "origin", cfg["publicationBranch"]], cwd=publication)
     prs = json.loads(command(["gh", "pr", "list", "--head", cfg["publicationBranch"],
                                "--state", "open", "--json", "url"], cwd=publication).stdout)
@@ -221,7 +222,7 @@ outcomes are captured in the checkpoint summaries and archived execution receipt
         command(["gh", "pr", "edit", url, "--body-file", str(body)], cwd=publication)
     else:
         url = command(["gh", "pr", "create", "--base", cfg["baseBranch"], "--head", cfg["publicationBranch"],
-                       "--title", "Track quota-aware Astra evaluation through verified completion",
+                       "--title", "Track " + display + " evaluation through verified completion",
                        "--body-file", str(body)], cwd=publication).stdout.strip()
     (art / "results-pr-url").write_text(url + "\n")
     return url
@@ -242,7 +243,7 @@ def worker(cfg, state_path):
             if (source / directory / "manifest.json").exists():
                 args = ["resume", "--dir", directory]
             else:
-                args = ["run", "--run-id", cfg["smokeId"], "--smoke=true", "--model", MODEL,
+                args = ["run", "--run-id", cfg["smokeId"], "--smoke=true", "--model", cfg.get("model", MODEL),
                         "--pause-on-quota=true", "--data-dir", cfg["dataset"], "--start", "2025-04-01",
                         "--end", "2025-04-03", "--timeout-ms=300000"]
             verify_args = ["verify", "--dir", directory]

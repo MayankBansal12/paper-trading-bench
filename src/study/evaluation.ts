@@ -1,5 +1,5 @@
 import { QUOTA_PAUSE_POLICY } from "./availability.ts";
-import { PI_MODEL_ID } from "../pi/route.ts";
+import { isPiModel } from "../pi/route.ts";
 import { existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { contentHash, textHash } from "../core/hash.ts";
@@ -60,7 +60,7 @@ export async function prepareEvaluation(input: EvaluationInput) {
   if (!Number.isSafeInteger(concurrency) || concurrency < 1 || concurrency > schedule.length)
     throw new Error(`Concurrency must be an integer from 1 to ${schedule.length}`);
   for (const model of models)
-    if (model !== CONTROL_MODEL && model !== PI_MODEL_ID && !EVALUATION_MODELS.includes(model))
+    if (model !== CONTROL_MODEL && !isPiModel(model) && !EVALUATION_MODELS.includes(model))
       throw new Error(`Unqualified evaluation model: ${model}. Qualified routes: ${EVALUATION_MODELS.join(", ")}`);
   const history = input.history ?? 100;
   const timeoutMs = input.timeoutMs ?? POLICY.defaultTimeoutMs;

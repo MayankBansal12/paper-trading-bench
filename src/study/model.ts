@@ -3,10 +3,10 @@ import {
   decideStudy as decideOpenCode,
 } from "./agent.ts";
 import { preparePiRuntime, decidePi } from "../pi/agent.ts";
-import { PI_MODEL_ID } from "../pi/route.ts";
+import { isPiModel } from "../pi/route.ts";
 export async function prepareModelRuntime(model?: string) {
-  return model === PI_MODEL_ID
-    ? { kind: "pi" as const, ...(await preparePiRuntime()) }
+  return isPiModel(model)
+    ? { kind: "pi" as const, ...(await preparePiRuntime(model)) }
     : { kind: "opencode" as const, ...(await prepareOpenCode(model)) };
 }
 export async function decideStudy(

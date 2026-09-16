@@ -1,6 +1,6 @@
 import { writeFile } from "node:fs/promises";
 import { join } from "node:path";
-import { PI_MODEL, PI_PROVIDER, PI_THINKING } from "./route.ts";
+import { piRoute, PI_PROVIDER, PI_THINKING } from "./route.ts";
 export async function makePiConfig(
   dir: string,
   capability: string,
@@ -9,10 +9,11 @@ export async function makePiConfig(
   system: string,
   prompt: string,
 ) {
+  const route = piRoute(`pi/${PI_PROVIDER}/${catalog.id}`);
   // No credentials: the synthetic JWT is a per-attempt gateway capability.
   const settings = {
     defaultProvider: PI_PROVIDER,
-    defaultModel: PI_MODEL,
+    defaultModel: route.model,
     defaultThinkingLevel: PI_THINKING,
     transport: "sse",
     compaction: { enabled: false },

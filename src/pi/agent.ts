@@ -18,7 +18,7 @@ import { serveGateway } from "../study/gateway.ts";
 import { makePiConfig } from "./config.ts";
 import { preparePiRuntime } from "./runtime.ts";
 import { piUsage } from "./audit.ts";
-import { PI_MODEL_ID, PI_MODEL, PI_PROVIDER } from "./route.ts";
+import { piRoute, PI_PROVIDER } from "./route.ts";
 export { preparePiRuntime } from "./runtime.ts";
 export async function decidePi(
   view: SessionView,
@@ -29,6 +29,7 @@ export async function decidePi(
   runtime: Awaited<ReturnType<typeof preparePiRuntime>>,
   forward: typeof fetch = fetch,
 ): Promise<StudyAttempt> {
+  const route = piRoute(runtime.qualification.exactModel);
   const started = Date.now(),
     deadline = started + view.limits.timeoutMs,
     decision = initialStudyDecision(view);
@@ -69,7 +70,7 @@ export async function decidePi(
       record,
       forward,
       stop,
-      PI_MODEL_ID,
+      route.id,
     );
     const system = systemPrompt(view.limits),
       prompt = dailyPrompt(
@@ -84,7 +85,7 @@ export async function decidePi(
     record({
       type: "protocol",
       version: STUDY_PROTOCOL,
-      model: PI_MODEL,
+      model: route.model,
       provider: PI_PROVIDER,
       viewHash: contentHash(view),
       systemPrompt: system,
