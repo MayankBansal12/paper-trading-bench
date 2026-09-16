@@ -107,7 +107,30 @@ export function providerResponses(trace: any[]) {
     );
     if (terminal.length !== 1 || terminal[0].response?.status !== "completed")
       throw new Error("Pi provider stream missing a unique completed response");
-    return terminal[0].response;
+    // Codex may omit output from response.completed while emitting authoritative
+    // response.output_item.done records. Reconstruct those items in wire order.
+    const items = events.filter((e) => e.type === "response.output_item.done");
+    if (
+      items.some(
+        (e, i) =>
+          e.output_index !== i || !e.item || typeof e.item.id !== "string",
+      ) ||
+      new Set(items.map((e) => e.item.id)).size !== items.length
+    )
+      throw new Error(
+        "Pi provider output item sequence is incomplete or duplicated",
+      );
+    const output = items.map((e) => e.item);
+    const finalOutput = terminal[0].response.output;
+    if (
+      Array.isArray(finalOutput) &&
+      finalOutput.length &&
+      canonical(finalOutput) !== canonical(output)
+    )
+      throw new Error(
+        "Pi terminal output differs from streamed completed items",
+      );
+    return { ...terminal[0].response, output };
   });
 }
 export function validatePiAccepted(

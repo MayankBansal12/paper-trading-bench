@@ -91,7 +91,7 @@ const forward = (async (_url: any, init: any) => {
       arguments: item.arguments,
     },
     { type: "response.output_item.done", output_index: 0, item },
-    { type: "response.completed", response },
+    { type: "response.completed", response: { ...response, output: [] } },
   ];
   return new Response(
     events

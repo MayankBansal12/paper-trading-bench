@@ -60,3 +60,48 @@ test("Pi replay requires one terminal completed response and handles split UTF-8
   expect(() => providerResponses(events.slice(0, 2))).toThrow();
   expect(() => providerResponses([...events, ...events.slice(1)])).toThrow();
 });
+
+test("Pi reconstructs native Codex tool calls omitted from terminal output and rejects conflicting items", () => {
+  const item = {
+    id: "fc_1",
+    type: "function_call",
+    call_id: "call_1",
+    name: "trading_submit_day",
+    arguments: '{"orders":[]}',
+  };
+  const events = [
+    { type: "response.output_item.done", output_index: 0, item },
+    {
+      type: "response.completed",
+      response: { status: "completed", output: [] },
+    },
+  ];
+  const trace = (values: any[]) => [
+    { type: "inference_request", sequence: 1 },
+    {
+      type: "inference_chunk",
+      sequence: 1,
+      base64: Buffer.from(
+        values.map((e) => `data: ${JSON.stringify(e)}\n\n`).join(""),
+      ).toString("base64"),
+    },
+  ];
+  expect(providerResponses(trace(events))[0].output).toEqual([item]);
+  expect(() =>
+    providerResponses(trace([events[0], events[0], events[1]])),
+  ).toThrow();
+  expect(() =>
+    providerResponses(
+      trace([
+        events[0],
+        {
+          type: "response.completed",
+          response: {
+            status: "completed",
+            output: [{ ...item, name: "forged" }],
+          },
+        },
+      ]),
+    ),
+  ).toThrow();
+});
