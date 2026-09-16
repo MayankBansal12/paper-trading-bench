@@ -1,4 +1,4 @@
-import { PI_MODEL_ID } from "../pi/route.ts";
+import { isPiModel } from "../pi/route.ts";
 import { validatePiAccepted } from "../pi/audit.ts";
 import { studyRoute } from "./routes.ts";
 import { contentHash } from "../core/hash.ts";
@@ -108,7 +108,7 @@ export function validateAccepted(
     throw new Error("Missing session horizon for prompt verification");
   validateOpeningContext(a, view, past, horizon);
   if (control) return;
-  if (expectedModel === PI_MODEL_ID) return validatePiAccepted(a, view, past, horizon);
+  if (isPiModel(expectedModel)) return validatePiAccepted(a, view, past, horizon, expectedModel);
   const route = qualifiedRoute(expectedModel);
   const protocol = a.decision.trace.find(e => e.type === "protocol");
   if (protocol?.provider !== route.provider || protocol.model !== route.model)

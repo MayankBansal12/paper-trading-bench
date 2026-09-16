@@ -1,6 +1,6 @@
 import { zstdDecompressSync } from "node:zlib";
 import { studyRoute } from "./routes.ts";
-import { PI_MODEL_ID, PI_THINKING } from "../pi/route.ts";
+import { isPiModel, PI_THINKING } from "../pi/route.ts";
 import { randomUUID } from "node:crypto";
 import { chmod } from "node:fs/promises";
 import { contentHash, canonical } from "../core/hash.ts";
@@ -22,7 +22,7 @@ export async function serveGateway(
   model: string = QUALIFIED_ZEN_MODEL_ID,
 ) {
   const route = studyRoute(model);
-  const pi = model === PI_MODEL_ID;
+  const pi = isPiModel(model);
   if (route.auth === "oauth" && (typeof credential === "string" || credential.mode !== "oauth"))
     throw new Error("Qualified OpenAI route requires host OAuth; no API-key fallback");
   const capability = pi ? `e30.${Buffer.from(JSON.stringify({"https://api.openai.com/auth": {chatgpt_account_id: "benchmark-gateway"}, nonce: randomUUID()})).toString("base64url")}.scoped` : randomUUID();

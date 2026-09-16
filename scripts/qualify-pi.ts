@@ -3,8 +3,10 @@ import { writeFile, rm } from "node:fs/promises";
 import { setup } from "../tests/studyTestSupport.ts";
 import { preparePiRuntime, decidePi } from "../src/pi/agent.ts";
 import { validateAccepted } from "../src/study/accept.ts";
-import { PI_MODEL, PI_MODEL_ID } from "../src/pi/route.ts";
-const runtime = await preparePiRuntime();
+import { piRoute, PI_MODEL_ID as ASTRA_MODEL_ID } from "../src/pi/route.ts";
+const PI_MODEL_ID = process.argv[2] ?? ASTRA_MODEL_ID;
+const PI_MODEL = piRoute(PI_MODEL_ID).model;
+const runtime = await preparePiRuntime(PI_MODEL_ID);
 let s = setup();
 let count = 0,
   scenario = "success";
@@ -134,6 +136,12 @@ try {
       if (result.outcome !== "completed")
         throw new Error(scenario + ": " + result.reason);
       validateAccepted(result, s.view, false, [], s.view.horizon, PI_MODEL_ID);
+      let crossModelRejected = false;
+      try {
+        validateAccepted(result, s.view, false, [], s.view.horizon,
+          PI_MODEL_ID === ASTRA_MODEL_ID ? "pi/openai-codex/gpt-5.6-sol" : ASTRA_MODEL_ID);
+      } catch { crossModelRejected = true; }
+      if (!crossModelRejected) throw new Error("Cross-model replay accepted");
       if (count !== 2) throw new Error("Unexpected provider call count");
       for (const mutate of [
         (a: any) => {

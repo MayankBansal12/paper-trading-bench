@@ -5,7 +5,7 @@ import { homedir } from "node:os";
 import { contentHash, textHash } from "../core/hash.ts";
 import { prepareSandboxRuntime, qualifySandbox } from "../study/sandbox.ts";
 import {
-  PI_MODEL,
+  piRoute,
   PI_PROVIDER,
   PI_VERSION,
   PI_THINKING,
@@ -87,7 +87,8 @@ export function piCredential(node: string, cli: string): ProviderCredential {
     },
   };
 }
-export async function preparePiRuntime() {
+export async function preparePiRuntime(modelId = PI_MODEL_ID) {
+  const route = piRoute(modelId);
   const started = Date.now();
   const entry = await realpath(Bun.which("pi") ?? "/missing-pi");
   const root = resolve(dirname(entry), "../..");
@@ -103,9 +104,9 @@ export async function preparePiRuntime() {
     await readFile(join(agentDir, "models-store.json"), "utf8"),
   );
   const matches =
-    store[PI_PROVIDER]?.models?.filter((m: any) => m.id === PI_MODEL) ?? [];
+    store[PI_PROVIDER]?.models?.filter((m: any) => m.id === route.model) ?? [];
   if (matches.length !== 1)
-    throw new Error("Exact Astra model missing/duplicated in host Pi catalog");
+    throw new Error("Exact Pi model missing/duplicated in host Pi catalog");
   const model = matches[0];
   if (
     model.provider !== PI_PROVIDER ||
@@ -113,7 +114,7 @@ export async function preparePiRuntime() {
     model.baseUrl !== "https://chatgpt.com/backend-api" ||
     model.reasoning !== true
   )
-    throw new Error("Pi Astra route metadata drift");
+    throw new Error("Pi route metadata drift");
   const ready = JSON.parse(
     await command([
       "pi",
@@ -155,7 +156,7 @@ export async function preparePiRuntime() {
       nodeHash: bytesHash(await readFile(join(bundle.dir, "node"))),
       workerHash: bytesHash(await readFile(join(bundle.dir, "worker.ts"))),
       thinking: PI_THINKING,
-      model: PI_MODEL_ID,
+      model: modelId,
       catalogHash: contentHash(model),
       auth: "host-pi-oauth",
       transport: "sse",
@@ -170,7 +171,7 @@ export async function preparePiRuntime() {
       sandboxQualification,
       setupMs: Date.now() - started,
       qualification: {
-        exactModel: PI_MODEL_ID,
+        exactModel: modelId,
         clientVersion: PI_VERSION,
         model,
         noInference: true,

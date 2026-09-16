@@ -68,3 +68,17 @@ PR. It launches a supervised worker only after cooldown, avoids duplicate worker
 and pauses the automation after verified completion or an unexpected blocker.
 Credentials remain in the existing host Pi account; configuration contains paths
 and identities only. Keep the host and BB running for scheduled execution.
+
+The adapter also accepts the explicit route `pi/openai-codex/gpt-5.6-sol`.
+The selected model is pinned through catalog qualification, sandbox configuration,
+gateway requests, provider responses and replay. Cross-model replay is rejected.
+Use `bun scripts/qualify-pi.ts pi/openai-codex/gpt-5.6-sol` for the synthetic
+real-client qualification (zero live inference).
+
+`scripts/pi-sequence.py` coordinates separately pinned cohorts without changing
+an existing run's implementation. Its `cohorts` list orders Astra before Sol.
+Only a worker's verified, published completion advances the queue. On a quota
+pause the coordinator re-arms the same BB automation with `--at` using the
+recorded `notBefore` timestamp (provider reset plus the frozen five-minute buffer).
+There is no recurring 15-minute poll. A systemd service supervises active work;
+the machine and BB must remain available. Unexpected blockers stop the queue.
