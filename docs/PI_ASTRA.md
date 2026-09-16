@@ -52,3 +52,19 @@ zero live inference: success, schema correction, quota refusal, watchdog, and
 rejection of tampered evidence. It requires the pinned local installation and a
 configured Pi account, but replaces credential resolution and provider forwarding
 for every fixture. Temporary diagnostic attempts are written under `/tmp`.
+
+For a fresh cohort, `run` and `eval` accept `--pause-on-quota=true`. This freezes
+`quota-pause-v1` in the configuration: explicit provider quota failures suspend
+execution until the reported reset plus five minutes (or six hours plus five
+minutes without a reset). The failed attempt still counts toward the two-attempt
+limit. Resume uses the recorded policy; it does not retrofit older cohorts.
+Serial evaluation stops admitting quarters while one is paused.
+
+`scripts/astra-recovery.py` is the BB scheduled watchdog. Its external JSON config
+pins the source checkout/revision, dataset, artifact directory, publication branch,
+and cohort IDs. It qualifies a three-day smoke, runs the annual evaluation, replays
+each settled checkpoint and publishes immutable audit checksums through a results
+PR. It launches a supervised worker only after cooldown, avoids duplicate workers,
+and pauses the automation after verified completion or an unexpected blocker.
+Credentials remain in the existing host Pi account; configuration contains paths
+and identities only. Keep the host and BB running for scheduled execution.
