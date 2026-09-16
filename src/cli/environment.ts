@@ -17,7 +17,7 @@ import {
 } from "../study/runner.ts";
 import { deterministicControl } from "../study/control.ts";
 import { qualifySandbox } from "../study/sandbox.ts";
-import { qualifiedRoute } from "../opencode/qualification.ts";
+import { studyRoute } from "../study/routes.ts";
 import { writeFileAtomic } from "../utils/fs.ts";
 export const HELP = `Paper portfolio environment (${STUDY_PROTOCOL})
   pnpm bench eval --eval-id ID --data-dir DIR [--models MODEL_IDS] [--concurrency N] [--preflight=true | --resume=true | --verify=true] [--control=true]
@@ -105,7 +105,7 @@ export async function environmentCLI(command: string, argv: string[]) {
         ],
     command,
   );
-  if (flags.has("model")) qualifiedRoute(flags.get("model")!);
+  if (flags.has("model")) studyRoute(flags.get("model")!);
   const start = parseDateFlag("start", flags.get("start")),
     end = parseDateFlag("end", flags.get("end"));
   if (

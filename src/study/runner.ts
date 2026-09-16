@@ -1,3 +1,4 @@
+import { studyRoute } from "./routes.ts";
 import { mkdirSync, existsSync, readFileSync, readdirSync } from "node:fs";
 import { resolve, join } from "node:path";
 import {
@@ -30,11 +31,11 @@ import {
 import {
   decideStudy,
   prepareModelRuntime,
-  type StudyAttempt,
-} from "./agent.ts";
+} from "./model.ts";
+import type { StudyAttempt } from "./agent.ts";
 import { validateAccepted } from "./accept.ts";
 export { validateAccepted, validateOpeningContext } from "./accept.ts";
-import { qualifiedRoute, QUALIFIED_ZEN_MODEL_ID } from "../opencode/qualification.ts";
+import { QUALIFIED_ZEN_MODEL_ID } from "../opencode/qualification.ts";
 export interface StudyConfig {
   model?: string;
   protocol: string;
@@ -64,7 +65,7 @@ export interface Day {
 const read = (p: string) => JSON.parse(readFileSync(p, "utf8"));
 export async function prepareStudyData(c: StudyConfig) {
   if (c.kind === "control" && c.model !== undefined) throw new Error("Control cannot select a model route");
-  if (c.kind !== "control") qualifiedRoute(c.model ?? QUALIFIED_ZEN_MODEL_ID);
+  if (c.kind !== "control") studyRoute(c.model ?? QUALIFIED_ZEN_MODEL_ID);
   if (
     c.protocol !== STUDY_PROTOCOL ||
     contentHash(c.policy) !== contentHash(POLICY) ||

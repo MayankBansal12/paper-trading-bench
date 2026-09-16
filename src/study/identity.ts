@@ -26,6 +26,7 @@ export function implementationIdentity(root = resolve(".")) {
   for (const file of [
     "src/study/runner.ts",
     "src/study/worker.ts",
+    "src/pi/worker.ts",
     "scripts/sandbox/launch.sh",
     "scripts/sandbox/seccomp.c",
     "package.json",

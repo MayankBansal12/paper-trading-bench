@@ -1,3 +1,6 @@
+import { PI_MODEL_ID } from "../pi/route.ts";
+import { validatePiAccepted } from "../pi/audit.ts";
+import { studyRoute } from "./routes.ts";
 import { contentHash } from "../core/hash.ts";
 import { validateUsage } from "../core/types.ts";
 import type { StudyAttempt } from "./agent.ts";
@@ -73,8 +76,8 @@ export function validateAccepted(
     !a.journalEntries.length
   )
     throw new Error("Accepted decision is incomplete or mismatched");
-  const routeCost = qualifiedRoute(expectedModel).cost;
-  const free = routeCost.input === 0 && routeCost.output === 0 && routeCost.cacheRead === 0 && routeCost.cacheWrite === 0;
+  const routeCost = studyRoute(expectedModel).cost;
+  const free = routeCost !== null && routeCost.input === 0 && routeCost.output === 0 && routeCost.cacheRead === 0 && routeCost.cacheWrite === 0;
   const costUsd = a.decision.usage.costUsd;
   if (
     !a.decision.rationale.trim() ||
@@ -105,6 +108,7 @@ export function validateAccepted(
     throw new Error("Missing session horizon for prompt verification");
   validateOpeningContext(a, view, past, horizon);
   if (control) return;
+  if (expectedModel === PI_MODEL_ID) return validatePiAccepted(a, view, past, horizon);
   const route = qualifiedRoute(expectedModel);
   const protocol = a.decision.trace.find(e => e.type === "protocol");
   if (protocol?.provider !== route.provider || protocol.model !== route.model)
