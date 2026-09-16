@@ -29,3 +29,12 @@ Implementation checks: see the linked implementation PR and committed tests.
 The quota-pause tests cover provider reset parsing, no inference during cooldown,
 retained attempts across resume, and refusal to grant a third attempt. Live replay
 outcomes are captured in the checkpoint summaries and archived execution receipts.
+
+The enabled automation is `auto_mo--kywrcm8` (every 15 minutes, UTC). Its initial
+scheduler tick exited successfully with no output and no model calls during cooldown.
+First eligible launch: **2026-09-16 18:30 UTC**, following the recorded reset plus
+five-minute buffer. [Scheduler verification](automation.json).
+
+Implementation [PR #15](https://github.com/MayankBansal12/paper-trading-bench/pull/15):
+321 Bun tests, six Python tests and TypeScript checking passed. Four-quarter
+preflight made zero model calls.

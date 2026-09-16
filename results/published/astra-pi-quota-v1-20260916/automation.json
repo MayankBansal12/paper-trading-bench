@@ -1,0 +1,34 @@
+{
+  "id": "auto_mo--kywrcm8",
+  "enabled": true,
+  "name": "Complete Astra paper-trading benchmark after quota resets",
+  "schedule": {
+    "triggerType": "schedule",
+    "cron": "*/15 * * * *",
+    "timezone": "Etc/UTC"
+  },
+  "notBefore": "2026-09-16T18:19:22+00:00",
+  "firstEligibleCronTick": "2026-09-16T18:30:00Z",
+  "initialTick": {
+    "id": "arun_tyho8psbug4",
+    "automationId": "auto_mo--kywrcm8",
+    "runMode": "script",
+    "threadId": null,
+    "status": "skipped",
+    "trigger": "manual",
+    "skipReason": "empty output",
+    "error": null,
+    "output": null,
+    "exitCode": 0,
+    "scheduledFor": 1789569410647,
+    "startedAt": 1789569410647,
+    "finishedAt": 1789569410729
+  },
+  "implementationPR": "https://github.com/MayankBansal12/paper-trading-bench/pull/15",
+  "checks": {
+    "bunTestsPassed": 321,
+    "pythonTestsPassed": 6,
+    "typecheck": "passed",
+    "preflightModelCalls": 0
+  }
+}
