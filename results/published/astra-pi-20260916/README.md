@@ -1,6 +1,6 @@
 # Pi / GPT-6 Astra results — September 16, 2026
 
-The annual evaluation is running under a supervised machine service. Two quarters run concurrently; the other two are queued. Its annual score is unavailable until all four quarters finish and replay.
+Annual outcome: **incomplete**. Valid days: **51/251**; invalid days: 12; retried days: 12; completed quarters: 0/4. The annual score remains unavailable.
 
 ## Qualified live smoke
 
@@ -25,3 +25,5 @@ The first smoke at `f118891` exposed an adapter audit bug: Codex streamed comple
 Typecheck passed; final full suite **318 passed, 0 failed**. Pi-focused gateway/accounting tests: **5 passed**. The real Pi CLI passed synthetic success, schema correction, quota refusal, watchdog and tamper-rejection checks without inference. Both live-smoke artifacts replayed with their own source; only the second passed live qualification.
 
 Two earlier test invocations were unsuccessful: one detected source changing during replay; another accidentally discovered duplicate tests in a nested checkout and hit fixture-path failures. The checkout was moved outside the repository and the final suite ran against stable source. The original live smoke remains failed/incomplete evidence, not a successful run.
+
+[Annual verification report](annual-summary.json) and [execution/replay outcomes](annual-execution.json).

@@ -1,0 +1,402 @@
+{
+  "version": "independent-quarters-apr2025-mar2026-v4",
+  "evalId": "astra-pi-v12-20260916",
+  "start": "2025-04-01",
+  "end": "2026-03-31",
+  "status": "incomplete",
+  "interpretation": "Four independent quarterly portfolios per model. Dollar outcomes are summed; mean quarterly TWR is not an annual compounded return. Independent account balances must not be plotted as one equity curve. These environment results do not establish scored NDX membership eligibility.",
+  "models": [
+    {
+      "model": "pi/openai-codex/gpt-6-astra",
+      "complete": false,
+      "completedQuarters": 0,
+      "accountedSessions": 63,
+      "validDays": 51,
+      "invalidDays": 12,
+      "retriedDays": 12,
+      "plannedContributions": 600000,
+      "accountedContributions": 300000,
+      "year": null
+    }
+  ],
+  "quarters": [
+    {
+      "runId": "astra-pi-v12-20260916-pi-openai-codex-gpt-6-ast-98dc402c5e24-2025-Q2",
+      "model": "pi/openai-codex/gpt-6-astra",
+      "label": "2025-Q2",
+      "start": "2025-04-01",
+      "end": "2025-06-30",
+      "status": "invalid",
+      "summary": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "status": "invalid",
+        "failure": "3 consecutive invalid trading days through 2025-05-09: Pi did not submit a complete decision",
+        "committedDays": 28,
+        "validDays": 25,
+        "consecutiveInvalidDays": 3,
+        "maxConsecutiveInvalidDays": 3,
+        "stopped": true,
+        "totalDays": 62,
+        "attemptedDays": 28,
+        "retriedDays": 3,
+        "invalidDays": 3,
+        "unattemptedDays": 34,
+        "invalidSessions": [
+          {
+            "date": "2025-05-07",
+            "attempts": 2,
+            "reason": "Pi did not submit a complete decision"
+          },
+          {
+            "date": "2025-05-08",
+            "attempts": 2,
+            "reason": "Pi did not submit a complete decision"
+          },
+          {
+            "date": "2025-05-09",
+            "attempts": 2,
+            "reason": "Pi did not submit a complete decision"
+          }
+        ],
+        "portfolio": {
+          "cash": 57885.65,
+          "holdings": {
+            "EXC": {
+              "units": 109.265847,
+              "avgCost": 45.76,
+              "lastClose": 45.209999084472656,
+              "value": 4939.91
+            },
+            "WMT": {
+              "units": 78.961402,
+              "avgCost": 94.98,
+              "lastClose": 96.72000122070312,
+              "value": 7637.15
+            },
+            "NFLX": {
+              "units": 3.97092,
+              "avgCost": 1007.32,
+              "lastClose": 1140.2200317382812,
+              "value": 4527.72
+            },
+            "MSFT": {
+              "units": 20.857264,
+              "avgCost": 407.53,
+              "lastClose": 438.7300109863281,
+              "value": 9150.71
+            },
+            "CRWD": {
+              "units": 11.703635,
+              "avgCost": 427.22,
+              "lastClose": 410.57000732421875,
+              "value": 4805.16
+            },
+            "AMZN": {
+              "units": 13.150307,
+              "avgCost": 190.11,
+              "lastClose": 193.05999755859375,
+              "value": 2538.8
+            },
+            "AVGO": {
+              "units": 19.617484,
+              "avgCost": 203.9,
+              "lastClose": 208.1999969482422,
+              "value": 4084.36
+            },
+            "META": {
+              "units": 6.765679,
+              "avgCost": 591.22,
+              "lastClose": 592.489990234375,
+              "value": 4008.6
+            }
+          },
+          "holdingsValue": 41692.41,
+          "netWorth": 99578.06
+        },
+        "fills": 25,
+        "rejectedOrders": 0,
+        "journalEntries": 25,
+        "eventRoot": "d1a7d1c03ff8561df0eb564a2efab026cdbc93e8c66ea009670679f3d36db908",
+        "commitRoot": "cf1fc1b4b13707a3ae2dc6a70488bbc40429bb61a34241e9093c4c3bde64ff33",
+        "attempts": 31,
+        "failures": 6,
+        "usageUnavailableAttempts": 31
+      },
+      "error": null,
+      "metrics": {
+        "startingCapital": 50000,
+        "endingNetWorth": 99578.06,
+        "totalContributions": 100000,
+        "netProfit": -421.94,
+        "timeWeightedReturnPct": -1.1981,
+        "totalReturnPct": -1.1981,
+        "maxDrawdownPct": -3.8776,
+        "dailyVolatilityPct": 0.6165,
+        "annualizedVolatilityPct": 9.7868,
+        "sharpe": -1.0605,
+        "avgTurnoverPct": 5.8476,
+        "tradeCount": 25,
+        "failedOrderCount": 0,
+        "boundedStopCount": 0,
+        "daysRun": 28
+      }
+    },
+    {
+      "runId": "astra-pi-v12-20260916-pi-openai-codex-gpt-6-ast-98dc402c5e24-2025-Q3",
+      "model": "pi/openai-codex/gpt-6-astra",
+      "label": "2025-Q3",
+      "start": "2025-07-01",
+      "end": "2025-09-30",
+      "status": "invalid",
+      "summary": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "status": "invalid",
+        "failure": "3 consecutive invalid trading days through 2025-08-11: Pi did not submit a complete decision",
+        "committedDays": 29,
+        "validDays": 26,
+        "consecutiveInvalidDays": 3,
+        "maxConsecutiveInvalidDays": 3,
+        "stopped": true,
+        "totalDays": 64,
+        "attemptedDays": 29,
+        "retriedDays": 3,
+        "invalidDays": 3,
+        "unattemptedDays": 35,
+        "invalidSessions": [
+          {
+            "date": "2025-08-07",
+            "attempts": 2,
+            "reason": "Pi did not submit a complete decision"
+          },
+          {
+            "date": "2025-08-08",
+            "attempts": 2,
+            "reason": "Pi did not submit a complete decision"
+          },
+          {
+            "date": "2025-08-11",
+            "attempts": 2,
+            "reason": "Pi did not submit a complete decision"
+          }
+        ],
+        "portfolio": {
+          "cash": 54371.29,
+          "holdings": {
+            "MSFT": {
+              "units": 21.698509,
+              "avgCost": 506.95,
+              "lastClose": 521.77001953125,
+              "value": 11321.63
+            },
+            "NVDA": {
+              "units": 55.092168,
+              "avgCost": 163.36,
+              "lastClose": 182.05999755859375,
+              "value": 10030.08
+            },
+            "AVGO": {
+              "units": 25.123174,
+              "avgCost": 278.63,
+              "lastClose": 303.8999938964844,
+              "value": 7634.93
+            },
+            "DASH": {
+              "units": 20.073651,
+              "avgCost": 249.08,
+              "lastClose": 256.0899963378906,
+              "value": 5140.66
+            },
+            "ORLY": {
+              "units": 60.544955,
+              "avgCost": 99.1,
+              "lastClose": 103.5999984741211,
+              "value": 6272.46
+            },
+            "META": {
+              "units": 7.727483,
+              "avgCost": 776.45,
+              "lastClose": 765.8699951171875,
+              "value": 5918.25
+            }
+          },
+          "holdingsValue": 46318.01,
+          "netWorth": 100689.3
+        },
+        "fills": 24,
+        "rejectedOrders": 0,
+        "journalEntries": 26,
+        "eventRoot": "6600590ee6ff895c28fc7cc1007beb66552069db023b541eea3e35d0b853b8b5",
+        "commitRoot": "8706d78a9586cd124e2c2799c38d91cf08d2594aa2da87b2c10f1e7bee84e4e0",
+        "attempts": 32,
+        "failures": 6,
+        "usageUnavailableAttempts": 32
+      },
+      "error": null,
+      "metrics": {
+        "startingCapital": 50000,
+        "endingNetWorth": 100689.3,
+        "totalContributions": 100000,
+        "netProfit": 689.3,
+        "timeWeightedReturnPct": 1.2412,
+        "totalReturnPct": 1.2412,
+        "maxDrawdownPct": -2.4057,
+        "dailyVolatilityPct": 0.7432,
+        "annualizedVolatilityPct": 11.7982,
+        "sharpe": 0.966,
+        "avgTurnoverPct": 6.2625,
+        "tradeCount": 24,
+        "failedOrderCount": 0,
+        "boundedStopCount": 0,
+        "daysRun": 29
+      }
+    },
+    {
+      "runId": "astra-pi-v12-20260916-pi-openai-codex-gpt-6-ast-98dc402c5e24-2025-Q4",
+      "model": "pi/openai-codex/gpt-6-astra",
+      "label": "2025-Q4",
+      "start": "2025-10-01",
+      "end": "2025-12-31",
+      "status": "invalid",
+      "summary": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "status": "invalid",
+        "failure": "3 consecutive invalid trading days through 2025-10-03: Pi did not submit a complete decision",
+        "committedDays": 3,
+        "validDays": 0,
+        "consecutiveInvalidDays": 3,
+        "maxConsecutiveInvalidDays": 3,
+        "stopped": true,
+        "totalDays": 64,
+        "attemptedDays": 3,
+        "retriedDays": 3,
+        "invalidDays": 3,
+        "unattemptedDays": 61,
+        "invalidSessions": [
+          {
+            "date": "2025-10-01",
+            "attempts": 2,
+            "reason": "Pi did not submit a complete decision"
+          },
+          {
+            "date": "2025-10-02",
+            "attempts": 2,
+            "reason": "Pi did not submit a complete decision"
+          },
+          {
+            "date": "2025-10-03",
+            "attempts": 2,
+            "reason": "Pi did not submit a complete decision"
+          }
+        ],
+        "portfolio": {
+          "cash": 50000,
+          "holdings": {},
+          "holdingsValue": 0,
+          "netWorth": 50000
+        },
+        "fills": 0,
+        "rejectedOrders": 0,
+        "journalEntries": 0,
+        "eventRoot": "b5944a45c0df49a17fd7eda6cbc6db768eff35b04cb965522e073ae450725ec4",
+        "commitRoot": "148f8f11c753127668e91b9629cf942b269abba5ed413f2db3263ba4adfd7bd8",
+        "attempts": 6,
+        "failures": 6,
+        "usageUnavailableAttempts": 6
+      },
+      "error": null,
+      "metrics": {
+        "startingCapital": 50000,
+        "endingNetWorth": 50000,
+        "totalContributions": 50000,
+        "netProfit": 0,
+        "timeWeightedReturnPct": 0,
+        "totalReturnPct": 0,
+        "maxDrawdownPct": 0,
+        "dailyVolatilityPct": 0,
+        "annualizedVolatilityPct": 0,
+        "sharpe": null,
+        "avgTurnoverPct": 0,
+        "tradeCount": 0,
+        "failedOrderCount": 0,
+        "boundedStopCount": 0,
+        "daysRun": 3
+      }
+    },
+    {
+      "runId": "astra-pi-v12-20260916-pi-openai-codex-gpt-6-ast-98dc402c5e24-2026-Q1",
+      "model": "pi/openai-codex/gpt-6-astra",
+      "label": "2026-Q1",
+      "start": "2026-01-01",
+      "end": "2026-03-31",
+      "status": "invalid",
+      "summary": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "status": "invalid",
+        "failure": "3 consecutive invalid trading days through 2026-01-06: Pi did not submit a complete decision",
+        "committedDays": 3,
+        "validDays": 0,
+        "consecutiveInvalidDays": 3,
+        "maxConsecutiveInvalidDays": 3,
+        "stopped": true,
+        "totalDays": 61,
+        "attemptedDays": 3,
+        "retriedDays": 3,
+        "invalidDays": 3,
+        "unattemptedDays": 58,
+        "invalidSessions": [
+          {
+            "date": "2026-01-02",
+            "attempts": 2,
+            "reason": "Pi did not submit a complete decision"
+          },
+          {
+            "date": "2026-01-05",
+            "attempts": 2,
+            "reason": "Pi did not submit a complete decision"
+          },
+          {
+            "date": "2026-01-06",
+            "attempts": 2,
+            "reason": "Pi did not submit a complete decision"
+          }
+        ],
+        "portfolio": {
+          "cash": 50000,
+          "holdings": {},
+          "holdingsValue": 0,
+          "netWorth": 50000
+        },
+        "fills": 0,
+        "rejectedOrders": 0,
+        "journalEntries": 0,
+        "eventRoot": "349474a64a6b1f087e995e904e20ef0fd3c9c3ea533cc89eb7929fb2fec477e3",
+        "commitRoot": "884d415bf73a3df6d4939f7461a33599b0dd896c797d5a31efe7083e25e737f4",
+        "attempts": 6,
+        "failures": 6,
+        "usageUnavailableAttempts": 6
+      },
+      "error": null,
+      "metrics": {
+        "startingCapital": 50000,
+        "endingNetWorth": 50000,
+        "totalContributions": 50000,
+        "netProfit": 0,
+        "timeWeightedReturnPct": 0,
+        "totalReturnPct": 0,
+        "maxDrawdownPct": 0,
+        "dailyVolatilityPct": 0,
+        "annualizedVolatilityPct": 0,
+        "sharpe": null,
+        "avgTurnoverPct": 0,
+        "tradeCount": 0,
+        "failedOrderCount": 0,
+        "boundedStopCount": 0,
+        "daysRun": 3
+      }
+    }
+  ]
+}
