@@ -1,0 +1,30 @@
+{
+  "automationId": "auto_mo--kywrcm8",
+  "enabled": true,
+  "trigger": {
+    "triggerType": "once",
+    "runAt": 1789601716000
+  },
+  "nextRunAt": 1789601716000,
+  "queue": [
+    "astra-pi-quota-v1-20260916",
+    "sol-pi-quota-v1-20260916"
+  ],
+  "coordinatorRevision": "6fab5f38034405e06195a236fc4f556401db5280",
+  "coordinatorSha256": "ab8a8ffef63bf48015f558fc04998f40d435d2865ec3877dfb2b0617d11b4874",
+  "checks": {
+    "bunTestsPassed": 322,
+    "pythonTestsPassed": 12,
+    "typecheck": "passed",
+    "syntheticQualifications": [
+      "gpt-6-astra",
+      "gpt-5.6-sol"
+    ],
+    "liveInferenceCalls": 0,
+    "exactTimeRearm": "passed",
+    "storedScriptMatch": true,
+    "manualSchedulerTest": "not run: automatic approval review rejected early manual trigger"
+  },
+  "implementationPR": "https://github.com/MayankBansal12/paper-trading-bench/pull/17",
+  "solResultsPR": "https://github.com/MayankBansal12/paper-trading-bench/pull/18"
+}

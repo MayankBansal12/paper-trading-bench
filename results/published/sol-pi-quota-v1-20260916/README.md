@@ -29,3 +29,5 @@ Implementation checks: see the linked implementation PR and committed tests.
 The quota-pause tests cover provider reset parsing, no inference during cooldown,
 retained attempts across resume, and refusal to grant a third attempt. Live replay
 outcomes are captured in the checkpoint summaries and archived execution receipts.
+
+[Current exact-reset schedule and Astra → Sol queue](SCHEDULING.md).
