@@ -1,6 +1,8 @@
 # Quota-aware Astra recovery
 
-State: **smoke-qualified**, phase: **smoke**.
+State: **waiting**, phase: **annual**. Next model attempt no earlier than **2026-09-16T23:35:16.000Z**.
+
+Recorded valid days: **73/251**; invalid days: 0; retried days: 1; complete quarters: 1/4. No annual score is available yet.
 
 This is a **new cohort**. The stopped original cohort and its failed attempts remain
 unchanged in [the original results PR](https://github.com/MayankBansal12/paper-trading-bench/pull/14).

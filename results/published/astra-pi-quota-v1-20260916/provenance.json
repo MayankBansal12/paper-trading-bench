@@ -23,18 +23,100 @@
       "path": "/home/ai/code/paper-trading-bench/results/archives/astra-quota-recovery-20260916/audit-001-smoke.tar.gz",
       "sha256": "d59e80b65c4cce68dd02d530f46d383445ee63fa8406629e3df46911e04d0449",
       "bytes": 8548463
+    },
+    {
+      "label": "001-annual",
+      "path": "/home/ai/code/paper-trading-bench/results/archives/astra-quota-recovery-20260916/audit-001-annual.tar.gz",
+      "sha256": "21536e740707690bfbf201c633752b87605079ada2b651578365c3ffe6b4150c",
+      "bytes": 15499573
     }
   ],
-  "status": "smoke-qualified",
-  "phase": "smoke",
-  "updatedAt": "2026-09-16T18:31:11.435388+00:00",
-  "notBefore": null,
+  "status": "waiting",
+  "phase": "annual",
+  "updatedAt": "2026-09-16T18:56:37.955982+00:00",
+  "notBefore": "2026-09-16T23:35:16.000Z",
   "error": null,
   "runs": {
     "astra-pi-quota-smoke-20260916": {
       "sourceRevision": "f6ae8121d074c469729e7108f484905e7585094e",
       "implementationHash": "1ad281a79dfc76e966a0150133debeac6fd0288423e6f2781307510a8c15c9a5",
       "manifestSha256": "455bf98b952cf56bb54349f6b74f883f017fc1a6015e4dbe5352e34c2f25b71c",
+      "runtime": {
+        "policy": "bwrap-systemd-unix-gateway-v2",
+        "bwrap": "bubblewrap 0.9.0",
+        "hashes": {
+          "scripts/sandbox/launch.sh": "906be5095cc7ba6cefdbedf95d9274cbd7b593c48aacbaa98ebe8c27f50679a7",
+          "src/study/worker.ts": "9604def933793d2c819fc4624a4cbb89b488738fffde8e46fec03cd9ee0c235b",
+          ".sandbox/seccomp.bpf": "791d20edbc3fa44a193adcfe6774c739f80e6806742cfbbdab3f0c8b4fba70e0"
+        },
+        "opencodeHash": "87bd160e053af86b5b409daabf71f8dc05bbc3a2a3a5f563f36011cdf706a999",
+        "bunHash": "9fd36f87e4b90b07632b987a2e4ec81ca15a62c81bf983190cea6d715be2ad74",
+        "bwrapHash": "52231e1caf55bcbc667b269f49c63599a6f7db4767ae6a039580d0ff853db712",
+        "kernel": "6.17.0-1022-azure",
+        "limits": {
+          "memoryBytes": 2147483648,
+          "tasks": 128,
+          "tmpBytes": 67108864,
+          "workBytes": 134217728
+        },
+        "pi": {
+          "version": "0.85.1",
+          "packageHash": "4b9935f26ba916ec49ea1f9687f5ac32a01900d51687974e535a56edc9cf2767",
+          "nodeVersion": "v22.23.1",
+          "nodeHash": "93956de2e59480474a7b46571da1651180b1a050cdf32641ebec4ce6e478e068",
+          "workerHash": "943324cc29645801702d341ce29b2d1b085f8674924c858f16c5ac10724d2a95",
+          "thinking": "medium",
+          "model": "pi/openai-codex/gpt-6-astra",
+          "catalogHash": "9c21f4897e88e8f21b5592769aecffa94f924306e2f7c3d3937ac33eb5355ecd",
+          "auth": "host-pi-oauth",
+          "transport": "sse",
+          "subscriptionCost": "unavailable"
+        },
+        "id": "0bb882d1df599b696fe322cc4bfcf998f062d6a29ce6ed365bcd8a75e4c420b2"
+      }
+    },
+    "astra-pi-quota-v1-20260916-pi-openai-codex-gpt-6-ast-98dc402c5e24-2025-Q2": {
+      "sourceRevision": "f6ae8121d074c469729e7108f484905e7585094e",
+      "implementationHash": "1ad281a79dfc76e966a0150133debeac6fd0288423e6f2781307510a8c15c9a5",
+      "manifestSha256": "a3e1ebe24df5834a90258b204daf659468e092b89d0086c37575f8162d859c22",
+      "runtime": {
+        "policy": "bwrap-systemd-unix-gateway-v2",
+        "bwrap": "bubblewrap 0.9.0",
+        "hashes": {
+          "scripts/sandbox/launch.sh": "906be5095cc7ba6cefdbedf95d9274cbd7b593c48aacbaa98ebe8c27f50679a7",
+          "src/study/worker.ts": "9604def933793d2c819fc4624a4cbb89b488738fffde8e46fec03cd9ee0c235b",
+          ".sandbox/seccomp.bpf": "791d20edbc3fa44a193adcfe6774c739f80e6806742cfbbdab3f0c8b4fba70e0"
+        },
+        "opencodeHash": "87bd160e053af86b5b409daabf71f8dc05bbc3a2a3a5f563f36011cdf706a999",
+        "bunHash": "9fd36f87e4b90b07632b987a2e4ec81ca15a62c81bf983190cea6d715be2ad74",
+        "bwrapHash": "52231e1caf55bcbc667b269f49c63599a6f7db4767ae6a039580d0ff853db712",
+        "kernel": "6.17.0-1022-azure",
+        "limits": {
+          "memoryBytes": 2147483648,
+          "tasks": 128,
+          "tmpBytes": 67108864,
+          "workBytes": 134217728
+        },
+        "pi": {
+          "version": "0.85.1",
+          "packageHash": "4b9935f26ba916ec49ea1f9687f5ac32a01900d51687974e535a56edc9cf2767",
+          "nodeVersion": "v22.23.1",
+          "nodeHash": "93956de2e59480474a7b46571da1651180b1a050cdf32641ebec4ce6e478e068",
+          "workerHash": "943324cc29645801702d341ce29b2d1b085f8674924c858f16c5ac10724d2a95",
+          "thinking": "medium",
+          "model": "pi/openai-codex/gpt-6-astra",
+          "catalogHash": "9c21f4897e88e8f21b5592769aecffa94f924306e2f7c3d3937ac33eb5355ecd",
+          "auth": "host-pi-oauth",
+          "transport": "sse",
+          "subscriptionCost": "unavailable"
+        },
+        "id": "0bb882d1df599b696fe322cc4bfcf998f062d6a29ce6ed365bcd8a75e4c420b2"
+      }
+    },
+    "astra-pi-quota-v1-20260916-pi-openai-codex-gpt-6-ast-98dc402c5e24-2025-Q3": {
+      "sourceRevision": "f6ae8121d074c469729e7108f484905e7585094e",
+      "implementationHash": "1ad281a79dfc76e966a0150133debeac6fd0288423e6f2781307510a8c15c9a5",
+      "manifestSha256": "5c93f875aa8925adad215f61a3b3a343a66cbe447d13463ec73015f17ed5a8be",
       "runtime": {
         "policy": "bwrap-systemd-unix-gateway-v2",
         "bwrap": "bubblewrap 0.9.0",
