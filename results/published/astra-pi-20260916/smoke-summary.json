@@ -1,0 +1,62 @@
+{
+  "protocol": "v12-portfolio-journal-submit",
+  "kind": "smoke",
+  "status": "completed",
+  "failure": null,
+  "committedDays": 3,
+  "validDays": 3,
+  "consecutiveInvalidDays": 0,
+  "maxConsecutiveInvalidDays": 0,
+  "stopped": false,
+  "totalDays": 3,
+  "attemptedDays": 3,
+  "retriedDays": 0,
+  "invalidDays": 0,
+  "unattemptedDays": 0,
+  "invalidSessions": [],
+  "portfolio": {
+    "cash": 25000,
+    "holdings": {
+      "TMUS": {
+        "units": 18.800544,
+        "avgCost": 265.95,
+        "lastClose": 267.8900146484375,
+        "value": 5036.48
+      },
+      "ORLY": {
+        "units": 3.507544,
+        "avgCost": 1425.5,
+        "lastClose": 1441.889991760254,
+        "value": 5057.49
+      },
+      "EXC": {
+        "units": 109.265847,
+        "avgCost": 45.76,
+        "lastClose": 47.22999954223633,
+        "value": 5160.63
+      },
+      "CCEP": {
+        "units": 57.563953,
+        "avgCost": 86.86,
+        "lastClose": 89.81999969482422,
+        "value": 5170.39
+      },
+      "ROP": {
+        "units": 8.535345,
+        "avgCost": 585.8,
+        "lastClose": 579.7000122070312,
+        "value": 4947.94
+      }
+    },
+    "holdingsValue": 25372.93,
+    "netWorth": 50372.93
+  },
+  "fills": 5,
+  "rejectedOrders": 0,
+  "journalEntries": 3,
+  "eventRoot": "39d8afd2b6379eb00314ce5818ba91c8c43ac69d0708e52727efddce57f86471",
+  "commitRoot": "c18ea8c64b8a95dc3a588f322773220e4ee7cd339e13729194133e45cac3f0e5",
+  "attempts": 3,
+  "failures": 0,
+  "usageUnavailableAttempts": 3
+}

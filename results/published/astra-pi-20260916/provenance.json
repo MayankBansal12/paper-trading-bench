@@ -1,0 +1,95 @@
+{
+  "model": "pi/openai-codex/gpt-6-astra",
+  "client": "Pi 0.85.1",
+  "reasoning": "medium",
+  "sourceRevision": "94d8eddec9400d7d33235b6db39414a60760142f",
+  "originalSmokeRevision": "f11889128aa7814d736c44bc4b08ede0726c7e58",
+  "implementationHash": "9d6b3d462216e50b431f10ac1295508e541276c75c665c24ff4af786d9ecbebf",
+  "originalSmokeImplementationHash": "5c0eb1dc9af06fa33506f22f5daef33a0609d898dbed51263d9f05555458ae57",
+  "datasetHash": "5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901",
+  "datasetPath": "/home/ai/code/paper-trading-bench/datasets/historical/nasdaq100_2025q2-2026q1_v1",
+  "runtime": {
+    "policy": "bwrap-systemd-unix-gateway-v2",
+    "bwrap": "bubblewrap 0.9.0",
+    "hashes": {
+      "scripts/sandbox/launch.sh": "906be5095cc7ba6cefdbedf95d9274cbd7b593c48aacbaa98ebe8c27f50679a7",
+      "src/study/worker.ts": "9604def933793d2c819fc4624a4cbb89b488738fffde8e46fec03cd9ee0c235b",
+      ".sandbox/seccomp.bpf": "791d20edbc3fa44a193adcfe6774c739f80e6806742cfbbdab3f0c8b4fba70e0"
+    },
+    "opencodeHash": "87bd160e053af86b5b409daabf71f8dc05bbc3a2a3a5f563f36011cdf706a999",
+    "bunHash": "9fd36f87e4b90b07632b987a2e4ec81ca15a62c81bf983190cea6d715be2ad74",
+    "bwrapHash": "52231e1caf55bcbc667b269f49c63599a6f7db4767ae6a039580d0ff853db712",
+    "kernel": "6.17.0-1022-azure",
+    "limits": {
+      "memoryBytes": 2147483648,
+      "tasks": 128,
+      "tmpBytes": 67108864,
+      "workBytes": 134217728
+    },
+    "pi": {
+      "version": "0.85.1",
+      "packageHash": "4b9935f26ba916ec49ea1f9687f5ac32a01900d51687974e535a56edc9cf2767",
+      "nodeVersion": "v22.23.1",
+      "nodeHash": "93956de2e59480474a7b46571da1651180b1a050cdf32641ebec4ce6e478e068",
+      "workerHash": "943324cc29645801702d341ce29b2d1b085f8674924c858f16c5ac10724d2a95",
+      "thinking": "medium",
+      "model": "pi/openai-codex/gpt-6-astra",
+      "catalogHash": "9c21f4897e88e8f21b5592769aecffa94f924306e2f7c3d3937ac33eb5355ecd",
+      "auth": "host-pi-oauth",
+      "transport": "sse",
+      "subscriptionCost": "unavailable"
+    },
+    "id": "0bb882d1df599b696fe322cc4bfcf998f062d6a29ce6ed365bcd8a75e4c420b2"
+  },
+  "evalId": "astra-pi-v12-20260916",
+  "concurrency": 2,
+  "plannedSessions": 251,
+  "originalSmoke": {
+    "runId": "astra-pi-smoke-20260916",
+    "outcome": "stopped after adapter audit failure",
+    "interruptedAttemptRetained": true,
+    "replay": "original-source integrity replay passed; incomplete coverage"
+  },
+  "qualifiedSmoke": {
+    "runId": "astra-pi-smoke-r2-20260916",
+    "validDays": 3,
+    "invalidDays": 0,
+    "retriedDays": 0,
+    "replay": "passed"
+  },
+  "subscriptionCost": null,
+  "costNote": "Unavailable; catalog estimates are not proven subscription charges.",
+  "sourceCheckout": "/tmp/paper-trading-astra-94d8edd",
+  "evaluationArtifactPath": "/tmp/paper-trading-astra-94d8edd/results/evaluations/astra-pi-v12-20260916",
+  "resultsLocation": "/tmp/paper-trading-astra-94d8edd/results/studies",
+  "service": "astra-pi-annual-20260916.service",
+  "checks": {
+    "typecheck": "passed",
+    "fullSuite": {
+      "passed": 318,
+      "failed": 0
+    },
+    "piFocusedTests": {
+      "passed": 5,
+      "failed": 0
+    },
+    "syntheticPiScenarios": [
+      "success",
+      "schema correction",
+      "quota refusal",
+      "watchdog",
+      "tamper rejection"
+    ]
+  },
+  "auditBundles": [
+    {
+      "phase": "initial",
+      "path": "/home/ai/code/paper-trading-bench/results/archives/astra-pi-20260916/astra-pi-initial-audit.tar.gz",
+      "sha256": "0759715ce7cf261747d016104226691e3cbe04752c97fd2dd8a8cfbc9f3f2aa7",
+      "bytes": 15050967,
+      "scope": "Both preserved smoke attempts, source snapshots and frozen dataset; annual run is still live and excluded from this bundle"
+    }
+  ],
+  "status": "running",
+  "updatedAt": "2026-09-16T13:24:03.673043+00:00"
+}

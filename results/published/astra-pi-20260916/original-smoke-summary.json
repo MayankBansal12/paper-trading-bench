@@ -1,0 +1,37 @@
+{
+  "protocol": "v12-portfolio-journal-submit",
+  "kind": "smoke",
+  "status": "incomplete",
+  "failure": "Unfinished attempt requires recovery",
+  "committedDays": 1,
+  "validDays": 0,
+  "consecutiveInvalidDays": 1,
+  "maxConsecutiveInvalidDays": 1,
+  "stopped": false,
+  "totalDays": 3,
+  "attemptedDays": 2,
+  "retriedDays": 2,
+  "invalidDays": 1,
+  "unattemptedDays": 1,
+  "invalidSessions": [
+    {
+      "date": "2025-04-01",
+      "attempts": 2,
+      "reason": "Error: Pi tool calls differ from raw provider response"
+    }
+  ],
+  "portfolio": {
+    "cash": 50000,
+    "holdings": {},
+    "holdingsValue": 0,
+    "netWorth": 50000
+  },
+  "fills": 0,
+  "rejectedOrders": 0,
+  "journalEntries": 0,
+  "eventRoot": "dff205f110ecc3a6cf278114195acb261a3cd8a6c12c864bbd609312782ec148",
+  "commitRoot": "11a52f2636684aaa7286fffc2ae1248cded26d9c46d71c037d1a64fa6b86bc67",
+  "attempts": 4,
+  "failures": 3,
+  "usageUnavailableAttempts": 3
+}
