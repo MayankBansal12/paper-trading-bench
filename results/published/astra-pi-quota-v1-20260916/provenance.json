@@ -1,0 +1,27 @@
+{
+  "model": "pi/openai-codex/gpt-6-astra",
+  "sourceRevision": "f6ae8121d074c469729e7108f484905e7585094e",
+  "sourceCheckout": "/home/ai/.bb/thread-storage/astra-quota-recovery/source-f6ae812",
+  "datasetPath": "/home/ai/code/paper-trading-bench/datasets/historical/nasdaq100_2025q2-2026q1_v1",
+  "datasetHash": "5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901",
+  "availabilityPolicy": "quota-pause-v1",
+  "concurrency": 1,
+  "plannedSessions": 251,
+  "reasoning": "medium",
+  "subscriptionCost": null,
+  "originalCohort": "astra-pi-v12-20260916",
+  "originalResultsPR": "https://github.com/MayankBansal12/paper-trading-bench/pull/14",
+  "auditBundles": [
+    {
+      "label": "initial",
+      "path": "/home/ai/code/paper-trading-bench/results/archives/astra-quota-recovery-20260916/audit-initial.tar.gz",
+      "sha256": "4b2343a1287e0747781cc81e1d36518d071e77c0fc1454502aa916db5f0ab893",
+      "bytes": 8080288
+    }
+  ],
+  "status": "waiting",
+  "phase": "smoke",
+  "updatedAt": "2026-09-16T14:36:25.349598+00:00",
+  "notBefore": "2026-09-16T18:19:22+00:00",
+  "error": null
+}
