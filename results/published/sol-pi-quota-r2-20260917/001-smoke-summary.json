@@ -1,0 +1,74 @@
+{
+  "protocol": "v12-portfolio-journal-submit",
+  "kind": "smoke",
+  "status": "completed",
+  "failure": null,
+  "committedDays": 3,
+  "validDays": 3,
+  "consecutiveInvalidDays": 0,
+  "maxConsecutiveInvalidDays": 0,
+  "stopped": false,
+  "totalDays": 3,
+  "attemptedDays": 3,
+  "retriedDays": 0,
+  "invalidDays": 0,
+  "unattemptedDays": 0,
+  "invalidSessions": [],
+  "portfolio": {
+    "cash": 17500,
+    "holdings": {
+      "ORLY": {
+        "units": 4.209052,
+        "avgCost": 1425.5,
+        "lastClose": 1441.889991760254,
+        "value": 6068.99
+      },
+      "AEP": {
+        "units": 50.639949,
+        "avgCost": 108.61,
+        "lastClose": 109.11000061035156,
+        "value": 5525.32
+      },
+      "EXC": {
+        "units": 109.265847,
+        "avgCost": 45.76,
+        "lastClose": 47.22999954223633,
+        "value": 5160.63
+      },
+      "CCEP": {
+        "units": 57.563953,
+        "avgCost": 86.86,
+        "lastClose": 89.81999969482422,
+        "value": 5170.39
+      },
+      "MNST": {
+        "units": 76.923162,
+        "avgCost": 58.5,
+        "lastClose": 59.650001525878906,
+        "value": 4588.47
+      },
+      "PAYX": {
+        "units": 25.962256,
+        "avgCost": 154.07,
+        "lastClose": 153.52999877929688,
+        "value": 3985.99
+      },
+      "ROP": {
+        "units": 4.267676,
+        "avgCost": 585.8,
+        "lastClose": 579.7000122070312,
+        "value": 2473.97
+      }
+    },
+    "holdingsValue": 32973.76,
+    "netWorth": 50473.76
+  },
+  "fills": 7,
+  "rejectedOrders": 0,
+  "journalEntries": 3,
+  "eventRoot": "cb3aeffb10b93a3fa09b8a290f79b0f8b9f9a1e68ce478880300b9c50370502a",
+  "commitRoot": "20bf781fa72c0dafa29fa32d2a8e734ff1e2d6fca901468a86feb34958eed251",
+  "attempts": 3,
+  "failures": 0,
+  "usageUnavailableAttempts": 3
+}

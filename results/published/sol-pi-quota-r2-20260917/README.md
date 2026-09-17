@@ -1,6 +1,6 @@
 # Quota-aware GPT-5.6 Sol evaluation
 
-State: **queued**, phase: **smoke**.
+State: **smoke-qualified**, phase: **smoke**.
 
 This is a **new cohort**. Earlier cohorts and their attempts remain
 unchanged in [the prior results PR](https://github.com/MayankBansal12/paper-trading-bench/pull/18).
