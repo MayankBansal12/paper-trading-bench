@@ -1,4 +1,4 @@
-import { QUOTA_PAUSE_POLICY } from "../study/availability.ts";
+import { availabilityPolicy } from "../study/availability.ts";
 import { readFileSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { parseFlags } from "./args.ts";
@@ -125,7 +125,7 @@ export async function environmentCLI(command: string, argv: string[]) {
   // Field order matches the evaluation child-config literal so resumed runs
   // hash identically; contentHash is key-order sensitive.
   const c: StudyConfig = {
-    ...(parseBooleanFlag("pause-on-quota", flags.get("pause-on-quota")) ? { availabilityPolicy: QUOTA_PAUSE_POLICY } : {}),
+    ...(parseBooleanFlag("pause-on-quota", flags.get("pause-on-quota")) ? { availabilityPolicy: availabilityPolicy(flags.get("model")) } : {}),
     protocol: STUDY_PROTOCOL,
     kind:
       command === "qualify"

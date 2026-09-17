@@ -204,3 +204,23 @@ test("gateway refuses unqualified routes and API-key fallback for OAuth-priced L
       await expect(serveGateway(join(s.dir, "gateway.sock"), s.tools, "test-key", Date.now() + 1000, () => {}, fetch, () => {}, model)).rejects.toThrow(error);
   } finally { rmSync(s.dir, { recursive: true, force: true }); }
 });
+
+test("Muse 1.3 quota response retains body/reset evidence, stops immediately and blocks client retries", async () => {
+ const s=setup(), socket=join(s.dir,"quota.sock"), events:any[]=[], stops:string[]=[];
+ let calls=0;
+ const g=await serveGateway(socket,s.tools,"fixture-secret",Date.now()+10000,e=>events.push(e),
+  (async()=>{calls++;return new Response(JSON.stringify({error:{type:"FreeUsageLimitError"}}),
+   {status:429,headers:{"retry-after":"3600","set-cookie":"secret-cookie"}});}) as typeof fetch,
+  reason=>stops.push(reason));
+ const request=()=>fetch("http://gateway/inference/responses",{unix:socket,method:"POST",
+  headers:{authorization:`Bearer ${g.capability}`,"content-type":"application/json"},body:JSON.stringify(body(s))});
+ try {
+  const response=await request();expect(response.status).toBe(429);await response.text();
+  expect(stops).toEqual(["Zen HTTP 429; rate-limit pause required"]);
+  expect(events.find(e=>e.type==="inference_response").retryAfter).toBe("3600");
+  expect(events.some(e=>e.type==="inference_chunk")).toBe(true);
+  expect(JSON.stringify(events)).not.toContain("secret-cookie");
+  expect(JSON.stringify(events)).not.toContain("fixture-secret");
+  expect((await request()).status).toBe(429);expect(calls).toBe(1);expect(g.count()).toBe(1);
+ } finally {g.close();rmSync(s.dir,{recursive:true,force:true});}
+});

@@ -1,5 +1,4 @@
-import { QUOTA_PAUSE_POLICY, quotaPause, type QuotaPause } from "./availability.ts";
-import { isPiModel } from "../pi/route.ts";
+import { availabilityPolicy, quotaPause, type AvailabilityPolicy, type QuotaPause } from "./availability.ts";
 import { studyRoute } from "./routes.ts";
 import { mkdirSync, existsSync, readFileSync, readdirSync } from "node:fs";
 import { resolve, join } from "node:path";
@@ -39,7 +38,7 @@ import { validateAccepted } from "./accept.ts";
 export { validateAccepted, validateOpeningContext } from "./accept.ts";
 import { QUALIFIED_ZEN_MODEL_ID } from "../opencode/qualification.ts";
 export interface StudyConfig {
-  availabilityPolicy?: typeof QUOTA_PAUSE_POLICY;
+  availabilityPolicy?: AvailabilityPolicy;
   model?: string;
   protocol: string;
   kind: "environment" | "smoke" | "quarter" | "control";
@@ -84,7 +83,7 @@ export async function prepareStudyData(c: StudyConfig) {
     c.history > POLICY.maxHistory
   )
     throw new Error("History must be 60..252");
-  if (c.availabilityPolicy && (!isPiModel(c.model) || contentHash(c.availabilityPolicy) !== contentHash(QUOTA_PAUSE_POLICY)))
+  if (c.availabilityPolicy && contentHash(c.availabilityPolicy) !== contentHash(availabilityPolicy(c.model)))
     throw new Error("Unqualified availability policy or model");
   const market = await loadDataset(c.dataDir);
   if (market.version !== c.datasetHash)
@@ -251,7 +250,7 @@ export async function runStudy(
       // A recorded quota failure keeps its attempt number. During cooldown no
       // new runtime, provider request, retry, invalid day or later day is created.
       if (!terminal && !existsSync(dayPath) && c.availabilityPolicy) {
-        const pause = quotaPause(store, closedFailures().at(-1));
+        const pause = quotaPause(store, closedFailures().at(-1), c.availabilityPolicy);
         if (pause && (options.readOnly || Date.now() < Date.parse(pause.notBefore))) {
           availability = pause;
           failure = `Provider usage limit; resume no earlier than ${pause.notBefore}`;
@@ -321,7 +320,7 @@ export async function runStudy(
           options.fault?.("after-result", date);
           if (result.outcome === "completed") terminal = resultEvent;
           else if (c.availabilityPolicy) {
-            availability = quotaPause(store, resultEvent);
+            availability = quotaPause(store, resultEvent, c.availabilityPolicy);
             if (availability) {
               failure = `Provider usage limit; resume no earlier than ${availability.notBefore}`;
               break;

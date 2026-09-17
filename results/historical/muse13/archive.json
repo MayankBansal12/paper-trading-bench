@@ -1,0 +1,13 @@
+{
+  "path": "/home/ai/.bb/thread-storage/muse-fresh-20260917/historical-muse13-audit.tar.gz",
+  "sha256": "b8111f94b6064ba381a8263534c1566529aedfbe4fa9f961f3bc3fd8f05d0579",
+  "bytes": 34861114,
+  "manifestSha256": "658a1139ff1bb1e06c22ed5d0f94352d0adc17b49d2b2c58519fdb135ebfc93c",
+  "studyCount": 5,
+  "qualificationCount": 19,
+  "sources": [
+    "0070182e13d1bdf28198b74b9e03193a7abef7c5",
+    "3d2f9302af41628994d20d1f79316e865e51d42c",
+    "c7b1b6f49abdb3c277af028cfb364936a056e6f0"
+  ]
+}

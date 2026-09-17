@@ -32,6 +32,7 @@ export async function serveGateway(
   const edgeSession = randomUUID();
   let closed = false,
     inferences = 0;
+  let zenRateLimited = false;
   const abort = new AbortController();
   const bindings: Array<{ callID: string; tool: string; args: unknown }> = [];
   const deny = (reason: string, status = 403) => {
@@ -51,6 +52,7 @@ export async function serveGateway(
       if (req.headers.get("authorization") !== `Bearer ${capability}`)
         return deny("unauthorized");
       const url = new URL(req.url);
+      if (zenRateLimited && url.pathname.startsWith("/inference")) return deny("zen-rate-limit-paused", 429);
       // The official MCP client probes an optional SSE stream. This stateless broker
       // implements POST only; a 405 is normal transport negotiation, not a tool attempt.
       if (!url.search && url.pathname === "/mcp" && req.method === "GET") {
@@ -299,7 +301,10 @@ export async function serveGateway(
           type: "inference_response",
           sequence,
           status: response.status,
+          ...(model === QUALIFIED_ZEN_MODEL_ID && response.status === 429
+            ? { retryAfter: response.headers.get("retry-after") } : {}),
         });
+        if (model === QUALIFIED_ZEN_MODEL_ID && response.status === 429) zenRateLimited = true;
         const outHeaders = new Headers(response.headers);
         outHeaders.delete("content-length");
         outHeaders.delete("content-encoding");
@@ -321,8 +326,12 @@ export async function serveGateway(
               });
               controller.enqueue(chunk);
             },
+            flush() {
+              if (zenRateLimited) onBudgetCutoff("Zen HTTP 429; rate-limit pause required");
+            },
           }),
         );
+        if (zenRateLimited && !response.body) onBudgetCutoff("Zen HTTP 429; rate-limit pause required");
         return new Response(stream, {
           status: response.status,
           headers: outHeaders,

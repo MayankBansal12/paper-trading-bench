@@ -1,4 +1,4 @@
-import { QUOTA_PAUSE_POLICY } from "./availability.ts";
+import { availabilityPolicy } from "./availability.ts";
 import { isPiModel } from "../pi/route.ts";
 import { existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -74,7 +74,7 @@ export async function prepareEvaluation(input: EvaluationInput) {
   // Validate ALL quarters before creating any artifact or making any model call.
   for (const job of schedule) {
     const config: StudyConfig = {
-      ...(input.pauseOnQuota ? { availabilityPolicy: QUOTA_PAUSE_POLICY } : {}),
+      ...(input.pauseOnQuota ? { availabilityPolicy: availabilityPolicy(job.model) } : {}),
       protocol: STUDY_PROTOCOL,
       kind: job.model === CONTROL_MODEL ? "control" : "environment",
       runId: job.runId,

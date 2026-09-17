@@ -1,6 +1,6 @@
 import { test, expect } from "bun:test";
 import { resolve } from "node:path";
-import { quotaPause, QUOTA_PAUSE_POLICY } from "../src/study/availability.ts";
+import { quotaPause, QUOTA_PAUSE_POLICY, ZEN_QUOTA_PAUSE_POLICY, availabilityPolicy } from "../src/study/availability.ts";
 
 const event = {kind:"result",recordedAt:"2026-09-16T14:00:00Z",hash:"result-hash",scope:{attempt:1},payload:{outcome:"harness_error"}} as any;
 function store(error:any,status=429){return {trace:()=>[{type:"inference_response",sequence:2,status},{type:"inference_chunk",sequence:2,base64:Buffer.from(JSON.stringify({error})).toString("base64")}]} as any;}
@@ -12,7 +12,7 @@ test("quota pause uses explicit provider reset with buffer and preserves the fai
  expect(quotaPause(store({type:"usage_limit_reached"},200),event)).toBeUndefined();
  expect(quotaPause(store({type:"usage_limit_reached"}),{...event,payload:{outcome:"completed"}})).toBeUndefined();
 });
-test("pause/resume makes no calls during cooldown and never grants a third attempt",async()=>{
+for (const model of ["pi/openai-codex/gpt-6-astra", "opencode/muse-spark-1.3-contributor-free"]) test(`${model}: pause/resume makes no calls during cooldown and never grants a third attempt`,async()=>{
  const script=`import { mock } from "bun:test";
  import {rm} from "node:fs/promises";
  let calls=0; const clock=Date.now; let offset=0; Date.now=()=>clock()+offset;
@@ -28,8 +28,8 @@ test("pause/resume makes no calls during cooldown and never grants a third attem
  }}));
  const {config}=await import(${JSON.stringify(resolve("tests/studyTestSupport.ts"))});
  const {runStudy}=await import(${JSON.stringify(resolve("src/study/runner.ts"))});
- const {QUOTA_PAUSE_POLICY}=await import(${JSON.stringify(resolve("src/study/availability.ts"))});
- const c={...await config("2024-04-02","2024-04-02"),kind:"environment",model:"pi/openai-codex/gpt-6-astra",availabilityPolicy:QUOTA_PAUSE_POLICY};
+ const {availabilityPolicy}=await import(${JSON.stringify(resolve("src/study/availability.ts"))});
+ const c={...await config("2024-04-02","2024-04-02"),kind:"environment",model:${JSON.stringify(model)},availabilityPolicy:availabilityPolicy(${JSON.stringify(model)})};
  const root=${JSON.stringify(resolve("results/studies"))}+"/"+c.runId;
  try{
  const first=await runStudy(c);if(first.summary.status!=="paused"||calls!==1||first.summary.committedDays!==0)throw Error("first failure did not pause");
@@ -42,4 +42,19 @@ test("pause/resume makes no calls during cooldown and never grants a third attem
  const p=Bun.spawn([process.execPath,"-e",script],{stdout:"pipe",stderr:"pipe"});
  const [out,err,code]=await Promise.all([new Response(p.stdout).text(),new Response(p.stderr).text(),p.exited]);
  expect(err).toBe("");expect(code).toBe(0);expect(JSON.parse(out).calls).toBe(2);
+});
+
+test("Zen pauses every 429 and honors explicit reset evidence without changing Pi policy", () => {
+ const trace = [{type:"inference_response", sequence:1, status:429, retryAfter:"7200"},
+  {type:"inference_chunk", sequence:1, base64:Buffer.from(JSON.stringify({error:{type:"FreeUsageLimitError"}})).toString("base64")}];
+ const s = {trace:()=>trace} as any;
+ expect(quotaPause(s,event,ZEN_QUOTA_PAUSE_POLICY)?.notBefore).toBe("2026-09-16T16:05:00.000Z");
+ trace[0]!.retryAfter="Wed, 16 Sep 2026 18:00:00 GMT";
+ expect(quotaPause(s,event,ZEN_QUOTA_PAUSE_POLICY)?.notBefore).toBe("2026-09-16T18:05:00.000Z");
+ trace[0]!.retryAfter="unknown";
+ expect(quotaPause(s,event,ZEN_QUOTA_PAUSE_POLICY)?.notBefore).toBe("2026-09-16T20:05:00.000Z");
+ expect(quotaPause(s,event,QUOTA_PAUSE_POLICY)).toBeUndefined();
+ expect(quotaPause(store({resets_at:Date.parse("2026-09-17T00:00:00Z")/1000}),event,ZEN_QUOTA_PAUSE_POLICY)?.notBefore).toBe("2026-09-17T00:05:00.000Z");
+ expect(()=>availabilityPolicy("opencode/muse-spark-1.2-contributor-free")).toThrow();
+ expect(()=>availabilityPolicy("opencode-go/glm-5.3-flash")).toThrow();
 });

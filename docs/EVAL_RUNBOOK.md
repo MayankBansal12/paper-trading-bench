@@ -185,3 +185,33 @@ for example under `results/published/<eval-id>/`:
 The year score remains unavailable when a quarter is missing, errored, stopped or
 unfinished. Sum independent quarter profits and label mean quarterly TWR; do not
 concatenate four fresh portfolios into a continuous annual equity curve.
+
+## Fresh Muse 1.3 on afdasf (September 17, 2026)
+
+Use only `opencode/muse-spark-1.3-contributor-free` through the existing OpenCode
+adapter. The private OpenCode 1.18.30 release and Bun 1.3.14 are checksummed under
+`/home/ai/.bb/thread-storage/muse-fresh-20260917/bin`; the host's moving OpenCode
+installation is not used. The existing host dotenv supplies Zen authentication
+only to the host gateway. Exact refreshed active/free metadata and zero prices
+are checked again before each runtime is prepared.
+
+`--pause-on-quota=true` pins `zen-rate-limit-pause-v1` for this exact route.
+A 429 is retained and terminates the attempt; later requests from that client
+cannot reach the provider. `Retry-After` or explicit body reset fields set the
+resume time plus five minutes. If neither supplies a future reset, wait six
+hours plus five minutes. Attempts remain counted and two failures still exhaust
+a day. This scheduling change requires a fresh cohort and source pin.
+
+`scripts/muse-supervisor.py --config <private-config.json>` runs under a dedicated
+systemd service. It checks clean source and executable hashes, runs and replays
+the three-day smoke, publishes each settled checkpoint to a separate results
+branch/PR, and advances to the serial annual evaluation only after three valid
+days with complete measured usage. A quota checkpoint sleeps once until its
+recorded reset; it does not use a polling timer. Unexpected errors stop the
+supervisor for inspection. Never relaunch a stopped cohort under another name
+to conceal exhausted attempts.
+
+Retirement evidence is in `results/historical/muse13/`; the active cohort identity
+is in `results/current/muse13.json`. Prior evidence and source snapshots remain
+separate and are replayed with their original implementation. The fresh prompt,
+four tools, portfolio rules and attempt allowances remain v12.

@@ -34,3 +34,6 @@ results/evaluations/
 
 # Checksummed audit bundles are referenced by compact results PRs.
 results/archives/
+
+# Fresh catalog receipts are bundled and summarized in results PRs.
+results/qualifications/

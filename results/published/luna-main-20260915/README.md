@@ -3,6 +3,10 @@
 Validated `main` at `3d2f9302af41628994d20d1f79316e865e51d42c`
 against the preserved `models-v12-2025q2-2026q1` cohort.
 
+The Muse 1.3 records in this comparison are **historical and retired**. The fresh
+September 17 cohort is `muse13-fresh-opencode-v12-20260917`; its results are reported
+separately. [Historical preservation](../../historical/muse13/README.md).
+
 ## Results
 
 | Model | Historical records replay | Valid / planned days | Invalid days | Current live smoke |

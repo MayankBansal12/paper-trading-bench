@@ -1,4 +1,6 @@
 import type { JournalEvent, JournalStore } from "./journal.ts";
+import { QUALIFIED_ZEN_MODEL_ID } from "../opencode/qualification.ts";
+import { isPiModel } from "../pi/route.ts";
 
 /** Opt-in scheduling policy, frozen in every child config. It never refunds an attempt. */
 export const QUOTA_PAUSE_POLICY = Object.freeze({
@@ -6,13 +8,23 @@ export const QUOTA_PAUSE_POLICY = Object.freeze({
   fallbackCooldownMs: 6 * 60 * 60 * 1000,
   resetBufferMs: 5 * 60 * 1000,
 });
+export const ZEN_QUOTA_PAUSE_POLICY = Object.freeze({
+  ...QUOTA_PAUSE_POLICY,
+  version: "zen-rate-limit-pause-v1",
+});
+export type AvailabilityPolicy = typeof QUOTA_PAUSE_POLICY | typeof ZEN_QUOTA_PAUSE_POLICY;
+export function availabilityPolicy(model: string = QUALIFIED_ZEN_MODEL_ID): AvailabilityPolicy {
+  if (model === QUALIFIED_ZEN_MODEL_ID) return ZEN_QUOTA_PAUSE_POLICY;
+  if (isPiModel(model)) return QUOTA_PAUSE_POLICY;
+  throw new Error("Unqualified availability policy or model");
+}
 export interface QuotaPause {
   reason: "provider-usage-limit";
   notBefore: string;
   failedAttempt: number;
   resultEventHash: string;
 }
-export function quotaPause(store: JournalStore, event?: JournalEvent): QuotaPause | undefined {
+export function quotaPause(store: JournalStore, event?: JournalEvent, policy: AvailabilityPolicy = QUOTA_PAUSE_POLICY): QuotaPause | undefined {
   if (!event || event.kind !== "result" || event.payload.outcome === "completed") return;
   const trace = store.trace(event.scope);
   const responses = trace.filter(e => e.type === "inference_response" && e.status === 429);
@@ -20,6 +32,24 @@ export function quotaPause(store: JournalStore, event?: JournalEvent): QuotaPaus
   let reset: number | undefined;
   let found = false;
   for (const response of responses) {
+    if (policy.version === ZEN_QUOTA_PAUSE_POLICY.version) {
+      // Every Zen 429 pauses, including missing or unrecognized error bodies.
+      // Interpret only Retry-After as a header reset; retain no other headers.
+      const value = response.retryAfter;
+      const seconds = typeof value === "string" && /^\d+(?:\.\d+)?$/.test(value) ? Number(value) : NaN;
+      const headerAt = Number.isFinite(seconds) ? recorded + seconds * 1000 : Date.parse(value ?? "");
+      const raw = Buffer.concat(trace.filter(e => e.type === "inference_chunk" && e.sequence === response.sequence)
+        .map(e => Buffer.from(e.base64, "base64"))).toString("utf8");
+      let error: any;
+      try { error = JSON.parse(raw)?.error; } catch {}
+      const absolute = Number(error?.resets_at) * 1000;
+      const relative = recorded + Number(error?.resets_in_seconds) * 1000;
+      const candidates = [headerAt, absolute, relative].filter(n => Number.isFinite(n) && n > recorded);
+      const candidate = candidates.length ? Math.max(...candidates) : recorded + policy.fallbackCooldownMs;
+      found = true;
+      reset = Math.max(reset ?? 0, candidate + policy.resetBufferMs);
+      continue;
+    }
     const raw = Buffer.concat(trace.filter(e => e.type === "inference_chunk" && e.sequence === response.sequence)
       .map(e => Buffer.from(e.base64, "base64"))).toString("utf8");
     try {

@@ -1,0 +1,67 @@
+[
+  {
+    "runId": "main-3d2f930-spark13-smoke-20260915",
+    "source": "3d2f9302af41628994d20d1f79316e865e51d42c",
+    "exitCode": 0,
+    "summary": {
+      "validDays": 0,
+      "invalidDays": 1,
+      "totalDays": 1,
+      "attempts": 2,
+      "status": "completed",
+      "unattemptedDays": 0
+    }
+  },
+  {
+    "runId": "models-v12-2025q2-2026q1-opencode-muse-spark-1-3-c-567712ad39ee-2026-Q1",
+    "source": "0070182e13d1bdf28198b74b9e03193a7abef7c5",
+    "exitCode": 0,
+    "summary": {
+      "validDays": 23,
+      "invalidDays": 3,
+      "totalDays": 61,
+      "attempts": 29,
+      "status": "invalid",
+      "unattemptedDays": 35
+    }
+  },
+  {
+    "runId": "models-v12-2025q2-2026q1-opencode-muse-spark-1-3-c-567712ad39ee-2025-Q2",
+    "source": "0070182e13d1bdf28198b74b9e03193a7abef7c5",
+    "exitCode": 0,
+    "summary": {
+      "validDays": 0,
+      "invalidDays": 3,
+      "totalDays": 62,
+      "attempts": 6,
+      "status": "invalid",
+      "unattemptedDays": 59
+    }
+  },
+  {
+    "runId": "models-v12-2025q2-2026q1-opencode-muse-spark-1-3-c-567712ad39ee-2025-Q3",
+    "source": "c7b1b6f49abdb3c277af028cfb364936a056e6f0",
+    "exitCode": 0,
+    "summary": {
+      "validDays": 0,
+      "invalidDays": 3,
+      "totalDays": 64,
+      "attempts": 6,
+      "status": "invalid",
+      "unattemptedDays": 61
+    }
+  },
+  {
+    "runId": "models-v12-2025q2-2026q1-opencode-muse-spark-1-3-c-567712ad39ee-2025-Q4",
+    "source": "0070182e13d1bdf28198b74b9e03193a7abef7c5",
+    "exitCode": 0,
+    "summary": {
+      "validDays": 27,
+      "invalidDays": 3,
+      "totalDays": 64,
+      "attempts": 33,
+      "status": "invalid",
+      "unattemptedDays": 34
+    }
+  }
+]
