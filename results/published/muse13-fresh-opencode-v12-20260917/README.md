@@ -8,7 +8,7 @@ The three-day April 1–3 smoke must have three valid decisions, complete measur
 
 A Muse HTTP 429 stops upstream calls immediately. The recorded Retry-After or explicit reset sets the next launch, plus five minutes; absent a reset, the frozen fallback is six hours plus five minutes. The failed attempt remains counted; every day still permits only two attempts.
 
-Next permitted attempt: `None`. Blocker: `Live qualification or annual coverage incomplete; attempts preserved.`.
+Next permitted attempt: `None`. Blocker: `HTTP 403 FreeTierError: the provider refuses the genuine OpenCode CLI under its free-tier client restriction; 0 valid / 3 invalid days, 6 failed attempts. Annual not launched.`.
 
 Historical Muse 1.3 is retired and separately checksummed. It is never combined with this cohort. [Provenance, every attempt, measured usage, replay receipts and audit checksums](provenance.json). Raw logs remain in local audit bundles on afdasf. Those bundles and pinned binaries require retention; Git contains compact evidence only.
 

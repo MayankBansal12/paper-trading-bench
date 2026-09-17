@@ -1,0 +1,88 @@
+{
+  "liveSmoke": {
+    "protocol": "v12-portfolio-journal-submit",
+    "kind": "smoke",
+    "status": "invalid",
+    "failure": "3 consecutive invalid trading days through 2025-04-03: Missing/failed sandbox client audit",
+    "committedDays": 3,
+    "validDays": 0,
+    "consecutiveInvalidDays": 3,
+    "maxConsecutiveInvalidDays": 3,
+    "stopped": true,
+    "totalDays": 3,
+    "attemptedDays": 3,
+    "retriedDays": 3,
+    "invalidDays": 3,
+    "unattemptedDays": 0,
+    "invalidSessions": [
+      {
+        "date": "2025-04-01",
+        "attempts": 2,
+        "reason": "Missing/failed sandbox client audit"
+      },
+      {
+        "date": "2025-04-02",
+        "attempts": 2,
+        "reason": "Missing/failed sandbox client audit"
+      },
+      {
+        "date": "2025-04-03",
+        "attempts": 2,
+        "reason": "Missing/failed sandbox client audit"
+      }
+    ],
+    "portfolio": {
+      "cash": 50000,
+      "holdings": {},
+      "holdingsValue": 0,
+      "netWorth": 50000
+    },
+    "fills": 0,
+    "rejectedOrders": 0,
+    "journalEntries": 0,
+    "eventRoot": "64de62ba11651b8fef8f57e177d90df7752d93db27d778a07b792be508b3ce44",
+    "commitRoot": "17dcd33ef477e1b563c82363fd75eaa8be2867728c236ab012f5827367dc3bc7",
+    "attempts": 6,
+    "failures": 6,
+    "usageUnavailableAttempts": 6
+  },
+  "diagnosis": {
+    "observedAt": "2026-09-17T23:03:03.152212+00:00",
+    "model": "opencode/muse-spark-1.3-contributor-free",
+    "clientVersion": "1.18.30",
+    "sourceRevision": "ab465d63ff8e34d63ad667315503d9e033f61fee",
+    "providerStatus": 403,
+    "providerErrorType": "FreeTierError",
+    "providerMessage": "Error from provider (Console): OpenCode's free tier can only be used from within OpenCode",
+    "coverage": {
+      "valid": 0,
+      "invalid": 3,
+      "plannedSmoke": 3,
+      "failedAttempts": 6,
+      "annualAttempted": 0,
+      "annualPlanned": 251
+    },
+    "usage": "Unavailable for all six refused attempts; tokens and measured cost remain null. Catalog input/output/cache prices were proven zero.",
+    "auditDiagnosis": "Sandbox audit event and prompt/config/tool definition files exist. CLI exits 1 after provider refusal; generic Missing/failed sandbox client audit is caused by nonzero exit, not missing model identity evidence. No trading calls or submissions occurred.",
+    "requestedAndResolvedModelExact": true,
+    "fourTools": [
+      "trading_market_snapshot",
+      "trading_price_history",
+      "trading_journal",
+      "trading_submit_day"
+    ],
+    "offlineDiagnostic": {
+      "providerCalls": 0,
+      "fixtureSetupAttempt1": "Failed before any recorded upstream request: horizon argument missing contributions. Retained separately.",
+      "fixtureAttempt2": "Actual pinned sandbox OpenCode CLI forwarded its OpenCode user-agent, cli identity, project, session and request headers to a local recording fixture; exact free model selected. Synthetic 429 stopped the client and blocked retries.",
+      "receipt": "/home/ai/.bb/thread-storage/muse-fresh-20260917/preflight/offline-header-diagnostic-2.json"
+    },
+    "officialSources": [
+      "https://github.com/anomalyco/opencode/blob/v1.18.30/packages/opencode/src/session/llm/request.ts",
+      "https://github.com/anomalyco/opencode/blob/v1.18.30/packages/console/app/src/routes/zen/util/handler.ts"
+    ],
+    "conclusion": "Provider refuses the genuine CLI request under its free-tier client restriction. Missing OpenCode headers is ruled out by the offline trace. The server-side reason for refusal is not established; no supported local transport correction was found. Further live calls are stopped; no paid route, alternate model or direct API substitute was used.",
+    "supervisor": "Stopped successfully after publishing blocked smoke; no retry timer or annual launch scheduled.",
+    "sourceStillClean": true
+  }
+}
