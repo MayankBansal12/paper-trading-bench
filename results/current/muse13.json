@@ -4,6 +4,9 @@
   "evalId": "muse13-fresh-opencode-v12-20260917",
   "smokeId": "muse13-fresh-opencode-smoke-20260917",
   "label": "Muse Spark 1.3 \u2014 fresh September 17, 2026",
-  "status": "Qualification required; consult results PR",
-  "historicalEvidence": "results/historical/muse13/archive.json"
+  "status": "Blocked: provider HTTP 403 FreeTierError; 0 valid / 3 invalid smoke days; annual not started",
+  "historicalEvidence": "results/historical/muse13/archive.json",
+  "sourceRevision": "ab465d63ff8e34d63ad667315503d9e033f61fee",
+  "resultsPR": "https://github.com/MayankBansal12/paper-trading-bench/pull/21",
+  "diagnosis": "results/published/muse13-fresh-opencode-v12-20260917/diagnosis.md"
 }

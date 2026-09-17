@@ -13,3 +13,5 @@ Next permitted attempt: `None`. Blocker: `HTTP 403 FreeTierError: the provider r
 Historical Muse 1.3 is retired and separately checksummed. It is never combined with this cohort. [Provenance, every attempt, measured usage, replay receipts and audit checksums](provenance.json). Raw logs remain in local audit bundles on afdasf. Those bundles and pinned binaries require retention; Git contains compact evidence only.
 
 Checks: typecheck; full Bun suite; targeted quota/gateway tests; Python supervisor tests; four-quarter dataset preflight; exact-route catalog refresh; sandbox qualification. Checkpoint replay exit codes and failures are recorded in each receipt.
+
+[Precise provider failure and bounded native-metadata diagnosis](diagnosis.md).
