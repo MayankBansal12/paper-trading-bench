@@ -1,6 +1,6 @@
 # Quota-aware GPT-5.6 Sol evaluation
 
-State: **queued**, phase: **smoke**.
+State: **smoke-qualified**, phase: **smoke**.
 
 This is a **new cohort**. Earlier cohorts and their attempts remain
 unchanged in [the prior results PR](https://github.com/MayankBansal12/paper-trading-bench/pull/16).
@@ -29,5 +29,3 @@ Implementation checks: see the linked implementation PR and committed tests.
 The quota-pause tests cover provider reset parsing, no inference during cooldown,
 retained attempts across resume, and refusal to grant a third attempt. Live replay
 outcomes are captured in the checkpoint summaries and archived execution receipts.
-
-[Current exact-reset schedule and Astra → Sol queue](SCHEDULING.md).
