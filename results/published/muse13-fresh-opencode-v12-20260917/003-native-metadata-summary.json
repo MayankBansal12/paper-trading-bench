@@ -1,0 +1,98 @@
+{
+  "smokeCoverage": {
+    "protocol": "v12-portfolio-journal-submit",
+    "kind": "smoke",
+    "status": "invalid",
+    "failure": "3 consecutive invalid trading days through 2025-04-03: Missing/failed sandbox client audit",
+    "committedDays": 3,
+    "validDays": 0,
+    "consecutiveInvalidDays": 3,
+    "maxConsecutiveInvalidDays": 3,
+    "stopped": true,
+    "totalDays": 3,
+    "attemptedDays": 3,
+    "retriedDays": 3,
+    "invalidDays": 3,
+    "unattemptedDays": 0,
+    "invalidSessions": [
+      {
+        "date": "2025-04-01",
+        "attempts": 2,
+        "reason": "Missing/failed sandbox client audit"
+      },
+      {
+        "date": "2025-04-02",
+        "attempts": 2,
+        "reason": "Missing/failed sandbox client audit"
+      },
+      {
+        "date": "2025-04-03",
+        "attempts": 2,
+        "reason": "Missing/failed sandbox client audit"
+      }
+    ],
+    "portfolio": {
+      "cash": 50000,
+      "holdings": {},
+      "holdingsValue": 0,
+      "netWorth": 50000
+    },
+    "fills": 0,
+    "rejectedOrders": 0,
+    "journalEntries": 0,
+    "eventRoot": "64de62ba11651b8fef8f57e177d90df7752d93db27d778a07b792be508b3ce44",
+    "commitRoot": "17dcd33ef477e1b563c82363fd75eaa8be2867728c236ab012f5827367dc3bc7",
+    "attempts": 6,
+    "failures": 6,
+    "usageUnavailableAttempts": 6
+  },
+  "nativeMetadataDiagnosis": {
+    "providerCallsDuringExtendedDiagnosis": 0,
+    "fixtureSourceRevision": "ab465d63ff8e34d63ad667315503d9e033f61fee",
+    "instrumentation": "A separate detached copy contains only a read-only metadata audit hook. The evaluation source and terminal cohort remain unchanged. Exact patch is archived.",
+    "nativeMetadataPreserved": {
+      "user-agent": "opencode/1.18.30 ai-sdk/provider-utils/4.0.40 runtime/bun/1.3.14",
+      "x-opencode-client": "cli",
+      "x-opencode-project": "global",
+      "x-opencode-request": "msg_0b19e2f7f001RwUuVQ0ly3SKng",
+      "x-opencode-session": "ses_f4e61d0a5ffeDq5CEYcOriLBsL"
+    },
+    "gatewayDifferences": {
+      "authorization": "Ephemeral sandbox capability replaced by existing host Zen key; neither recorded in diagnostic output.",
+      "accept-encoding": "identity replaces gzip/deflate/br/zstd so audit records see the decoded response.",
+      "host": "Local socket/loopback authority replaced by the qualified upstream authority.",
+      "connection": "Transport-managed hop-by-hop field.",
+      "content-length": "Host fetch calculates length from the unchanged raw request body."
+    },
+    "bodyInspection": "Gateway parses and validates the body but forwards the original raw string as body: raw. No client metadata field is stripped or rewritten.",
+    "defaultPluginInspection": "Official v1.18.30 internalPlugins has provider plugins for Codex, Copilot, Modal, GitLab, Poe, Cloudflare, Azure, DigitalOcean, Snowflake, xAI and Cerebras; no separate OpenCode Zen signing/attestation plugin is disabled. Zen provider registration uses API authentication (or public when no key) and contains no extra attestation step.",
+    "versionComparison": "Official v1.18.30, v1.18.31 and dev request builders emit the same OpenCode client identity headers. The private v1.18.30 binary came from the checksum-verified official release.",
+    "endpointConfirmed": "Official documentation maps muse-spark-1.3-contributor-free to https://opencode.ai/zen/v1/responses with @ai-sdk/openai, matching the recorded route.",
+    "sources": [
+      "https://github.com/anomalyco/opencode/blob/v1.18.30/packages/opencode/src/session/llm/request.ts",
+      "https://github.com/anomalyco/opencode/blob/v1.18.30/packages/opencode/src/session/llm.ts",
+      "https://github.com/anomalyco/opencode/blob/v1.18.30/packages/opencode/src/plugin/index.ts",
+      "https://github.com/anomalyco/opencode/blob/v1.18.30/packages/opencode/src/provider/provider.ts",
+      "https://github.com/anomalyco/opencode/blob/v1.18.30/packages/web/src/content/docs/zen.mdx"
+    ],
+    "sourceFileSha256": {
+      "official-source/ai-sdk.ts": "3d2e653811abaf230b3fea9a54049499d1be2c09dabe017ed4eb99918ee7def5",
+      "official-source/dev-handler.ts": "e7261d7a6cd8f5958059066c10025015222ad9e84fc4eaf5f5b047cbc3cd1784",
+      "official-source/dev-request.ts": "a92010ff1981f9bdf62c7d2f6dcbe28baea041e2cd54bf0b54fd2ea667b92cf2",
+      "official-source/handler.ts": "eb92c7905f5615fb7b59cf2e9a68d133187c0388653e903bb806a79cfb067221",
+      "official-source/llm.ts": "5f1dcfb734853e39760e4dd05470f0c7d8752fc5dcc64e118c065149602e402d",
+      "official-source/native-request.ts": "ee47e4430d7bb959f0ef672ca40ad9a45acd5ca4e0df72548e01825da3208432",
+      "official-source/native-runtime.ts": "ad7ba806e0b9d429ccd93b02b3583754254e6fc540450cb97e16393c28d394c2",
+      "official-source/plugins-ai-sdk.ts": "3d2e653811abaf230b3fea9a54049499d1be2c09dabe017ed4eb99918ee7def5",
+      "official-source/plugins-index.ts": "47c62b7cfae891d268e6b239edb0f1c46df5cb35eb11ccfd8bd4186c156024e9",
+      "official-source/plugins-loader.ts": "a7eba2d328a36a2486b50245ad98ef0daa769d4109c9e50470d8493b0936c4c0",
+      "official-source/plugins-runtime-flags.ts": "5b580cb96f9d5300f8ff995a29ec5e602e0e3e0200661dfff971998562f2a1a9",
+      "official-source/provider.ts": "77216c71fd0079da036ac25af516a29ee45f58b52e7c63987065ca97583ee364",
+      "official-source/request.ts": "a92010ff1981f9bdf62c7d2f6dcbe28baea041e2cd54bf0b54fd2ea667b92cf2",
+      "official-source/v1.18.31-request.ts": "a92010ff1981f9bdf62c7d2f6dcbe28baea041e2cd54bf0b54fd2ea667b92cf2"
+    },
+    "documentationFetch": "Direct documentation website returned HTTP 403; the published source was read from the official GitHub repository instead. No access restriction was bypassed.",
+    "conclusion": "No required native client metadata loss was identified. Current free-tier provider enforcement rejects this pinned gateway-mediated OpenCode client. Public sources do not establish whether that is an eligibility restriction or provider defect, nor a supported compatibility remedy. Leave the cohort blocked; provider-side acceptance/eligibility clarification is required before another live qualification.",
+    "noChanges": "No spoofed identity, provider policy bypass, changed credential, weakened sandbox, alternate model, direct API inference, paid route or Pi route was attempted."
+  }
+}

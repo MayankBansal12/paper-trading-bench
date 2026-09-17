@@ -65,6 +65,20 @@
         "offlineProviderCalls": 0,
         "runtimeChanged": false
       }
+    },
+    {
+      "label": "003-native-metadata",
+      "auditBundle": "/home/ai/.bb/thread-storage/muse-fresh-20260917/audit-003-native-metadata.tar.gz",
+      "sha256": "21833e0e32b94b5dc9b1881d98c454186cd63a5ee959d05bd5e7aaefb623b526",
+      "bytes": 10322572,
+      "receipt": {
+        "liveProviderCalls": 0,
+        "offlineCliFixtureAttempts": 1,
+        "nativeIdentityHeadersCompared": 5,
+        "nativeIdentityHeadersPreserved": true,
+        "evaluationSourceChanged": false,
+        "cohortChanged": false
+      }
     }
   ],
   "model": "opencode/muse-spark-1.3-contributor-free",
