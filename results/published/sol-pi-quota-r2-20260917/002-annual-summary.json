@@ -1,0 +1,259 @@
+{
+  "version": "independent-quarters-apr2025-mar2026-v5-quota-pause",
+  "evalId": "sol-pi-quota-r2-20260917",
+  "start": "2025-04-01",
+  "end": "2026-03-31",
+  "status": "incomplete",
+  "interpretation": "Four independent quarterly portfolios per model. Dollar outcomes are summed; mean quarterly TWR is not an annual compounded return. Independent account balances must not be plotted as one equity curve. These environment results do not establish scored NDX membership eligibility.",
+  "models": [
+    {
+      "model": "pi/openai-codex/gpt-5.6-sol",
+      "complete": false,
+      "completedQuarters": 0,
+      "accountedSessions": 45,
+      "validDays": 45,
+      "invalidDays": 0,
+      "retriedDays": 2,
+      "plannedContributions": 600000,
+      "accountedContributions": 150000,
+      "year": null
+    }
+  ],
+  "quarters": [
+    {
+      "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q2",
+      "model": "pi/openai-codex/gpt-5.6-sol",
+      "label": "2025-Q2",
+      "start": "2025-04-01",
+      "end": "2025-06-30",
+      "status": "paused",
+      "summary": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "status": "paused",
+        "availability": {
+          "reason": "provider-usage-limit",
+          "notBefore": "2026-09-17T22:59:41.000Z",
+          "failedAttempt": 1,
+          "resultEventHash": "f845773ed53f4b422053adfb3375564ed337ae8d0352950f9acff2d557fc3aed"
+        },
+        "failure": "Provider usage limit; resume no earlier than 2026-09-17T22:59:41.000Z",
+        "committedDays": 45,
+        "validDays": 45,
+        "consecutiveInvalidDays": 0,
+        "maxConsecutiveInvalidDays": 0,
+        "stopped": false,
+        "totalDays": 62,
+        "attemptedDays": 46,
+        "retriedDays": 2,
+        "invalidDays": 0,
+        "unattemptedDays": 16,
+        "invalidSessions": [],
+        "portfolio": {
+          "cash": 16512.38,
+          "holdings": {
+            "COST": {
+              "units": 8.073911,
+              "avgCost": 990.85,
+              "lastClose": 1051.68994140625,
+              "value": 8491.25
+            },
+            "ROST": {
+              "units": 36.75123,
+              "avgCost": 136.05,
+              "lastClose": 142.50999450683594,
+              "value": 5237.42
+            },
+            "WMT": {
+              "units": 55.139005,
+              "avgCost": 90.68,
+              "lastClose": 99.3499984741211,
+              "value": 5478.06
+            },
+            "FAST": {
+              "units": 123.869806,
+              "avgCost": 40.365,
+              "lastClose": 40.880001068115234,
+              "value": 5063.8
+            },
+            "TRI": {
+              "units": 25.55369,
+              "avgCost": 176.1,
+              "lastClose": 195.75999450683594,
+              "value": 5002.39
+            },
+            "NFLX": {
+              "units": 8.420727,
+              "avgCost": 1068.79,
+              "lastClose": 1239.6600341796875,
+              "value": 10438.84
+            },
+            "TTWO": {
+              "units": 34.170532,
+              "avgCost": 234.12,
+              "lastClose": 229.17999267578125,
+              "value": 7831.2
+            },
+            "ZS": {
+              "units": 35.010962,
+              "avgCost": 228.5,
+              "lastClose": 296.8500061035156,
+              "value": 10393
+            },
+            "MNST": {
+              "units": 100.233961,
+              "avgCost": 59.86,
+              "lastClose": 63.15999984741211,
+              "value": 6330.78
+            },
+            "MELI": {
+              "units": 2.13871,
+              "avgCost": 2337.86,
+              "lastClose": 2573.9599609375,
+              "value": 5504.95
+            },
+            "MSFT": {
+              "units": 13.829995,
+              "avgCost": 433.84,
+              "lastClose": 463.8699951171875,
+              "value": 6415.32
+            },
+            "AXON": {
+              "units": 4.385908,
+              "avgCost": 684.01,
+              "lastClose": 780,
+              "value": 3421.01
+            },
+            "CEG": {
+              "units": 20.952665,
+              "avgCost": 286.36,
+              "lastClose": 299.5400085449219,
+              "value": 6276.16
+            },
+            "NVDA": {
+              "units": 40.006439,
+              "avgCost": 124.98,
+              "lastClose": 141.9199981689453,
+              "value": 5677.71
+            },
+            "APP": {
+              "units": 13.387253,
+              "avgCost": 373.49,
+              "lastClose": 416.5199890136719,
+              "value": 5576.06
+            },
+            "CRWD": {
+              "units": 10.57117,
+              "avgCost": 472.98,
+              "lastClose": 460.55999755859375,
+              "value": 4868.66
+            },
+            "PLTR": {
+              "units": 45.649979,
+              "avgCost": 131.43,
+              "lastClose": 130.00999450683594,
+              "value": 5934.95
+            },
+            "ALNY": {
+              "units": 19.795463,
+              "avgCost": 303.1,
+              "lastClose": 305.30999755859375,
+              "value": 6043.75
+            },
+            "CCEP": {
+              "units": 54.752573,
+              "avgCost": 91.32,
+              "lastClose": 90.97000122070312,
+              "value": 4980.84
+            },
+            "BKNG": {
+              "units": 0.909091,
+              "avgCost": 5500,
+              "lastClose": 5556.999969482422,
+              "value": 5051.82
+            },
+            "CTAS": {
+              "units": 22.222244,
+              "avgCost": 225,
+              "lastClose": 227.3699951171875,
+              "value": 5052.67
+            },
+            "DASH": {
+              "units": 23.898312,
+              "avgCost": 209.22,
+              "lastClose": 220.22999572753906,
+              "value": 5263.13
+            },
+            "STX": {
+              "units": 34.185154,
+              "avgCost": 117.01,
+              "lastClose": 127.63999938964844,
+              "value": 4363.39
+            }
+          },
+          "holdingsValue": 138697.16,
+          "netWorth": 155209.54
+        },
+        "fills": 47,
+        "rejectedOrders": 0,
+        "journalEntries": 45,
+        "eventRoot": "f845773ed53f4b422053adfb3375564ed337ae8d0352950f9acff2d557fc3aed",
+        "commitRoot": "c9a80b15e25d47770f675c1152c16ba5196b8f3c7653d5951187a7026862bd0c",
+        "attempts": 48,
+        "failures": 3,
+        "usageUnavailableAttempts": 48
+      },
+      "error": null,
+      "metrics": {
+        "startingCapital": 50000,
+        "endingNetWorth": 155209.54,
+        "totalContributions": 150000,
+        "netProfit": 5209.54,
+        "timeWeightedReturnPct": 3.8456,
+        "totalReturnPct": 3.8456,
+        "maxDrawdownPct": -6.5419,
+        "dailyVolatilityPct": 1.1568,
+        "annualizedVolatilityPct": 18.3643,
+        "sharpe": 1.2422,
+        "avgTurnoverPct": 8.9542,
+        "tradeCount": 47,
+        "failedOrderCount": 0,
+        "boundedStopCount": 0,
+        "daysRun": 45
+      }
+    },
+    {
+      "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q3",
+      "model": "pi/openai-codex/gpt-5.6-sol",
+      "label": "2025-Q3",
+      "start": "2025-07-01",
+      "end": "2025-09-30",
+      "status": "pending",
+      "summary": null,
+      "metrics": null,
+      "error": null
+    },
+    {
+      "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q4",
+      "model": "pi/openai-codex/gpt-5.6-sol",
+      "label": "2025-Q4",
+      "start": "2025-10-01",
+      "end": "2025-12-31",
+      "status": "pending",
+      "summary": null,
+      "metrics": null,
+      "error": null
+    },
+    {
+      "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2026-Q1",
+      "model": "pi/openai-codex/gpt-5.6-sol",
+      "label": "2026-Q1",
+      "start": "2026-01-01",
+      "end": "2026-03-31",
+      "status": "pending",
+      "summary": null,
+      "metrics": null,
+      "error": null
+    }
+  ]
+}
