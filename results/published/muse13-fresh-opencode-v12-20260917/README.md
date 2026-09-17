@@ -1,6 +1,6 @@
 # Fresh Muse Spark 1.3 via OpenCode Zen
 
-State: **ready**; phase: **smoke**.
+State: **blocked**; phase: **smoke**.
 
 Source: `ab465d63ff8e34d63ad667315503d9e033f61fee`. Exact route: `opencode/muse-spark-1.3-contributor-free`. OpenCode 1.18.30, Bun 1.3.14, official default reasoning. Refreshed active/free catalog evidence pins all prices to zero; catalog success alone does not qualify a live model.
 
@@ -8,7 +8,7 @@ The three-day April 1–3 smoke must have three valid decisions, complete measur
 
 A Muse HTTP 429 stops upstream calls immediately. The recorded Retry-After or explicit reset sets the next launch, plus five minutes; absent a reset, the frozen fallback is six hours plus five minutes. The failed attempt remains counted; every day still permits only two attempts.
 
-Next permitted attempt: `None`. Blocker: `None`.
+Next permitted attempt: `None`. Blocker: `Live qualification or annual coverage incomplete; attempts preserved.`.
 
 Historical Muse 1.3 is retired and separately checksummed. It is never combined with this cohort. [Provenance, every attempt, measured usage, replay receipts and audit checksums](provenance.json). Raw logs remain in local audit bundles on afdasf. Those bundles and pinned binaries require retention; Git contains compact evidence only.
 

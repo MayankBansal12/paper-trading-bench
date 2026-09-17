@@ -1,0 +1,47 @@
+{
+  "protocol": "v12-portfolio-journal-submit",
+  "kind": "smoke",
+  "status": "invalid",
+  "failure": "3 consecutive invalid trading days through 2025-04-03: Missing/failed sandbox client audit",
+  "committedDays": 3,
+  "validDays": 0,
+  "consecutiveInvalidDays": 3,
+  "maxConsecutiveInvalidDays": 3,
+  "stopped": true,
+  "totalDays": 3,
+  "attemptedDays": 3,
+  "retriedDays": 3,
+  "invalidDays": 3,
+  "unattemptedDays": 0,
+  "invalidSessions": [
+    {
+      "date": "2025-04-01",
+      "attempts": 2,
+      "reason": "Missing/failed sandbox client audit"
+    },
+    {
+      "date": "2025-04-02",
+      "attempts": 2,
+      "reason": "Missing/failed sandbox client audit"
+    },
+    {
+      "date": "2025-04-03",
+      "attempts": 2,
+      "reason": "Missing/failed sandbox client audit"
+    }
+  ],
+  "portfolio": {
+    "cash": 50000,
+    "holdings": {},
+    "holdingsValue": 0,
+    "netWorth": 50000
+  },
+  "fills": 0,
+  "rejectedOrders": 0,
+  "journalEntries": 0,
+  "eventRoot": "64de62ba11651b8fef8f57e177d90df7752d93db27d778a07b792be508b3ce44",
+  "commitRoot": "17dcd33ef477e1b563c82363fd75eaa8be2867728c236ab012f5827367dc3bc7",
+  "attempts": 6,
+  "failures": 6,
+  "usageUnavailableAttempts": 6
+}

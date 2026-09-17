@@ -15,6 +15,43 @@
           "historicalReplays": 5
         }
       }
+    },
+    {
+      "label": "001-smoke",
+      "auditBundle": "/home/ai/.bb/thread-storage/muse-fresh-20260917/audit-001-smoke.tar.gz",
+      "sha256": "362ba70e6f2f7915c518e79536fd9f2506388d55c8d54a790f924ed9acad5d7f",
+      "bytes": 9946628,
+      "receipt": {
+        "runCommand": [
+          "run",
+          "--run-id",
+          "muse13-fresh-opencode-smoke-20260917",
+          "--smoke=true",
+          "--model",
+          "opencode/muse-spark-1.3-contributor-free",
+          "--data-dir",
+          "/home/ai/code/paper-trading-bench/datasets/historical/nasdaq100_2025q2-2026q1_v1",
+          "--start",
+          "2025-04-01",
+          "--end",
+          "2025-04-03",
+          "--pause-on-quota=true"
+        ],
+        "runExitCode": 1,
+        "verifyCommand": [
+          "verify",
+          "--dir",
+          "results/studies/muse13-fresh-opencode-smoke-20260917"
+        ],
+        "verifyExitCode": 0,
+        "finishedAt": "2026-09-17T22:55:26.115881+00:00",
+        "reviews": [
+          {
+            "runId": "muse13-fresh-opencode-smoke-20260917",
+            "exitCode": 0
+          }
+        ]
+      }
     }
   ],
   "model": "opencode/muse-spark-1.3-contributor-free",
@@ -42,12 +79,234 @@
   "plannedSessions": 251,
   "state": {
     "phase": "smoke",
-    "status": "ready",
-    "launches": 0,
+    "status": "blocked",
+    "launches": 1,
     "notBefore": null,
-    "error": null
+    "error": "Live qualification or annual coverage incomplete; attempts preserved.",
+    "updatedAt": "2026-09-17T22:55:26.115900+00:00"
   },
-  "runs": [],
+  "runs": [
+    {
+      "runId": "muse13-fresh-opencode-smoke-20260917",
+      "manifestSha256": "e554f6f9986ff9c290bb8a5ffd8b355d7708eb87ec8633717e1777a7e89ae157",
+      "repositoryRevision": "ab465d63ff8e34d63ad667315503d9e033f61fee",
+      "implementationHash": "f9b4fe22c45520fd4f134403ac806f9e0baf4d9ecb04bddde15de091cf620c5c",
+      "runtime": {
+        "policy": "bwrap-systemd-unix-gateway-v2",
+        "bwrap": "bubblewrap 0.9.0",
+        "hashes": {
+          "scripts/sandbox/launch.sh": "906be5095cc7ba6cefdbedf95d9274cbd7b593c48aacbaa98ebe8c27f50679a7",
+          "src/study/worker.ts": "9604def933793d2c819fc4624a4cbb89b488738fffde8e46fec03cd9ee0c235b",
+          ".sandbox/seccomp.bpf": "791d20edbc3fa44a193adcfe6774c739f80e6806742cfbbdab3f0c8b4fba70e0"
+        },
+        "opencodeHash": "87bd160e053af86b5b409daabf71f8dc05bbc3a2a3a5f563f36011cdf706a999",
+        "bunHash": "9fd36f87e4b90b07632b987a2e4ec81ca15a62c81bf983190cea6d715be2ad74",
+        "bwrapHash": "52231e1caf55bcbc667b269f49c63599a6f7db4767ae6a039580d0ff853db712",
+        "kernel": "6.17.0-1022-azure",
+        "limits": {
+          "memoryBytes": 2147483648,
+          "tasks": 128,
+          "tmpBytes": 67108864,
+          "workBytes": 134217728
+        },
+        "id": "119085c81a1b1911442c193fd4aba94c9fbdf139bd7607134db9c2da88b501a3"
+      },
+      "attempts": [
+        {
+          "scope": {
+            "protocol": "v12-portfolio-journal-submit",
+            "runId": "muse13-fresh-opencode-smoke-20260917",
+            "date": "2025-04-01",
+            "attempt": 1,
+            "observationDate": "2025-03-31",
+            "reportCutoff": "2025-04-01"
+          },
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "usage": {
+            "completeness": "unavailable",
+            "missingSteps": 1,
+            "turns": 1,
+            "toolCalls": 0,
+            "failedToolCalls": 0,
+            "promptTokens": null,
+            "completionTokens": null,
+            "inputTokens": null,
+            "cacheReadTokens": null,
+            "cacheWriteTokens": null,
+            "totalTokens": null,
+            "costUsd": null,
+            "attemptedToolCalls": 0,
+            "admittedToolCalls": 0,
+            "refusedToolCalls": 0,
+            "successfulToolCalls": 0,
+            "pendingToolCalls": 0
+          },
+          "hash": "d1a2202c24833d2c9b2289a1ac0226b32c8bafab72c27eb2d1cda00a7c133425"
+        },
+        {
+          "scope": {
+            "protocol": "v12-portfolio-journal-submit",
+            "runId": "muse13-fresh-opencode-smoke-20260917",
+            "date": "2025-04-01",
+            "attempt": 2,
+            "observationDate": "2025-03-31",
+            "reportCutoff": "2025-04-01"
+          },
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "usage": {
+            "completeness": "unavailable",
+            "missingSteps": 1,
+            "turns": 1,
+            "toolCalls": 0,
+            "failedToolCalls": 0,
+            "promptTokens": null,
+            "completionTokens": null,
+            "inputTokens": null,
+            "cacheReadTokens": null,
+            "cacheWriteTokens": null,
+            "totalTokens": null,
+            "costUsd": null,
+            "attemptedToolCalls": 0,
+            "admittedToolCalls": 0,
+            "refusedToolCalls": 0,
+            "successfulToolCalls": 0,
+            "pendingToolCalls": 0
+          },
+          "hash": "d1ddc91423d2926b43ec4f0f03aec98ea732b814e80891b8af70c123432123ea"
+        },
+        {
+          "scope": {
+            "protocol": "v12-portfolio-journal-submit",
+            "runId": "muse13-fresh-opencode-smoke-20260917",
+            "date": "2025-04-02",
+            "attempt": 1,
+            "observationDate": "2025-04-01",
+            "reportCutoff": "2025-04-01"
+          },
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "usage": {
+            "completeness": "unavailable",
+            "missingSteps": 1,
+            "turns": 1,
+            "toolCalls": 0,
+            "failedToolCalls": 0,
+            "promptTokens": null,
+            "completionTokens": null,
+            "inputTokens": null,
+            "cacheReadTokens": null,
+            "cacheWriteTokens": null,
+            "totalTokens": null,
+            "costUsd": null,
+            "attemptedToolCalls": 0,
+            "admittedToolCalls": 0,
+            "refusedToolCalls": 0,
+            "successfulToolCalls": 0,
+            "pendingToolCalls": 0
+          },
+          "hash": "d497420de08c8d9fcd121115b336256e6d1990a51a7f7e5708e73a278b39ed76"
+        },
+        {
+          "scope": {
+            "protocol": "v12-portfolio-journal-submit",
+            "runId": "muse13-fresh-opencode-smoke-20260917",
+            "date": "2025-04-02",
+            "attempt": 2,
+            "observationDate": "2025-04-01",
+            "reportCutoff": "2025-04-01"
+          },
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "usage": {
+            "completeness": "unavailable",
+            "missingSteps": 1,
+            "turns": 1,
+            "toolCalls": 0,
+            "failedToolCalls": 0,
+            "promptTokens": null,
+            "completionTokens": null,
+            "inputTokens": null,
+            "cacheReadTokens": null,
+            "cacheWriteTokens": null,
+            "totalTokens": null,
+            "costUsd": null,
+            "attemptedToolCalls": 0,
+            "admittedToolCalls": 0,
+            "refusedToolCalls": 0,
+            "successfulToolCalls": 0,
+            "pendingToolCalls": 0
+          },
+          "hash": "2644ea25c8a0338132b511bd5d7c38afb5a5927374d4aabbfee306b06e296dfd"
+        },
+        {
+          "scope": {
+            "protocol": "v12-portfolio-journal-submit",
+            "runId": "muse13-fresh-opencode-smoke-20260917",
+            "date": "2025-04-03",
+            "attempt": 1,
+            "observationDate": "2025-04-02",
+            "reportCutoff": "2025-04-01"
+          },
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "usage": {
+            "completeness": "unavailable",
+            "missingSteps": 1,
+            "turns": 1,
+            "toolCalls": 0,
+            "failedToolCalls": 0,
+            "promptTokens": null,
+            "completionTokens": null,
+            "inputTokens": null,
+            "cacheReadTokens": null,
+            "cacheWriteTokens": null,
+            "totalTokens": null,
+            "costUsd": null,
+            "attemptedToolCalls": 0,
+            "admittedToolCalls": 0,
+            "refusedToolCalls": 0,
+            "successfulToolCalls": 0,
+            "pendingToolCalls": 0
+          },
+          "hash": "bba1fdf1a17a7f4da67191f586fff5992de974516aa1d8bbd5be1b2815a52ad1"
+        },
+        {
+          "scope": {
+            "protocol": "v12-portfolio-journal-submit",
+            "runId": "muse13-fresh-opencode-smoke-20260917",
+            "date": "2025-04-03",
+            "attempt": 2,
+            "observationDate": "2025-04-02",
+            "reportCutoff": "2025-04-01"
+          },
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "usage": {
+            "completeness": "unavailable",
+            "missingSteps": 1,
+            "turns": 1,
+            "toolCalls": 0,
+            "failedToolCalls": 0,
+            "promptTokens": null,
+            "completionTokens": null,
+            "inputTokens": null,
+            "cacheReadTokens": null,
+            "cacheWriteTokens": null,
+            "totalTokens": null,
+            "costUsd": null,
+            "attemptedToolCalls": 0,
+            "admittedToolCalls": 0,
+            "refusedToolCalls": 0,
+            "successfulToolCalls": 0,
+            "pendingToolCalls": 0
+          },
+          "hash": "64de62ba11651b8fef8f57e177d90df7752d93db27d778a07b792be508b3ce44"
+        }
+      ]
+    }
+  ],
   "historicalArchive": {
     "path": "/home/ai/.bb/thread-storage/muse-fresh-20260917/historical-muse13-audit.tar.gz",
     "sha256": "b8111f94b6064ba381a8263534c1566529aedfbe4fa9f961f3bc3fd8f05d0579",
