@@ -1,0 +1,8 @@
+{
+  "modelCalls": 0,
+  "liveQualified": false,
+  "plannedSmokeSessions": 3,
+  "plannedAnnualSessions": 251,
+  "preflight": "Catalog, runtime sandbox, dataset and offline tests passed; historical replay complete.",
+  "initialPreflightFailure": "Baseline rejected Muse quota policy; preserved in preflight/dataset.stderr."
+}

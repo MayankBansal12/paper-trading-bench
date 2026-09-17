@@ -1,0 +1,64 @@
+{
+  "checkpoints": [
+    {
+      "label": "000-preflight",
+      "auditBundle": "/home/ai/.bb/thread-storage/muse-fresh-20260917/audit-000-preflight.tar.gz",
+      "sha256": "dae3fc82dea62179c3df91f5241b8352b0f0900d212b247528985eac0e7ab1aa",
+      "bytes": 9659588,
+      "receipt": {
+        "modelCalls": 0,
+        "checks": {
+          "bunTests": 325,
+          "pythonTests": 4,
+          "typecheck": 0,
+          "sandboxQualified": true,
+          "historicalReplays": 5
+        }
+      }
+    }
+  ],
+  "model": "opencode/muse-spark-1.3-contributor-free",
+  "sourceRevision": "ab465d63ff8e34d63ad667315503d9e033f61fee",
+  "sourceCheckout": "/home/ai/.bb/worktrees/env_snbt4nvm6i/paper-trading-bench",
+  "implementationPR": "https://github.com/MayankBansal12/paper-trading-bench/pull/20",
+  "datasetPath": "/home/ai/code/paper-trading-bench/datasets/historical/nasdaq100_2025q2-2026q1_v1",
+  "datasetHash": "5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901",
+  "runtimeFiles": {
+    "/home/ai/.bb/thread-storage/muse-fresh-20260917/bin/bun": "9fd36f87e4b90b07632b987a2e4ec81ca15a62c81bf983190cea6d715be2ad74",
+    "/home/ai/.bb/thread-storage/muse-fresh-20260917/bin/opencode": "87bd160e053af86b5b409daabf71f8dc05bbc3a2a3a5f563f36011cdf706a999",
+    "/home/ai/.bb/worktrees/env_snbt4nvm6i/paper-trading-bench/.sandbox/seccomp.bpf": "791d20edbc3fa44a193adcfe6774c739f80e6806742cfbbdab3f0c8b4fba70e0",
+    "/usr/bin/bwrap": "52231e1caf55bcbc667b269f49c63599a6f7db4767ae6a039580d0ff853db712"
+  },
+  "clientVersion": "1.18.30",
+  "reasoning": "official client default",
+  "pricing": {
+    "input": 0,
+    "output": 0,
+    "cacheRead": 0,
+    "cacheWrite": 0
+  },
+  "availabilityPolicy": "zen-rate-limit-pause-v1",
+  "concurrency": 1,
+  "plannedSessions": 251,
+  "state": {
+    "phase": "smoke",
+    "status": "ready",
+    "launches": 0,
+    "notBefore": null,
+    "error": null
+  },
+  "runs": [],
+  "historicalArchive": {
+    "path": "/home/ai/.bb/thread-storage/muse-fresh-20260917/historical-muse13-audit.tar.gz",
+    "sha256": "b8111f94b6064ba381a8263534c1566529aedfbe4fa9f961f3bc3fd8f05d0579",
+    "bytes": 34861114,
+    "manifestSha256": "658a1139ff1bb1e06c22ed5d0f94352d0adc17b49d2b2c58519fdb135ebfc93c",
+    "studyCount": 5,
+    "qualificationCount": 19,
+    "sources": [
+      "0070182e13d1bdf28198b74b9e03193a7abef7c5",
+      "3d2f9302af41628994d20d1f79316e865e51d42c",
+      "c7b1b6f49abdb3c277af028cfb364936a056e6f0"
+    ]
+  }
+}
