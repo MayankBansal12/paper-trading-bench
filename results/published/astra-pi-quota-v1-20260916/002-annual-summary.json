@@ -1,0 +1,353 @@
+{
+  "version": "independent-quarters-apr2025-mar2026-v5-quota-pause",
+  "evalId": "astra-pi-quota-v1-20260916",
+  "start": "2025-04-01",
+  "end": "2026-03-31",
+  "status": "incomplete",
+  "interpretation": "Four independent quarterly portfolios per model. Dollar outcomes are summed; mean quarterly TWR is not an annual compounded return. Independent account balances must not be plotted as one equity curve. These environment results do not establish scored NDX membership eligibility.",
+  "models": [
+    {
+      "model": "pi/openai-codex/gpt-6-astra",
+      "complete": false,
+      "completedQuarters": 2,
+      "accountedSessions": 151,
+      "validDays": 151,
+      "invalidDays": 0,
+      "retriedDays": 2,
+      "plannedContributions": 600000,
+      "accountedContributions": 400000,
+      "year": null
+    }
+  ],
+  "quarters": [
+    {
+      "runId": "astra-pi-quota-v1-20260916-pi-openai-codex-gpt-6-ast-98dc402c5e24-2025-Q2",
+      "model": "pi/openai-codex/gpt-6-astra",
+      "label": "2025-Q2",
+      "start": "2025-04-01",
+      "end": "2025-06-30",
+      "status": "completed",
+      "summary": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "status": "completed",
+        "failure": null,
+        "committedDays": 62,
+        "validDays": 62,
+        "consecutiveInvalidDays": 0,
+        "maxConsecutiveInvalidDays": 0,
+        "stopped": false,
+        "totalDays": 62,
+        "attemptedDays": 62,
+        "retriedDays": 1,
+        "invalidDays": 0,
+        "unattemptedDays": 0,
+        "invalidSessions": [],
+        "portfolio": {
+          "cash": 54325.16,
+          "holdings": {
+            "NFLX": {
+              "units": 10.469314,
+              "avgCost": 1157.52,
+              "lastClose": 1339.1299438476562,
+              "value": 14019.77
+            },
+            "MSFT": {
+              "units": 36.809083,
+              "avgCost": 434.68,
+              "lastClose": 497.4100036621094,
+              "value": 18309.21
+            },
+            "AMZN": {
+              "units": 61.394393,
+              "avgCost": 211.74,
+              "lastClose": 219.38999938964844,
+              "value": 13469.32
+            },
+            "WMT": {
+              "units": 56.613773,
+              "avgCost": 97.68,
+              "lastClose": 97.77999877929688,
+              "value": 5535.69
+            },
+            "NVDA": {
+              "units": 115.101591,
+              "avgCost": 130.32,
+              "lastClose": 157.99000549316406,
+              "value": 18184.9
+            },
+            "META": {
+              "units": 20.661281,
+              "avgCost": 677.59,
+              "lastClose": 738.0900268554688,
+              "value": 15249.89
+            },
+            "CRWD": {
+              "units": 15.60563,
+              "avgCost": 480.6,
+              "lastClose": 509.30999755859375,
+              "value": 7948.1
+            },
+            "AVGO": {
+              "units": 42.932021,
+              "avgCost": 256.22,
+              "lastClose": 275.6499938964844,
+              "value": 11834.21
+            }
+          },
+          "holdingsValue": 104551.09,
+          "netWorth": 158876.25
+        },
+        "fills": 58,
+        "rejectedOrders": 0,
+        "journalEntries": 62,
+        "eventRoot": "d5087f4b64b1d27bb38e97e4f280d8eb36d8828b088c5dc14de792dd5a87d3e7",
+        "commitRoot": "6dffab0d77b23f92762e8e82da73b8b7f0b920fb9e91901e38d204ae9a283034",
+        "attempts": 63,
+        "failures": 1,
+        "usageUnavailableAttempts": 63
+      },
+      "error": null,
+      "metrics": {
+        "startingCapital": 50000,
+        "endingNetWorth": 158876.25,
+        "totalContributions": 150000,
+        "netProfit": 8876.25,
+        "timeWeightedReturnPct": 5.6434,
+        "totalReturnPct": 5.6434,
+        "maxDrawdownPct": -3.7462,
+        "dailyVolatilityPct": 0.5125,
+        "annualizedVolatilityPct": 8.1364,
+        "sharpe": 2.7839,
+        "avgTurnoverPct": 3.7766,
+        "tradeCount": 58,
+        "failedOrderCount": 0,
+        "boundedStopCount": 0,
+        "daysRun": 62
+      }
+    },
+    {
+      "runId": "astra-pi-quota-v1-20260916-pi-openai-codex-gpt-6-ast-98dc402c5e24-2025-Q3",
+      "model": "pi/openai-codex/gpt-6-astra",
+      "label": "2025-Q3",
+      "start": "2025-07-01",
+      "end": "2025-09-30",
+      "status": "completed",
+      "summary": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "status": "completed",
+        "failure": null,
+        "committedDays": 64,
+        "validDays": 64,
+        "consecutiveInvalidDays": 0,
+        "maxConsecutiveInvalidDays": 0,
+        "stopped": false,
+        "totalDays": 64,
+        "attemptedDays": 64,
+        "retriedDays": 1,
+        "invalidDays": 0,
+        "unattemptedDays": 0,
+        "invalidSessions": [],
+        "portfolio": {
+          "cash": 100407.95,
+          "holdings": {
+            "META": {
+              "units": 3.659563,
+              "avgCost": 775.97,
+              "lastClose": 734.3800048828125,
+              "value": 2687.51
+            },
+            "AVGO": {
+              "units": 16.914827,
+              "avgCost": 289.33,
+              "lastClose": 329.9100036621094,
+              "value": 5580.37
+            },
+            "ALNY": {
+              "units": 7.445005,
+              "avgCost": 395.41,
+              "lastClose": 456,
+              "value": 3394.92
+            },
+            "GOOG": {
+              "units": 33.251198,
+              "avgCost": 216.53,
+              "lastClose": 243.5500030517578,
+              "value": 8098.33
+            },
+            "ORLY": {
+              "units": 43.098497,
+              "avgCost": 105.49,
+              "lastClose": 107.80999755859375,
+              "value": 4646.45
+            },
+            "MSFT": {
+              "units": 16.598659,
+              "avgCost": 512.09,
+              "lastClose": 517.9500122070312,
+              "value": 8597.28
+            },
+            "PLTR": {
+              "units": 34.755547,
+              "avgCost": 172.63,
+              "lastClose": 182.4199981689453,
+              "value": 6340.11
+            },
+            "AAPL": {
+              "units": 24.164337,
+              "avgCost": 248.3,
+              "lastClose": 254.6300048828125,
+              "value": 6152.97
+            },
+            "NVDA": {
+              "units": 32.972495,
+              "avgCost": 181.97,
+              "lastClose": 186.5800018310547,
+              "value": 6152.01
+            }
+          },
+          "holdingsValue": 51649.95,
+          "netWorth": 152057.9
+        },
+        "fills": 59,
+        "rejectedOrders": 0,
+        "journalEntries": 64,
+        "eventRoot": "83dec2bd5c6db5afdf0d6057a1580eee966e862107ca91bb0ef369d619d86483",
+        "commitRoot": "74f28d88abc71465d0b7c7448ff541da13e5bfa45df19e4860b51bcf5f0f2de3",
+        "attempts": 65,
+        "failures": 1,
+        "usageUnavailableAttempts": 65
+      },
+      "error": null,
+      "metrics": {
+        "startingCapital": 50000,
+        "endingNetWorth": 152057.9,
+        "totalContributions": 150000,
+        "netProfit": 2057.9,
+        "timeWeightedReturnPct": 2.4203,
+        "totalReturnPct": 2.4203,
+        "maxDrawdownPct": -2.3701,
+        "dailyVolatilityPct": 0.5788,
+        "annualizedVolatilityPct": 9.1888,
+        "sharpe": 1.0703,
+        "avgTurnoverPct": 3.4633,
+        "tradeCount": 59,
+        "failedOrderCount": 0,
+        "boundedStopCount": 0,
+        "daysRun": 64
+      }
+    },
+    {
+      "runId": "astra-pi-quota-v1-20260916-pi-openai-codex-gpt-6-ast-98dc402c5e24-2025-Q4",
+      "model": "pi/openai-codex/gpt-6-astra",
+      "label": "2025-Q4",
+      "start": "2025-10-01",
+      "end": "2025-12-31",
+      "status": "paused",
+      "summary": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "status": "paused",
+        "availability": {
+          "reason": "provider-usage-limit",
+          "notBefore": "2026-09-17T04:41:06.000Z",
+          "failedAttempt": 1,
+          "resultEventHash": "d8909b57da9704f9d8b79a4ac6db472f997a17b00e16ea7a2fc6419469aa58d3"
+        },
+        "failure": "Provider usage limit; resume no earlier than 2026-09-17T04:41:06.000Z",
+        "committedDays": 25,
+        "validDays": 25,
+        "consecutiveInvalidDays": 0,
+        "maxConsecutiveInvalidDays": 0,
+        "stopped": false,
+        "totalDays": 64,
+        "attemptedDays": 26,
+        "retriedDays": 0,
+        "invalidDays": 0,
+        "unattemptedDays": 38,
+        "invalidSessions": [],
+        "portfolio": {
+          "cash": 63854.84,
+          "holdings": {
+            "NVDA": {
+              "units": 30.488041,
+              "avgCost": 185.24,
+              "lastClose": 198.69000244140625,
+              "value": 6057.67
+            },
+            "GOOGL": {
+              "units": 38.48765,
+              "avgCost": 259.82,
+              "lastClose": 277.5400085449219,
+              "value": 10681.86
+            },
+            "MU": {
+              "units": 30.193265,
+              "avgCost": 165.6,
+              "lastClose": 218.02999877929688,
+              "value": 6583.04
+            },
+            "SHOP": {
+              "units": 27.344852,
+              "avgCost": 146.28,
+              "lastClose": 160.94000244140625,
+              "value": 4400.88
+            },
+            "CRWD": {
+              "units": 12.009438,
+              "avgCost": 541.24,
+              "lastClose": 533.9199829101562,
+              "value": 6412.08
+            },
+            "ISRG": {
+              "units": 7.517958,
+              "avgCost": 532.06,
+              "lastClose": 538.8200073242188,
+              "value": 4050.83
+            }
+          },
+          "holdingsValue": 38186.36,
+          "netWorth": 102041.2
+        },
+        "fills": 25,
+        "rejectedOrders": 0,
+        "journalEntries": 25,
+        "eventRoot": "d8909b57da9704f9d8b79a4ac6db472f997a17b00e16ea7a2fc6419469aa58d3",
+        "commitRoot": "8cd327c0d9a6e38bc91cff3bfe6cb79b5146be083b16db51eb9875da47f6d2b3",
+        "attempts": 26,
+        "failures": 1,
+        "usageUnavailableAttempts": 26
+      },
+      "error": null,
+      "metrics": {
+        "startingCapital": 50000,
+        "endingNetWorth": 102041.2,
+        "totalContributions": 100000,
+        "netProfit": 2041.2,
+        "timeWeightedReturnPct": 4.984,
+        "totalReturnPct": 4.984,
+        "maxDrawdownPct": -3.4213,
+        "dailyVolatilityPct": 1.1389,
+        "annualizedVolatilityPct": 18.079,
+        "sharpe": 2.8016,
+        "avgTurnoverPct": 6.3374,
+        "tradeCount": 25,
+        "failedOrderCount": 0,
+        "boundedStopCount": 0,
+        "daysRun": 25
+      }
+    },
+    {
+      "runId": "astra-pi-quota-v1-20260916-pi-openai-codex-gpt-6-ast-98dc402c5e24-2026-Q1",
+      "model": "pi/openai-codex/gpt-6-astra",
+      "label": "2026-Q1",
+      "start": "2026-01-01",
+      "end": "2026-03-31",
+      "status": "pending",
+      "summary": null,
+      "metrics": null,
+      "error": null
+    }
+  ]
+}

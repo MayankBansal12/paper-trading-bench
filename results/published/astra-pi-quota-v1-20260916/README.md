@@ -1,8 +1,8 @@
 # Quota-aware Astra recovery
 
-State: **waiting**, phase: **annual**. Next model attempt no earlier than **2026-09-16T23:35:16.000Z**.
+State: **waiting**, phase: **annual**. Next model attempt no earlier than **2026-09-17T04:41:06.000Z**.
 
-Recorded valid days: **73/251**; invalid days: 0; retried days: 1; complete quarters: 1/4. No annual score is available yet.
+Recorded valid days: **151/251**; invalid days: 0; retried days: 2; complete quarters: 2/4. No annual score is available yet.
 
 This is a **new cohort**. The stopped original cohort and its failed attempts remain
 unchanged in [the original results PR](https://github.com/MayankBansal12/paper-trading-bench/pull/14).
@@ -13,7 +13,7 @@ five minutes, or six hours plus five minutes if no reset is supplied. The failed
 attempt remains counted; no manifest, chain, invalid day, or retry allowance is
 rewritten. Each day still allows at most two attempts.
 
-The exact-time coordinator avoids duplicate workers and resumes the
+The BB automation checks every 15 minutes, avoids duplicate workers, resumes the
 same pinned cohort after cooldown, verifies every settled checkpoint, and publishes
 evidence. It pauses itself after verified completion or an unexpected blocker.
 The live model smoke must pass before the annual run starts. The annual dataset is
@@ -31,5 +31,3 @@ Implementation checks: see the linked implementation PR and committed tests.
 The quota-pause tests cover provider reset parsing, no inference during cooldown,
 retained attempts across resume, and refusal to grant a third attempt. Live replay
 outcomes are captured in the checkpoint summaries and archived execution receipts.
-
-[Current exact-reset schedule and Astra → Sol queue](SCHEDULING.md).
