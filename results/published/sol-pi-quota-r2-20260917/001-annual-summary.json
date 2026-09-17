@@ -1,0 +1,169 @@
+{
+  "version": "independent-quarters-apr2025-mar2026-v5-quota-pause",
+  "evalId": "sol-pi-quota-r2-20260917",
+  "start": "2025-04-01",
+  "end": "2026-03-31",
+  "status": "incomplete",
+  "interpretation": "Four independent quarterly portfolios per model. Dollar outcomes are summed; mean quarterly TWR is not an annual compounded return. Independent account balances must not be plotted as one equity curve. These environment results do not establish scored NDX membership eligibility.",
+  "models": [
+    {
+      "model": "pi/openai-codex/gpt-5.6-sol",
+      "complete": false,
+      "completedQuarters": 0,
+      "accountedSessions": 14,
+      "validDays": 14,
+      "invalidDays": 0,
+      "retriedDays": 1,
+      "plannedContributions": 600000,
+      "accountedContributions": 50000,
+      "year": null
+    }
+  ],
+  "quarters": [
+    {
+      "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q2",
+      "model": "pi/openai-codex/gpt-5.6-sol",
+      "label": "2025-Q2",
+      "start": "2025-04-01",
+      "end": "2025-06-30",
+      "status": "paused",
+      "summary": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "status": "paused",
+        "availability": {
+          "reason": "provider-usage-limit",
+          "notBefore": "2026-09-17T17:54:21.000Z",
+          "failedAttempt": 1,
+          "resultEventHash": "8b3b58c691c6ca9c6609f47caf190d4359dfabacfd4e88c43dc3bcb3ab23e1db"
+        },
+        "failure": "Provider usage limit; resume no earlier than 2026-09-17T17:54:21.000Z",
+        "committedDays": 14,
+        "validDays": 14,
+        "consecutiveInvalidDays": 0,
+        "maxConsecutiveInvalidDays": 0,
+        "stopped": false,
+        "totalDays": 62,
+        "attemptedDays": 15,
+        "retriedDays": 1,
+        "invalidDays": 0,
+        "unattemptedDays": 47,
+        "invalidSessions": [],
+        "portfolio": {
+          "cash": 6748.15,
+          "holdings": {
+            "EXC": {
+              "units": 152.972142,
+              "avgCost": 45.76,
+              "lastClose": 46.22999954223633,
+              "value": 7071.9
+            },
+            "CPRT": {
+              "units": 86.445452,
+              "avgCost": 57.84,
+              "lastClose": 58.72999954223633,
+              "value": 5076.94
+            },
+            "COST": {
+              "units": 5.17331,
+              "avgCost": 966.5,
+              "lastClose": 957.77001953125,
+              "value": 4954.84
+            },
+            "ROST": {
+              "units": 36.75123,
+              "avgCost": 136.05,
+              "lastClose": 135.49000549316406,
+              "value": 4979.42
+            },
+            "WMT": {
+              "units": 55.139005,
+              "avgCost": 90.68,
+              "lastClose": 92.41000366210938,
+              "value": 5095.4
+            },
+            "FAST": {
+              "units": 61.934903,
+              "avgCost": 80.73,
+              "lastClose": 80.29000091552734,
+              "value": 4972.75
+            },
+            "TRI": {
+              "units": 25.55369,
+              "avgCost": 176.1,
+              "lastClose": 180.14999389648438,
+              "value": 4603.5
+            },
+            "CRWD": {
+              "units": 11.654723,
+              "avgCost": 386.11,
+              "lastClose": 362.69000244140625,
+              "value": 4227.05
+            }
+          },
+          "holdingsValue": 40981.8,
+          "netWorth": 47729.95
+        },
+        "fills": 20,
+        "rejectedOrders": 0,
+        "journalEntries": 14,
+        "eventRoot": "8b3b58c691c6ca9c6609f47caf190d4359dfabacfd4e88c43dc3bcb3ab23e1db",
+        "commitRoot": "aa65b7a408e5d0ca072d2b6720699da4a26a6cdf2a60584cac9a18e46d1e6f6f",
+        "attempts": 16,
+        "failures": 2,
+        "usageUnavailableAttempts": 16
+      },
+      "error": null,
+      "metrics": {
+        "startingCapital": 50000,
+        "endingNetWorth": 47729.95,
+        "totalContributions": 50000,
+        "netProfit": -2270.05,
+        "timeWeightedReturnPct": -4.5401,
+        "totalReturnPct": -4.5401,
+        "maxDrawdownPct": -6.5419,
+        "dailyVolatilityPct": 1.6786,
+        "annualizedVolatilityPct": 26.6462,
+        "sharpe": -3.0071,
+        "avgTurnoverPct": 17.9993,
+        "tradeCount": 20,
+        "failedOrderCount": 0,
+        "boundedStopCount": 0,
+        "daysRun": 14
+      }
+    },
+    {
+      "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q3",
+      "model": "pi/openai-codex/gpt-5.6-sol",
+      "label": "2025-Q3",
+      "start": "2025-07-01",
+      "end": "2025-09-30",
+      "status": "pending",
+      "summary": null,
+      "metrics": null,
+      "error": null
+    },
+    {
+      "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q4",
+      "model": "pi/openai-codex/gpt-5.6-sol",
+      "label": "2025-Q4",
+      "start": "2025-10-01",
+      "end": "2025-12-31",
+      "status": "pending",
+      "summary": null,
+      "metrics": null,
+      "error": null
+    },
+    {
+      "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2026-Q1",
+      "model": "pi/openai-codex/gpt-5.6-sol",
+      "label": "2026-Q1",
+      "start": "2026-01-01",
+      "end": "2026-03-31",
+      "status": "pending",
+      "summary": null,
+      "metrics": null,
+      "error": null
+    }
+  ]
+}
