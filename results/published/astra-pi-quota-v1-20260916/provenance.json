@@ -41,12 +41,18 @@
       "path": "/home/ai/code/paper-trading-bench/results/archives/astra-quota-recovery-20260916/audit-003-annual.tar.gz",
       "sha256": "aa9d56656fd7e8e2c34c0eb1d3a1b7f6842ccd6a7ed5fb4cca83db9b434200a1",
       "bytes": 30510313
+    },
+    {
+      "label": "004-annual",
+      "path": "/home/ai/code/paper-trading-bench/results/archives/astra-quota-recovery-20260916/audit-004-annual.tar.gz",
+      "sha256": "332e03ed02c62041af2fcade8f08fed2a3e67a7f81e5965dfa80a5b806376c1d",
+      "bytes": 32548383
     }
   ],
-  "status": "waiting",
+  "status": "completed",
   "phase": "annual",
-  "updatedAt": "2026-09-17T05:12:02.017914+00:00",
-  "notBefore": "2026-09-17T09:47:33.000Z",
+  "updatedAt": "2026-09-17T10:02:51.211007+00:00",
+  "notBefore": null,
   "error": null,
   "runs": {
     "astra-pi-quota-smoke-20260916": {
