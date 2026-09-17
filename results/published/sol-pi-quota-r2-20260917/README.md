@@ -1,8 +1,8 @@
 # Quota-aware GPT-5.6 Sol evaluation
 
-State: **waiting**, phase: **annual**. Next model attempt no earlier than **2026-09-17T22:59:41.000Z**.
+State: **waiting**, phase: **annual**. Next model attempt no earlier than **2026-09-18T04:05:35.000Z**.
 
-Recorded valid days: **45/251**; invalid days: 0; retried days: 2; complete quarters: 0/4. No annual score is available yet.
+Recorded valid days: **80/251**; invalid days: 0; retried days: 2; complete quarters: 0/4. No annual score is available yet.
 
 This is a **new cohort**. Earlier cohorts and their attempts remain
 unchanged in [the prior results PR](https://github.com/MayankBansal12/paper-trading-bench/pull/18).
