@@ -47,12 +47,18 @@
       "path": "/home/ai/code/paper-trading-bench/results/archives/sol-quota-reset-20260917/audit-004-annual.tar.gz",
       "sha256": "238d6dc1a1d751a7e8ce68bc7a74e1c8c751dbdc4c4e7797b6b3e5618492ae0b",
       "bytes": 76313203
+    },
+    {
+      "label": "005-annual",
+      "path": "/home/ai/code/paper-trading-bench/results/archives/sol-quota-reset-20260917/audit-005-annual.tar.gz",
+      "sha256": "51f8a9dfc1f61efd3b2ac73c26e6bbfd00919303256f8f19c97892bf77e86f9b",
+      "bytes": 93581860
     }
   ],
   "status": "waiting",
   "phase": "annual",
-  "updatedAt": "2026-09-18T04:23:25.503617+00:00",
-  "notBefore": "2026-09-18T09:11:49.000Z",
+  "updatedAt": "2026-09-18T09:31:25.470460+00:00",
+  "notBefore": "2026-09-18T14:18:53.000Z",
   "error": null,
   "runs": {
     "sol-pi-quota-smoke-r2-20260917": {
@@ -167,6 +173,44 @@
           "subscriptionCost": "unavailable"
         },
         "id": "1905a9ee19b1406c4f99ee0d23bdc37b492a015a78bfc82306520a81ef81a46b"
+      }
+    },
+    "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q4": {
+      "sourceRevision": "6fab5f38034405e06195a236fc4f556401db5280",
+      "implementationHash": "b3fd0f0e42f9df12f51e73965c2f02afccdbfdb64e4631e15cade507131b8bb8",
+      "manifestSha256": "d31996de9d2698aedb9b9a036a098fe3a8c44389952fb2a74e41d5ac303b2849",
+      "runtime": {
+        "policy": "bwrap-systemd-unix-gateway-v2",
+        "bwrap": "bubblewrap 0.9.0",
+        "hashes": {
+          "scripts/sandbox/launch.sh": "906be5095cc7ba6cefdbedf95d9274cbd7b593c48aacbaa98ebe8c27f50679a7",
+          "src/study/worker.ts": "9604def933793d2c819fc4624a4cbb89b488738fffde8e46fec03cd9ee0c235b",
+          ".sandbox/seccomp.bpf": "791d20edbc3fa44a193adcfe6774c739f80e6806742cfbbdab3f0c8b4fba70e0"
+        },
+        "opencodeHash": "f9dab32248695e9ebd56b16a1921798fd85112cf5a69c7dfd0cabc1e17be4a11",
+        "bunHash": "9fd36f87e4b90b07632b987a2e4ec81ca15a62c81bf983190cea6d715be2ad74",
+        "bwrapHash": "e318903862396f96de3df57264e0158682b952fd3fb53ac23d876413e7b30f71",
+        "kernel": "6.17.0-1022-azure",
+        "limits": {
+          "memoryBytes": 2147483648,
+          "tasks": 128,
+          "tmpBytes": 67108864,
+          "workBytes": 134217728
+        },
+        "pi": {
+          "version": "0.85.1",
+          "packageHash": "4b9935f26ba916ec49ea1f9687f5ac32a01900d51687974e535a56edc9cf2767",
+          "nodeVersion": "v22.23.1",
+          "nodeHash": "93956de2e59480474a7b46571da1651180b1a050cdf32641ebec4ce6e478e068",
+          "workerHash": "fc981f99117fc7c940c0c57fe9ab8228cfe1bd97bf64bb81637020778d767c4c",
+          "thinking": "medium",
+          "model": "pi/openai-codex/gpt-5.6-sol",
+          "catalogHash": "450dbe81caecc9944a74afae64ca7bf555e8579dabdd642c5feb9b9900e30420",
+          "auth": "host-pi-oauth",
+          "transport": "sse",
+          "subscriptionCost": "unavailable"
+        },
+        "id": "aa4477952fa474e51ebbf408d10e8beb5851e7bd194d6e010b2f2854320eb227"
       }
     }
   }
