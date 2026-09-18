@@ -8,6 +8,7 @@ import type { JournalEvent } from "./journal.ts";
 export const CONTINUATION_FILE = "manual-quota-reset.json";
 const changedFiles = new Set([
   "src/study/runner.ts", "src/study/availability.ts", "src/study/continuation.ts",
+  "src/study/sandbox.ts", "scripts/sandbox/launch.sh", "src/study/model.ts", "src/pi/runtime.ts",
 ]);
 export function readContinuation(dir: string): any | undefined {
   const path = join(dir, CONTINUATION_FILE);
@@ -27,8 +28,8 @@ export function implementationMatches(saved: any, current: any, dir: string, con
   if (!r || r.configHash !== contentHash(config) ||
       r.previousImplementationHash !== saved.hash || r.continuedImplementationHash !== current.hash ||
       saved.hash !== contentHash(saved.hashes) || current.hash !== contentHash(current.hashes)) return false;
-  // All trading, prompt, data, model, sandbox, accounting, and journal code stays
-  // byte-identical. The reviewed runner delta only replaces this identity check.
+  // Trading, prompts, data, accounting, journal and model workers stay identical.
+  // Reviewed runtime changes restore recorded executables/catalog from private pins.
   const files = new Set([...Object.keys(saved.hashes), ...Object.keys(current.hashes)]);
   for (const file of files)
     if (!changedFiles.has(file) && saved.hashes[file] !== current.hashes[file]) return false;
@@ -39,4 +40,20 @@ export function quotaWasReset(dir: string, event: JournalEvent): boolean {
   return !!r && r.runId === event.scope.runId &&
     Date.parse(event.recordedAt) <= Date.parse(r.authorizedAt) &&
     r.failureHashes.includes(event.hash);
+}
+
+export function runtimeMatches(saved: any, current: any, dir: string): boolean {
+  if (contentHash(saved) === contentHash(current)) return true;
+  const receipt = readContinuation(dir);
+  if (!receipt || receipt.previousRuntimeHash !== contentHash(saved) ||
+      receipt.continuedRuntimeHash !== contentHash(current)) return false;
+  // Actual executables, catalog, model, workers, limits and isolation policy stay
+  // identical. Only the launch script now executes the hash-pinned bwrap copy.
+  const { id: oldId, hashes: oldHashes, ...oldRest } = saved;
+  const { id: newId, hashes: newHashes, ...newRest } = current;
+  const { ["scripts/sandbox/launch.sh"]: oldLaunch, ...oldFiles } = oldHashes;
+  const { ["scripts/sandbox/launch.sh"]: newLaunch, ...newFiles } = newHashes;
+  return contentHash(oldRest) === contentHash(newRest) && contentHash(oldFiles) === contentHash(newFiles) &&
+    oldId === contentHash({ ...oldRest, hashes: oldHashes }) &&
+    newId === contentHash({ ...newRest, hashes: newHashes });
 }

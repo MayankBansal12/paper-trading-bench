@@ -87,7 +87,7 @@ export function piCredential(node: string, cli: string): ProviderCredential {
     },
   };
 }
-export async function preparePiRuntime(modelId = PI_MODEL_ID) {
+export async function preparePiRuntime(modelId = PI_MODEL_ID, expected?: any) {
   const route = piRoute(modelId);
   const started = Date.now();
   const entry = await realpath(Bun.which("pi") ?? "/missing-pi");
@@ -107,7 +107,13 @@ export async function preparePiRuntime(modelId = PI_MODEL_ID) {
     store[PI_PROVIDER]?.models?.filter((m: any) => m.id === route.model) ?? [];
   if (matches.length !== 1)
     throw new Error("Exact Pi model missing/duplicated in host Pi catalog");
-  const model = matches[0];
+  let model = matches[0];
+  if (expected?.pi?.catalogHash && process.env.BENCH_PINNED_CATALOGS) {
+    if (!/^[a-f0-9]{64}$/.test(expected.pi.catalogHash)) throw new Error("Invalid pinned catalog hash");
+    model = JSON.parse(await readFile(join(process.env.BENCH_PINNED_CATALOGS, expected.pi.catalogHash + ".json"), "utf8"));
+    if (contentHash(model) !== expected.pi.catalogHash || model.id !== route.model)
+      throw new Error("Pinned catalog does not match recorded model");
+  }
   if (
     model.provider !== PI_PROVIDER ||
     model.api !== "openai-codex-responses" ||
@@ -134,7 +140,7 @@ export async function preparePiRuntime(modelId = PI_MODEL_ID) {
   if (model.headers && Object.keys(model.headers).length)
     throw new Error("Pi model-specific headers are not qualified");
   const packageHash = await treeHash(root);
-  const bundle = await prepareSandboxRuntime();
+  const bundle = await prepareSandboxRuntime(expected);
   try {
     await chmod(bundle.dir, 0o755);
     await cp(root, join(bundle.dir, "pi"), {

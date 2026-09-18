@@ -94,8 +94,14 @@ For an existing pinned cohort, the explicit user-requested scheduling-only
 continuation is an exception to the ordinary new-cohort rule. Keep the original
 manifest unchanged. A separate receipt binds the old and continued implementation
 hashes, unchanged config/plan hash, and (for evaluation) both orchestrator hashes.
-The guard rejects changes outside quota handling, its receipt validator, and the
-runner's identity-check call. Trading/model/prompt/data/journal/accounting code and
-sandbox binaries must remain identical. Publish both source identities, the user
+The guard restricts changes to quota handling, receipt validation, runner identity
+checks, and restoring recorded runtime assets. Trading workers, prompts, data,
+journal, accounting, attempt limits and actual sandbox binaries remain identical.
+If host packages changed, BENCH_PINNED_BINARIES selects copies by their original
+SHA-256 and BENCH_PINNED_CATALOGS restores the recorded Pi catalog entry. The
+launcher executes that pinned Bubblewrap copy with the same isolation flags.
+The receipt separately binds original and continued runtime hashes; only the
+launcher script hash may differ. Qualification must pass before live inference.
+Preserve superseded preflight receipts and any failed launch evidence. Publish both source identities, the user
 reset authorization, prior artifact hashes and replay receipts; do not label the
 continuation as having one unchanged implementation. Keep the old source checkout.
