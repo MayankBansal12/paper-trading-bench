@@ -1,3 +1,4 @@
+import { implementationMatches, readContinuation } from "./continuation.ts";
 import { QUOTA_PAUSE_POLICY } from "./availability.ts";
 import { isPiModel } from "../pi/route.ts";
 import { existsSync, readFileSync } from "node:fs";
@@ -201,7 +202,14 @@ export async function runEvaluation(input: EvaluationInput, options: {
     if (existsSync(manifestPath)) {
       if (!options.resume && !options.readOnly)
         throw new Error("Evaluation already exists; use --resume=true or a new --eval-id");
-      if (contentHash(JSON.parse(readFileSync(manifestPath, "utf8"))) !== contentHash(manifest))
+      const saved = JSON.parse(readFileSync(manifestPath, "utf8"));
+      const continuation = readContinuation(dir);
+      const samePlan = contentHash(saved.plan) === contentHash(manifest.plan);
+      const sameImplementation = implementationMatches(saved.implementation, manifest.implementation, dir, manifest.plan);
+      const sameOrchestrator = saved.orchestratorHash === manifest.orchestratorHash ||
+        (continuation?.previousOrchestratorHash === saved.orchestratorHash &&
+         continuation?.continuedOrchestratorHash === manifest.orchestratorHash);
+      if (!samePlan || !sameImplementation || !sameOrchestrator)
         throw new Error("Evaluation implementation/configuration changed; start a new evaluation");
     } else {
       if (options.resume || options.readOnly) throw new Error("Missing evaluation manifest");
@@ -216,7 +224,7 @@ export async function runEvaluation(input: EvaluationInput, options: {
       if (!existsSync(path)) continue;
       const saved = JSON.parse(readFileSync(path, "utf8"));
       if (contentHash(saved.config) !== contentHash(job.config) ||
-          contentHash(saved.implementation) !== contentHash(manifest.implementation))
+          !implementationMatches(saved.implementation, manifest.implementation, resolve("results/studies", job.runId), job.config))
         throw new Error(`Child run identity mismatch: ${job.runId}`);
     }
     const quarters: EvaluationQuarterResult[] = plan.jobs.map(job => ({

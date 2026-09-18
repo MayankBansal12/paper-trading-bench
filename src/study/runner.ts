@@ -1,3 +1,4 @@
+import { implementationMatches } from "./continuation.ts";
 import { QUOTA_PAUSE_POLICY, quotaPause, type QuotaPause } from "./availability.ts";
 import { isPiModel } from "../pi/route.ts";
 import { studyRoute } from "./routes.ts";
@@ -197,7 +198,7 @@ export async function runStudy(
       const saved = read(manifestPath);
       if (
         contentHash(saved.config) !== contentHash(c) ||
-        contentHash(saved.implementation) !== contentHash(implementation)
+        !implementationMatches(saved.implementation, implementation, dir, c)
       )
         throw new Error(
           "Implementation/configuration changed; start a new cohort",
