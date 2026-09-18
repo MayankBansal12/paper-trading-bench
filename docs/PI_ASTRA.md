@@ -82,3 +82,20 @@ pause the coordinator re-arms the same BB automation with `--at` using the
 recorded `notBefore` timestamp (provider reset plus the frozen five-minute buffer).
 There is no recurring 15-minute poll. A systemd service supervises active work;
 the machine and BB must remain available. Unexpected blockers stop the queue.
+
+### User-confirmed early quota resets
+
+A provider's recorded reset can become obsolete after the user resets their account
+quota. `manual-quota-reset.json` authorizes skipping the wait only for listed,
+already-recorded quota-failure hashes in one run. Later quota failures still pause;
+failed attempts are never erased or refunded. This does not alter wall-clock time.
+
+For an existing pinned cohort, the explicit user-requested scheduling-only
+continuation is an exception to the ordinary new-cohort rule. Keep the original
+manifest unchanged. A separate receipt binds the old and continued implementation
+hashes, unchanged config/plan hash, and (for evaluation) both orchestrator hashes.
+The guard rejects changes outside quota handling, its receipt validator, and the
+runner's identity-check call. Trading/model/prompt/data/journal/accounting code and
+sandbox binaries must remain identical. Publish both source identities, the user
+reset authorization, prior artifact hashes and replay receipts; do not label the
+continuation as having one unchanged implementation. Keep the old source checkout.

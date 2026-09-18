@@ -43,3 +43,41 @@ test("pause/resume makes no calls during cooldown and never grants a third attem
  const [out,err,code]=await Promise.all([new Response(p.stdout).text(),new Response(p.stderr).text(),p.exited]);
  expect(err).toBe("");expect(code).toBe(0);expect(JSON.parse(out).calls).toBe(2);
 });
+
+test("manual quota reset resumes existing attempts but cannot bypass a new quota or grant a third attempt",async()=>{
+ const script=`import { mock } from "bun:test";
+ import {rm} from "node:fs/promises";
+ let calls=0; const clock=Date.now; let offset=0; Date.now=()=>clock()+offset;
+ mock.module(${JSON.stringify(resolve("src/study/model.ts"))},()=>({
+ prepareModelRuntime:async()=>({bundle:{evidence:{id:"offline-fixture"}},dispose:async()=>{}}),
+ decideStudy:async(view,store,past,horizon,audit)=>{
+ calls++;const trace=[{type:"inference_response",sequence:1,status:429},{type:"inference_chunk",sequence:1,base64:Buffer.from(JSON.stringify({error:{type:"usage_limit_reached",resets_at:Math.floor((Date.now()+3600000)/1000)}})).toString("base64")}];
+ for(const e of trace)audit(e);
+ const {initialStudyDecision}=await import(${JSON.stringify(resolve("src/study/agent.ts"))});
+ const {contentHash}=await import(${JSON.stringify(resolve("src/core/hash.ts"))});
+ const decision=initialStudyDecision(view);decision.trace=trace;
+ return {outcome:"harness_error",reason:"synthetic quota",scope:view.scope,viewHash:contentHash(view),decision,journalEntries:[]};
+ }}));
+ const {config}=await import(${JSON.stringify(resolve("tests/studyTestSupport.ts"))});
+ const {runStudy}=await import(${JSON.stringify(resolve("src/study/runner.ts"))});
+ const {QUOTA_PAUSE_POLICY}=await import(${JSON.stringify(resolve("src/study/availability.ts"))});
+ const c={...await config("2024-04-02","2024-04-02"),kind:"environment",model:"pi/openai-codex/gpt-6-astra",availabilityPolicy:QUOTA_PAUSE_POLICY};
+ const root=${JSON.stringify(resolve("results/studies"))}+"/"+c.runId;
+ try{
+ const first=await runStudy(c);if(first.summary.status!=="paused"||calls!==1||first.summary.committedDays!==0)throw Error("first failure did not pause");
+ const again=await runStudy(c);if(again.summary.status!=="paused"||calls!==1)throw Error("cooldown made a request");
+ const replay=await runStudy(c,{readOnly:true});if(replay.summary.attempts!==1||calls!==1)throw Error("replay changed attempts");
+ const {writeFileSync}=await import("node:fs");
+ const receipt={version:"manual-quota-reset-v1",authorization:"user-confirmed-external-quota-reset",authorizedAt:new Date(Date.now()+1000).toISOString(),runId:c.runId,failureHashes:[first.summary.availability.resultEventHash]};
+ writeFileSync(root+"/manual-quota-reset.json",JSON.stringify(receipt));
+ const second=await runStudy(c);if(calls!==2||second.summary.status!=="paused"||second.summary.attempts!==2)throw Error("manual reset failed to resume existing attempt budget");
+ const waiting=await runStudy(c);if(calls!==2||waiting.summary.status!=="paused")throw Error("old reset bypassed new quota failure");
+ receipt.failureHashes.push(second.summary.availability.resultEventHash);
+ writeFileSync(root+"/manual-quota-reset.json",JSON.stringify(receipt));
+ const final=await runStudy(c);if(calls!==2||final.summary.invalidDays!==1||final.summary.attempts!==2)throw Error("manual reset granted third attempt");
+ console.log(JSON.stringify({passed:true,calls,invalidDays:final.summary.invalidDays}));
+ }finally{Date.now=clock;await rm(root,{recursive:true,force:true});}`;
+ const p=Bun.spawn([process.execPath,"-e",script],{stdout:"pipe",stderr:"pipe"});
+ const [out,err,code]=await Promise.all([new Response(p.stdout).text(),new Response(p.stderr).text(),p.exited]);
+ expect(err).toBe("");expect(code).toBe(0);expect(JSON.parse(out).calls).toBe(2);
+});

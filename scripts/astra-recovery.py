@@ -122,11 +122,15 @@ def publish(cfg, state, report=None, label="initial"):
     archive = art / f"audit-{label}.tar.gz"
     if archive.exists():
         raise RuntimeError("Refusing to overwrite an audit checkpoint")
-    source_tar = art / "source.tar"
+    source_tar = art / ("source-" + cfg["revision"][:12] + ".tar")
     if not source_tar.exists():
         command(["git", "archive", cfg["revision"], "-o", str(source_tar)], cwd=source)
     with tarfile.open(archive, "w:gz") as bundle:
         bundle.add(source_tar, arcname="source.tar")
+        if cfg.get("continuation"):
+            if (art / "source.tar").exists():
+                bundle.add(art / "source.tar", arcname="previous-source.tar")
+            bundle.add(cfg["continuation"]["proofDirectory"], arcname="continuation-proof")
         bundle.add(cfg["dataset"], arcname="dataset/" + Path(cfg["dataset"]).name)
         for p in matching_runs(cfg):
             bundle.add(p, arcname="results/studies/" + p.name)
@@ -156,11 +160,15 @@ def publish(cfg, state, report=None, label="initial"):
                 "implementationHash": read(manifest)["implementation"]["hash"],
                 "manifestSha256": digest(manifest),
                 "runtime": read(p / "runtime.json") if (p / "runtime.json").exists() else None,
+                "continuation": read(p / "manual-quota-reset.json") if (p / "manual-quota-reset.json").exists() else None,
             }
     write(out / "provenance.json", previous)
     if report is not None:
         write(out / f"{label}-summary.json", report)
     display = cfg.get("displayName", "Astra")
+    if cfg.get("continuation"):
+        previous["continuation"] = cfg["continuation"]
+        write(out / "provenance.json", previous)
     description = f"State: **{state['status']}**, phase: **{state['phase']}**."
     if state.get("notBefore"):
         description += f" Next model attempt no earlier than **{state['notBefore']}**."
@@ -177,11 +185,13 @@ def publish(cfg, state, report=None, label="initial"):
                             f"mean quarterly TWR **{year['meanQuarterTimeWeightedReturnPct']:.2f}%**.")
         else:
             description += " No annual score is available yet."
+    if cfg.get("continuation"):
+        description += "\n\nThis is a user-authorized scheduling-only continuation after an external quota reset. Original manifests, completed days and failed attempts are unchanged. The continuation receipt pins the old/new source identities; prior quota failures alone may bypass their obsolete wait. Trading, prompts, data, accounting and retry limits are byte-identical."
     text = f"""# Quota-aware {display} evaluation
 
 {description}
 
-This is a **new cohort**. Earlier cohorts and their attempts remain
+{"This is a **scheduling-only continuation of the same cohort**." if cfg.get("continuation") else "This is a **new cohort**."} Earlier cohorts and their attempts remain
 unchanged in [the prior results PR]({cfg['originalResultsPR']}).
 
 The pinned `quota-pause-v1` scheduling policy pauses the entire serial queue after
