@@ -87,8 +87,10 @@ def cli(cfg, args, label):
     art = Path(cfg["artifacts"])
     out, err = art / (label + ".json"), art / (label + ".stderr")
     with out.open("w") as stdout, err.open("w") as stderr:
+        env = dict(os.environ)
+        env.update(cfg.get("runtimeEnv", {}))
         result = subprocess.run([cfg["bun"], "src/index.ts", *args], cwd=cfg["source"],
-                                stdout=stdout, stderr=stderr)
+                                stdout=stdout, stderr=stderr, env=env)
     try:
         report = read(out)
     except (OSError, ValueError):
@@ -186,7 +188,7 @@ def publish(cfg, state, report=None, label="initial"):
         else:
             description += " No annual score is available yet."
     if cfg.get("continuation"):
-        description += "\n\nThis is a user-authorized scheduling-only continuation after an external quota reset. Original manifests, completed days and failed attempts are unchanged. The continuation receipt pins the old/new source identities; prior quota failures alone may bypass their obsolete wait. Trading, prompts, data, accounting and retry limits are byte-identical."
+        description += "\n\nThis is a user-authorized scheduling-only continuation after an external quota reset. Original manifests, completed days and failed attempts are unchanged. The continuation receipt pins the old/new source and runtime identities; prior quota failures alone may bypass their obsolete wait. Original per-quarter binaries and catalog metadata are restored privately after host package drift; only the launcher dispatch path changes. Trading workers, prompts, data, accounting, isolation flags and retry limits are byte-identical."
     text = f"""# Quota-aware {display} evaluation
 
 {description}
@@ -226,7 +228,7 @@ outcomes are captured in the checkpoint summaries and archived execution receipt
     prs = json.loads(command(["gh", "pr", "list", "--head", cfg["publicationBranch"],
                                "--state", "open", "--json", "url"], cwd=publication).stdout)
     body = art / "results-pr-body.md"
-    body.write_text(description + "\n\nPreserves the old stopped cohort and publishes the fresh quota-aware cohort's pinned provenance, checkpoint summaries and local audit-bundle checksums. No retry allowances are reset. Each settled checkpoint is replayed; completion is claimed only after all four quarters finish and verify.\n")
+    body.write_text(description + "\n\nPreserves the old stopped cohort and publishes this quota-aware cohort's pinned provenance, checkpoint summaries and local audit-bundle checksums. No retry allowances are reset. Each settled checkpoint is replayed; completion is claimed only after all four quarters finish and verify.\n")
     if prs:
         url = prs[0]["url"]
         command(["gh", "pr", "edit", url, "--body-file", str(body)], cwd=publication)

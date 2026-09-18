@@ -1,4 +1,4 @@
-import { implementationMatches } from "./continuation.ts";
+import { implementationMatches, runtimeMatches } from "./continuation.ts";
 import { QUOTA_PAUSE_POLICY, quotaPause, type QuotaPause } from "./availability.ts";
 import { isPiModel } from "../pi/route.ts";
 import { studyRoute } from "./routes.ts";
@@ -275,12 +275,11 @@ export async function runStudy(
           if (!options.control && c.kind === "control")
             throw new Error("Control requires explicit deterministic transport");
           if (!options.control && !runtime) {
-            runtime = await prepareModelRuntime(c.model);
             const runtimePath = join(dir, "runtime.json");
+            runtime = await prepareModelRuntime(c.model, existsSync(runtimePath) ? read(runtimePath) : undefined);
             if (existsSync(runtimePath)) {
               if (
-                contentHash(read(runtimePath)) !==
-                contentHash(runtime.bundle.evidence)
+                !runtimeMatches(read(runtimePath), runtime.bundle.evidence, dir)
               )
                 throw new Error("Runtime changed; start a new cohort");
             } else durableCreate(runtimePath, runtime.bundle.evidence);
@@ -349,9 +348,14 @@ export async function runStudy(
           buildDecisionContext(config, date, universe, portfolio, [], market),
           accepted.scope, aliases,
         );
-        if (c.kind !== "control" &&
-            (accepted.sandbox as any)?.id !== read(join(dir, "runtime.json")).id)
-          throw new Error("Accepted sandbox differs from frozen runtime");
+        if (c.kind !== "control") {
+          const savedRuntime = read(join(dir, "runtime.json"));
+          const acceptedRuntime = Object.fromEntries(Object.keys(savedRuntime).map(
+            (key) => [key, (accepted!.sandbox as any)?.[key]],
+          ));
+          if (!runtimeMatches(savedRuntime, acceptedRuntime, dir))
+            throw new Error("Accepted sandbox differs from frozen runtime");
+        }
         validateAccepted(accepted, view, c.kind === "control", past, horizon, c.model);
         submissionEventHash = store.matching(accepted.scope).find((e) => e.kind === "submission")!.hash;
         record = executeAccepted(accepted, portfolio, config, market, universe);

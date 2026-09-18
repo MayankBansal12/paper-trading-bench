@@ -33,3 +33,18 @@ test("reset is scoped to exact pre-authorization failures and run, never future 
   expect(quotaWasReset(dir,{...e,recordedAt:"2026-09-19T00:00:00Z"})).toBe(false);
  }finally{rmSync(dir,{recursive:true,force:true});}
 });
+
+test("runtime continuation allows only launch-path change with identical actual executables and catalog",async()=>{
+ const {runtimeMatches}=await import("../src/study/continuation.ts");
+ const dir=mkdtempSync(join(tmpdir(),"runtime-continuation-"));
+ try{
+  const evidence=(launch:string,binary="same")=>{const data={policy:"same",bwrapHash:binary,pi:{catalogHash:"same"},hashes:{"scripts/sandbox/launch.sh":launch,"worker":"same"}};return {...data,id:contentHash(data)};};
+  const before=evidence("old"),after=evidence("new");
+  const r={version:"manual-quota-reset-v1",authorization:"user-confirmed-external-quota-reset",authorizedAt:"2026-09-18T00:00:00Z",failureHashes:[],previousRuntimeHash:contentHash(before),continuedRuntimeHash:contentHash(after)};
+  writeFileSync(join(dir,"manual-quota-reset.json"),JSON.stringify(r));
+  expect(runtimeMatches(before,after,dir)).toBe(true);
+  const changed=evidence("new","changed");
+  writeFileSync(join(dir,"manual-quota-reset.json"),JSON.stringify({...r,continuedRuntimeHash:contentHash(changed)}));
+  expect(runtimeMatches(before,changed,dir)).toBe(false);
+ }finally{rmSync(dir,{recursive:true,force:true});}
+});
