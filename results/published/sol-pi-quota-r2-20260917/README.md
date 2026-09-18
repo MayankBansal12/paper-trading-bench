@@ -1,10 +1,12 @@
 # Quota-aware GPT-5.6 Sol evaluation
 
-State: **waiting**, phase: **annual**. Next model attempt no earlier than **2026-09-24T12:54:21.000Z**.
+State: **ready**, phase: **annual**.
 
 Recorded valid days: **163/251**; invalid days: 0; retried days: 7; complete quarters: 0/4. No annual score is available yet.
 
-This is a **new cohort**. Earlier cohorts and their attempts remain
+This is a user-authorized scheduling-only continuation after an external quota reset. Original manifests, completed days and failed attempts are unchanged. The continuation receipt pins the old/new source identities; prior quota failures alone may bypass their obsolete wait. Trading, prompts, data, accounting and retry limits are byte-identical.
+
+This is a **scheduling-only continuation of the same cohort**. Earlier cohorts and their attempts remain
 unchanged in [the prior results PR](https://github.com/MayankBansal12/paper-trading-bench/pull/18).
 
 The pinned `quota-pause-v1` scheduling policy pauses the entire serial queue after
