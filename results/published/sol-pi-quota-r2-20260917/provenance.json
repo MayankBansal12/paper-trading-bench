@@ -41,12 +41,18 @@
       "path": "/home/ai/code/paper-trading-bench/results/archives/sol-quota-reset-20260917/audit-003-annual.tar.gz",
       "sha256": "a0389e65719446c527a3c9104f73427371f63d689a4d5e447ccb9b2e4e242bf7",
       "bytes": 59302136
+    },
+    {
+      "label": "004-annual",
+      "path": "/home/ai/code/paper-trading-bench/results/archives/sol-quota-reset-20260917/audit-004-annual.tar.gz",
+      "sha256": "238d6dc1a1d751a7e8ce68bc7a74e1c8c751dbdc4c4e7797b6b3e5618492ae0b",
+      "bytes": 76313203
     }
   ],
   "status": "waiting",
   "phase": "annual",
-  "updatedAt": "2026-09-17T23:18:46.642662+00:00",
-  "notBefore": "2026-09-18T04:05:35.000Z",
+  "updatedAt": "2026-09-18T04:23:25.503617+00:00",
+  "notBefore": "2026-09-18T09:11:49.000Z",
   "error": null,
   "runs": {
     "sol-pi-quota-smoke-r2-20260917": {
