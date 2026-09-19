@@ -1,8 +1,8 @@
 # Quota-aware GPT-5.6 Sol evaluation
 
-State: **running**, phase: **annual**.
+State: **waiting**, phase: **annual**. Next model attempt no earlier than **2026-09-19T05:12:11.000Z**.
 
-Recorded valid days: **163/251**; invalid days: 0; retried days: 7; complete quarters: 0/4. No annual score is available yet.
+Recorded valid days: **186/251**; invalid days: 0; retried days: 11; complete quarters: 2/4. No annual score is available yet.
 
 This is a user-authorized scheduling-only continuation after an external quota reset. Original manifests, completed days and failed attempts are unchanged. The continuation receipt pins the old/new source and runtime identities; prior quota failures alone may bypass their obsolete wait. Original per-quarter binaries and catalog metadata are restored privately after host package drift; only the launcher dispatch path changes. Trading workers, prompts, data, accounting, isolation flags and retry limits are byte-identical.
 
@@ -33,5 +33,3 @@ Implementation checks: see the linked implementation PR and committed tests.
 The quota-pause tests cover provider reset parsing, no inference during cooldown,
 retained attempts across resume, and refusal to grant a third attempt. Live replay
 outcomes are captured in the checkpoint summaries and archived execution receipts.
-
-Live continuation confirmed: provider returned HTTP 200, June 5 completed and the next day began. See [live observation](011-live-continuation.json). The counts above describe the last settled replay; this live observation is not an annual score.
