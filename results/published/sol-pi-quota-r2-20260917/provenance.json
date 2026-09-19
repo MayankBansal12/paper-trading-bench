@@ -71,11 +71,17 @@
       "path": "/home/ai/code/paper-trading-bench/results/archives/sol-quota-reset-20260917/audit-008-manual-reset-authorized.tar.gz",
       "sha256": "9e7d8608f028dda49691a3526ce82d099b269ecfa76fca88daa668eb0205bcca",
       "bytes": 122209164
+    },
+    {
+      "label": "009-manual-reset-runtime-restored",
+      "path": "/home/ai/code/paper-trading-bench/results/archives/sol-quota-reset-20260917/audit-009-manual-reset-runtime-restored.tar.gz",
+      "sha256": "0f2200cd51d80ea0601530024e840014d322df91888616084a120737a2f2e110",
+      "bytes": 122211930
     }
   ],
   "status": "ready",
   "phase": "annual",
-  "updatedAt": "2026-09-18T23:39:01.923360+00:00",
+  "updatedAt": "2026-09-19T00:00:18.515384+00:00",
   "notBefore": null,
   "error": null,
   "runs": {
@@ -119,16 +125,18 @@
       "continuation": {
         "version": "manual-quota-reset-v1",
         "authorization": "user-confirmed-external-quota-reset",
-        "authorizedAt": "2026-09-18T23:37:56.707Z",
+        "authorizedAt": "2026-09-18T23:58:32.108Z",
         "reason": "User reset Codex usage and explicitly requested overriding the obsolete wait while continuing the existing run.",
         "previousSourceRevision": "6fab5f38034405e06195a236fc4f556401db5280",
-        "continuedSourceRevision": "5ca73ee68bb4e772588a50863098ee1f68933138",
+        "continuedSourceRevision": "6f4aa33668d3dcdc74b54764dc03b3ce16a92590",
         "implementationPR": "https://github.com/MayankBansal12/paper-trading-bench/pull/22",
         "configHash": "0edb9f027fe6470798aeedca0be5c363027871bd37a56c89a14512616675ae2c",
         "previousImplementationHash": "b3fd0f0e42f9df12f51e73965c2f02afccdbfdb64e4631e15cade507131b8bb8",
-        "continuedImplementationHash": "c0ea65a496657bdf691fa4991be8c9550068721dfe4ccbbf4be1bb53ba6d5ba5",
+        "continuedImplementationHash": "d621879cdc57c662b0d7eee15d8cc3adf428417ef98676d1aaa83235ca10cf56",
         "failureHashes": [],
-        "runId": "sol-pi-quota-smoke-r2-20260917"
+        "runId": "sol-pi-quota-smoke-r2-20260917",
+        "previousRuntimeHash": "49e85124981ebb488a0952cb2e362b2b3862df95335e6dbbef52a420a4530251",
+        "continuedRuntimeHash": "ae867a8c3c2fa95298869256b0b3892d757a1980abb0d4c8a55d28748c28d199"
       }
     },
     "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q2": {
@@ -171,18 +179,20 @@
       "continuation": {
         "version": "manual-quota-reset-v1",
         "authorization": "user-confirmed-external-quota-reset",
-        "authorizedAt": "2026-09-18T23:37:56.707Z",
+        "authorizedAt": "2026-09-18T23:58:32.108Z",
         "reason": "User reset Codex usage and explicitly requested overriding the obsolete wait while continuing the existing run.",
         "previousSourceRevision": "6fab5f38034405e06195a236fc4f556401db5280",
-        "continuedSourceRevision": "5ca73ee68bb4e772588a50863098ee1f68933138",
+        "continuedSourceRevision": "6f4aa33668d3dcdc74b54764dc03b3ce16a92590",
         "implementationPR": "https://github.com/MayankBansal12/paper-trading-bench/pull/22",
         "configHash": "282566722b84917fbb4fb76303802dfa38e35c924be6a437249e9eaaa6a55e9d",
         "previousImplementationHash": "b3fd0f0e42f9df12f51e73965c2f02afccdbfdb64e4631e15cade507131b8bb8",
-        "continuedImplementationHash": "c0ea65a496657bdf691fa4991be8c9550068721dfe4ccbbf4be1bb53ba6d5ba5",
+        "continuedImplementationHash": "d621879cdc57c662b0d7eee15d8cc3adf428417ef98676d1aaa83235ca10cf56",
         "failureHashes": [
           "f845773ed53f4b422053adfb3375564ed337ae8d0352950f9acff2d557fc3aed"
         ],
-        "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q2"
+        "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q2",
+        "previousRuntimeHash": "49e85124981ebb488a0952cb2e362b2b3862df95335e6dbbef52a420a4530251",
+        "continuedRuntimeHash": "ae867a8c3c2fa95298869256b0b3892d757a1980abb0d4c8a55d28748c28d199"
       }
     },
     "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q3": {
@@ -225,18 +235,20 @@
       "continuation": {
         "version": "manual-quota-reset-v1",
         "authorization": "user-confirmed-external-quota-reset",
-        "authorizedAt": "2026-09-18T23:37:56.707Z",
+        "authorizedAt": "2026-09-18T23:58:32.108Z",
         "reason": "User reset Codex usage and explicitly requested overriding the obsolete wait while continuing the existing run.",
         "previousSourceRevision": "6fab5f38034405e06195a236fc4f556401db5280",
-        "continuedSourceRevision": "5ca73ee68bb4e772588a50863098ee1f68933138",
+        "continuedSourceRevision": "6f4aa33668d3dcdc74b54764dc03b3ce16a92590",
         "implementationPR": "https://github.com/MayankBansal12/paper-trading-bench/pull/22",
         "configHash": "a6e134d8aa36e99e10bf8ec7b96bcf4a9b42566ce4350e873f8e4afd1a05d6ea",
         "previousImplementationHash": "b3fd0f0e42f9df12f51e73965c2f02afccdbfdb64e4631e15cade507131b8bb8",
-        "continuedImplementationHash": "c0ea65a496657bdf691fa4991be8c9550068721dfe4ccbbf4be1bb53ba6d5ba5",
+        "continuedImplementationHash": "d621879cdc57c662b0d7eee15d8cc3adf428417ef98676d1aaa83235ca10cf56",
         "failureHashes": [
           "39c8b0062f1146bd6b455089be20f4b103d7804128827be9a7c5c36d33d63eaa"
         ],
-        "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q3"
+        "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q3",
+        "previousRuntimeHash": "e26542884281914803d5ab9f246ba4b4b30f76d46e1eb8c445700f0c6c5c4a7e",
+        "continuedRuntimeHash": "656deabb21dd3978fd5a5c3965814247bc5c8b810e116025b3f33dae04612aa8"
       }
     },
     "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q4": {
@@ -279,112 +291,122 @@
       "continuation": {
         "version": "manual-quota-reset-v1",
         "authorization": "user-confirmed-external-quota-reset",
-        "authorizedAt": "2026-09-18T23:37:56.707Z",
+        "authorizedAt": "2026-09-18T23:58:32.108Z",
         "reason": "User reset Codex usage and explicitly requested overriding the obsolete wait while continuing the existing run.",
         "previousSourceRevision": "6fab5f38034405e06195a236fc4f556401db5280",
-        "continuedSourceRevision": "5ca73ee68bb4e772588a50863098ee1f68933138",
+        "continuedSourceRevision": "6f4aa33668d3dcdc74b54764dc03b3ce16a92590",
         "implementationPR": "https://github.com/MayankBansal12/paper-trading-bench/pull/22",
         "configHash": "ca185c9711a1e6cdd9c0c0461b9f7743be8276d2b07fdd46a9fc1e62fc38a549",
         "previousImplementationHash": "b3fd0f0e42f9df12f51e73965c2f02afccdbfdb64e4631e15cade507131b8bb8",
-        "continuedImplementationHash": "c0ea65a496657bdf691fa4991be8c9550068721dfe4ccbbf4be1bb53ba6d5ba5",
+        "continuedImplementationHash": "d621879cdc57c662b0d7eee15d8cc3adf428417ef98676d1aaa83235ca10cf56",
         "failureHashes": [
           "179c7f90d1a2ea5dfbea81aed1b712017af9226217b9c545b592533a3f0abeab"
         ],
-        "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q4"
+        "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q4",
+        "previousRuntimeHash": "cce27ddc4d36cd14017f8336aff4f6a878536bcb7d94f79527c516f927233ae4",
+        "continuedRuntimeHash": "d0de5291aa1a5b5e70d4fe641e3536a90f7299d17d3ee4a4f6b954eed9a3a0d2"
       }
     }
   },
   "continuation": {
     "version": "manual-quota-reset-v1",
     "authorization": "user-confirmed-external-quota-reset",
-    "authorizedAt": "2026-09-18T23:37:56.707Z",
+    "authorizedAt": "2026-09-18T23:58:32.108Z",
     "reason": "User reset Codex usage and explicitly requested overriding the obsolete wait while continuing the existing run.",
     "previousSourceRevision": "6fab5f38034405e06195a236fc4f556401db5280",
-    "continuedSourceRevision": "5ca73ee68bb4e772588a50863098ee1f68933138",
+    "continuedSourceRevision": "6f4aa33668d3dcdc74b54764dc03b3ce16a92590",
     "implementationPR": "https://github.com/MayankBansal12/paper-trading-bench/pull/22",
     "proofDirectory": "/home/ai/code/paper-trading-bench/results/archives/sol-quota-reset-20260917/manual-reset-20260919",
     "previousSource": "/home/ai/.bb/thread-storage/pi-sequence/source-6fab5f3",
-    "continuedSource": "/home/ai/.bb/thread-storage/pi-sequence/source-5ca73ee",
+    "continuedSource": "/home/ai/.bb/thread-storage/pi-sequence/source-6f4aa33",
     "preservedValidDays": 163,
     "receipts": [
       {
-        "path": "/home/ai/.bb/thread-storage/pi-sequence/source-5ca73ee/results/studies/sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q2/manual-quota-reset.json",
+        "path": "/home/ai/.bb/thread-storage/pi-sequence/source-6f4aa33/results/studies/sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q2/manual-quota-reset.json",
         "version": "manual-quota-reset-v1",
         "authorization": "user-confirmed-external-quota-reset",
-        "authorizedAt": "2026-09-18T23:37:56.707Z",
+        "authorizedAt": "2026-09-18T23:58:32.108Z",
         "reason": "User reset Codex usage and explicitly requested overriding the obsolete wait while continuing the existing run.",
         "previousSourceRevision": "6fab5f38034405e06195a236fc4f556401db5280",
-        "continuedSourceRevision": "5ca73ee68bb4e772588a50863098ee1f68933138",
+        "continuedSourceRevision": "6f4aa33668d3dcdc74b54764dc03b3ce16a92590",
         "implementationPR": "https://github.com/MayankBansal12/paper-trading-bench/pull/22",
         "configHash": "282566722b84917fbb4fb76303802dfa38e35c924be6a437249e9eaaa6a55e9d",
         "previousImplementationHash": "b3fd0f0e42f9df12f51e73965c2f02afccdbfdb64e4631e15cade507131b8bb8",
-        "continuedImplementationHash": "c0ea65a496657bdf691fa4991be8c9550068721dfe4ccbbf4be1bb53ba6d5ba5",
+        "continuedImplementationHash": "d621879cdc57c662b0d7eee15d8cc3adf428417ef98676d1aaa83235ca10cf56",
         "failureHashes": [
           "f845773ed53f4b422053adfb3375564ed337ae8d0352950f9acff2d557fc3aed"
         ],
-        "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q2"
+        "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q2",
+        "previousRuntimeHash": "49e85124981ebb488a0952cb2e362b2b3862df95335e6dbbef52a420a4530251",
+        "continuedRuntimeHash": "ae867a8c3c2fa95298869256b0b3892d757a1980abb0d4c8a55d28748c28d199"
       },
       {
-        "path": "/home/ai/.bb/thread-storage/pi-sequence/source-5ca73ee/results/studies/sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q3/manual-quota-reset.json",
+        "path": "/home/ai/.bb/thread-storage/pi-sequence/source-6f4aa33/results/studies/sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q3/manual-quota-reset.json",
         "version": "manual-quota-reset-v1",
         "authorization": "user-confirmed-external-quota-reset",
-        "authorizedAt": "2026-09-18T23:37:56.707Z",
+        "authorizedAt": "2026-09-18T23:58:32.108Z",
         "reason": "User reset Codex usage and explicitly requested overriding the obsolete wait while continuing the existing run.",
         "previousSourceRevision": "6fab5f38034405e06195a236fc4f556401db5280",
-        "continuedSourceRevision": "5ca73ee68bb4e772588a50863098ee1f68933138",
+        "continuedSourceRevision": "6f4aa33668d3dcdc74b54764dc03b3ce16a92590",
         "implementationPR": "https://github.com/MayankBansal12/paper-trading-bench/pull/22",
         "configHash": "a6e134d8aa36e99e10bf8ec7b96bcf4a9b42566ce4350e873f8e4afd1a05d6ea",
         "previousImplementationHash": "b3fd0f0e42f9df12f51e73965c2f02afccdbfdb64e4631e15cade507131b8bb8",
-        "continuedImplementationHash": "c0ea65a496657bdf691fa4991be8c9550068721dfe4ccbbf4be1bb53ba6d5ba5",
+        "continuedImplementationHash": "d621879cdc57c662b0d7eee15d8cc3adf428417ef98676d1aaa83235ca10cf56",
         "failureHashes": [
           "39c8b0062f1146bd6b455089be20f4b103d7804128827be9a7c5c36d33d63eaa"
         ],
-        "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q3"
+        "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q3",
+        "previousRuntimeHash": "e26542884281914803d5ab9f246ba4b4b30f76d46e1eb8c445700f0c6c5c4a7e",
+        "continuedRuntimeHash": "656deabb21dd3978fd5a5c3965814247bc5c8b810e116025b3f33dae04612aa8"
       },
       {
-        "path": "/home/ai/.bb/thread-storage/pi-sequence/source-5ca73ee/results/studies/sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q4/manual-quota-reset.json",
+        "path": "/home/ai/.bb/thread-storage/pi-sequence/source-6f4aa33/results/studies/sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q4/manual-quota-reset.json",
         "version": "manual-quota-reset-v1",
         "authorization": "user-confirmed-external-quota-reset",
-        "authorizedAt": "2026-09-18T23:37:56.707Z",
+        "authorizedAt": "2026-09-18T23:58:32.108Z",
         "reason": "User reset Codex usage and explicitly requested overriding the obsolete wait while continuing the existing run.",
         "previousSourceRevision": "6fab5f38034405e06195a236fc4f556401db5280",
-        "continuedSourceRevision": "5ca73ee68bb4e772588a50863098ee1f68933138",
+        "continuedSourceRevision": "6f4aa33668d3dcdc74b54764dc03b3ce16a92590",
         "implementationPR": "https://github.com/MayankBansal12/paper-trading-bench/pull/22",
         "configHash": "ca185c9711a1e6cdd9c0c0461b9f7743be8276d2b07fdd46a9fc1e62fc38a549",
         "previousImplementationHash": "b3fd0f0e42f9df12f51e73965c2f02afccdbfdb64e4631e15cade507131b8bb8",
-        "continuedImplementationHash": "c0ea65a496657bdf691fa4991be8c9550068721dfe4ccbbf4be1bb53ba6d5ba5",
+        "continuedImplementationHash": "d621879cdc57c662b0d7eee15d8cc3adf428417ef98676d1aaa83235ca10cf56",
         "failureHashes": [
           "179c7f90d1a2ea5dfbea81aed1b712017af9226217b9c545b592533a3f0abeab"
         ],
-        "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q4"
+        "runId": "sol-pi-quota-r2-20260917-pi-openai-codex-gpt-5-6-s-0bb992937e9e-2025-Q4",
+        "previousRuntimeHash": "cce27ddc4d36cd14017f8336aff4f6a878536bcb7d94f79527c516f927233ae4",
+        "continuedRuntimeHash": "d0de5291aa1a5b5e70d4fe641e3536a90f7299d17d3ee4a4f6b954eed9a3a0d2"
       },
       {
-        "path": "/home/ai/.bb/thread-storage/pi-sequence/source-5ca73ee/results/studies/sol-pi-quota-smoke-r2-20260917/manual-quota-reset.json",
+        "path": "/home/ai/.bb/thread-storage/pi-sequence/source-6f4aa33/results/studies/sol-pi-quota-smoke-r2-20260917/manual-quota-reset.json",
         "version": "manual-quota-reset-v1",
         "authorization": "user-confirmed-external-quota-reset",
-        "authorizedAt": "2026-09-18T23:37:56.707Z",
+        "authorizedAt": "2026-09-18T23:58:32.108Z",
         "reason": "User reset Codex usage and explicitly requested overriding the obsolete wait while continuing the existing run.",
         "previousSourceRevision": "6fab5f38034405e06195a236fc4f556401db5280",
-        "continuedSourceRevision": "5ca73ee68bb4e772588a50863098ee1f68933138",
+        "continuedSourceRevision": "6f4aa33668d3dcdc74b54764dc03b3ce16a92590",
         "implementationPR": "https://github.com/MayankBansal12/paper-trading-bench/pull/22",
         "configHash": "0edb9f027fe6470798aeedca0be5c363027871bd37a56c89a14512616675ae2c",
         "previousImplementationHash": "b3fd0f0e42f9df12f51e73965c2f02afccdbfdb64e4631e15cade507131b8bb8",
-        "continuedImplementationHash": "c0ea65a496657bdf691fa4991be8c9550068721dfe4ccbbf4be1bb53ba6d5ba5",
+        "continuedImplementationHash": "d621879cdc57c662b0d7eee15d8cc3adf428417ef98676d1aaa83235ca10cf56",
         "failureHashes": [],
-        "runId": "sol-pi-quota-smoke-r2-20260917"
+        "runId": "sol-pi-quota-smoke-r2-20260917",
+        "previousRuntimeHash": "49e85124981ebb488a0952cb2e362b2b3862df95335e6dbbef52a420a4530251",
+        "continuedRuntimeHash": "ae867a8c3c2fa95298869256b0b3892d757a1980abb0d4c8a55d28748c28d199"
       },
       {
-        "path": "/home/ai/.bb/thread-storage/pi-sequence/source-5ca73ee/results/evaluations/sol-pi-quota-r2-20260917/manual-quota-reset.json",
+        "path": "/home/ai/.bb/thread-storage/pi-sequence/source-6f4aa33/results/evaluations/sol-pi-quota-r2-20260917/manual-quota-reset.json",
         "version": "manual-quota-reset-v1",
         "authorization": "user-confirmed-external-quota-reset",
-        "authorizedAt": "2026-09-18T23:37:56.707Z",
+        "authorizedAt": "2026-09-18T23:58:32.108Z",
         "reason": "User reset Codex usage and explicitly requested overriding the obsolete wait while continuing the existing run.",
         "previousSourceRevision": "6fab5f38034405e06195a236fc4f556401db5280",
-        "continuedSourceRevision": "5ca73ee68bb4e772588a50863098ee1f68933138",
+        "continuedSourceRevision": "6f4aa33668d3dcdc74b54764dc03b3ce16a92590",
         "implementationPR": "https://github.com/MayankBansal12/paper-trading-bench/pull/22",
         "configHash": "c367d93ba9cbd2c5b892519b49a615f0fac17f37fa9192b1cbb1d4982f076933",
         "previousImplementationHash": "b3fd0f0e42f9df12f51e73965c2f02afccdbfdb64e4631e15cade507131b8bb8",
-        "continuedImplementationHash": "c0ea65a496657bdf691fa4991be8c9550068721dfe4ccbbf4be1bb53ba6d5ba5",
+        "continuedImplementationHash": "d621879cdc57c662b0d7eee15d8cc3adf428417ef98676d1aaa83235ca10cf56",
         "failureHashes": [],
         "evalId": "sol-pi-quota-r2-20260917",
         "previousOrchestratorHash": "d9ff6f4db7226e55f8aab75bd8365696d46d0ab070c11a200d24233c8cef0358",
@@ -397,9 +419,15 @@
       "reason": "Incomplete annual coverage"
     },
     "checks": {
-      "bun": 325,
+      "bun": 326,
       "python": 12,
       "typecheck": "passed"
-    }
+    },
+    "supersededPreflight": {
+      "sourceRevision": "5ca73ee68bb4e772588a50863098ee1f68933138",
+      "receiptDirectory": "/home/ai/code/paper-trading-bench/results/archives/sol-quota-reset-20260917/manual-reset-20260919/superseded-preflight-receipts",
+      "outcome": "Runtime drift caught before any inference; exact original binaries and catalog restored privately."
+    },
+    "runtimeAssets": "/home/ai/.bb/thread-storage/pi-sequence/sol-recorded-runtime"
   }
 }

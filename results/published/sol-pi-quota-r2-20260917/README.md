@@ -4,7 +4,7 @@ State: **ready**, phase: **annual**.
 
 Recorded valid days: **163/251**; invalid days: 0; retried days: 7; complete quarters: 0/4. No annual score is available yet.
 
-This is a user-authorized scheduling-only continuation after an external quota reset. Original manifests, completed days and failed attempts are unchanged. The continuation receipt pins the old/new source identities; prior quota failures alone may bypass their obsolete wait. Trading, prompts, data, accounting and retry limits are byte-identical.
+This is a user-authorized scheduling-only continuation after an external quota reset. Original manifests, completed days and failed attempts are unchanged. The continuation receipt pins the old/new source and runtime identities; prior quota failures alone may bypass their obsolete wait. Original per-quarter binaries and catalog metadata are restored privately after host package drift; only the launcher dispatch path changes. Trading workers, prompts, data, accounting, isolation flags and retry limits are byte-identical.
 
 This is a **scheduling-only continuation of the same cohort**. Earlier cohorts and their attempts remain
 unchanged in [the prior results PR](https://github.com/MayankBansal12/paper-trading-bench/pull/18).
