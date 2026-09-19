@@ -38,7 +38,7 @@ test("runtime continuation allows only launch-path change with identical actual 
  const {runtimeMatches}=await import("../src/study/continuation.ts");
  const dir=mkdtempSync(join(tmpdir(),"runtime-continuation-"));
  try{
-  const evidence=(launch:string,binary="same")=>{const data={policy:"same",bwrapHash:binary,pi:{catalogHash:"same"},hashes:{"scripts/sandbox/launch.sh":launch,"worker":"same"}};return {...data,id:contentHash(data)};};
+  const evidence=(launch:string,binary="same")=>{const data={policy:"same",hashes:{"scripts/sandbox/launch.sh":launch,"worker":"same"},bwrapHash:binary,pi:{catalogHash:"same"}};return {...data,id:contentHash(data)};};
   const before=evidence("old"),after=evidence("new");
   const r={version:"manual-quota-reset-v1",authorization:"user-confirmed-external-quota-reset",authorizedAt:"2026-09-18T00:00:00Z",failureHashes:[],previousRuntimeHash:contentHash(before),continuedRuntimeHash:contentHash(after)};
   writeFileSync(join(dir,"manual-quota-reset.json"),JSON.stringify(r));
