@@ -49,11 +49,12 @@ export function runtimeMatches(saved: any, current: any, dir: string): boolean {
       receipt.continuedRuntimeHash !== contentHash(current)) return false;
   // Actual executables, catalog, model, workers, limits and isolation policy stay
   // identical. Only the launch script now executes the hash-pinned bwrap copy.
-  const { id: oldId, hashes: oldHashes, ...oldRest } = saved;
-  const { id: newId, hashes: newHashes, ...newRest } = current;
+  const { id: oldId, ...oldIdentity } = saved;
+  const { hashes: oldHashes, ...oldRest } = oldIdentity;
+  const { id: newId, ...newIdentity } = current;
+  const { hashes: newHashes, ...newRest } = newIdentity;
   const { ["scripts/sandbox/launch.sh"]: oldLaunch, ...oldFiles } = oldHashes;
   const { ["scripts/sandbox/launch.sh"]: newLaunch, ...newFiles } = newHashes;
   return contentHash(oldRest) === contentHash(newRest) && contentHash(oldFiles) === contentHash(newFiles) &&
-    oldId === contentHash({ ...oldRest, hashes: oldHashes }) &&
-    newId === contentHash({ ...newRest, hashes: newHashes });
+    oldId === contentHash(oldIdentity) && newId === contentHash(newIdentity);
 }
