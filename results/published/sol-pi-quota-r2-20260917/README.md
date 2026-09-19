@@ -1,6 +1,6 @@
 # Quota-aware GPT-5.6 Sol evaluation
 
-State: **ready**, phase: **annual**.
+State: **running**, phase: **annual**.
 
 Recorded valid days: **163/251**; invalid days: 0; retried days: 7; complete quarters: 0/4. No annual score is available yet.
 
@@ -33,3 +33,5 @@ Implementation checks: see the linked implementation PR and committed tests.
 The quota-pause tests cover provider reset parsing, no inference during cooldown,
 retained attempts across resume, and refusal to grant a third attempt. Live replay
 outcomes are captured in the checkpoint summaries and archived execution receipts.
+
+Live continuation confirmed: provider returned HTTP 200, June 5 completed and the next day began. See [live observation](011-live-continuation.json). The counts above describe the last settled replay; this live observation is not an annual score.

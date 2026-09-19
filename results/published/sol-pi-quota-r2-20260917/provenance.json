@@ -85,9 +85,9 @@
       "bytes": 122212617
     }
   ],
-  "status": "ready",
+  "status": "running",
   "phase": "annual",
-  "updatedAt": "2026-09-19T00:05:48.550110+00:00",
+  "updatedAt": "2026-09-19T00:08:33.485346+00:00",
   "notBefore": null,
   "error": null,
   "runs": {
@@ -435,5 +435,6 @@
       "outcome": "Runtime identity field-order guard caught before inference and corrected; original recorded runtime retained."
     },
     "runtimeAssets": "/home/ai/.bb/thread-storage/pi-sequence/sol-recorded-runtime"
-  }
+  },
+  "liveObservation": "011-live-continuation.json"
 }

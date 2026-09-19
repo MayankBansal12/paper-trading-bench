@@ -1,0 +1,63 @@
+{
+  "checkedHistoricalFiles": 173,
+  "changedHistoricalBytes": [],
+  "newProviderResponses": [
+    {
+      "recordedAt": "2026-09-19T00:07:05.667Z",
+      "date": "2025-06-05",
+      "attempt": 2,
+      "type": "inference_response",
+      "status": 200
+    },
+    {
+      "recordedAt": "2026-09-19T00:07:12.781Z",
+      "date": "2025-06-05",
+      "attempt": 2,
+      "type": "inference_response",
+      "status": 200
+    },
+    {
+      "recordedAt": "2026-09-19T00:07:19.543Z",
+      "date": "2025-06-05",
+      "attempt": 2,
+      "type": "inference_response",
+      "status": 200
+    },
+    {
+      "recordedAt": "2026-09-19T00:07:39.129Z",
+      "date": "2025-06-06",
+      "attempt": 1,
+      "type": "inference_response",
+      "status": 200
+    },
+    {
+      "recordedAt": "2026-09-19T00:07:45.154Z",
+      "date": "2025-06-06",
+      "attempt": 1,
+      "type": "inference_response",
+      "status": 200
+    }
+  ],
+  "sourceRevision": "8f8f64a8f9efb865485b119aba32d83708028cd6",
+  "observedAt": "2026-09-19T00:08:33.485346+00:00",
+  "status": "running",
+  "quarters": [
+    {
+      "quarter": "2025-Q2",
+      "committedDays": 47,
+      "latestCommittedDay": "2025-06-06"
+    },
+    {
+      "quarter": "2025-Q3",
+      "committedDays": 60,
+      "latestCommittedDay": "2025-09-24"
+    },
+    {
+      "quarter": "2025-Q4",
+      "committedDays": 58,
+      "latestCommittedDay": "2025-12-22"
+    }
+  ],
+  "committedDays": 165,
+  "note": "Live observation, not a settled annual replay. Earlier 163 valid days remain byte-preserved. Supervisor will publish the next settled checkpoint and replay."
+}
