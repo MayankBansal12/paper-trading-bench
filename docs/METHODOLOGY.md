@@ -15,7 +15,7 @@ The model has four tools:
 | Tool | Purpose |
 |---|---|
 | `market_snapshot` | Previous closes for eligible stocks |
-| `price_history` | Historical OHLCV bars, normally up to 100 sessions |
+| `price_history` | Historical OHLCV bars, up to the advertised limit (maximum 252 sessions) |
 | `journal` | Search original committed notes |
 | `submit_day` | Submit ordered trades and a journal; empty orders mean HOLD |
 
