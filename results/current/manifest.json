@@ -1,0 +1,530 @@
+{
+  "version": 1,
+  "as_of": "2026-09-25",
+  "models": 10,
+  "accounted_days": 2510,
+  "valid_days": 2506,
+  "attempts": 2578,
+  "fills": 3191,
+  "quarters": 40,
+  "dataset": "nasdaq100_2025q2-2026q1_v1",
+  "dataset_sha256": "5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901",
+  "funding_per_model": 600000,
+  "files": [
+    {
+      "path": "astra-6/2025-Q2.jsonl",
+      "kind": "sessions",
+      "model": "Astra 6",
+      "quarter": "2025-Q2",
+      "records": 62,
+      "bytes": 761743,
+      "sha256": "4ab0d350ba54e427803b7c820f9addf1657434680f073c95c29c4c62682c2fe5"
+    },
+    {
+      "path": "astra-6/2025-Q3.jsonl",
+      "kind": "sessions",
+      "model": "Astra 6",
+      "quarter": "2025-Q3",
+      "records": 64,
+      "bytes": 823064,
+      "sha256": "a9c764c9a1026a083bc2acdb4af5c6981fc98413efa73f4d588b044d58cc8b24"
+    },
+    {
+      "path": "astra-6/2025-Q4.jsonl",
+      "kind": "sessions",
+      "model": "Astra 6",
+      "quarter": "2025-Q4",
+      "records": 64,
+      "bytes": 831704,
+      "sha256": "2639c9222e7f0c1a5f0f4f99299c7d35fd88fc2a1cdfc2c895d1607528892fca"
+    },
+    {
+      "path": "astra-6/2026-Q1.jsonl",
+      "kind": "sessions",
+      "model": "Astra 6",
+      "quarter": "2026-Q1",
+      "records": 61,
+      "bytes": 816404,
+      "sha256": "19b4b5263b887d40d98c03543ae594bd30c67bd13d915f6002c59169b61951af"
+    },
+    {
+      "path": "astra-6/attempts.jsonl",
+      "kind": "attempts",
+      "model": "Astra 6",
+      "quarter": null,
+      "records": 255,
+      "bytes": 463479,
+      "sha256": "71fd3fb90b1746c7498d64f4a9e14005e7fe176a81aa826e1c54b78fe792c4b4"
+    },
+    {
+      "path": "deepseek-4-1-flash/2025-Q2.jsonl",
+      "kind": "sessions",
+      "model": "DeepSeek 4.1 Flash",
+      "quarter": "2025-Q2",
+      "records": 62,
+      "bytes": 2345917,
+      "sha256": "576efed28e9406b8d23648f2d27bdbb5efcdaebced483c3734c1200d893a03ee"
+    },
+    {
+      "path": "deepseek-4-1-flash/2025-Q3.jsonl",
+      "kind": "sessions",
+      "model": "DeepSeek 4.1 Flash",
+      "quarter": "2025-Q3",
+      "records": 64,
+      "bytes": 2300031,
+      "sha256": "e6158b859681e48bace6c12d1f5d3bee7e4dcc2925f5dfa7539fd03187f4b0f6"
+    },
+    {
+      "path": "deepseek-4-1-flash/2025-Q4.jsonl",
+      "kind": "sessions",
+      "model": "DeepSeek 4.1 Flash",
+      "quarter": "2025-Q4",
+      "records": 64,
+      "bytes": 2703680,
+      "sha256": "63bfd7318955f4ee17e67b0f40752357f0d9ece18ac58d3eb19c686460ed394f"
+    },
+    {
+      "path": "deepseek-4-1-flash/2026-Q1.jsonl",
+      "kind": "sessions",
+      "model": "DeepSeek 4.1 Flash",
+      "quarter": "2026-Q1",
+      "records": 61,
+      "bytes": 2949417,
+      "sha256": "d79402dcbc46601fa69e24427c89de7a1c13b701f228165960c361353f0582a4"
+    },
+    {
+      "path": "deepseek-4-1-flash/attempts.jsonl",
+      "kind": "attempts",
+      "model": "DeepSeek 4.1 Flash",
+      "quarter": null,
+      "records": 258,
+      "bytes": 536628,
+      "sha256": "95a830c718a7fbeb748bfe9c21be37491dd8aa91ab1a20d05918d03f7c4ba9cc"
+    },
+    {
+      "path": "glm-5-3-flash/2025-Q2.jsonl",
+      "kind": "sessions",
+      "model": "GLM 5.3 Flash",
+      "quarter": "2025-Q2",
+      "records": 62,
+      "bytes": 988540,
+      "sha256": "e9b7a4328a0230bc2a01888393840a499084f46cf691b4536f8e3667b61a3139"
+    },
+    {
+      "path": "glm-5-3-flash/2025-Q3.jsonl",
+      "kind": "sessions",
+      "model": "GLM 5.3 Flash",
+      "quarter": "2025-Q3",
+      "records": 64,
+      "bytes": 733802,
+      "sha256": "2d543f41076d78518319565a92f2639608fbf29343822e04d82be306bfb521d7"
+    },
+    {
+      "path": "glm-5-3-flash/2025-Q4.jsonl",
+      "kind": "sessions",
+      "model": "GLM 5.3 Flash",
+      "quarter": "2025-Q4",
+      "records": 64,
+      "bytes": 726330,
+      "sha256": "8df8263dbe32e7837eb7f405869075e2110cb04d084698efe8d0bc3933f54062"
+    },
+    {
+      "path": "glm-5-3-flash/2026-Q1.jsonl",
+      "kind": "sessions",
+      "model": "GLM 5.3 Flash",
+      "quarter": "2026-Q1",
+      "records": 61,
+      "bytes": 941969,
+      "sha256": "0dfe80333b0b4cc45db2a5b10bf32ee67f0b5ebbd4674aecdff6abe02f048966"
+    },
+    {
+      "path": "glm-5-3-flash/attempts.jsonl",
+      "kind": "attempts",
+      "model": "GLM 5.3 Flash",
+      "quarter": null,
+      "records": 262,
+      "bytes": 635066,
+      "sha256": "a242b334654e12111741a8737652c2c627ac87968b30ffc225a342e61bceb8b7"
+    },
+    {
+      "path": "luna-6/2025-Q2.jsonl",
+      "kind": "sessions",
+      "model": "Luna 6",
+      "quarter": "2025-Q2",
+      "records": 62,
+      "bytes": 1954943,
+      "sha256": "f49864ec476fcc8d8aaf045bebdf80cbc94842276a6168488c07bb0f49f54b5c"
+    },
+    {
+      "path": "luna-6/2025-Q3.jsonl",
+      "kind": "sessions",
+      "model": "Luna 6",
+      "quarter": "2025-Q3",
+      "records": 64,
+      "bytes": 1820703,
+      "sha256": "2f621180759386d30958b635dbf841a2d135da5c2597ca85ce26219a0558de8d"
+    },
+    {
+      "path": "luna-6/2025-Q4.jsonl",
+      "kind": "sessions",
+      "model": "Luna 6",
+      "quarter": "2025-Q4",
+      "records": 64,
+      "bytes": 1962456,
+      "sha256": "eeed8fcc0922d011c1ec4179d493f961cb27cd90421e40e4d2078ae85f76b2cb"
+    },
+    {
+      "path": "luna-6/2026-Q1.jsonl",
+      "kind": "sessions",
+      "model": "Luna 6",
+      "quarter": "2026-Q1",
+      "records": 61,
+      "bytes": 2059169,
+      "sha256": "beda86dcbbafff8a9cb85fe6802ebda5626531058e8e514f676dc69067db3f5d"
+    },
+    {
+      "path": "luna-6/attempts.jsonl",
+      "kind": "attempts",
+      "model": "Luna 6",
+      "quarter": null,
+      "records": 252,
+      "bytes": 7113989,
+      "sha256": "215b634e5e19ea22c28a965b96f3371ffd655bd665a81d43b15bec6e7c44dcad"
+    },
+    {
+      "path": "muse-spark-1-3/2025-Q2.jsonl",
+      "kind": "sessions",
+      "model": "Muse Spark 1.3",
+      "quarter": "2025-Q2",
+      "records": 62,
+      "bytes": 697402,
+      "sha256": "dc7fdf26b1541943d24f7a3252e5f293aa5960be94ea0de1d3d3a8fce97bced2"
+    },
+    {
+      "path": "muse-spark-1-3/2025-Q3.jsonl",
+      "kind": "sessions",
+      "model": "Muse Spark 1.3",
+      "quarter": "2025-Q3",
+      "records": 64,
+      "bytes": 777566,
+      "sha256": "d848df38b2ce78bbec956ee5cdc6b3bd8ff54dbcf649723683002569347d17f0"
+    },
+    {
+      "path": "muse-spark-1-3/2025-Q4.jsonl",
+      "kind": "sessions",
+      "model": "Muse Spark 1.3",
+      "quarter": "2025-Q4",
+      "records": 64,
+      "bytes": 807782,
+      "sha256": "51c7873367e04dd71ce55b568c53145bf18a02514077e1811dae256035f9ab35"
+    },
+    {
+      "path": "muse-spark-1-3/2026-Q1.jsonl",
+      "kind": "sessions",
+      "model": "Muse Spark 1.3",
+      "quarter": "2026-Q1",
+      "records": 61,
+      "bytes": 689876,
+      "sha256": "88b6ff3a1b142e3ca89c369c5cab879f6060529319727a07e44be612e89a217f"
+    },
+    {
+      "path": "muse-spark-1-3/attempts.jsonl",
+      "kind": "attempts",
+      "model": "Muse Spark 1.3",
+      "quarter": null,
+      "records": 261,
+      "bytes": 497164,
+      "sha256": "2957422d4218c96e6a182f2a63d3162d211d84b9d313545ece222360798f0e6e"
+    },
+    {
+      "path": "opus-5/2025-Q2.jsonl",
+      "kind": "sessions",
+      "model": "Opus 5",
+      "quarter": "2025-Q2",
+      "records": 62,
+      "bytes": 1543044,
+      "sha256": "3b92c922a28968f7da576a039b09ce3a050806b5ec2af4d3c28734d7b11c9f39"
+    },
+    {
+      "path": "opus-5/2025-Q3.jsonl",
+      "kind": "sessions",
+      "model": "Opus 5",
+      "quarter": "2025-Q3",
+      "records": 64,
+      "bytes": 1472581,
+      "sha256": "aacf76903a760f2e9db305d127207b0824218b1acca70134a0087325dc0d8cb8"
+    },
+    {
+      "path": "opus-5/2025-Q4.jsonl",
+      "kind": "sessions",
+      "model": "Opus 5",
+      "quarter": "2025-Q4",
+      "records": 64,
+      "bytes": 1495246,
+      "sha256": "6d4a033a308b015a24ede5d1b12a7c103d880e6d447b2a9e8c16ded58a74b40e"
+    },
+    {
+      "path": "opus-5/2026-Q1.jsonl",
+      "kind": "sessions",
+      "model": "Opus 5",
+      "quarter": "2026-Q1",
+      "records": 61,
+      "bytes": 1834198,
+      "sha256": "55982e15396b9cb37c800b3e0e381100f185d7635eadc9d701a70ae72c75fbfa"
+    },
+    {
+      "path": "opus-5/attempts.jsonl",
+      "kind": "attempts",
+      "model": "Opus 5",
+      "quarter": null,
+      "records": 256,
+      "bytes": 1028948,
+      "sha256": "acb711f2a9f7cb41d0f15e3a1836ee9a38d5f7588da6108b4c6dc2ad3361eac6"
+    },
+    {
+      "path": "opus-5-5/2025-Q2.jsonl",
+      "kind": "sessions",
+      "model": "Opus 5.5",
+      "quarter": "2025-Q2",
+      "records": 62,
+      "bytes": 548877,
+      "sha256": "0ab414c967b1864fe9814ea727e6d35322e1d56420c9bd0e8aecca43dc410a58"
+    },
+    {
+      "path": "opus-5-5/2025-Q3.jsonl",
+      "kind": "sessions",
+      "model": "Opus 5.5",
+      "quarter": "2025-Q3",
+      "records": 64,
+      "bytes": 591962,
+      "sha256": "71b7ec44ec432e453d65d3925fc7f893b8ab126bce06a0e16c02e8fd640b7617"
+    },
+    {
+      "path": "opus-5-5/2025-Q4.jsonl",
+      "kind": "sessions",
+      "model": "Opus 5.5",
+      "quarter": "2025-Q4",
+      "records": 64,
+      "bytes": 701686,
+      "sha256": "495e1a08dc9a525237768571e6a7637b52e599f4a650956c85e3ddc63358ffe5"
+    },
+    {
+      "path": "opus-5-5/2026-Q1.jsonl",
+      "kind": "sessions",
+      "model": "Opus 5.5",
+      "quarter": "2026-Q1",
+      "records": 61,
+      "bytes": 714169,
+      "sha256": "98dfe18ecadd821d95bce10b74a17b06a09ce1ef72fbcc85b6a1627e068ffb9c"
+    },
+    {
+      "path": "opus-5-5/attempts.jsonl",
+      "kind": "attempts",
+      "model": "Opus 5.5",
+      "quarter": null,
+      "records": 257,
+      "bytes": 702918,
+      "sha256": "dfa7dcf35a1e23317bfe0f2c01ccc739763d956bb219e4f71a11c4c74315a501"
+    },
+    {
+      "path": "sol-5-6/2025-Q2.jsonl",
+      "kind": "sessions",
+      "model": "Sol 5.6",
+      "quarter": "2025-Q2",
+      "records": 62,
+      "bytes": 4071279,
+      "sha256": "f6188ca279695facedc6d56ae65980664c01d6ed1bc7434c93e54039a5935bf0"
+    },
+    {
+      "path": "sol-5-6/2025-Q3.jsonl",
+      "kind": "sessions",
+      "model": "Sol 5.6",
+      "quarter": "2025-Q3",
+      "records": 64,
+      "bytes": 3511329,
+      "sha256": "87c69f74592288e804de10519aabb506dcbceea4aaec5c290447396b69540f2c"
+    },
+    {
+      "path": "sol-5-6/2025-Q4.jsonl",
+      "kind": "sessions",
+      "model": "Sol 5.6",
+      "quarter": "2025-Q4",
+      "records": 64,
+      "bytes": 4183465,
+      "sha256": "b0fb66b9c8da5df709bac140b704c416db6ccab31a668460320e7a0006c250e3"
+    },
+    {
+      "path": "sol-5-6/2026-Q1.jsonl",
+      "kind": "sessions",
+      "model": "Sol 5.6",
+      "quarter": "2026-Q1",
+      "records": 61,
+      "bytes": 3997961,
+      "sha256": "e077111f865979b7fc4d52c3bb5218db7b318b489c4e5c94239ebf46b4cb9375"
+    },
+    {
+      "path": "sol-5-6/attempts.jsonl",
+      "kind": "attempts",
+      "model": "Sol 5.6",
+      "quarter": null,
+      "records": 268,
+      "bytes": 532406,
+      "sha256": "ab4eace2385796dda51f43eafa93d95ebcf5b0099d7cbee68dffecb81fbcebf2"
+    },
+    {
+      "path": "sol-6/2025-Q2.jsonl",
+      "kind": "sessions",
+      "model": "Sol 6",
+      "quarter": "2025-Q2",
+      "records": 62,
+      "bytes": 2211892,
+      "sha256": "a140cfcf78b30083975eeb6c6a20dd17f92e26e82bb4ebdaa44f9a94a4c60c1a"
+    },
+    {
+      "path": "sol-6/2025-Q3.jsonl",
+      "kind": "sessions",
+      "model": "Sol 6",
+      "quarter": "2025-Q3",
+      "records": 64,
+      "bytes": 2091885,
+      "sha256": "91bdf852863a759795795d49a52e79a7b5505e8f3a251b49f3eaffd07a0f91f7"
+    },
+    {
+      "path": "sol-6/2025-Q4.jsonl",
+      "kind": "sessions",
+      "model": "Sol 6",
+      "quarter": "2025-Q4",
+      "records": 64,
+      "bytes": 2169875,
+      "sha256": "5b109971b4e841762ae6f83a46e9f4ea685712e27cb711112895e8ef4bf2659e"
+    },
+    {
+      "path": "sol-6/2026-Q1.jsonl",
+      "kind": "sessions",
+      "model": "Sol 6",
+      "quarter": "2026-Q1",
+      "records": 61,
+      "bytes": 1936270,
+      "sha256": "d204c5daf0f67741d541358a6dd39e01935181cb3d465a22f16cc561a27011aa"
+    },
+    {
+      "path": "sol-6/attempts.jsonl",
+      "kind": "attempts",
+      "model": "Sol 6",
+      "quarter": null,
+      "records": 253,
+      "bytes": 488610,
+      "sha256": "4ab1f985e073799bacc82a727193abe86d51f06fea80e79f3f79cbfe4238ead4"
+    },
+    {
+      "path": "sonnet-5/2025-Q2.jsonl",
+      "kind": "sessions",
+      "model": "Sonnet 5",
+      "quarter": "2025-Q2",
+      "records": 62,
+      "bytes": 1109262,
+      "sha256": "a5a1c26709ee5b5ccb1253d4728c74d98d714c27bb2129ff8e9222b86af00067"
+    },
+    {
+      "path": "sonnet-5/2025-Q3.jsonl",
+      "kind": "sessions",
+      "model": "Sonnet 5",
+      "quarter": "2025-Q3",
+      "records": 64,
+      "bytes": 968874,
+      "sha256": "a91148581e6c860b96bfc09c8588026d1ec2a213b7f1a940a529b649907622b7"
+    },
+    {
+      "path": "sonnet-5/2025-Q4.jsonl",
+      "kind": "sessions",
+      "model": "Sonnet 5",
+      "quarter": "2025-Q4",
+      "records": 64,
+      "bytes": 1126568,
+      "sha256": "3bd0520851e23d773f7129d9f8269bde5d4caea5a42c26fe16ca8cc33e6a87af"
+    },
+    {
+      "path": "sonnet-5/2026-Q1.jsonl",
+      "kind": "sessions",
+      "model": "Sonnet 5",
+      "quarter": "2026-Q1",
+      "records": 61,
+      "bytes": 893449,
+      "sha256": "e3ad98e43cd6cbeaaecc3f67c8e225e13a5944b16d00034fad60636e9fff94c7"
+    },
+    {
+      "path": "sonnet-5/attempts.jsonl",
+      "kind": "attempts",
+      "model": "Sonnet 5",
+      "quarter": null,
+      "records": 256,
+      "bytes": 955642,
+      "sha256": "5deef719cc06ce9a5ecdf57879bf3272ca2389ebe96853fae9632bcc898720ba"
+    }
+  ],
+  "provenance_sha256": "66521951f68a874143977a46a68d42e263bc17b507e6c9a71cd63b4899757788",
+  "exceptions": [
+    {
+      "model": "Opus 5",
+      "note": "The newer Q2 repeat is selected after both outcomes were known, at the owner\u2019s request. Other quarters are unchanged. This is post-result selection, not evidence that the original was invalid.",
+      "selected_q2_profit": 22129.52,
+      "original_q2_profit": 26577.59,
+      "original_total_profit": 37030.65,
+      "audit_sha256": "d7d58525ec2d629bbf8ce05e4c292266dbe069a50860a9d76e3737a347101e44"
+    },
+    {
+      "model": "Opus 5.5",
+      "note": "244 original valid dates plus seven supplemental recovery dates. The original three invalid days and six failed attempts are preserved outside the selected 251-day view. Recovery inherited the March 20 portfolio and allowed fresh attempts; original results remain incomplete."
+    },
+    {
+      "model": "Sonnet 5",
+      "note": "A separate continuation completed the last 20 dates from the preserved portfolio and journal. Source changes and inherited attempt budgets are recorded in provenance."
+    },
+    {
+      "model": "DeepSeek 4.1 Flash",
+      "note": "A disk-full append interrupted the original journal. A separate recovered copy kept every complete event byte and all attempts; two incomplete fragments remain archived. Strict pinned replay passed before continuation."
+    },
+    {
+      "model": "Sol 5.6",
+      "note": "Quota continuation used recorded implementation/runtime receipts. The original attempts and completed days remained unchanged; both identities are retained."
+    }
+  ],
+  "exclusions": [
+    "Luna 5.6 (replaced by Luna 6)",
+    "Terra (incomplete)",
+    "Earlier failed or superseded smoke/cohorts (historical index)"
+  ],
+  "input_receipts": [
+    {
+      "label": "selected-inputs/days.jsonl",
+      "sha256": "d6d1a5455694fa1510d68157a563ff19794daa088dca110ca4f1cd299a418393",
+      "bytes": 71941390
+    },
+    {
+      "label": "selected-inputs/attempts.jsonl",
+      "sha256": "ce8a232f43e78b8766421f0a709393b4403765e1e15358e94ea97b06f2bf483c",
+      "bytes": 6509058
+    },
+    {
+      "label": "selected-inputs/inventory.json",
+      "sha256": "a742a5486e17b48a8fa16a34128bf9780f5efae82a76d2a67f7519108aabc0c5",
+      "bytes": 342627
+    },
+    {
+      "label": "luna6/days.jsonl",
+      "sha256": "31619bd1b05befbf43a12812384f0060e974a60a7b8b037aa10fb3145dc537e3",
+      "bytes": 7838034
+    },
+    {
+      "label": "luna6/attempts.jsonl",
+      "sha256": "521aace77308f1aed1ea13677d8ab14008e91c3602f9ebfd9fdd4c9af846c35a",
+      "bytes": 7134149
+    },
+    {
+      "label": "luna6/inventory.json",
+      "sha256": "49915c8e928d48135ca470b89dacb515bd6269488d792b7627a0ff6ed1e5de37",
+      "bytes": 33475
+    }
+  ],
+  "format": "Compact derived extracts, not replacement original hash-chain events. Original hashes identify the archived evidence; file hashes verify these published bytes. Host paths normalized to archive-relative locations. Journals, orders, accounting and attempt outcomes retained."
+}

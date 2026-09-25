@@ -99,6 +99,25 @@ with `WorkingDirectory` set to the pinned checkout, private runtime variables in
 machine awake. Host services and login setup are operational prerequisites, not
 part of the model's sandbox.
 
-Inspect raw runs with `pnpm viewer --port 4173`. Verify an annual using the original
+Inspect raw runs with `pnpm viewer:raw --port 4174`. Verify an annual using the original
 source and flags, adding `--verify=true` to its `bench eval` command. Keep raw logs,
 dataset snapshots and source/runtime pins in a checksummed archive outside Git.
+
+## Reproduce the published inputs
+
+Repository access is required for release assets. From a clone:
+
+```sh
+gh release download evidence-2026-09-25 --pattern nasdaq100_2025q2-2026q1_v1.tar.gz --dir /tmp/bench-inputs
+mkdir -p datasets/historical
+tar -xzf /tmp/bench-inputs/nasdaq100_2025q2-2026q1_v1.tar.gz -C datasets/historical
+```
+
+Verify the archive SHA-256 against `results/archives.json`; the preflight also
+checks the dataset's internal identity. For historical replay, download
+`historical-sources.bundle` from the same release, verify its checksum, and fetch
+it into your clone (`git fetch /path/to/historical-sources.bundle 'refs/archive-publication/*:refs/archive-publication/*'`).
+Check out the exact source revision in `results/current/provenance.json` and use
+its recorded runtime and raw audit bundle. A newer checkout cannot stand in for
+the historical implementation. Compact evidence is enough to reproduce the
+published analysis, but not full provider-stream replay.

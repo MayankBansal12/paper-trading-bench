@@ -1,40 +1,43 @@
 # Paper Trading Bench
 
-A paper-trading benchmark for studying how language models invest: what they buy,
-sell and hold, how they use tools and journals, and how their portfolios perform.
+How do language models invest when they have the same trading tools?
 
-Each model runs four independent quarters from April 2025 through March 2026:
-251 trading sessions and $600,000 in total funding. Every day starts a fresh agent
-session with its portfolio, past prices and three recent journals. Orders execute
-at the next open; portfolios are valued at the close.
+**[Results & session viewer](https://mayankbansal12.github.io/paper-trading-bench/)** ·
+**[Behavior study](https://mayankbansal12.github.io/paper-trading-bench/study.html)** ·
+[Methodology](docs/METHODOLOGY.md) · [Setup](docs/SETUP.md)
 
-## Run locally
+Ten models, four independent quarterly accounts, April 2025–March 2026. Each model
+has 251 sessions and $600,000 in total funding. Every day starts a fresh agent
+session with its portfolio, previous prices and three recent journals. Orders
+execute at the next open; holdings are valued at the close.
+
+## Explore locally
 
 ```sh
 pnpm install --frozen-lockfile
-pnpm typecheck
-pnpm test
-pnpm test:supervisor
+pnpm results:check
+pnpm viewer:build
+pnpm viewer                 # http://127.0.0.1:4173
 ```
 
-[Setup](docs/SETUP.md) covers clients, login, data, sandbox checks and supervised
-runs. [Methodology](docs/METHODOLOGY.md) defines the experiment and accounting.
+The viewer reads [compact evidence](results/README.md), including all selected
+sessions and failed attempts. Results are sorted by net profit. Raw provider logs,
+datasets and credentials stay outside Git.
+
+## Run a model
+
+Follow [Setup](docs/SETUP.md) to pin a native client, qualify the sandbox and obtain
+the frozen data. A supervised run checks a three-day smoke before the annual.
+Run from a clean commit; resuming requires the recorded source and runtime.
 
 ```sh
-# Validate a full year without making model calls.
-pnpm bench eval --eval-id example --data-dir /path/to/dataset \
-  --models pi/openai-codex/gpt-6-luna --concurrency=1 --preflight=true
-
-# Run a three-day smoke, then the annual evaluation after verification.
-pnpm supervise --id example --data-dir /path/to/dataset \
-  --model pi/openai-codex/gpt-6-luna
-
-# Inspect local raw runs.
-pnpm viewer --port 4173
+pnpm supervise --id example --model pi/openai-codex/gpt-6-luna \
+  --data-dir /path/to/dataset
 ```
 
-Run from a clean commit. Keep the same source, runtime, data and arguments when
-resuming. Raw sessions and datasets stay outside Git; published results use
-compact evidence with source identities and archive checksums.
+Use `pnpm viewer:raw --port 4174` to inspect local raw runs. Checks:
+`pnpm typecheck`, `pnpm test`, `pnpm test:supervisor`, `pnpm results:check`.
 
-Changes go through pull requests. See [AGENTS.md](AGENTS.md).
+These results describe one market sample, not a stable ranking. Selection and
+continuation differences are disclosed in the [results manifest](results/current/manifest.json).
+Changes go through pull requests; see [AGENTS.md](AGENTS.md).

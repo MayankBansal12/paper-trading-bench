@@ -19,3 +19,7 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm typecheck
       - run: pnpm test
+      - run: pnpm test:supervisor
+      - run: pnpm results:check
+      - run: pnpm viewer:build
+      - run: bun test tests/publishedViewer.test.ts

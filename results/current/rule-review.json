@@ -1,0 +1,711 @@
+{
+  "selection": "30 purposively chosen explanatory rule/action cases, three per model; 29 adjacent-session responses plus one same-session intended-vs-executed check. Not a population compliance estimate. Ambiguous multi-level rules remain discretionary cases.",
+  "counts": {
+    "aligned": 22,
+    "discretion": 6,
+    "execution mismatch": 2
+  },
+  "model_quarters_covered": 22,
+  "cases": [
+    {
+      "model": "Astra 6",
+      "quarter": "2025-Q2",
+      "declared": "2025-05-07",
+      "response": "2025-05-08",
+      "ticker": "NVDA",
+      "assessment": "aligned",
+      "exact_prior_quote": "NVDA 113.54 still below 115, so no entry.",
+      "interpretation": "Entry after the observed close reached 117.06; $4,000 starter. One stronger close justified small size, not full deployment.",
+      "prior_day_hash": "2c2d51c6b5ee9ee3de9df6d6c7900c952bf1a3cde40daa2bc722c868215d01eb",
+      "response_day_hash": "f96e151e86e16c814ec26cabe5c2f5a23444ab3b02144e3cb954e66599f38e27",
+      "observed_price": 117.05999755859375,
+      "fills": [
+        {
+          "ticker": "NVDA",
+          "side": "BUY",
+          "type": "new",
+          "units_before": 0,
+          "units_after": 33.82668,
+          "notional": 4000
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Astra 6",
+      "quarter": "2025-Q3",
+      "declared": "2025-09-29",
+      "response": "2025-09-30",
+      "ticker": "GOOG",
+      "assessment": "aligned",
+      "exact_prior_quote": "GOOG 247.18 holds 244.98 near-term reduction review",
+      "interpretation": "Observed GOOG 244.36 crossed the review; sold 20% and retained a profitable core.",
+      "prior_day_hash": "dd0bb0bf73eb217b48fa034d3d0766d445fad849fd03b4945a1e237afd75ef54",
+      "response_day_hash": "74f28d88abc71465d0b7c7448ff541da13e5bfa45df19e4860b51bcf5f0f2de3",
+      "observed_price": 244.36000061035156,
+      "fills": [
+        {
+          "ticker": "GOOG",
+          "side": "SELL",
+          "type": "trim",
+          "units_before": 41.563998,
+          "units_after": 33.251198,
+          "notional": 2020.51
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Astra 6",
+      "quarter": "2026-Q1",
+      "declared": "2026-02-26",
+      "response": "2026-02-27",
+      "ticker": "NVDA",
+      "assessment": "aligned",
+      "exact_prior_quote": "Review on close below 189.58, particularly below 187.40",
+      "interpretation": "Observed 184.89 crossed both review levels; full exit of the previous session\u2019s starter.",
+      "prior_day_hash": "33077ed9d97e8256303deda0adbc8a9a5b7f872913e44189b6c237f81346c7c5",
+      "response_day_hash": "de763ef7b3fa1fb0df918bb0e74f36189ce5b370e3fdd4ed774e1490d36e2789",
+      "observed_price": 184.88999938964844,
+      "fills": [
+        {
+          "ticker": "NVDA",
+          "side": "SELL",
+          "type": "exit",
+          "units_before": 20.589925,
+          "units_after": 0.0,
+          "notional": 3731.92
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Sol 5.6",
+      "quarter": "2025-Q3",
+      "declared": "2025-09-24",
+      "response": "2025-09-25",
+      "ticker": "LITE",
+      "assessment": "aligned",
+      "exact_prior_quote": "LITE above 160",
+      "interpretation": "Observed 152.75 below the retained close-based 160 risk level; full exit.",
+      "prior_day_hash": "1a19ec9a2a142ee915f18d253b4e73bec6c3d4470cea12b237508ba7288a17ca",
+      "response_day_hash": "0de7d87f82c13871d73a9d4574bdbfb6f5b7769e5698d9576675b09f71860901",
+      "observed_price": 152.75,
+      "fills": [
+        {
+          "ticker": "LITE",
+          "side": "SELL",
+          "type": "exit",
+          "units_before": 75.293158,
+          "units_after": 0.0,
+          "notional": 11039.48
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Sol 5.6",
+      "quarter": "2025-Q3",
+      "declared": "2025-09-25",
+      "response": "2025-09-26",
+      "ticker": "MU",
+      "assessment": "aligned",
+      "exact_prior_quote": "MU above 157",
+      "interpretation": "Observed 156.83 below 157; full exit, despite a gain relative to entry cost.",
+      "prior_day_hash": "0de7d87f82c13871d73a9d4574bdbfb6f5b7769e5698d9576675b09f71860901",
+      "response_day_hash": "847001ef5ba60fe3857a5d4c605d0e38394882f44bfa16b756b5e9d6102b2bc1",
+      "observed_price": 156.8300018310547,
+      "fills": [
+        {
+          "ticker": "MU",
+          "side": "SELL",
+          "type": "exit",
+          "units_before": 79.807303,
+          "units_after": 0.0,
+          "notional": 12651.05
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Sol 5.6",
+      "quarter": "2026-Q1",
+      "declared": "2026-03-30",
+      "response": "2026-03-31",
+      "ticker": "ARM",
+      "assessment": "aligned",
+      "exact_prior_quote": "Reconsider ARM below 139",
+      "interpretation": "Observed 136.96 below 139; full exit. The previous session deliberately held above the same line.",
+      "prior_day_hash": "8582faa7ff91ab7d04d384ee05ea69fd6f59490ec6d55635dbda090e1f90dab1",
+      "response_day_hash": "6641ecc14bdd03b04307ac9503f19da501d5a08d0c38ef010086f85f0f4b773e",
+      "observed_price": 136.9600067138672,
+      "fills": [
+        {
+          "ticker": "ARM",
+          "side": "SELL",
+          "type": "exit",
+          "units_before": 44.117683,
+          "units_after": 0.0,
+          "notional": 6172.06
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Sol 6",
+      "quarter": "2025-Q2",
+      "declared": "2025-04-04",
+      "response": "2025-04-07",
+      "ticker": "TMUS",
+      "assessment": "aligned",
+      "exact_prior_quote": "TMUS 250",
+      "interpretation": "Observed 248.11 below 250; full exit following the broad selloff.",
+      "prior_day_hash": "36c6aca009dc2ed4e48c6c77170a052c9afcb0cce83164f3a93ca5412bc19351",
+      "response_day_hash": "26a941db0b2f3c5c59ebe839dc0a67ea86eb2ed6c65af339c8adbddc8f9f20b7",
+      "observed_price": 248.11000061035156,
+      "fills": [
+        {
+          "ticker": "TMUS",
+          "side": "SELL",
+          "type": "exit",
+          "units_before": 26.320754,
+          "units_after": 0.0,
+          "notional": 6400.15
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Sol 6",
+      "quarter": "2025-Q2",
+      "declared": "2025-04-04",
+      "response": "2025-04-07",
+      "ticker": "PAYX",
+      "assessment": "discretion",
+      "exact_prior_quote": "PAYX 143",
+      "interpretation": "PAYX was 143.32, above 143, but was exited for weakening price action. The level was a review guide.",
+      "prior_day_hash": "36c6aca009dc2ed4e48c6c77170a052c9afcb0cce83164f3a93ca5412bc19351",
+      "response_day_hash": "26a941db0b2f3c5c59ebe839dc0a67ea86eb2ed6c65af339c8adbddc8f9f20b7",
+      "observed_price": 143.32000732421875,
+      "fills": [
+        {
+          "ticker": "PAYX",
+          "side": "SELL",
+          "type": "exit",
+          "units_before": 38.943368,
+          "units_after": 0.0,
+          "notional": 5483.23
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Sol 6",
+      "quarter": "2025-Q3",
+      "declared": "2025-09-25",
+      "response": "2025-09-26",
+      "ticker": "MU",
+      "assessment": "discretion",
+      "exact_prior_quote": "MU below 155\u2013158",
+      "interpretation": "Observed 156.83 lay inside the stated 155\u2013158 zone. The next note treated entry into the risk area as sufficient to exit; this is not a strict below-155 rule.",
+      "prior_day_hash": "b560e8912bdb3e10b852dc2b15b8f36b69f7baaab7a5bc9bc7b6531cd83a1302",
+      "response_day_hash": "eafb00bf4bd684988f6c5f0c15356dda1096992df6b1e89365df79cbd99cb740",
+      "observed_price": 156.8300018310547,
+      "fills": [
+        {
+          "ticker": "MU",
+          "side": "SELL",
+          "type": "exit",
+          "units_before": 50.058048,
+          "units_after": 0.0,
+          "notional": 7935.2
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Opus 5",
+      "quarter": "2025-Q2",
+      "declared": "2025-04-08",
+      "response": "2025-04-09",
+      "ticker": "LIN",
+      "assessment": "discretion",
+      "exact_prior_quote": "trim any defensive closing 8% below cost",
+      "interpretation": "LIN closed 10.5% below its recorded cost, crossing the prior trim condition. The next journal explicitly delayed the trim and substituted a close below 408.65; no LIN sale executed.",
+      "prior_day_hash": "2fccdb93b5b3eec529e6e190eae7898cef7eba0bda4c96390ff19574f498fb50",
+      "response_day_hash": "f2b49e08245854620ae2c24c4f230fe17b4aac32d3441cf0b9881176a6f8076d",
+      "observed_price": 413.3299865722656,
+      "fills": [],
+      "failed_orders": []
+    },
+    {
+      "model": "Opus 5",
+      "quarter": "2026-Q1",
+      "declared": "2026-03-25",
+      "response": "2026-03-26",
+      "ticker": "NVDA",
+      "assessment": "discretion",
+      "exact_prior_quote": "No nibbling before that",
+      "interpretation": "Bought a $49,000 semiconductor basket while admitting the broad-confirmation condition was only half met.",
+      "prior_day_hash": "03775e70d16f383a5461125a76339abe0c804d6c9aa003c61f9126a40a92d791",
+      "response_day_hash": "f3d741fbdc078534cd3ea77865cbce7facb555f6a4ab28155d80120e02aa47d2",
+      "observed_price": 178.67999267578125,
+      "fills": [
+        {
+          "ticker": "NVDA",
+          "side": "BUY",
+          "type": "new",
+          "units_before": 0,
+          "units_after": 56.795618,
+          "notional": 10000
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Opus 5",
+      "quarter": "2026-Q1",
+      "declared": "2026-03-26",
+      "response": "2026-03-27",
+      "ticker": "NVDA",
+      "assessment": "aligned",
+      "exact_prior_quote": "If two of these five break within the same week",
+      "interpretation": "Multiple named levels broke; exited all five new semiconductor positions and PLTR. MRVL\u2019s individual stop had not broken; the group rule drove its exit.",
+      "prior_day_hash": "f3d741fbdc078534cd3ea77865cbce7facb555f6a4ab28155d80120e02aa47d2",
+      "response_day_hash": "5ffc3dd25f342db9fb51fcf650519245427d13bef3c39635d6adab72f9deb833",
+      "observed_price": 171.24000549316406,
+      "fills": [
+        {
+          "ticker": "NVDA",
+          "side": "SELL",
+          "type": "exit",
+          "units_before": 56.795618,
+          "units_after": 0.0,
+          "notional": 9655.26
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Opus 5.5",
+      "quarter": "2025-Q3",
+      "declared": "2025-07-18",
+      "response": "2025-07-21",
+      "ticker": "NFLX",
+      "assessment": "aligned",
+      "exact_prior_quote": "NFLX below ~$1210",
+      "interpretation": "Observed 1209.24 below the approximate 1210 review; partial trim.",
+      "prior_day_hash": "a543b8835b6437852e248c76b40bb1d3e4b7c2ab14aa463ea6108916d8101d35",
+      "response_day_hash": "542237c480a03caf2cbcd4be21c913676d998cd6a24b78f0fd86251fd6d67b17",
+      "observed_price": 1209.2400360107422,
+      "fills": [
+        {
+          "ticker": "NFLX",
+          "side": "SELL",
+          "type": "trim",
+          "units_before": 2.989026,
+          "units_after": 1.489026,
+          "notional": 1809
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Opus 5.5",
+      "quarter": "2025-Q3",
+      "declared": "2025-07-23",
+      "response": "2025-07-24",
+      "ticker": "NFLX",
+      "assessment": "aligned",
+      "exact_prior_quote": "Tomorrow I sell the rest if it closes below ~$1180",
+      "interpretation": "Observed 1176.78; sold the remaining position.",
+      "prior_day_hash": "144193751b194ff39cd7098aed0f8d2c870762cdf12fdf8801b4e8eea7010eb4",
+      "response_day_hash": "ffcaf2a64a9438fe6f5284fd2da6fae457df42d5f9cbfe2e84284d7257225976",
+      "observed_price": 1176.780014038086,
+      "fills": [
+        {
+          "ticker": "NFLX",
+          "side": "SELL",
+          "type": "exit",
+          "units_before": 1.489026,
+          "units_after": 0.0,
+          "notional": 1753.77
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Opus 5.5",
+      "quarter": "2026-Q1",
+      "declared": "2026-03-27",
+      "response": "2026-03-30",
+      "ticker": "NVDA",
+      "assessment": "aligned",
+      "exact_prior_quote": "its $170 level for trimming half",
+      "interpretation": "Observed 167.52; approximately halved NVDA and retained the rest.",
+      "prior_day_hash": "4e74d875eb12145273ab6f3cf0c6606e3752d60777779df4c22d5d6ff5bf7665",
+      "response_day_hash": "dc06ee6dd906879cd18fd72d54cb1d8d4d926f5ed66beca6e4ff5914c7e807c2",
+      "observed_price": 167.52000427246094,
+      "fills": [
+        {
+          "ticker": "NVDA",
+          "side": "SELL",
+          "type": "trim",
+          "units_before": 58.922697,
+          "units_after": 29.462697,
+          "notional": 4972.26
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Sonnet 5",
+      "quarter": "2025-Q2",
+      "declared": "2025-04-25",
+      "response": "2025-04-28",
+      "ticker": "PEP",
+      "assessment": "aligned",
+      "exact_prior_quote": "will finish exiting PEP if it keeps making lower lows on volume",
+      "interpretation": "The next received bar made a new lower low on still-elevated volume; sold the remainder.",
+      "prior_day_hash": "be36ae4c642808d0d8076b7e54934a79c62a2d051fb8c842b48b83a708b6adf4",
+      "response_day_hash": "361a797dbffd901d65296dfcbbe41c54b69b9b7de1525fb1e8cc0091d8d6a70e",
+      "observed_price": 133.3800048828125,
+      "fills": [
+        {
+          "ticker": "PEP",
+          "side": "SELL",
+          "type": "exit",
+          "units_before": 10.593319,
+          "units_after": 0.0,
+          "notional": 1418.45
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Sonnet 5",
+      "quarter": "2026-Q1",
+      "declared": "2026-02-05",
+      "response": "2026-02-06",
+      "ticker": "AMZN",
+      "assessment": "aligned",
+      "exact_prior_quote": "exit AMZN below 231",
+      "interpretation": "Observed 222.69 below 231; full exit.",
+      "prior_day_hash": "87a6038a477115b0c1e5f57191563bf9b0a9caca3e29a3c47211210431e6202d",
+      "response_day_hash": "a1556fa5aa73187fe7f26bf1029d9a02aade8ebfb8329cc7136232d5f15591f4",
+      "observed_price": 222.69000244140625,
+      "fills": [
+        {
+          "ticker": "AMZN",
+          "side": "SELL",
+          "type": "exit",
+          "units_before": 43.806617,
+          "units_after": 0.0,
+          "notional": 8879.6
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Sonnet 5",
+      "quarter": "2026-Q1",
+      "declared": "2026-03-26",
+      "response": "2026-03-27",
+      "ticker": "AVGO",
+      "assessment": "aligned",
+      "exact_prior_quote": "AVGO 318.81 (>310 stop",
+      "interpretation": "Observed 309.42 below 310; full exit after prior holding above that line.",
+      "prior_day_hash": "3672c851e9d1a813db0725df8c1d669a97985c52e506b7bbe150b3bd4da12ad0",
+      "response_day_hash": "b16e7bde3eabe2c3380f484c11c9c8813c89b211fbfc4cd31eb66ef073b55632",
+      "observed_price": 309.4200134277344,
+      "fills": [
+        {
+          "ticker": "AVGO",
+          "side": "SELL",
+          "type": "exit",
+          "units_before": 21.323275,
+          "units_after": 0.0,
+          "notional": 6547.52
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Muse Spark 1.3",
+      "quarter": "2025-Q3",
+      "declared": "2025-08-19",
+      "response": "2025-08-20",
+      "ticker": "MSFT",
+      "assessment": "aligned",
+      "exact_prior_quote": "sell MSFT below 510",
+      "interpretation": "Observed 509.77 below 510; full exit. A profitable position can still break a rule.",
+      "prior_day_hash": "b3b0a8b8d062953cd246e496ea26fa0ac6c27d15f22a70261e592f300c21fa3d",
+      "response_day_hash": "60baeb5083b7fece1371cc1efd4835195996fc2a42a4061d851e4c4691cb6a68",
+      "observed_price": 509.7699890136719,
+      "fills": [
+        {
+          "ticker": "MSFT",
+          "side": "SELL",
+          "type": "exit",
+          "units_before": 14.934182,
+          "units_after": 0.0,
+          "notional": 7614.49
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Muse Spark 1.3",
+      "quarter": "2025-Q4",
+      "declared": "2025-12-29",
+      "response": "2025-12-30",
+      "ticker": "GOOG",
+      "assessment": "aligned",
+      "exact_prior_quote": "add only on tight-dry high close above resistance",
+      "interpretation": "Added $25,000 after support held and the close sat high within the narrow range. The absolute close fell; the range/support condition still qualified.",
+      "prior_day_hash": "df1dddac33b439d15f6157e04bed70e358096f055e5886fbbcfc11540370d94f",
+      "response_day_hash": "f4a325faf1094f0c7b4d5768577a86c047b72f36469eb9cda7dca9b929f17f60",
+      "observed_price": 314.3900146484375,
+      "fills": [
+        {
+          "ticker": "GOOG",
+          "side": "BUY",
+          "type": "add",
+          "units_before": 139.275775,
+          "units_after": 219.043502,
+          "notional": 25000
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Muse Spark 1.3",
+      "quarter": "2026-Q1",
+      "declared": "2026-02-26",
+      "response": "2026-02-27",
+      "ticker": "LRCX",
+      "assessment": "discretion",
+      "exact_prior_quote": "exit LRCX below 242/237",
+      "interpretation": "Observed 239.07 below 242 but above 237. Held and added a second-close confirmation requirement; the original two-level wording was ambiguous.",
+      "prior_day_hash": "dcb11c5495bae194ae2b6a8278b9a55e602b7e3f9700050b590e105a4ce9d53f",
+      "response_day_hash": "d735e52399f8912b01a38ae57dccf979c955e953e7583cf554962fadc87ff6aa",
+      "observed_price": 239.07000732421875,
+      "fills": [],
+      "failed_orders": []
+    },
+    {
+      "model": "GLM 5.3 Flash",
+      "quarter": "2025-Q4",
+      "declared": "2025-11-25",
+      "response": "2025-11-26",
+      "ticker": "GOOGL",
+      "assessment": "aligned",
+      "exact_prior_quote": "if MSFT or NVDA prints a 2nd consecutive higher close",
+      "interpretation": "MSFT\u2019s second higher close opened the deployment gate; bought $18,000 Alphabet and $12,000 META.",
+      "prior_day_hash": "0cd1e465453e04ccc28d10efa1b1e41cf0e4657202d67b02f87088ee0cf7dc91",
+      "response_day_hash": "717047e0544f32332bfcb84730f9206ac311a2fbdf0d8ee9081f11dee37f4f04",
+      "observed_price": 323.44000244140625,
+      "fills": [
+        {
+          "ticker": "GOOGL",
+          "side": "BUY",
+          "type": "add",
+          "units_before": 49.729021,
+          "units_after": 105.859753,
+          "notional": 18000
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "GLM 5.3 Flash",
+      "quarter": "2025-Q4",
+      "declared": "2025-10-30",
+      "response": "2025-10-31",
+      "ticker": "META",
+      "assessment": "execution mismatch",
+      "exact_prior_quote": "META exit on close <720",
+      "interpretation": "META closed at 666.47. The journal described a full exit, but the $1,790 sell left 0.033365 shares worth $21.63. A fill, not a rejected order.",
+      "prior_day_hash": "211a269e2853a0511ac9f733ed96ec38bc2715aedab1e7c92db2b048f1d6032c",
+      "response_day_hash": "a3cb929dc3a17a168976cf442f48a15c837a457648c1482886babb4deed661f9",
+      "observed_price": 666.469970703125,
+      "fills": [
+        {
+          "ticker": "META",
+          "side": "SELL",
+          "type": "trim",
+          "units_before": 2.687157,
+          "units_after": 0.033365,
+          "notional": 1790
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "GLM 5.3 Flash",
+      "quarter": "2026-Q1",
+      "declared": "2026-03-27",
+      "response": "2026-03-30",
+      "ticker": "ISRG",
+      "assessment": "aligned",
+      "exact_prior_quote": "exit ISRG if close < 460",
+      "interpretation": "Observed 452.66 below 460; full exit. The accumulated loss versus the displayed basis was about 20%, despite threshold follow-through.",
+      "prior_day_hash": "7ace9f0754a1f8e17ba82b738661fd5cafd5d5ab71627c8e3694ca8bffc79373",
+      "response_day_hash": "385a59f46dcda726b215651dd578ae78be080fd1e0a29ffbea201fee862a6d59",
+      "observed_price": 452.6600036621094,
+      "fills": [
+        {
+          "ticker": "ISRG",
+          "side": "SELL",
+          "type": "exit",
+          "units_before": 4.410891,
+          "units_after": 0.0,
+          "notional": 1998.35
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "DeepSeek 4.1 Flash",
+      "quarter": "2025-Q4",
+      "declared": "2025-12-23",
+      "response": "2025-12-24",
+      "ticker": "NVDA",
+      "assessment": "discretion",
+      "exact_prior_quote": "add semis/AI only if NVDA clears 190",
+      "interpretation": "Bought at an observed 189.21 while calling it at the gate. Relaxed the earlier entry condition.",
+      "prior_day_hash": "330e0dde2be6e16bccd240a151a70bc4c975809d2850de8fe8b00cddac20f957",
+      "response_day_hash": "4c98e2955647a51dbb33c61caf2bf47d53b2090b51df2d60b14f1810fd9a8c61",
+      "observed_price": 189.2100067138672,
+      "fills": [
+        {
+          "ticker": "NVDA",
+          "side": "BUY",
+          "type": "new",
+          "units_before": 0,
+          "units_after": 39.906379,
+          "notional": 7500
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "DeepSeek 4.1 Flash",
+      "quarter": "2025-Q2",
+      "declared": "2025-06-13",
+      "response": "2025-06-16",
+      "ticker": "SHOP",
+      "assessment": "aligned",
+      "exact_prior_quote": "cut SHOP if it closes <108",
+      "interpretation": "Observed 105.34 below 108; full exit.",
+      "prior_day_hash": "7a7e0df4f388ebd046ea1d6e4d0f14a00336ccd4aae2f3fb65636e013784b8f8",
+      "response_day_hash": "1d910dd08498f570edbc8ebee0aea67b0294aad9c865c46e14970d55b9f42d2f",
+      "observed_price": 105.33999633789062,
+      "fills": [
+        {
+          "ticker": "SHOP",
+          "side": "SELL",
+          "type": "exit",
+          "units_before": 98.488167,
+          "units_after": 0.0,
+          "notional": 10632.78
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "DeepSeek 4.1 Flash",
+      "quarter": "2025-Q2",
+      "declared": "2025-05-05",
+      "response": "2025-05-06",
+      "ticker": "AAPL",
+      "assessment": "aligned",
+      "exact_prior_quote": "trim AAPL below 200",
+      "interpretation": "Observed 198.89 triggered reduction; the model chose a full exit. Direction followed the rule, size was more aggressive.",
+      "prior_day_hash": "350d0c2768e34dc95b7ed09e26cc1b77df45ca396b5f7dda8a1e49dc9989e044",
+      "response_day_hash": "98e636a8021437f55af537751bf1668d9e14ffc6f458c9cc5c649dd81126f06c",
+      "observed_price": 198.88999938964844,
+      "fills": [
+        {
+          "ticker": "AAPL",
+          "side": "SELL",
+          "type": "exit",
+          "units_before": 18.236785,
+          "units_after": 0.0,
+          "notional": 3614.71
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Luna 6",
+      "quarter": "2025-Q3",
+      "declared": "2025-08-19",
+      "response": "2025-08-20",
+      "ticker": "MSFT",
+      "assessment": "aligned",
+      "exact_prior_quote": "further weakness below 515 argues for another reduction",
+      "interpretation": "Observed 509.77; exited the remainder after earlier trims. Also reduced NVDA below its 178 support.",
+      "prior_day_hash": "cfb32a273e6c6420e0ab3a238bfec6984110079cac984cb76ee1fc8bb5559e13",
+      "response_day_hash": "f31aacf8d3ced1694e063180f55d749df3c8748c1711f9b5157ab60745b23a93",
+      "observed_price": 509.7699890136719,
+      "fills": [
+        {
+          "ticker": "MSFT",
+          "side": "SELL",
+          "type": "exit",
+          "units_before": 5.482534,
+          "units_after": 0.0,
+          "notional": 2795.38
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Luna 6",
+      "quarter": "2025-Q3",
+      "declared": "2025-08-29",
+      "response": "2025-09-02",
+      "ticker": "NVDA",
+      "assessment": "aligned",
+      "exact_prior_quote": "trim NVDA below 178",
+      "interpretation": "Observed 174.18 below 178; trimmed $2,500 despite receiving a fresh deposit.",
+      "prior_day_hash": "50064dcae93ac716b819b24a43ab63a0cf559351ea44adc240cd3bc5ec5b827e",
+      "response_day_hash": "c8f84b81465109c4477c7ecdf839dc92c7438b97b8da9a178306a9db0982113d",
+      "observed_price": 174.17999267578125,
+      "fills": [
+        {
+          "ticker": "NVDA",
+          "side": "SELL",
+          "type": "trim",
+          "units_before": 82.334022,
+          "units_after": 67.628089,
+          "notional": 2500
+        }
+      ],
+      "failed_orders": []
+    },
+    {
+      "model": "Luna 6",
+      "quarter": "2025-Q4",
+      "declared": "2025-11-17",
+      "response": "2025-11-17",
+      "ticker": "AVGO",
+      "assessment": "execution mismatch",
+      "exact_prior_quote": "Sell AVGO and reduce AMZN exposure",
+      "interpretation": "The AVGO dollar sell implied more shares than held and was rejected; only the $5,000 AMZN trim executed. The journal describes intent, not the complete outcome.",
+      "prior_day_hash": "99ccd2e3f52b7b544126dc5dde7fa1354640191ef4a24a4277e896d3c68ec698",
+      "response_day_hash": "99ccd2e3f52b7b544126dc5dde7fa1354640191ef4a24a4277e896d3c68ec698",
+      "observed_price": 342.4599914550781,
+      "fills": [],
+      "failed_orders": [
+        {
+          "date": "2025-11-17",
+          "ticker": "AVGO",
+          "side": "SELL",
+          "reason": "Cannot sell 23.840826 units of AVGO: only 23.657051 held."
+        }
+      ]
+    }
+  ]
+}

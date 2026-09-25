@@ -1,0 +1,892 @@
+[
+  {
+    "model": "Astra 6",
+    "rows": [
+      {
+        "condition": "1d_covered",
+        "covered_model_days": 246,
+        "queried_ticker_days": 1993,
+        "response": {
+          "BUY": 131,
+          "SELL": 92,
+          "BOTH": 0,
+          "NO FILL": 1770,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "20close_high_covered",
+        "covered_model_days": 61,
+        "queried_ticker_days": 399,
+        "response": {
+          "BUY": 61,
+          "SELL": 18,
+          "BOTH": 0,
+          "NO FILL": 320,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "20d_covered",
+        "covered_model_days": 50,
+        "queried_ticker_days": 324,
+        "response": {
+          "BUY": 47,
+          "SELL": 18,
+          "BOTH": 0,
+          "NO FILL": 259,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "at_20close_high",
+        "covered_model_days": 45,
+        "queried_ticker_days": 96,
+        "response": {
+          "BUY": 31,
+          "SELL": 0,
+          "BOTH": 0,
+          "NO FILL": 65,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "down_at_least_3pct_1d",
+        "covered_model_days": 62,
+        "queried_ticker_days": 121,
+        "response": {
+          "BUY": 0,
+          "SELL": 37,
+          "BOTH": 0,
+          "NO FILL": 84,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "negative_20d",
+        "covered_model_days": 14,
+        "queried_ticker_days": 40,
+        "response": {
+          "BUY": 2,
+          "SELL": 6,
+          "BOTH": 0,
+          "NO FILL": 32,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "up_at_least_3pct_1d",
+        "covered_model_days": 106,
+        "queried_ticker_days": 173,
+        "response": {
+          "BUY": 26,
+          "SELL": 0,
+          "BOTH": 0,
+          "NO FILL": 147,
+          "FAILED": 0
+        }
+      }
+    ]
+  },
+  {
+    "model": "DeepSeek 4.1 Flash",
+    "rows": [
+      {
+        "condition": "1d_covered",
+        "covered_model_days": 250,
+        "queried_ticker_days": 7651,
+        "response": {
+          "BUY": 414,
+          "SELL": 235,
+          "BOTH": 0,
+          "NO FILL": 7001,
+          "FAILED": 1
+        }
+      },
+      {
+        "condition": "20close_high_covered",
+        "covered_model_days": 126,
+        "queried_ticker_days": 2617,
+        "response": {
+          "BUY": 220,
+          "SELL": 120,
+          "BOTH": 0,
+          "NO FILL": 2276,
+          "FAILED": 1
+        }
+      },
+      {
+        "condition": "20d_covered",
+        "covered_model_days": 82,
+        "queried_ticker_days": 1740,
+        "response": {
+          "BUY": 165,
+          "SELL": 81,
+          "BOTH": 0,
+          "NO FILL": 1493,
+          "FAILED": 1
+        }
+      },
+      {
+        "condition": "at_20close_high",
+        "covered_model_days": 111,
+        "queried_ticker_days": 492,
+        "response": {
+          "BUY": 88,
+          "SELL": 3,
+          "BOTH": 0,
+          "NO FILL": 401,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "down_at_least_3pct_1d",
+        "covered_model_days": 135,
+        "queried_ticker_days": 552,
+        "response": {
+          "BUY": 0,
+          "SELL": 98,
+          "BOTH": 0,
+          "NO FILL": 454,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "negative_20d",
+        "covered_model_days": 67,
+        "queried_ticker_days": 604,
+        "response": {
+          "BUY": 30,
+          "SELL": 33,
+          "BOTH": 0,
+          "NO FILL": 541,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "up_at_least_3pct_1d",
+        "covered_model_days": 162,
+        "queried_ticker_days": 626,
+        "response": {
+          "BUY": 112,
+          "SELL": 3,
+          "BOTH": 0,
+          "NO FILL": 511,
+          "FAILED": 0
+        }
+      }
+    ]
+  },
+  {
+    "model": "GLM 5.3 Flash",
+    "rows": [
+      {
+        "condition": "1d_covered",
+        "covered_model_days": 187,
+        "queried_ticker_days": 1753,
+        "response": {
+          "BUY": 163,
+          "SELL": 58,
+          "BOTH": 1,
+          "NO FILL": 1526,
+          "FAILED": 5
+        }
+      },
+      {
+        "condition": "20close_high_covered",
+        "covered_model_days": 15,
+        "queried_ticker_days": 183,
+        "response": {
+          "BUY": 68,
+          "SELL": 4,
+          "BOTH": 0,
+          "NO FILL": 111,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "20d_covered",
+        "covered_model_days": 11,
+        "queried_ticker_days": 156,
+        "response": {
+          "BUY": 52,
+          "SELL": 2,
+          "BOTH": 0,
+          "NO FILL": 102,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "at_20close_high",
+        "covered_model_days": 9,
+        "queried_ticker_days": 25,
+        "response": {
+          "BUY": 13,
+          "SELL": 0,
+          "BOTH": 0,
+          "NO FILL": 12,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "down_at_least_3pct_1d",
+        "covered_model_days": 60,
+        "queried_ticker_days": 121,
+        "response": {
+          "BUY": 2,
+          "SELL": 27,
+          "BOTH": 0,
+          "NO FILL": 92,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "negative_20d",
+        "covered_model_days": 11,
+        "queried_ticker_days": 78,
+        "response": {
+          "BUY": 19,
+          "SELL": 2,
+          "BOTH": 0,
+          "NO FILL": 57,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "up_at_least_3pct_1d",
+        "covered_model_days": 71,
+        "queried_ticker_days": 126,
+        "response": {
+          "BUY": 23,
+          "SELL": 1,
+          "BOTH": 1,
+          "NO FILL": 101,
+          "FAILED": 0
+        }
+      }
+    ]
+  },
+  {
+    "model": "Luna 6",
+    "rows": [
+      {
+        "condition": "1d_covered",
+        "covered_model_days": 251,
+        "queried_ticker_days": 1956,
+        "response": {
+          "BUY": 171,
+          "SELL": 59,
+          "BOTH": 0,
+          "NO FILL": 1724,
+          "FAILED": 2
+        }
+      },
+      {
+        "condition": "20close_high_covered",
+        "covered_model_days": 207,
+        "queried_ticker_days": 1674,
+        "response": {
+          "BUY": 132,
+          "SELL": 55,
+          "BOTH": 0,
+          "NO FILL": 1485,
+          "FAILED": 2
+        }
+      },
+      {
+        "condition": "20d_covered",
+        "covered_model_days": 169,
+        "queried_ticker_days": 1385,
+        "response": {
+          "BUY": 120,
+          "SELL": 46,
+          "BOTH": 0,
+          "NO FILL": 1217,
+          "FAILED": 2
+        }
+      },
+      {
+        "condition": "at_20close_high",
+        "covered_model_days": 126,
+        "queried_ticker_days": 287,
+        "response": {
+          "BUY": 50,
+          "SELL": 3,
+          "BOTH": 0,
+          "NO FILL": 233,
+          "FAILED": 1
+        }
+      },
+      {
+        "condition": "down_at_least_3pct_1d",
+        "covered_model_days": 64,
+        "queried_ticker_days": 138,
+        "response": {
+          "BUY": 1,
+          "SELL": 17,
+          "BOTH": 0,
+          "NO FILL": 120,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "negative_20d",
+        "covered_model_days": 116,
+        "queried_ticker_days": 508,
+        "response": {
+          "BUY": 27,
+          "SELL": 22,
+          "BOTH": 0,
+          "NO FILL": 458,
+          "FAILED": 1
+        }
+      },
+      {
+        "condition": "up_at_least_3pct_1d",
+        "covered_model_days": 87,
+        "queried_ticker_days": 156,
+        "response": {
+          "BUY": 25,
+          "SELL": 2,
+          "BOTH": 0,
+          "NO FILL": 129,
+          "FAILED": 0
+        }
+      }
+    ]
+  },
+  {
+    "model": "Muse Spark 1.3",
+    "rows": [
+      {
+        "condition": "1d_covered",
+        "covered_model_days": 250,
+        "queried_ticker_days": 1946,
+        "response": {
+          "BUY": 67,
+          "SELL": 53,
+          "BOTH": 0,
+          "NO FILL": 1826,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "20close_high_covered",
+        "covered_model_days": 69,
+        "queried_ticker_days": 600,
+        "response": {
+          "BUY": 38,
+          "SELL": 23,
+          "BOTH": 0,
+          "NO FILL": 539,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "20d_covered",
+        "covered_model_days": 11,
+        "queried_ticker_days": 253,
+        "response": {
+          "BUY": 32,
+          "SELL": 1,
+          "BOTH": 0,
+          "NO FILL": 220,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "at_20close_high",
+        "covered_model_days": 40,
+        "queried_ticker_days": 114,
+        "response": {
+          "BUY": 17,
+          "SELL": 0,
+          "BOTH": 0,
+          "NO FILL": 97,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "down_at_least_3pct_1d",
+        "covered_model_days": 70,
+        "queried_ticker_days": 174,
+        "response": {
+          "BUY": 0,
+          "SELL": 30,
+          "BOTH": 0,
+          "NO FILL": 144,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "negative_20d",
+        "covered_model_days": 9,
+        "queried_ticker_days": 109,
+        "response": {
+          "BUY": 7,
+          "SELL": 1,
+          "BOTH": 0,
+          "NO FILL": 101,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "up_at_least_3pct_1d",
+        "covered_model_days": 101,
+        "queried_ticker_days": 203,
+        "response": {
+          "BUY": 18,
+          "SELL": 1,
+          "BOTH": 0,
+          "NO FILL": 184,
+          "FAILED": 0
+        }
+      }
+    ]
+  },
+  {
+    "model": "Opus 5",
+    "rows": [
+      {
+        "condition": "1d_covered",
+        "covered_model_days": 247,
+        "queried_ticker_days": 3979,
+        "response": {
+          "BUY": 370,
+          "SELL": 183,
+          "BOTH": 0,
+          "NO FILL": 3426,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "20close_high_covered",
+        "covered_model_days": 10,
+        "queried_ticker_days": 243,
+        "response": {
+          "BUY": 64,
+          "SELL": 2,
+          "BOTH": 0,
+          "NO FILL": 177,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "20d_covered",
+        "covered_model_days": 8,
+        "queried_ticker_days": 197,
+        "response": {
+          "BUY": 57,
+          "SELL": 2,
+          "BOTH": 0,
+          "NO FILL": 138,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "at_20close_high",
+        "covered_model_days": 7,
+        "queried_ticker_days": 27,
+        "response": {
+          "BUY": 14,
+          "SELL": 0,
+          "BOTH": 0,
+          "NO FILL": 13,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "down_at_least_3pct_1d",
+        "covered_model_days": 97,
+        "queried_ticker_days": 242,
+        "response": {
+          "BUY": 4,
+          "SELL": 82,
+          "BOTH": 0,
+          "NO FILL": 156,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "negative_20d",
+        "covered_model_days": 8,
+        "queried_ticker_days": 99,
+        "response": {
+          "BUY": 16,
+          "SELL": 1,
+          "BOTH": 0,
+          "NO FILL": 82,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "up_at_least_3pct_1d",
+        "covered_model_days": 143,
+        "queried_ticker_days": 354,
+        "response": {
+          "BUY": 85,
+          "SELL": 3,
+          "BOTH": 0,
+          "NO FILL": 266,
+          "FAILED": 0
+        }
+      }
+    ]
+  },
+  {
+    "model": "Opus 5.5",
+    "rows": [
+      {
+        "condition": "1d_covered",
+        "covered_model_days": 23,
+        "queried_ticker_days": 220,
+        "response": {
+          "BUY": 80,
+          "SELL": 8,
+          "BOTH": 0,
+          "NO FILL": 132,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "20close_high_covered",
+        "covered_model_days": 11,
+        "queried_ticker_days": 140,
+        "response": {
+          "BUY": 69,
+          "SELL": 2,
+          "BOTH": 0,
+          "NO FILL": 69,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "20d_covered",
+        "covered_model_days": 8,
+        "queried_ticker_days": 105,
+        "response": {
+          "BUY": 54,
+          "SELL": 1,
+          "BOTH": 0,
+          "NO FILL": 50,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "at_20close_high",
+        "covered_model_days": 7,
+        "queried_ticker_days": 21,
+        "response": {
+          "BUY": 20,
+          "SELL": 0,
+          "BOTH": 0,
+          "NO FILL": 1,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "down_at_least_3pct_1d",
+        "covered_model_days": 13,
+        "queried_ticker_days": 35,
+        "response": {
+          "BUY": 2,
+          "SELL": 4,
+          "BOTH": 0,
+          "NO FILL": 29,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "negative_20d",
+        "covered_model_days": 6,
+        "queried_ticker_days": 42,
+        "response": {
+          "BUY": 13,
+          "SELL": 1,
+          "BOTH": 0,
+          "NO FILL": 28,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "up_at_least_3pct_1d",
+        "covered_model_days": 8,
+        "queried_ticker_days": 15,
+        "response": {
+          "BUY": 6,
+          "SELL": 0,
+          "BOTH": 0,
+          "NO FILL": 9,
+          "FAILED": 0
+        }
+      }
+    ]
+  },
+  {
+    "model": "Sol 5.6",
+    "rows": [
+      {
+        "condition": "1d_covered",
+        "covered_model_days": 246,
+        "queried_ticker_days": 16037,
+        "response": {
+          "BUY": 191,
+          "SELL": 108,
+          "BOTH": 0,
+          "NO FILL": 15738,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "20close_high_covered",
+        "covered_model_days": 240,
+        "queried_ticker_days": 15241,
+        "response": {
+          "BUY": 187,
+          "SELL": 101,
+          "BOTH": 0,
+          "NO FILL": 14953,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "20d_covered",
+        "covered_model_days": 206,
+        "queried_ticker_days": 10905,
+        "response": {
+          "BUY": 161,
+          "SELL": 87,
+          "BOTH": 0,
+          "NO FILL": 10657,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "at_20close_high",
+        "covered_model_days": 231,
+        "queried_ticker_days": 2225,
+        "response": {
+          "BUY": 159,
+          "SELL": 0,
+          "BOTH": 0,
+          "NO FILL": 2066,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "down_at_least_3pct_1d",
+        "covered_model_days": 181,
+        "queried_ticker_days": 1319,
+        "response": {
+          "BUY": 0,
+          "SELL": 59,
+          "BOTH": 0,
+          "NO FILL": 1260,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "negative_20d",
+        "covered_model_days": 171,
+        "queried_ticker_days": 4437,
+        "response": {
+          "BUY": 5,
+          "SELL": 45,
+          "BOTH": 0,
+          "NO FILL": 4387,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "up_at_least_3pct_1d",
+        "covered_model_days": 207,
+        "queried_ticker_days": 1359,
+        "response": {
+          "BUY": 79,
+          "SELL": 0,
+          "BOTH": 0,
+          "NO FILL": 1280,
+          "FAILED": 0
+        }
+      }
+    ]
+  },
+  {
+    "model": "Sol 6",
+    "rows": [
+      {
+        "condition": "1d_covered",
+        "covered_model_days": 248,
+        "queried_ticker_days": 6566,
+        "response": {
+          "BUY": 267,
+          "SELL": 127,
+          "BOTH": 0,
+          "NO FILL": 6172,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "20close_high_covered",
+        "covered_model_days": 207,
+        "queried_ticker_days": 4360,
+        "response": {
+          "BUY": 209,
+          "SELL": 106,
+          "BOTH": 0,
+          "NO FILL": 4045,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "20d_covered",
+        "covered_model_days": 187,
+        "queried_ticker_days": 3676,
+        "response": {
+          "BUY": 189,
+          "SELL": 96,
+          "BOTH": 0,
+          "NO FILL": 3391,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "at_20close_high",
+        "covered_model_days": 185,
+        "queried_ticker_days": 990,
+        "response": {
+          "BUY": 136,
+          "SELL": 0,
+          "BOTH": 0,
+          "NO FILL": 854,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "down_at_least_3pct_1d",
+        "covered_model_days": 131,
+        "queried_ticker_days": 389,
+        "response": {
+          "BUY": 0,
+          "SELL": 64,
+          "BOTH": 0,
+          "NO FILL": 325,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "negative_20d",
+        "covered_model_days": 132,
+        "queried_ticker_days": 903,
+        "response": {
+          "BUY": 14,
+          "SELL": 40,
+          "BOTH": 0,
+          "NO FILL": 849,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "up_at_least_3pct_1d",
+        "covered_model_days": 171,
+        "queried_ticker_days": 633,
+        "response": {
+          "BUY": 61,
+          "SELL": 0,
+          "BOTH": 0,
+          "NO FILL": 572,
+          "FAILED": 0
+        }
+      }
+    ]
+  },
+  {
+    "model": "Sonnet 5",
+    "rows": [
+      {
+        "condition": "1d_covered",
+        "covered_model_days": 192,
+        "queried_ticker_days": 1834,
+        "response": {
+          "BUY": 222,
+          "SELL": 68,
+          "BOTH": 0,
+          "NO FILL": 1544,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "20close_high_covered",
+        "covered_model_days": 18,
+        "queried_ticker_days": 205,
+        "response": {
+          "BUY": 40,
+          "SELL": 6,
+          "BOTH": 0,
+          "NO FILL": 159,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "20d_covered",
+        "covered_model_days": 7,
+        "queried_ticker_days": 82,
+        "response": {
+          "BUY": 35,
+          "SELL": 2,
+          "BOTH": 0,
+          "NO FILL": 45,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "at_20close_high",
+        "covered_model_days": 7,
+        "queried_ticker_days": 17,
+        "response": {
+          "BUY": 7,
+          "SELL": 0,
+          "BOTH": 0,
+          "NO FILL": 10,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "down_at_least_3pct_1d",
+        "covered_model_days": 57,
+        "queried_ticker_days": 120,
+        "response": {
+          "BUY": 9,
+          "SELL": 42,
+          "BOTH": 0,
+          "NO FILL": 69,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "negative_20d",
+        "covered_model_days": 7,
+        "queried_ticker_days": 51,
+        "response": {
+          "BUY": 19,
+          "SELL": 1,
+          "BOTH": 0,
+          "NO FILL": 31,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "up_at_least_3pct_1d",
+        "covered_model_days": 70,
+        "queried_ticker_days": 118,
+        "response": {
+          "BUY": 38,
+          "SELL": 1,
+          "BOTH": 0,
+          "NO FILL": 79,
+          "FAILED": 0
+        }
+      }
+    ]
+  }
+]
