@@ -261,6 +261,7 @@ await page(
   "Investment behavior",
   Bun.markdown.html(
     md
+      .replace("](METHODOLOGY.md)", "](methodology.html)")
       .replace("<!-- workflow-table -->", workflowTable)
       .replace("<!-- price-table -->", priceTable)
       .replace("<!-- sell-selection-table -->", saleTable)

@@ -98,6 +98,6 @@ Loss-making sales outnumbered profitable ones for nine models. Luna was the exce
 
 Opus 5's Q2 is a newer repeat, chosen after both outcomes were known: the original Q2 made $26,578 and the selected one $22,130. Opus 5.5 includes seven supplemental recovery dates after three invalid original days; the originals are preserved. Sonnet's last 20 dates ran as a recorded continuation. Luna 6 replaces Luna 5.6, and Terra is excluded.
 
-Failed attempts and four invalid days remain in the evidence. Recorded causes include provider quota or overload, host storage failure, client non-submission and audit errors. Recoverable tool errors inside a successful session are not failed days. Clients, source revisions and request-size limits differ by model; see [Methodology](methodology.html).
+Failed attempts and four invalid days remain in the evidence. Recorded causes include provider quota or overload, host storage failure, client non-submission and audit errors. Recoverable tool errors inside a successful session are not failed days. Clients, source revisions and request-size limits differ by model; see [Methodology](METHODOLOGY.md).
 
 </details>
