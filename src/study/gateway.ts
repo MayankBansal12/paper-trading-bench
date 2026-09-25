@@ -1,3 +1,6 @@
+import { zstdDecompressSync } from "node:zlib";
+import { studyRoute } from "./routes.ts";
+import { PI_MODEL_ID, PI_THINKING } from "../pi/route.ts";
 import { randomUUID } from "node:crypto";
 import { chmod } from "node:fs/promises";
 import { contentHash, canonical } from "../core/hash.ts";
@@ -6,7 +9,7 @@ import { OPENCODE_PROMPT_SUFFIX } from "../opencode/config.ts";
 import { systemPrompt } from "./protocol.ts";
 import { STUDY_TOOLS, POLICY } from "./protocol.ts";
 import { SessionTools } from "./tools.ts";
-import { qualifiedRoute, QUALIFIED_ZEN_MODEL_ID, QUALIFIED_OPENCODE_CLIENT_VERSION } from "../opencode/qualification.ts";
+import { QUALIFIED_ZEN_MODEL_ID, QUALIFIED_OPENCODE_CLIENT_VERSION } from "../opencode/qualification.ts";
 import { CODEX_RESPONSES_URL, type ProviderCredential } from "../opencode/credentials.ts";
 export async function serveGateway(
   socket: string,
@@ -18,10 +21,11 @@ export async function serveGateway(
   onBudgetCutoff: (reason: string) => void = () => {},
   model: string = QUALIFIED_ZEN_MODEL_ID,
 ) {
-  const route = qualifiedRoute(model);
+  const route = studyRoute(model);
+  const pi = model === PI_MODEL_ID;
   if (route.auth === "oauth" && (typeof credential === "string" || credential.mode !== "oauth"))
     throw new Error("Qualified OpenAI route requires host OAuth; no API-key fallback");
-  const capability = randomUUID();
+  const capability = pi ? `e30.${Buffer.from(JSON.stringify({"https://api.openai.com/auth": {chatgpt_account_id: "benchmark-gateway"}, nonce: randomUUID()})).toString("base64url")}.scoped` : randomUUID();
   // The Go edge tier requires a routable session marker and a client user agent
   // it recognizes; the sandbox client's headers are not guaranteed to carry
   // either, so the host gateway sets them itself for this route.
@@ -57,7 +61,15 @@ export async function serveGateway(
         });
       }
       if (url.search || req.method !== "POST") return deny("method/path");
-      const raw = await req.text();
+      let raw: string;
+      try {
+        const encoding = req.headers.get("content-encoding");
+        if (encoding && !(pi && encoding === "zstd")) return deny("unsupported-encoding");
+        raw = encoding === "zstd"
+          ? zstdDecompressSync(Buffer.from(await req.arrayBuffer()), { maxOutputLength: 2 * 1024 * 1024 }).toString("utf8")
+          : await req.text();
+        if (Buffer.byteLength(raw) > 2 * 1024 * 1024) return deny("request-size", 413);
+      } catch { return deny("invalid-compressed-request", 400); }
       if (closed || Date.now() >= deadline) return deny("expired");
       let body: any;
       try {
@@ -138,7 +150,7 @@ export async function serveGateway(
         });
       }
       if (body.model !== route.model) return deny("model");
-      if (route.provider === "openai" && url.pathname !== "/inference/responses") return deny("provider-route");
+      if (route.auth === "oauth" && url.pathname !== "/inference/responses") return deny("provider-route");
       // Provider-hosted retrieval is also outside the experiment. No URL media,
       // uploaded files, response continuations, external MCP or server-side tools.
       const contentSafe = (value: any): boolean =>
@@ -226,12 +238,20 @@ export async function serveGateway(
       try {
         assertProviderContext(
           body,
-          systemPrompt(tools.view.limits) + OPENCODE_PROMPT_SUFFIX,
+          systemPrompt(tools.view.limits) + (pi ? "" : OPENCODE_PROMPT_SUFFIX),
           tools.prompt(),
           STUDY_TOOLS,
         );
       } catch {
         return deny("effective-context-or-tools");
+      }
+      if (pi) {
+        if (body.reasoning?.effort !== PI_THINKING) return deny("pi-thinking-drift");
+        for (const definition of tools.definitions) {
+          const actual = body.tools.find((t: any) => t.name === `trading_${definition.name}`);
+          if (!actual || canonical(actual.parameters) !== canonical(definition.inputSchema) || actual.description !== definition.description)
+            return deny("pi-tool-schema-drift");
+        }
       }
       const sequence = ++inferences;
       audit({
@@ -248,7 +268,7 @@ export async function serveGateway(
         if (
           name === "user-agent" ||
           name === "accept" ||
-          (route.provider === "openai" && name === "session-id") ||
+          (route.auth === "oauth" && name === "session-id") ||
           name.startsWith("x-opencode-") ||
           name.startsWith("x-stainless-")
         )
@@ -265,7 +285,7 @@ export async function serveGateway(
           headers.set("x-opencode-session", edgeSession);
         }
         const response = await forward(
-          route.provider === "openai" ? CODEX_RESPONSES_URL
+          route.auth === "oauth" ? CODEX_RESPONSES_URL
             : route.apiURL + url.pathname.slice("/inference".length),
           {
             method: "POST",
