@@ -35,8 +35,11 @@ if (isClaudeModel(model)) {
   await binary("claude", source);
 } else {
   const opencode = Bun.which("opencode");
-  if (!opencode || run([opencode, "--version"]) !== "1.18.30") throw Error("Install native OpenCode 1.18.30 first");
-  versions.opencode = "1.18.30";
+  if (!opencode) throw Error("Install native OpenCode first");
+  const version = run([opencode, "--version"]);
+  const allowed = isPiModel(model) ? ["1.18.30", "1.18.31"] : ["1.18.30"];
+  if (!allowed.includes(version)) throw Error("Unqualified OpenCode version: " + version);
+  versions.opencode = version;
   await binary("opencode", opencode);
 }
 if (isPiModel(model)) {

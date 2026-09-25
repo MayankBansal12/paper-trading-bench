@@ -36,7 +36,8 @@ client versions; catalog presence does not prove current entitlement.
 Pi and Claude use medium effort. OpenCode retains its recorded native defaults.
 Opus 5.5's newer client requests a larger output cap than Opus 5. These differences
 are part of the result provenance. Historical Pi/Go sandbox dependencies may differ;
-new private Pi setups here use OpenCode 1.18.30 as an inert sandbox dependency.
+private Pi setups accept OpenCode 1.18.30 or 1.18.31 as an inert sandbox dependency,
+recording the exact binary hash. OpenCode inference routes require 1.18.30.
 
 Pi uses its host Codex OAuth login. Go uses the host OpenCode auth store or
 `OPENCODE_GO_API_KEY`. Claude uses its host subscription login (`claude`, then
