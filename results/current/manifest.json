@@ -526,5 +526,9 @@
       "bytes": 33475
     }
   ],
-  "format": "Compact derived extracts, not replacement original hash-chain events. Original hashes identify the archived evidence; file hashes verify these published bytes. Host paths normalized to archive-relative locations. Journals, orders, accounting and attempt outcomes retained."
+  "format": "Compact derived extracts, not replacement original hash-chain events. Original hashes identify the archived evidence; file hashes verify these published bytes. Host paths normalized to archive-relative locations. Journals, orders, accounting and attempt outcomes retained.",
+  "supporting_sha256": {
+    "memory-audit.json": "8629bc393383a7e820abe915c66ce2a7adb9e2ed5cd67df843f70f5716099e80",
+    "rule-review.json": "19a35cfb37e63718bfa4dd680db0ce2bbb20cb5345e562bbe87723e07bc279ba"
+  }
 }

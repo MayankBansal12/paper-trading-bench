@@ -47,6 +47,20 @@ const table = (headers: string[], rows: string[][]) =>
   `<div class="table-wrap"><table><thead><tr>${headers.map((h) => `<th>${h}</th>`).join("")}</tr></thead><tbody>${rows.map((r) => `<tr>${r.map((c) => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 const stats = (rows: [string, string][]) =>
   `<div class="stats">${rows.map(([v, l]) => `<div class="stat"><b>${v}</b><span>${l}</span></div>`).join("")}</div>`;
+const toolLabel = (name: string) => ({
+  market_snapshot: "Snapshot", price_history: "History", journal: "Journal", submit_day: "Submit",
+})[name] ?? name;
+function workflow(m: any) {
+  const common = m.workflow_sequences[0];
+  return `<p><strong>${num(m.calls_per_valid_day.median)} calls</strong> was the median; the mean was ${num(m.average_calls, 2)}. The most common sequence was <strong>${common.tools.map((t: string) => esc(toolLabel(t))).join(" → ")}</strong>, used on ${common.count}/${m.valid_days} valid days.</p><p>The most-used research tool was <code>${esc(m.favorite_query)}</code>. The median was ${num(m.research_calls.median)} research calls; ${m.research_calls.zero_days} valid days made none. ${m.journal_days}/${m.valid_days} valid days requested extra journals; ${m.only_submit_days}/${m.valid_days} made a single <code>submit_day</code> call.</p><details><summary>Common sequences and call totals</summary>${table(["Recorded sequence", "Valid days"], m.workflow_sequences.slice(0, 3).map((w: any) => [w.tools.map((t: string) => esc(toolLabel(t))).join(" → "), `${w.count} / ${m.valid_days}`]))}<p>${num(m.total_calls_valid)} calls across valid days. 90% of valid sessions used at most ${m.calls_per_valid_day.p90} calls.</p><p class="note">Includes unsuccessful tool requests and submission corrections. Call order does not measure reasoning steps. The most common sequence need not be a majority.</p></details><p class="note">${m.attempts} total attempts; ${m.uncommitted_attempts} uncommitted. Recent journals and previous-close marks for existing holdings were supplied before any tool call.</p>`;
+}
+function memory(d: any, days: any[]) {
+  const recorded = d.opening_journal_context?.recent_journals;
+  const journals = Array.isArray(recorded) ? recorded : days
+    .filter((x: any) => x.date < d.date && x.status === "completed" && x.journal?.text)
+    .slice(-3).reverse().map((x: any) => ({ date: x.date, text: x.journal.text }));
+  return `<details class="starting-context"><summary>What the model started with</summary><p>The trading date, portfolio with previous-close marks for held stocks, eligible ticker names and up to three recent committed journals. The context does not supply prices for every eligible stock. A new client session starts each day; earlier uncommitted attempts are not memory.</p><p class="note">${Array.isArray(recorded) ? "These journals are recorded in this attempt’s opening context." : "These prior journals are shown from the selected records under the recorded preload policy; a full opening-context receipt is not included for this session."} Availability does not prove the model used them.</p>${journals.length ? journals.map((j: any) => `<details><summary>${esc(j.date)} · prior committed journal</summary><div class="journal">${esc(j.text)}</div></details>`).join("") : "<p>No earlier committed journal in this quarter.</p>"}</details>`;
+}
 function leaderboard() {
   const columns: Record<string, [string, string][]> = {
     profit: [
@@ -177,14 +191,14 @@ async function sessions(parts: string[], ticket: number) {
       [num(m.average_calls, 2), "Tool calls / valid day"],
       [`${m.valid_days} / ${251 - m.valid_days}`, "Valid / invalid days"],
     ],
-  )}<div class="two-col"><section class="card"><h3>${quarter.quarter} profit</h3>${chart(days)}</section><section class="card"><h3>How this model used a session</h3><p><strong>${num(m.calls_per_valid_day.median, 1)} calls</strong> was the median; 90% of valid sessions used at most <strong>${m.calls_per_valid_day.p90}</strong>. The most frequent first tool was <strong>${esc(m.common_first)}</strong>.</p><p>${m.journal_days} valid sessions requested extra journals. Up to three recent committed journals were supplied automatically. ${m.only_submit_days} sessions used only <code>submit_day</code>.</p><p class="note">${m.attempts} total attempts; ${m.uncommitted_attempts} uncommitted. Tool counts include submission and recoverable errors.</p></section></div><div class="toolbar"><label>Trading date<select id="date"></select></label><div class="actions"><button id="previous" aria-label="Previous session">← Previous</button><button id="next" aria-label="Next session">Next →</button></div></div><section id="decision" aria-live="polite"></section><details><summary>Tool counts across the whole run</summary>${table(
-    ["Tool", "Valid sessions", "All attempts"],
+  )}<div class="two-col"><section class="card"><h3>${quarter.quarter} profit</h3>${chart(days)}</section><section class="card"><h3>How this model used a session</h3>${workflow(m)}</section></div><div class="toolbar"><label>Trading date<select id="date"></select></label><div class="actions"><button id="previous" aria-label="Previous session">← Previous</button><button id="next" aria-label="Next session">Next →</button></div></div><section id="decision" aria-live="polite"></section><details><summary>Tool counts across the whole run</summary>${table(
+    ["Tool", "Calls in valid sessions", "Calls across all attempts"],
     ["market_snapshot", "price_history", "journal", "submit_day"].map((t) => [
       t,
       num(m.calls_valid[t] ?? 0),
       num(m.calls_all_attempts[t] ?? 0),
     ]),
-  )}<p class="note">Extra journal calls are requests, not proof of retrieval or use. Requests can fail. Tool errors: ${m.all_attempt_tool_errors} across all attempts; execution rejections: ${m.execution_rejections}.</p></details><details><summary>Source and accounting</summary><p>${esc(data.manifest.exceptions.find((x: any) => x.model === m.model)?.note ?? "Four independent quarters; every selected attempt is retained.")}</p><p>Annual realized trading P&L ${pnl(m.realized, true)}; quarter-end unrealized P&L ${pnl(m.unrealized, true)}; dividends ${usd(m.dividend_income, true)}.</p><a href="data/provenance.json">Exact source, runtime, dataset and segment identities</a> · <a href="data/${slug(m.model)}/attempts.json">All compact attempts</a> · <a href="data/${slug(m.model)}/${quarter.quarter}.json">This quarter’s compact sessions</a></details>`;
+  )}<p class="note">Extra journal calls are requests, not proof of retrieval or use. Requests can fail. Tool errors: ${m.all_attempt_tool_errors} across all attempts; execution rejections: ${m.execution_rejections}.</p></details><details><summary>Source and accounting</summary><p>${esc(data.manifest.exceptions.find((x: any) => x.model === m.model)?.note ?? "Four independent quarters; every selected attempt is retained.")}</p><p>${m.winning_sales} profitable sales earned ${usd(m.realized_gains, true)}; ${m.losing_sales} loss-making sales lost ${usd(Math.abs(m.realized_losses), true)}. These include partial sells. Net realized trading P&L: ${pnl(m.realized, true)}.</p><p>Quarter-end open gains: ${pnl(m.unrealized, true)}; dividends: ${usd(m.dividend_income, true)}. Positions were not forced to sell at quarter-end.</p><p>On ${m.sell_and_buy_days}/${m.sell_days} days with a sale, the model also bought. This records same-day activity, not whether a particular sale funded a purchase.</p><a href="data/provenance.json">Exact source, runtime, dataset and segment identities</a> · <a href="data/${slug(m.model)}/attempts.json">All compact attempts</a> · <a href="data/${slug(m.model)}/${quarter.quarter}.json">This quarter’s compact sessions</a></details>`;
   const setDate = (v: string) => {
     location.hash = `sessions/${slug(m.model)}/${v}`;
   };
@@ -225,9 +239,10 @@ async function sessions(parts: string[], ticket: number) {
   decision(
     d,
     attempts.filter((a: any) => a.date === d.date),
+    days,
   );
 }
-function decision(d: any, attempts: any[]) {
+function decision(d: any, attempts: any[], days: any[]) {
   const portfolio = (p: any) =>
     table(
       ["Holding", "Units", "Value", "Weight"],
@@ -250,7 +265,7 @@ function decision(d: any, attempts: any[]) {
     )
     .join("");
   document.querySelector("#decision")!.innerHTML =
-    `<h2>${esc(d.date)} <span class="pill">${esc(d.session_class.replaceAll("_", " "))}</span></h2><p class="note">Observed prices through ${esc(d.observation_date)}. Attempt ${d.attempt ?? "—"}. ${d.contribution ? `Deposit: ${usd(d.contribution)}.` : ""} ${d.reason ? esc(d.reason) : ""}</p><section class="card"><h3>Journal submitted before execution</h3><div class="journal">${esc(d.journal?.text ?? "No accepted journal on this invalid day.")}</div></section><h3>Executed trades</h3>${
+    `<h2>${esc(d.date)} <span class="pill">${esc(d.session_class.replaceAll("_", " "))}</span></h2><p class="note">Observed prices through ${esc(d.observation_date)}. Attempt ${d.attempt ?? "—"}. ${d.contribution ? `Deposit: ${usd(d.contribution)}.` : ""} ${d.reason ? esc(d.reason) : ""}</p>${memory(d, days)}<section class="card"><h3>Journal submitted before execution</h3><div class="journal">${esc(d.journal?.text ?? "No accepted journal on this invalid day.")}</div></section><h3>Executed trades</h3>${
       d.fills.length
         ? table(
             ["Stock", "Side", "Units", "Price", "Cash exchanged"],
@@ -263,7 +278,7 @@ function decision(d: any, attempts: any[]) {
             ]),
           )
         : '<p class="empty">No executed trades.</p>'
-    }${d.failed_orders.length ? `<details open><summary>${d.failed_orders.length} rejected orders</summary><pre>${esc(JSON.stringify(d.failed_orders, null, 2))}</pre></details>` : ""}<div class="two-col"><section class="card"><h3>Supplied opening portfolio</h3><p>${usd(d.opening_portfolio.netWorth, true)}</p>${portfolio(d.opening_portfolio)}</section><section class="card"><h3>Portfolio at the close</h3><p>${usd(d.closing_portfolio.netWorth, true)}</p>${portfolio(d.closing_portfolio)}</section></div><h3>Tool sequence · accepted attempt</h3><p class="note">${d.tool_calls.length} calls; ${d.usage?.turns ?? "unobserved"} model turns. Previous prices, portfolio and recent journals were already supplied.</p><ol class="tool-list">${tools || "<li>No accepted tool sequence.</li>"}</ol><details><summary>Tool receipts and observed market evidence</summary><pre>${esc(JSON.stringify(d.tool_receipts, null, 2))}</pre></details><details><summary>All ${attempts.length} recorded attempts for this date</summary>${attempts.map((a) => `<h3>Attempt ${a.attempt} · ${esc(a.outcome)} ${a.committed ? "· committed" : ""}</h3><p>${esc(a.reason ?? "")}</p><pre>${esc(JSON.stringify(a, null, 2))}</pre>`).join("")}</details><details><summary>Orders, usage and source anchors</summary><pre>${esc(JSON.stringify({ orders: d.orders, usage: d.usage, day_hash: d.day_hash, result_hash: d.result_hash, submission_hash: d.submission_hash, run_id: d.run_id, corporate_actions: d.corporate_actions }, null, 2))}</pre></details>`;
+    }${d.failed_orders.length ? `<details open><summary>${d.failed_orders.length} rejected orders</summary><pre>${esc(JSON.stringify(d.failed_orders, null, 2))}</pre></details>` : ""}<div class="two-col"><section class="card"><h3>Supplied opening portfolio</h3><p>${usd(d.opening_portfolio.netWorth, true)}</p>${portfolio(d.opening_portfolio)}</section><section class="card"><h3>Portfolio at the close</h3><p>${usd(d.closing_portfolio.netWorth, true)}</p>${portfolio(d.closing_portfolio)}</section></div><h3>Tool sequence · accepted attempt</h3><p class="note">${d.tool_calls.length} calls; ${d.usage?.turns ?? "unobserved"} model turns. Held-position marks, portfolio and recent journals were already supplied.</p><ol class="tool-list">${tools || "<li>No accepted tool sequence.</li>"}</ol><details><summary>Tool receipts and observed market evidence</summary><pre>${esc(JSON.stringify(d.tool_receipts, null, 2))}</pre></details><details><summary>All ${attempts.length} recorded attempts for this date</summary>${attempts.map((a) => `<h3>Attempt ${a.attempt} · ${esc(a.outcome)} ${a.committed ? "· committed" : ""}</h3><p>${esc(a.reason ?? "")}</p><pre>${esc(JSON.stringify(a, null, 2))}</pre>`).join("")}</details><details><summary>Orders, usage and source anchors</summary><pre>${esc(JSON.stringify({ orders: d.orders, usage: d.usage, day_hash: d.day_hash, result_hash: d.result_hash, submission_hash: d.submission_hash, run_id: d.run_id, corporate_actions: d.corporate_actions }, null, 2))}</pre></details>`;
 }
 async function route() {
   const ticket = ++generation;

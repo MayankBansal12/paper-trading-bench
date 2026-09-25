@@ -33,6 +33,9 @@ test("published selection has all ten models and preserves invalid and uncommitt
     const slug = m.model.toLowerCase().replace(/[^a-z0-9]+/g, "-");
     const a = await Bun.file(`${dir}/data/${slug}/attempts.json`).json();
     expect(a).toHaveLength(m.attempts);
+    const calls: number[] = [];
+    const research: number[] = [];
+    const sequences = new Map<string, number>();
     for (const q of m.quarters) {
       const ds = await Bun.file(`${dir}/data/${slug}/${q.quarter}.json`).json();
       expect(ds).toHaveLength(q.days);
@@ -40,7 +43,19 @@ test("published selection has all ten models and preserves invalid and uncommitt
         q.net_profit,
         5,
       );
+      for (const d of ds.filter((d: any) => d.status === "completed")) {
+        calls.push(d.tool_calls.length);
+        research.push(d.tool_calls.filter((t: any) => t.name !== "submit_day").length);
+        const key = JSON.stringify(d.tool_calls.map((t: any) => t.name));
+        sequences.set(key, (sequences.get(key) ?? 0) + 1);
+      }
     }
+    expect(calls).toHaveLength(m.valid_days);
+    expect(calls.reduce((s, n) => s + n, 0)).toBe(m.total_calls_valid);
+    expect(research.filter((n) => n === 0).length).toBe(m.research_calls.zero_days);
+    expect(research.reduce((s, n) => s + n, 0) / research.length).toBeCloseTo(m.research_calls.mean, 10);
+    expect(m.workflow_sequences.reduce((s: number, w: any) => s + w.count, 0)).toBe(m.valid_days);
+    for (const w of m.workflow_sequences) expect(sequences.get(JSON.stringify(w.tools))).toBe(w.count);
   }
   expect(
     summary.models.some(
@@ -66,7 +81,7 @@ test("every built local page link resolves, including study and session anchors"
           summary.models.some(
             (m: any) =>
               m.model.toLowerCase().replace(/[^a-z0-9]+/g, "-") === model &&
-              m.quarters.some((q: any) => date! >= q.start && date! <= q.end),
+              (!date || m.quarters.some((q: any) => date >= q.start && date <= q.end)),
           ),
         ).toBe(true);
       } else if (anchor && anchor !== "sessions") {
@@ -86,4 +101,24 @@ test("build keeps journals escaped and labels accounting and sample limits", asy
   const method = await readFile(dir + "/methodology.html", "utf8");
   expect(method).toContain("post-result selection");
   expect(method).toContain("fresh attempts");
+});
+
+test("selling-position denominators match the independent review, including partial sales", () => {
+  const expected: Record<string, number[]> = {
+    "Astra 6": [57, 154, 35, 328],
+    "DeepSeek 4.1 Flash": [181, 629, 54, 1033],
+    "GLM 5.3 Flash": [49, 225, 15, 347],
+    "Luna 6": [27, 61, 32, 116],
+    "Muse Spark 1.3": [36, 71, 17, 114],
+    "Opus 5": [125, 361, 58, 968],
+    "Opus 5.5": [18, 151, 5, 183],
+    "Sol 5.6": [85, 378, 23, 766],
+    "Sol 6": [105, 410, 22, 806],
+    "Sonnet 5": [58, 153, 10, 162],
+  };
+  for (const m of summary.models) {
+    const s = m.sale_selection;
+    expect([s.loss_sold, s.loss_positions, s.gain_sold, s.gain_positions]).toEqual(expected[m.model]);
+  }
+  expect(summary.models.find((m: any) => m.model === "Opus 5.5").sell_and_buy_days).toBe(0);
 });

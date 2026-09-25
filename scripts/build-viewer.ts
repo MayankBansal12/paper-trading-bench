@@ -7,7 +7,19 @@ const root = resolve(import.meta.dir, ".."),
 const read = async (name: string) =>
   JSON.parse(await readFile(join(src, name), "utf8"));
 const manifest = await read("manifest.json"),
-  metrics = await read("metrics.json");
+  metrics = await read("metrics.json"),
+  memoryAudit = await read("memory-audit.json");
+const number = (n: number) => n.toLocaleString("en-US");
+const observedMemory = memoryAudit.models.filter((m: any) => m.actual_local_attempts_checked > 0);
+const observedAttempts = observedMemory.reduce((n: number, m: any) => n + m.actual_local_attempts_checked, 0);
+for (const [name, sha] of Object.entries({
+  "provenance.json": manifest.provenance_sha256,
+  ...manifest.supporting_sha256,
+})) {
+  const bytes = await readFile(join(src, name));
+  if (new Bun.CryptoHasher("sha256").update(bytes).digest("hex") !== sha)
+    throw Error("Evidence checksum mismatch: " + name);
+}
 const slug = (s: string) =>
   s
     .toLowerCase()
@@ -42,7 +54,7 @@ const style: Record<string, string> = {
   "GLM 5.3 Flash":
     "Persistent baskets, selective additions, and changing deployment conditions.",
   "Sonnet 5":
-    "Selected core holdings, small additions on weakness, and more cash later.",
+    "Additions to a chosen core; rarely sells and buys on the same day.",
   "Muse Spark 1.3": "Long waits followed by larger, concentrated purchases.",
   "DeepSeek 4.1 Flash":
     "Frequent history queries, active rotation and flexible price thresholds.",
@@ -69,6 +81,29 @@ for (const f of manifest.files) {
 }
 const models = metrics.models
   .map((m: any) => {
+    const valid = days.filter((d) => d.model === m.model && d.status === "completed");
+    const sequences = new Map<string, number>();
+    for (const d of valid) {
+      const key = JSON.stringify(d.tool_calls.map((t: any) => t.name));
+      sequences.set(key, (sequences.get(key) ?? 0) + 1);
+    }
+    const workflows = [...sequences]
+      .map(([key, count]) => ({ tools: JSON.parse(key), count }))
+      .sort((a, b) => b.count - a.count || JSON.stringify(a.tools).localeCompare(JSON.stringify(b.tools)));
+    if (valid.length !== m.valid_days) throw Error("Workflow coverage mismatch: " + m.model);
+    const research = valid.map((d) => d.tool_calls.filter((t: any) => t.name !== "submit_day").length).sort((a, b) => a - b);
+    const mid = Math.floor(research.length / 2);
+    const saleSelection = { loss_positions: 0, loss_sold: 0, gain_positions: 0, gain_sold: 0 };
+    for (const d of valid) {
+      const sold = new Set(d.fills.filter((f: any) => f.side === "SELL").map((f: any) => f.ticker));
+      if (!sold.size) continue;
+      for (const [ticker, h] of Object.entries(d.opening_portfolio.holdings) as [string, any][]) {
+        if (h.lastClose === h.avgCost) continue;
+        const sign = h.lastClose < h.avgCost ? "loss" : "gain";
+        saleSelection[`${sign}_positions`]++;
+        if (sold.has(ticker)) saleSelection[`${sign}_sold`]++;
+      }
+    }
     const qs = metrics.quarters
       .filter((q: any) => q.model === m.model)
       .map((q: any) => {
@@ -91,8 +126,23 @@ const models = metrics.models
       dividend_income: sum("dividend_income"),
       winning_sales: sum("winning_sales"),
       losing_sales: sum("losing_sales"),
+      realized_gains: sum("realized_positive"),
+      realized_losses: sum("realized_negative"),
+      sell_days: valid.filter((d) => d.fills.some((f: any) => f.side === "SELL")).length,
+      sell_and_buy_days: valid.filter((d) => ["BUY", "SELL"].every((side) => d.fills.some((f: any) => f.side === side))).length,
       worst_drawdown: Math.max(...qs.map((q: any) => q.max_drawdown_pct)),
       average_calls: m.calls_per_valid_day.mean,
+      workflow_sequences: workflows,
+      sale_selection: saleSelection,
+      research_calls: {
+        mean: research.reduce((s, n) => s + n, 0) / research.length,
+        median: research.length % 2 ? research[mid] : (research[mid - 1] + research[mid]) / 2,
+        zero_days: research.filter((n) => n === 0).length,
+      },
+      total_calls_valid: Object.values(m.calls_valid).reduce((s: number, n: any) => s + n, 0),
+      favorite_query: Object.entries(m.calls_valid)
+        .filter(([name]) => name !== "submit_day")
+        .sort((a: any, b: any) => b[1] - a[1])[0]?.[0] ?? null,
       common_first: Object.entries(m.first_tool).sort(
         (a: any, b: any) => b[1] - a[1],
       )[0]?.[0],
@@ -165,6 +215,20 @@ const page = async (name: string, title: string, body: string) => {
   await writeFile(join(out, name + ".html"), html);
 };
 const table = `<div class="table-wrap pnl"><table><thead><tr><th>Model</th><th>Realized</th><th>Unrealized</th><th>Dividends</th><th>Net profit</th></tr></thead><tbody>${models.map((m: any) => `<tr><td>${esc(m.model)}</td>${["realized", "unrealized", "dividend_income", "net_profit"].map((k) => `<td>${money(m[k])}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
+const toolLabel: Record<string, string> = { market_snapshot: "Snapshot", price_history: "History", journal: "Journal", submit_day: "Submit" };
+const workflowTable = `<div class="table-wrap workflow"><table><thead><tr><th>Model</th><th>Calls: mean / median</th><th>Most common sequence</th><th>Valid days using it</th><th>Extra journal days</th></tr></thead><tbody>${models.map((m: any) => {
+  const w = m.workflow_sequences[0];
+  return `<tr><td><a href="index.html#sessions/${slug(m.model)}">${esc(m.model)}</a></td><td>${m.average_calls.toFixed(2)} / ${m.calls_per_valid_day.median}</td><td>${w.tools.map((t: string) => toolLabel[t] ?? esc(t)).join(" → ")}</td><td>${w.count} / ${m.valid_days}</td><td>${m.journal_days} / ${m.valid_days}</td></tr>`;
+}).join("")}</tbody></table></div><p class="note">Counts use valid sessions and include failed tool requests and submission corrections. “Most common” need not mean a majority. Sequence is recorded call order, not a count of reasoning steps. Models are ordered by net profit.</p>`;
+const opportunities = await read("price-opportunities.json");
+const saleTable = `<details><summary>Which holdings did models choose to sell?</summary><div class="table-wrap"><table><thead><tr><th>Model</th><th>Losing holdings sold</th><th>Gaining holdings sold</th><th>Sell-days also buying</th></tr></thead><tbody>${models.map((m: any) => `<tr><td>${esc(m.model)}</td><td>${m.sale_selection.loss_sold} / ${m.sale_selection.loss_positions}</td><td>${m.sale_selection.gain_sold} / ${m.sale_selection.gain_positions}</td><td>${m.sell_and_buy_days} / ${m.sell_days}</td></tr>`).join("")}</tbody></table></div><p>Only valid days with at least one executed sale are included. Each held stock counts once per such day; any partial or full sale counts as sold. Loss/gain compares its previous-close mark with the account’s rounded average cost; equal marks are excluded. These are position–day counts, not unique stocks, invested dollars or realized sale profits. Execution at the next open can change the sign. Same-day buying does not prove where the purchase money came from.</p></details>`;
+const priceTable = `<details><summary>Buying and selling after sharp moves · all ten models</summary><div class="table-wrap"><table><thead><tr><th>Model</th><th>Buy after fall</th><th>Buy after rise</th><th>Sell after fall</th><th>Sell after rise</th></tr></thead><tbody>${models.map((m: any) => {
+  const rows = opportunities.find((p: any) => p.model === m.model).rows;
+  const down = rows.find((r: any) => r.condition === "down_at_least_3pct_1d");
+  const up = rows.find((r: any) => r.condition === "up_at_least_3pct_1d");
+  const fraction = (r: any, side: string) => `${r.response[side] + r.response.BOTH} / ${r.queried_ticker_days}`;
+  return `<tr><td>${esc(m.model)}</td><td>${fraction(down, "BUY")}</td><td>${fraction(up, "BUY")}</td><td>${fraction(down, "SELL")}</td><td>${fraction(up, "SELL")}</td></tr>`;
+}).join("")}</tbody></table></div><p>Each fraction counts stock–date observations with an executed purchase or sale, out of queried stocks with a rise or fall of at least 3% between the last two returned closes. Additions and partial sells count; a stock bought and sold the same day appears on both sides. Unqueried stocks and missing history are outside this table. The model chose what to query, so this is a conditional comparison, not a controlled test of price sensitivity.</p></details>`;
 const pairs: [string, string, string][] = [
   ["astra", "Astra 6", "2025-05-08"],
   ["opus", "Opus 5", "2025-04-09"],
@@ -180,6 +244,9 @@ const pairs: [string, string, string][] = [
   ["muse-style", "Muse Spark 1.3", "2025-12-30"],
   ["glm-style", "GLM 5.3 Flash", "2025-11-26"],
   ["opus55-style", "Opus 5.5", "2025-07-21"],
+  ["opus55-rule", "Opus 5.5", "2025-10-27"],
+  ["opus55-aapl", "Opus 5.5", "2025-05-01"],
+  ["opus55-wmt", "Opus 5.5", "2025-07-01"],
 ];
 const cards = pairs
   .map(([id, m, date]) => {
@@ -194,13 +261,16 @@ await page(
   "Investment behavior",
   Bun.markdown.html(
     md
+      .replace("<!-- workflow-table -->", workflowTable)
+      .replace("<!-- price-table -->", priceTable)
+      .replace("<!-- sell-selection-table -->", saleTable)
       .replace(/<!-- pnl-table -->[\s\S]*?<!-- \/pnl-table -->/, table)
       .replaceAll(
         "https://mayankbansal12.github.io/paper-trading-bench/study.html#",
         "#",
       ),
   ) +
-    `<h2 id="evidence">Selected original sessions</h2><p>Examples explain the findings; they are not an unbiased estimate of rule compliance.</p>${cards}<details><summary>Evidence coverage and accounting</summary><p>The comparison uses 2,510 days, 2,506 valid decisions, 3,191 fills and 2,578 selected attempts. All 40 quarter accounts reconcile in independent float and Decimal calculations. Original event-chain verification was performed during extraction; this site checks compact file hashes and recalculates accounting, not a new pinned-runtime replay.</p><p>Automatic context was directly checked for 1,293 attempts across five models. For the others, the matching pinned protocol and committed sequence establish the preload policy; this does not prove the model used its journals. Query coverage differs by model and is displayed with denominators.</p><p><a href="data/rule-review.json">30 purposive rule cases</a> · <a href="data/price-opportunities.json">Price-response denominators</a> · <a href="data/memory-audit.json">Memory coverage</a> · <a href="methodology.html#selection">Selection history</a></p></details>`,
+    `<h2 id="evidence">Selected original sessions</h2><p>Examples explain the findings; they are not an unbiased estimate of rule compliance.</p>${cards}<details><summary>Evidence coverage and accounting</summary><p>The comparison uses ${number(manifest.accounted_days)} days, ${number(manifest.valid_days)} valid decisions, ${number(manifest.fills)} fills and ${number(manifest.attempts)} selected attempts. All ${number(manifest.quarters)} quarter accounts reconcile in independent float and Decimal calculations. Original event-chain verification was performed during extraction; this site checks compact file hashes and recalculates accounting, not a new pinned-runtime replay.</p><p>Automatic context was directly checked for ${number(observedAttempts)} attempts across ${observedMemory.length} models. For the others, the matching pinned protocol and committed sequence establish the preload policy; this does not prove the model used its journals. Query coverage differs by model and is displayed with denominators.</p><p><a href="data/rule-review.json">30 purposive rule cases</a> · <a href="data/price-opportunities.json">Price-response denominators</a> · <a href="data/memory-audit.json">Memory coverage</a> · <a href="methodology.html#selection">Selection history</a></p></details>`,
 );
 const method = await readFile(join(root, "docs/METHODOLOGY.md"), "utf8");
 await page(

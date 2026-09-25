@@ -8,7 +8,7 @@ How do language models invest when they have the same trading tools?
 
 Ten models, four independent quarterly accounts, April 2025–March 2026. Each model
 has 251 sessions and $600,000 in total funding. Every day starts a fresh agent
-session with its portfolio, previous prices and three recent journals. Orders
+session with its portfolio, held-position prices and up to three recent journals. Orders
 execute at the next open; holdings are valued at the close.
 
 ## Explore locally

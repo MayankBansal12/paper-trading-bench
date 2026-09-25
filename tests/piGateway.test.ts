@@ -76,7 +76,35 @@ for (const modelId of [PI_MODEL_ID, PI_SOL_MODEL_ID]) test(`${modelId} gateway d
     expect((await request(changed)).status).toBe(403);
     expect(
       (await request({ ...body, padding: "x".repeat(3 * 1024 * 1024) })).status,
-    ).toBe(400);
+    ).toBe(413);
+    expect(trace.at(-1)).toMatchObject({ reason: "request-size", detail: { stage: "decompress" } });
+    const malformed = await fetch("http://gateway/inference/responses", {
+      unix: join(s.dir, "pi.sock"), method: "POST",
+      headers: { authorization: `Bearer ${server.capability}`, "content-encoding": "zstd" },
+      body: "not a zstd frame",
+    });
+    expect(malformed.status).toBe(400);
+    expect(trace.at(-1)).toMatchObject({ reason: "invalid-compressed-request", detail: { stage: "decompress" } });
+    // Unknown-length plain bodies can fail while reading, before JSON parsing.
+    const oversized = await fetch("http://gateway/inference/responses", {
+      unix: join(s.dir, "pi.sock"), method: "POST",
+      headers: { authorization: `Bearer ${server.capability}` },
+      body: new ReadableStream({ start(controller) {
+        for (let i = 0; i < 96; i++) controller.enqueue(new Uint8Array(32768));
+        controller.close();
+      } }),
+    });
+    expect(oversized.status).toBe(413);
+    expect(trace.at(-1)).toMatchObject({ reason: "request-size", detail: { stage: "read", encoding: "identity" } });
+    // Bun rejects a known oversized Content-Length before fetch(), so no gateway audit is emitted.
+    const beforeKnownLength = trace.length;
+    const knownLength = await fetch("http://gateway/inference/responses", {
+      unix: join(s.dir, "pi.sock"), method: "POST",
+      headers: { authorization: `Bearer ${server.capability}` },
+      body: "x".repeat(3 * 1024 * 1024),
+    });
+    expect(knownLength.status).toBe(413);
+    expect(trace).toHaveLength(beforeKnownLength);
     expect(forwarded).toBe(1);
     expect(JSON.stringify(trace)).not.toContain("host-only-fixture");
   } finally {

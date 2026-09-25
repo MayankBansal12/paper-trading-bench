@@ -9,6 +9,12 @@ import sys
 ROOT=Path(__file__).resolve().parents[1]
 O=ROOT/'results/current'
 MANIFEST=json.loads((O/'manifest.json').read_text())
+assert hashlib.sha256((O/'provenance.json').read_bytes()).hexdigest()==MANIFEST['provenance_sha256'], 'Input checksum: provenance.json'
+for name in ['memory-audit.json','rule-review.json']:
+ assert hashlib.sha256((O/name).read_bytes()).hexdigest()==MANIFEST['supporting_sha256'][name], 'Input checksum: '+name
+rules=json.loads((O/'rule-review.json').read_text())
+assert len(rules['cases'])==30, 'Rule review must retain all 30 selected cases'
+assert dict(Counter(c['assessment'] for c in rules['cases']))==rules['counts'], 'Rule review counts disagree with cases'
 CHECK='--check' in sys.argv
 def jl(p):return [json.loads(l) for l in p.open()]
 def dump(n,x):
@@ -127,11 +133,7 @@ for m in MD:
 # Covered ticker-day price responses; coverage is not a causal attribution.
 P=[]
 for m in sorted({d['model'] for d in D}):
- ds=sorted([d for d in D if d['model']==m],key=lambda d:d['date']);v=[d for d in ds if d['session_class']!='invalid'];c=Counter();dayscovered=Counter();sample=[];expected=Counter();qs=[]
- for q in sorted({d['quarter'] for d in ds}):
-  n=0
-  for d in [d for d in ds if d['quarter']==q]:
-   if d['session_class']!='invalid':expected[min(n,3)]+=1;n+=1
+ ds=sorted([d for d in D if d['model']==m],key=lambda d:d['date']);v=[d for d in ds if d['session_class']!='invalid'];c=Counter();dayscovered=Counter()
  for d in v:
   obs={}
   for r in d['tool_receipts']:
