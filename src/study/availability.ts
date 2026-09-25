@@ -1,3 +1,5 @@
+import { resolve } from "node:path";
+import { quotaWasReset } from "./continuation.ts";
 import type { JournalEvent, JournalStore } from "./journal.ts";
 
 /** Opt-in scheduling policy, frozen in every child config. It never refunds an attempt. */
@@ -35,6 +37,7 @@ export function quotaPause(store: JournalStore, event?: JournalEvent): QuotaPaus
     } catch { /* A generic 429 is not proof of account quota exhaustion. */ }
   }
   if (!found || reset === undefined) return;
+  if (typeof event.scope.runId === "string" && quotaWasReset(resolve("results/studies", event.scope.runId), event)) return;
   return { reason: "provider-usage-limit", notBefore: new Date(reset).toISOString(),
     failedAttempt: event.scope.attempt, resultEventHash: event.hash };
 }

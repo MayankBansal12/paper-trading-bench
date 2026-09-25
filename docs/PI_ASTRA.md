@@ -82,3 +82,26 @@ pause the coordinator re-arms the same BB automation with `--at` using the
 recorded `notBefore` timestamp (provider reset plus the frozen five-minute buffer).
 There is no recurring 15-minute poll. A systemd service supervises active work;
 the machine and BB must remain available. Unexpected blockers stop the queue.
+
+### User-confirmed early quota resets
+
+A provider's recorded reset can become obsolete after the user resets their account
+quota. `manual-quota-reset.json` authorizes skipping the wait only for listed,
+already-recorded quota-failure hashes in one run. Later quota failures still pause;
+failed attempts are never erased or refunded. This does not alter wall-clock time.
+
+For an existing pinned cohort, the explicit user-requested scheduling-only
+continuation is an exception to the ordinary new-cohort rule. Keep the original
+manifest unchanged. A separate receipt binds the old and continued implementation
+hashes, unchanged config/plan hash, and (for evaluation) both orchestrator hashes.
+The guard restricts changes to quota handling, receipt validation, runner identity
+checks, and restoring recorded runtime assets. Trading workers, prompts, data,
+journal, accounting, attempt limits and actual sandbox binaries remain identical.
+If host packages changed, BENCH_PINNED_BINARIES selects copies by their original
+SHA-256 and BENCH_PINNED_CATALOGS restores the recorded Pi catalog entry. The
+launcher executes that pinned Bubblewrap copy with the same isolation flags.
+The receipt separately binds original and continued runtime hashes; only the
+launcher script hash may differ. Qualification must pass before live inference.
+Preserve superseded preflight receipts and any failed launch evidence. Publish both source identities, the user
+reset authorization, prior artifact hashes and replay receipts; do not label the
+continuation as having one unchanged implementation. Keep the old source checkout.

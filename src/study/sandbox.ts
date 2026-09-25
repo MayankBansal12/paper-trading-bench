@@ -18,7 +18,13 @@ export interface SandboxProcess {
   stop: () => Promise<void>;
   evidence: Record<string, unknown>;
 }
-export async function sandboxIdentity() {
+function binaryPath(expectedHash: string | undefined, fallback: string) {
+  const dir = process.env.BENCH_PINNED_BINARIES;
+  if (!dir || !expectedHash) return fallback;
+  if (!/^[a-f0-9]{64}$/.test(expectedHash)) throw new Error("Invalid pinned binary hash");
+  return join(dir, expectedHash);
+}
+export async function sandboxIdentity(expected?: any) {
   const files = [
     "scripts/sandbox/launch.sh",
     "src/study/worker.ts",
@@ -34,14 +40,14 @@ export async function sandboxIdentity() {
       ]),
     ),
   );
-  const version = Bun.spawn(["/usr/bin/bwrap", "--version"], {
+  const version = Bun.spawn([binaryPath(expected?.bwrapHash, "/usr/bin/bwrap"), "--version"], {
     stdout: "pipe",
     stderr: "pipe",
   });
   const v = (await new Response(version.stdout).text()).trim();
   if ((await version.exited) !== 0 || v !== "bubblewrap 0.9.0")
     throw new Error("Unqualified bubblewrap version");
-  const binary = await readFile(Bun.which("opencode") ?? "/missing");
+  const binary = await readFile(binaryPath(expected?.opencodeHash, Bun.which("opencode") ?? "/missing"));
   const bun = await readFile(process.execPath);
   const identity = {
     policy: SANDBOX_POLICY,
@@ -50,7 +56,7 @@ export async function sandboxIdentity() {
     opencodeHash: createHash("sha256").update(binary).digest("hex"),
     bunHash: createHash("sha256").update(bun).digest("hex"),
     bwrapHash: createHash("sha256")
-      .update(await readFile("/usr/bin/bwrap"))
+      .update(await readFile(binaryPath(expected?.bwrapHash, "/usr/bin/bwrap")))
       .digest("hex"),
     kernel: (await readFile("/proc/sys/kernel/osrelease", "utf8")).trim(),
     limits: {
@@ -68,13 +74,16 @@ export interface PreparedSandboxRuntime {
   dispose: () => Promise<void>;
 }
 /** Copy and verify trusted executables once; daily launches mount these same files read-only. */
-export async function prepareSandboxRuntime(): Promise<PreparedSandboxRuntime> {
-  const evidence = await sandboxIdentity();
+export async function prepareSandboxRuntime(expected?: any): Promise<PreparedSandboxRuntime> {
+  const evidence = await sandboxIdentity(expected);
+  if (expected && (evidence.opencodeHash !== expected.opencodeHash || evidence.bwrapHash !== expected.bwrapHash))
+    throw new Error("Pinned executable differs from recorded runtime");
   const dir = await mkdtemp(join(tmpdir(), "study-immutable-runtime-"));
   try {
     for (const [source, name, hash] of [
       [process.execPath, "bun", evidence.bunHash],
-      [Bun.which("opencode")!, "opencode", evidence.opencodeHash],
+      [binaryPath(expected?.opencodeHash, Bun.which("opencode")!), "opencode", evidence.opencodeHash],
+      [binaryPath(expected?.bwrapHash, "/usr/bin/bwrap"), "bwrap", evidence.bwrapHash],
       [
         resolve("src/study/worker.ts"),
         "worker.ts",
@@ -160,6 +169,7 @@ export async function launchSandbox(
     socket,
     join(runtime.dir, "worker.ts"),
     String(Math.max(1, Math.ceil(timeoutMs / 1000))),
+    join(runtime.dir, "bwrap"),
   ];
   const child = Bun.spawn(args, {
     stdin: "ignore",
