@@ -48,8 +48,13 @@ export async function environmentCLI(command: string, argv: string[]) {
   const { flags, positionals } = parseFlags(argv);
   assertNoPositionals(positionals, command);
   if (command === "sandbox-check") {
-    assertKnownFlags(flags, [], command);
-    console.log(JSON.stringify(await qualifySandbox(), null, 2));
+    assertKnownFlags(flags, ["model"], command);
+    if (flags.has("model")) {
+      const { prepareModelRuntime } = await import("../study/model.ts");
+      const runtime = await prepareModelRuntime(flags.get("model"));
+      try { console.log(JSON.stringify(runtime.sandboxQualification, null, 2)); }
+      finally { await runtime.dispose(); }
+    } else console.log(JSON.stringify(await qualifySandbox(), null, 2));
     return;
   }
   if (["resume", "inspect", "verify", "review"].includes(command)) {
@@ -104,6 +109,7 @@ export async function environmentCLI(command: string, argv: string[]) {
           "model",
           "preflight",
           "pause-on-quota",
+          "continue-checkpoint",
         ],
     command,
   );
@@ -153,6 +159,7 @@ export async function environmentCLI(command: string, argv: string[]) {
       ),
     },
     policy: POLICY,
+    ...(flags.has("continue-checkpoint") ? { continuation: JSON.parse(readFileSync(resolve(flags.get("continue-checkpoint")!), "utf8")) } : {}),
   };
   const prepared = await prepareStudyData(c);
   if (smoke && prepared.dates.length > 5)
@@ -172,9 +179,22 @@ export async function environmentCLI(command: string, argv: string[]) {
     return;
   }
   if (parseBooleanFlag("preflight", flags.get("preflight"))) {
+    // A continuation/recovery preflight authenticates the frozen parent and its fit without any model call.
+    let continuation: object | undefined;
+    if (c.continuation) {
+      const { loadParentPrefix, continuationFits } = await import("../study/segment.ts");
+      const parent = loadParentPrefix(c.continuation);
+      if (!continuationFits(parent, c as any, prepared.dates)) throw new Error("Continuation parent does not match this quarter");
+      continuation = {
+        version: c.continuation.version, inheritedDays: parent.days.length, remainingDates: prepared.dates.slice(parent.days.length),
+        carriedFailures: parent.carried.length, consecutiveInvalidDays: parent.consecutiveInvalidDays,
+        ...(c.continuation.recovery ? { recovery: { boundaryDate: c.continuation.recovery.boundaryDate,
+          supersededDays: c.continuation.recovery.supersededDays.map((d) => d.date), supersededAttempts: c.continuation.recovery.supersededAttempts.length } } : {}),
+      };
+    }
     console.log(
       JSON.stringify(
-        { config: c, sessions: prepared.dates.length, modelCalls: 0 },
+        { config: c, sessions: prepared.dates.length, ...(continuation ? { continuation } : {}), modelCalls: 0 },
         null,
         2,
       ),

@@ -64,12 +64,12 @@ test("every model receives exactly the same four disjoint quarters across the ye
   expect(() => evaluationSchedule("empty", [])).toThrow("nonempty");
 });
 
-test("preflight freezes a separate model/quarter config and checks funding for all twenty model/control jobs", async () => {
+test("preflight freezes a separate model/quarter config and checks funding for all model/control jobs", async () => {
   const c = input();
   c.models = [...EVALUATION_MODELS, CONTROL_MODEL];
   const plan = await prepareEvaluation(c);
-  expect(plan.jobs).toHaveLength(20);
-  expect(plan.execution).toEqual({ maxConcurrentRuns: 20, scheduling: "model-then-quarter-queue", state: "independent-runs" });
+  expect(plan.jobs).toHaveLength((EVALUATION_MODELS.length + 1) * 4);
+  expect(plan.execution).toEqual({ maxConcurrentRuns: (EVALUATION_MODELS.length + 1) * 4, scheduling: "model-then-quarter-queue", state: "independent-runs" });
   for (const model of c.models) {
     const jobs = plan.jobs.filter(j => j.model === model);
     expect(jobs.map(j => j.sessions)).toEqual([62, 64, 64, 61]);
@@ -217,13 +217,13 @@ test("eval CLI preflight has zero inference and refuses dates, truncation and mo
   expect(child.exitCode).toBe(0);
   const parsed = JSON.parse(child.stdout.toString());
   expect(parsed.modelCalls).toBe(0);
-  expect(parsed.plan.jobs).toHaveLength(16);
+  expect(parsed.plan.jobs).toHaveLength(EVALUATION_MODELS.length * 4);
   expect(parsed.plan.start).toBe("2025-04-01");
   expect(parsed.plan.end).toBe("2026-03-31");
   const serial = Bun.spawnSync([...base, "--preflight=true", "--concurrency=1"], { stdout: "pipe", stderr: "pipe" });
   expect(serial.exitCode).toBe(0);
   expect(JSON.parse(serial.stdout.toString()).plan.execution.maxConcurrentRuns).toBe(1);
-  for (const flag of ["--end=2026-08-31", "--start=2026-01-01", "--models=unqualified", "--concurrency=0", "--concurrency=1.5", "--concurrency=17"]) {
+  for (const flag of ["--end=2026-08-31", "--start=2026-01-01", "--models=unqualified", "--concurrency=0", "--concurrency=1.5", "--concurrency=999"]) {
     const p = Bun.spawnSync([...base, "--preflight=true", flag], { stdout: "pipe", stderr: "pipe" });
     expect(p.exitCode).toBe(1);
   }
@@ -280,7 +280,7 @@ test("verify reports the damaged quarter and underlying replay error through the
   expect(child.stderr.toString()).toContain("Event integrity failure");
 });
 
-test("default plan is four qualified models and subsets retain exact route identity", async () => {
+test("default plan includes the registered OpenCode models and subsets retain exact route identity", async () => {
   const c = input();
   const plan = await prepareEvaluation({ ...c, models: undefined });
   expect(plan.models).toEqual([
@@ -288,8 +288,9 @@ test("default plan is four qualified models and subsets retain exact route ident
     "opencode/muse-spark-1.2-contributor-free",
     "openai/gpt-5.6-luna",
     "opencode-go/glm-5.3-flash",
+    "opencode-go/deepseek-v4.1-flash",
   ]);
-  expect(plan.jobs).toHaveLength(16);
+  expect(plan.jobs).toHaveLength(EVALUATION_MODELS.length * 4);
   for (const model of plan.models) {
     const subset = await prepareEvaluation({ ...c, models: [model] });
     expect(subset.jobs).toHaveLength(4);
@@ -297,7 +298,7 @@ test("default plan is four qualified models and subsets retain exact route ident
   }
 });
 
-test("all sixteen model jobs start concurrently with their own model configuration, without inference", async () => {
+test("all registered model jobs start concurrently with their own model configuration, without inference", async () => {
   const c = input();
   // Subprocess-local module mock keeps this test offline and cannot replace the
   // real runner in another test. The barrier detects model-at-a-time scheduling.
@@ -324,7 +325,7 @@ test("all sixteen model jobs start concurrently with their own model configurati
   const [out, err, code] = await Promise.all([new Response(child.stdout).text(), new Response(child.stderr).text(), child.exited]);
   expect(err).toBe(""); expect(code).toBe(0);
   const result = JSON.parse(out);
-  expect(result.started).toHaveLength(16);
+  expect(result.started).toHaveLength(EVALUATION_MODELS.length * 4);
   expect(new Set(result.started.map((j: any) => j.runId)).size).toBe(16);
   for (const model of EVALUATION_MODELS) expect(result.started.filter((j: any) => j.model === model)).toHaveLength(4);
   expect(result.report.quarters.every((q: any) => q.error.includes("Offline model runner fixture"))).toBe(true);
@@ -375,7 +376,7 @@ test("quota-aware serial evaluation pauses before admitting another quarter and 
   const script = `import { mock } from "bun:test";
     let calls=0;
     mock.module(${JSON.stringify(resolve("src/study/model.ts"))},()=>({
-      prepareModelRuntime:async()=>({bundle:{evidence:{id:"quota-fixture"}},dispose:async()=>{}}),
+      prepareModelRuntime:async()=>({credential:{authorize:async()=>new Headers()},bundle:{evidence:{id:"quota-fixture"}},dispose:async()=>{}}),
       decideStudy:async(view,store,past,horizon,audit)=>{
         calls++;
         const {initialStudyDecision}=await import(${JSON.stringify(resolve("src/study/agent.ts"))});

@@ -26,11 +26,27 @@ export function quotaPause(store: JournalStore, event?: JournalEvent): QuotaPaus
       .map(e => Buffer.from(e.base64, "base64"))).toString("utf8");
     try {
       const error = JSON.parse(raw)?.error;
-      if (!["usage_limit_reached", "insufficient_quota", "usage_not_included"].includes(error?.type ?? error?.code)) continue;
+      const anthropic = error?.type === "rate_limit_error";
+      if (!anthropic && !["usage_limit_reached", "insufficient_quota", "usage_not_included", "GoUsageLimitError"].includes(error?.type ?? error?.code)) continue;
       found = true;
-      const at = Number(error.resets_at) * 1000;
-      const relative = recorded + Number(error.resets_in_seconds) * 1000;
-      const candidate = Number.isFinite(at) && at > recorded ? at
+      const h = (response as any).headers ?? {};
+      const stamp = (v: unknown) => { const n = Number(v); return Number.isFinite(n) && n > 1e9 && n < 1e11 ? n * 1000 : Date.parse(String(v ?? "")); };
+      // A response includes resets for available buckets too. Only rejected buckets
+      // constrain this retry; e.g. an allowed weekly bucket must not extend a 5h pause.
+      const rejectedResets = anthropic ? Object.entries(h)
+        .filter(([k]) => /^anthropic-ratelimit-.*-reset$/.test(k) && h[k.replace(/-reset$/, "-status")] === "rejected")
+        .map(([, v]) => stamp(v)).filter((n) => Number.isFinite(n) && n > recorded) : [];
+      // The unified reset is the provider's representative limit, including older
+      // responses which omit bucket statuses. Otherwise use Retry-After below.
+      const unified = h["anthropic-ratelimit-unified-status"] === "allowed" ? NaN
+        : stamp(h["anthropic-ratelimit-unified-reset"]);
+      const at = anthropic ? (rejectedResets.length ? Math.max(...rejectedResets) : unified) : Number(error.resets_at) * 1000;
+      const relative = anthropic ? recorded + Number(h["retry-after"]) * 1000 : recorded + Number(error.resets_in_seconds) * 1000;
+      const received = Date.parse(response.receivedAt ?? "") || recorded;
+      const retry = typeof response.retryAfter === "string" && /^\d+(\.\d+)?$/.test(response.retryAfter)
+        ? received + Number(response.retryAfter) * 1000 : Date.parse(response.retryAfter ?? "");
+      const candidate = !anthropic && Number.isFinite(retry) && retry > received ? retry
+        : Number.isFinite(at) && at > recorded ? at
         : Number.isFinite(relative) && relative > recorded ? relative
         : recorded + QUOTA_PAUSE_POLICY.fallbackCooldownMs;
       reset = Math.max(reset ?? 0, candidate + QUOTA_PAUSE_POLICY.resetBufferMs);

@@ -39,7 +39,7 @@ function oauth(auth: any) {
     throw new Error("Luna requires host OpenCode OpenAI OAuth; run opencode auth login on the host. No API-key fallback.");
   return a;
 }
-export async function loadProviderCredential(route: QualifiedRoute, options: {
+export async function loadProviderCredential(route: Pick<QualifiedRoute, "provider">, options: {
   env?: Record<string, string | undefined>;
   authPath?: string;
   legacyAuthPath?: string;

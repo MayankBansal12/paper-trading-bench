@@ -23,7 +23,7 @@ for (const model of QUALIFIED_MODEL_IDS) test(`${model}: selected route reaches 
       const result = await decideStudy(s.view, s.store, [], { start: "2025-01-31", end: "2025-02-04", contributions: [] }, e => audits.push(e), {
         route, qualification: { clientVersion: "1.18.30", catalogEntry: catalogFixture(route) },
         credential: { mode: route.auth, authorize: async () => { throw Error("test-host-secret-must-never-be-used"); } },
-        bundle: {}, sandboxQualification: {}, setupMs: 0,
+        bundle: { evidence: { forbiddenPaths: [] } }, sandboxQualification: {}, setupMs: 0,
       });
       if (result.reason !== "Offline sandbox launch inspected") throw Error(result.reason);
       console.log(JSON.stringify({ launch, audits }));

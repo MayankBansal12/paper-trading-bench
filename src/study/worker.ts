@@ -23,7 +23,8 @@ for (const name of ["home", "config", "data", "cache", "state", "extra-config"])
 await writeFile("/work/write-probe", "scratch");
 await unlink("/work/write-probe");
 checks.scratch = "writable";
-for (const path of ["/runtime/worker.ts", "/work/benchmark-plugin.mjs"]) {
+for (const path of [
+  ...(launch.forbiddenPaths ?? []),"/runtime/worker.ts", "/work/benchmark-plugin.mjs"]) {
   try {
     await writeFile(path, "poison");
     checks[`write:${path}`] = "ACCESSIBLE";

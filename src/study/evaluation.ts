@@ -1,6 +1,8 @@
 import { implementationMatches, readContinuation } from "./continuation.ts";
+import { loadParentPrefix, type ContinuationCheckpoint } from "./segment.ts";
 import { QUOTA_PAUSE_POLICY } from "./availability.ts";
 import { isPiModel } from "../pi/route.ts";
+import { isClaudeModel } from "../claude/route.ts";
 import { existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { contentHash, textHash } from "../core/hash.ts";
@@ -35,6 +37,7 @@ export interface EvaluationInput {
   timeoutMs?: number;
   concurrency?: number;
   pauseOnQuota?: boolean;
+  continuation?: ContinuationCheckpoint;
 }
 
 /** Every model uses the same Cartesian product; there is no continuous-year path. */
@@ -61,7 +64,7 @@ export async function prepareEvaluation(input: EvaluationInput) {
   if (!Number.isSafeInteger(concurrency) || concurrency < 1 || concurrency > schedule.length)
     throw new Error(`Concurrency must be an integer from 1 to ${schedule.length}`);
   for (const model of models)
-    if (model !== CONTROL_MODEL && !isPiModel(model) && !EVALUATION_MODELS.includes(model))
+    if (model !== CONTROL_MODEL && !isPiModel(model) && !isClaudeModel(model) && !EVALUATION_MODELS.includes(model))
       throw new Error(`Unqualified evaluation model: ${model}. Qualified routes: ${EVALUATION_MODELS.join(", ")}`);
   const history = input.history ?? 100;
   const timeoutMs = input.timeoutMs ?? POLICY.defaultTimeoutMs;
@@ -71,6 +74,10 @@ export async function prepareEvaluation(input: EvaluationInput) {
   const market = await loadDataset(dataDir);
   if (models.some(m => m !== CONTROL_MODEL) && market.kind !== "historical")
     throw new Error("Model evaluations require frozen historical data");
+  const parent = input.continuation ? loadParentPrefix(input.continuation) : undefined;
+  const parentJob = parent ? schedule.find(j =>
+    j.model === (parent.config.model ?? CONTROL_MODEL) && j.start === parent.config.start && j.end === parent.config.end) : undefined;
+  if (parent && !parentJob) throw new Error("Continuation parent does not match an evaluation model/quarter");
   const jobs = [];
   // Validate ALL quarters before creating any artifact or making any model call.
   for (const job of schedule) {
@@ -88,7 +95,11 @@ export async function prepareEvaluation(input: EvaluationInput) {
       history,
       limits: { maxTurns: null, maxToolCalls: null, timeoutMs },
       policy: POLICY,
+      ...(parentJob?.runId === job.runId ? { continuation: input.continuation } : {}),
     };
+    if (parentJob?.runId === job.runId && contentHash({ ...parent!.config, runId: 0, continuation: 0 }) !==
+        contentHash({ ...config, runId: 0, continuation: 0 }))
+      throw new Error("Continuation parent configuration differs from evaluation quarter");
     const prepared = await prepareStudyData(config);
     if (contentHash(prepared.dates) !== contentHash(exchangeDates(job.start, job.end)))
       throw new Error(`${job.label} requires every exchange session; truncated quarters are refused`);
@@ -99,7 +110,15 @@ export async function prepareEvaluation(input: EvaluationInput) {
       funding: prepared.config.contributions });
   }
   return {
-    version: input.pauseOnQuota ? "independent-quarters-apr2025-mar2026-v5-quota-pause" : EVALUATION_VERSION,
+    ...(parent ? { continuation: {
+      kind: "combined-continuation", parentRunId: input.continuation!.parentRunId,
+      parentRepositoryRevision: input.continuation!.parentRepositoryRevision,
+      parentImplementationHash: input.continuation!.parentImplementationHash,
+      parentLastDayHash: input.continuation!.lastDayHash,
+      inheritedDays: parent.days.length, continuedRunId: parentJob!.runId,
+      note: "Original quarter prefix remains immutable under its recorded implementation; new source executes only the remaining dates. Original evaluation is not relabeled completed.",
+    } } : {}),
+    version: input.continuation ? "independent-quarters-apr2025-mar2026-v6-continuation" : input.pauseOnQuota ? "independent-quarters-apr2025-mar2026-v5-quota-pause" : EVALUATION_VERSION,
     evalId: input.evalId,
     start: EVALUATION_QUARTERS[0]!.start,
     end: EVALUATION_QUARTERS.at(-1)!.end,
@@ -175,6 +194,7 @@ export function evaluationReport(plan: EvaluationPlan, quarters: EvaluationQuart
     };
   });
   return {
+    ...(plan.continuation ? { continuation: plan.continuation } : {}),
     version: plan.version, evalId: plan.evalId, start: plan.start, end: plan.end,
     status: models.every(m => m.complete) ? "completed" : "incomplete",
     interpretation: "Four independent quarterly portfolios per model. Dollar outcomes are summed; mean quarterly TWR is not an annual compounded return. Independent account balances must not be plotted as one equity curve. These environment results do not establish scored NDX membership eligibility.",
@@ -264,7 +284,12 @@ export async function runEvaluation(input: EvaluationInput, options: {
         }
       } catch (e) {
         if (options.readOnly) throw e;
+        // A terminal infrastructure/integrity error must not launch later quarters.
+        if (input.pauseOnQuota) quotaPaused = true;
         quarters[index] = { ...quarters[index]!, status: "error", error: String(e) };
+        // In supervised serial cohorts an infrastructure/integrity error must
+        // settle before another quarter can start.
+        if (input.pauseOnQuota) quotaPaused = true;
       }
       if (!options.readOnly) await persist();
     };

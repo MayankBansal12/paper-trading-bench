@@ -1,5 +1,7 @@
 import { isPiModel } from "../pi/route.ts";
 import { validatePiAccepted } from "../pi/audit.ts";
+import { isClaudeModel } from "../claude/route.ts";
+import { validateClaudeAccepted } from "../claude/audit.ts";
 import { studyRoute } from "./routes.ts";
 import { contentHash } from "../core/hash.ts";
 import { validateUsage } from "../core/types.ts";
@@ -108,6 +110,7 @@ export function validateAccepted(
     throw new Error("Missing session horizon for prompt verification");
   validateOpeningContext(a, view, past, horizon);
   if (control) return;
+  if (isClaudeModel(expectedModel)) return validateClaudeAccepted(a, view, past, horizon, expectedModel);
   if (isPiModel(expectedModel)) return validatePiAccepted(a, view, past, horizon, expectedModel);
   const route = qualifiedRoute(expectedModel);
   const protocol = a.decision.trace.find(e => e.type === "protocol");

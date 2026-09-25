@@ -12,12 +12,22 @@ test("quota pause uses explicit provider reset with buffer and preserves the fai
  expect(quotaPause(store({type:"usage_limit_reached"},200),event)).toBeUndefined();
  expect(quotaPause(store({type:"usage_limit_reached"}),{...event,payload:{outcome:"completed"}})).toBeUndefined();
 });
-test("pause/resume makes no calls during cooldown and never grants a third attempt",async()=>{
+test("Go quota uses the exhausted response Retry-After and excludes generic throttling", () => {
+ const trace = (type: string, retryAfter: string) => ({trace: () => [
+  {type:"inference_response",sequence:1,status:429,receivedAt:"2026-09-16T13:59:00Z",retryAfter},
+  {type:"inference_chunk",sequence:1,base64:Buffer.from(JSON.stringify({error:{type},metadata:{limitName:"5 hour"}})).toString("base64")},
+ ]}) as any;
+ expect(quotaPause(trace("GoUsageLimitError", "3600"), event)?.notBefore).toBe("2026-09-16T15:04:00.000Z");
+ expect(quotaPause(trace("GoUsageLimitError", "Wed, 16 Sep 2026 18:00:00 GMT"), event)?.notBefore).toBe("2026-09-16T18:05:00.000Z");
+ expect(quotaPause(trace("RateLimitError", "3600"), event)).toBeUndefined();
+ expect(quotaPause(trace("GoUsageLimitError", "invalid"), event)?.notBefore).toBe("2026-09-16T20:05:00.000Z");
+});
+for (const model of ["pi/openai-codex/gpt-6-astra", "opencode-go/deepseek-v4.1-flash"]) test(`${model}: pause/resume makes no calls during cooldown and never grants a third attempt`,async()=>{
  const script=`import { mock } from "bun:test";
  import {rm} from "node:fs/promises";
  let calls=0; const clock=Date.now; let offset=0; Date.now=()=>clock()+offset;
  mock.module(${JSON.stringify(resolve("src/study/model.ts"))},()=>({
- prepareModelRuntime:async()=>({bundle:{evidence:{id:"offline-fixture"}},dispose:async()=>{}}),
+ prepareModelRuntime:async()=>({credential:{authorize:async()=>new Headers()},bundle:{evidence:{id:"offline-fixture"}},dispose:async()=>{}}),
  decideStudy:async(view,store,past,horizon,audit)=>{
  calls++;const trace=[{type:"inference_response",sequence:1,status:429},{type:"inference_chunk",sequence:1,base64:Buffer.from(JSON.stringify({error:{type:"usage_limit_reached",resets_at:Math.floor((Date.now()+3600000)/1000)}})).toString("base64")}];
  for(const e of trace)audit(e);
@@ -29,7 +39,7 @@ test("pause/resume makes no calls during cooldown and never grants a third attem
  const {config}=await import(${JSON.stringify(resolve("tests/studyTestSupport.ts"))});
  const {runStudy}=await import(${JSON.stringify(resolve("src/study/runner.ts"))});
  const {QUOTA_PAUSE_POLICY}=await import(${JSON.stringify(resolve("src/study/availability.ts"))});
- const c={...await config("2024-04-02","2024-04-02"),kind:"environment",model:"pi/openai-codex/gpt-6-astra",availabilityPolicy:QUOTA_PAUSE_POLICY};
+ const c={...await config("2024-04-02","2024-04-02"),kind:"environment",model:${JSON.stringify(model)},availabilityPolicy:QUOTA_PAUSE_POLICY};
  const root=${JSON.stringify(resolve("results/studies"))}+"/"+c.runId;
  try{
  const first=await runStudy(c);if(first.summary.status!=="paused"||calls!==1||first.summary.committedDays!==0)throw Error("first failure did not pause");
@@ -49,7 +59,7 @@ test("manual quota reset resumes existing attempts but cannot bypass a new quota
  import {rm} from "node:fs/promises";
  let calls=0; const clock=Date.now; let offset=0; Date.now=()=>clock()+offset;
  mock.module(${JSON.stringify(resolve("src/study/model.ts"))},()=>({
- prepareModelRuntime:async()=>({bundle:{evidence:{id:"offline-fixture"}},dispose:async()=>{}}),
+ prepareModelRuntime:async()=>({credential:{authorize:async()=>new Headers()},bundle:{evidence:{id:"offline-fixture"}},dispose:async()=>{}}),
  decideStudy:async(view,store,past,horizon,audit)=>{
  calls++;const trace=[{type:"inference_response",sequence:1,status:429},{type:"inference_chunk",sequence:1,base64:Buffer.from(JSON.stringify({error:{type:"usage_limit_reached",resets_at:Math.floor((Date.now()+3600000)/1000)}})).toString("base64")}];
  for(const e of trace)audit(e);

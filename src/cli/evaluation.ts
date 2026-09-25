@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { parseFlags } from "./args.ts";
 import { assertKnownFlags, assertNoPositionals, parsePositiveInt } from "./validate.ts";
 import { parseBooleanFlag } from "./experiment.ts";
@@ -7,7 +8,7 @@ import { POLICY } from "../study/protocol.ts";
 export async function evaluationCLI(argv: string[]) {
   const { flags, positionals } = parseFlags(argv);
   assertNoPositionals(positionals, "eval");
-  assertKnownFlags(flags, ["eval-id", "data-dir", "models", "control", "history", "timeout-ms", "concurrency", "preflight", "resume", "verify", "pause-on-quota"], "eval");
+  assertKnownFlags(flags, ["eval-id", "data-dir", "models", "control", "history", "timeout-ms", "concurrency", "preflight", "resume", "verify", "pause-on-quota", "continue-checkpoint"], "eval");
   if (!flags.get("eval-id") || !flags.get("data-dir"))
     throw new Error("Required: --eval-id, --data-dir. Evaluation is fixed to April 2025–March 2026, in four independent quarters.");
   const control = parseBooleanFlag("control", flags.get("control"));
@@ -18,6 +19,7 @@ export async function evaluationCLI(argv: string[]) {
   if ([preflight, resume, readOnly].filter(Boolean).length > 1)
     throw new Error("Choose one of --preflight, --resume or --verify");
   const input = {
+    ...(flags.has("continue-checkpoint") ? { continuation: JSON.parse(readFileSync(flags.get("continue-checkpoint")!, "utf8")) } : {}),
     pauseOnQuota: parseBooleanFlag("pause-on-quota", flags.get("pause-on-quota")),
     evalId: flags.get("eval-id")!, dataDir: flags.get("data-dir")!,
     models: control ? [CONTROL_MODEL] : flags.get("models")?.split(",").map(m => m.trim()) ?? EVALUATION_MODELS,

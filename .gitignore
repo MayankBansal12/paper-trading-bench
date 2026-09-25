@@ -34,3 +34,9 @@ results/evaluations/
 
 # Checksummed audit bundles are referenced by compact results PRs.
 results/archives/
+
+# Private clients and supervisor state
+.runtime/
+results/supervision/
+dist/
+__pycache__/

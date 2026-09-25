@@ -8,6 +8,7 @@ const names: Record<string, string> = {
   "opencode/muse-spark-1.3-contributor-free": "Muse Spark 1.3",
   "opencode/muse-spark-1.2-contributor-free": "Muse Spark 1.2",
   "opencode-go/glm-5.3-flash": "GLM 5.3 Flash",
+  "opencode-go/deepseek-v4.1-flash": "DeepSeek V4.1 Flash",
 };
 
 /** Read identity from the manifest, not model-name substrings in a run ID.

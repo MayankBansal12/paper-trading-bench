@@ -18,7 +18,7 @@ import { serveGateway } from "../study/gateway.ts";
 import { makePiConfig } from "./config.ts";
 import { preparePiRuntime } from "./runtime.ts";
 import { piUsage } from "./audit.ts";
-import { piRoute, PI_PROVIDER } from "./route.ts";
+import { piRoute } from "./route.ts";
 export { preparePiRuntime } from "./runtime.ts";
 export async function decidePi(
   view: SessionView,
@@ -86,7 +86,7 @@ export async function decidePi(
       type: "protocol",
       version: STUDY_PROTOCOL,
       model: route.model,
-      provider: PI_PROVIDER,
+      provider: route.provider,
       viewHash: contentHash(view),
       systemPrompt: system,
       promptHash: decision.promptHash,
@@ -100,6 +100,7 @@ export async function decidePi(
       tools.definitions,
       system,
       prompt,
+      runtime.bundle.evidence.forbiddenPaths ?? [],
     );
     run = await launchSandbox(
       dir,

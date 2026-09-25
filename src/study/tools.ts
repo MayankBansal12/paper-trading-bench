@@ -25,6 +25,14 @@ const priceHistorySchema = (maximum: number, maximumTickers?: number) => obj({
   tickers: tickers(maximumTickers),
   lookback: Type.Integer({ minimum: 1, maximum }),
 });
+const inheritedRuns = new Map<string, Set<string>>();
+/** A continuation segment may present its authenticated parent's own journal entries; no other foreign run is ever accepted. */
+export function registerInheritedRun(runId: string, parentRunId: string) {
+  inheritedRuns.set(runId, new Set([parentRunId]));
+}
+export function unregisterInheritedRun(runId: string) {
+  inheritedRuns.delete(runId);
+}
 export const toolDefinitions = [
   {
     name: "market_snapshot",
@@ -97,7 +105,7 @@ export class SessionTools {
       past.some(
         (e, i) =>
           e.date >= view.scope.date ||
-          e.runId !== view.scope.runId ||
+          (e.runId !== view.scope.runId && !inheritedRuns.get(view.scope.runId)?.has(e.runId)) ||
           (i > 0 && e.date <= past[i - 1]!.date),
       )
     )
