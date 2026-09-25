@@ -14,6 +14,8 @@ studyRoute(model);
 if (Bun.version !== "1.3.14") throw Error("Use Bun 1.3.14 to prepare this runtime");
 const out = resolve(process.argv[3] ?? `.runtime/${model.replaceAll(/[^a-zA-Z0-9.-]/g, "-")}`);
 if (await Bun.file(join(out, "manifest.json")).exists()) throw Error("Runtime already exists; reuse its env.sh or choose a new directory");
+if ((await readdir(out).catch((e) => { if(e.code === "ENOENT") return []; throw e; })).length)
+  throw Error("Pin directory is not empty; preserve the failed setup and choose a new directory");
 await mkdir(join(out, "bin"), { recursive: true });
 const digest = async (p: string) => createHash("sha256").update(await readFile(p)).digest("hex");
 const versions: Record<string, string> = {};
