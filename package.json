@@ -10,7 +10,7 @@
     "test": "bun test",
     "data:import": "bun run scripts/import-yahoo.ts",
     "model:preflight": "bun run scripts/qualify-opencode.ts",
-    "study:run": "bun run scripts/run-study.ts",
+    "study:run": "bun src/index.ts eval",
     "sandbox:provision": "sh scripts/sandbox/provision.sh",
     "sandbox:check": "bun run src/index.ts sandbox-check",
     "study:control": "bun run scripts/qualify-study-control.ts",

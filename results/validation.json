@@ -1,0 +1,72 @@
+{
+  "date": "2026-09-25",
+  "new_trading_inference": false,
+  "native_provider_calls": 0,
+  "local_checks": {
+    "bun": {
+      "passed": 374,
+      "failed": 0,
+      "assertions": 3253
+    },
+    "supervisor_tests": 6,
+    "typecheck": "passed",
+    "accounting_days": 2510,
+    "accounting_quarters": 40,
+    "rule_quotes": 30,
+    "published_viewer_tests": 3
+  },
+  "native_checks": {
+    "pi": {
+      "client": "0.87.0",
+      "model": "pi/openai-codex/gpt-6-luna",
+      "scenarios": [
+        "success",
+        "correction",
+        "quota",
+        "watchdog"
+      ],
+      "runtime": "f33adb4ba56359f875535371fc79fb35cc0edab4fbdc2be894c48daae81b983c",
+      "actual_dataset_probe": true
+    },
+    "claude": {
+      "client": "2.1.280",
+      "sandbox_qualified": true,
+      "actual_dataset_probe": true
+    }
+  },
+  "browser": {
+    "passed": true,
+    "model_quarters_navigated": 40,
+    "checked": [
+      "profit order and cents rounding",
+      "desktop and 390px mobile overflow",
+      "study links",
+      "Luna6 retried March3 attempt history",
+      "Sol5.6 invalid January14 session",
+      "date/ticker/journal filtering",
+      "risk table"
+    ],
+    "errors_found_and_fixed": [
+      "Search text accessed null orders on an invalid day; fixed and all40quarter views passed."
+    ],
+    "screenshots": [
+      "final-results-desktop.png",
+      "study-mobile.png"
+    ]
+  },
+  "scope": "Compact file integrity and independent accounting were rechecked. Historical provider-stream replay and live entitlement were not rerun. New cohorts require smoke qualification.",
+  "initial_failures": [
+    "Pinner initially rejected the recorded inert OpenCode 1.18.31 dependency; allowed only the recorded Pi dependency versions.",
+    "Flattened dependency resolution conflicted with nested versions; copying preserves nesting.",
+    "Bun builtin node-fetch alias hid installed dependency paths; filesystem resolution corrected it.",
+    "An npm ci experiment inside the package encountered incomplete dev lock metadata; exact official package installed privately as a dependency instead.",
+    "A partial pin directory held read-only binaries; new pins now require empty directories.",
+    "A pnpm Corepack prompt interrupted the synthetic check; checks ran directly with the pinned Bun."
+  ],
+  "archive": {
+    "name": "release-validation-20260925.tar.gz",
+    "bytes": 207792,
+    "sha256": "a342736c7c133cbb2cc2e05cdfa102ce57d60f78112573dd22d81139a1f7ded4",
+    "url": "https://github.com/MayankBansal12/paper-trading-bench/releases/download/evidence-2026-09-25/release-validation-20260925.tar.gz"
+  }
+}

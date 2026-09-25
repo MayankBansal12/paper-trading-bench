@@ -34,6 +34,12 @@
       "bytes": 38004,
       "sha256": "d1fcc7240c0858aff531912101837889b8dac42e5a84cb138e738307ecf02ff2",
       "url": "https://github.com/MayankBansal12/paper-trading-bench/releases/download/evidence-2026-09-25/historical-result-prs.tar.gz"
+    },
+    {
+      "name": "release-validation-20260925.tar.gz",
+      "bytes": 207792,
+      "sha256": "a342736c7c133cbb2cc2e05cdfa102ce57d60f78112573dd22d81139a1f7ded4",
+      "url": "https://github.com/MayankBansal12/paper-trading-bench/releases/download/evidence-2026-09-25/release-validation-20260925.tar.gz"
     }
   ],
   "historical_encrypted_backup": {
