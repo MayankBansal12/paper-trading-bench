@@ -1,3 +1,5 @@
+import { QUOTA_PAUSE_POLICY, quotaPause, type QuotaPause } from "./availability.ts";
+import { PI_MODEL_ID } from "../pi/route.ts";
 import { studyRoute } from "./routes.ts";
 import { mkdirSync, existsSync, readFileSync, readdirSync } from "node:fs";
 import { resolve, join } from "node:path";
@@ -37,6 +39,7 @@ import { validateAccepted } from "./accept.ts";
 export { validateAccepted, validateOpeningContext } from "./accept.ts";
 import { QUALIFIED_ZEN_MODEL_ID } from "../opencode/qualification.ts";
 export interface StudyConfig {
+  availabilityPolicy?: typeof QUOTA_PAUSE_POLICY;
   model?: string;
   protocol: string;
   kind: "environment" | "smoke" | "quarter" | "control";
@@ -81,6 +84,8 @@ export async function prepareStudyData(c: StudyConfig) {
     c.history > POLICY.maxHistory
   )
     throw new Error("History must be 60..252");
+  if (c.availabilityPolicy && (c.model !== PI_MODEL_ID || contentHash(c.availabilityPolicy) !== contentHash(QUOTA_PAUSE_POLICY)))
+    throw new Error("Unqualified availability policy or model");
   const market = await loadDataset(c.dataDir);
   if (market.version !== c.datasetHash)
     throw new Error("Dataset identity mismatch");
@@ -212,6 +217,7 @@ export async function runStudy(
       attempts: StudyAttempt[] = [];
     let portfolio = createInitialPortfolio(STARTING_CAPITAL),
       failure: string | undefined;
+    let availability: QuotaPause | undefined;
     let consecutiveInvalidDays = 0, maxConsecutiveInvalidDays = 0;
     const files = existsSync(join(dir, "days"))
       ? readdirSync(join(dir, "days"))
@@ -242,6 +248,16 @@ export async function runStudy(
       );
       if (!terminal && closedFailures().length !== POLICY.maxAttemptsPerDay && existsSync(dayPath))
         throw new Error("Commit missing completed result or exhausted failures");
+      // A recorded quota failure keeps its attempt number. During cooldown no
+      // new runtime, provider request, retry, invalid day or later day is created.
+      if (!terminal && !existsSync(dayPath) && c.availabilityPolicy) {
+        const pause = quotaPause(store, closedFailures().at(-1));
+        if (pause && (options.readOnly || Date.now() < Date.parse(pause.notBefore))) {
+          availability = pause;
+          failure = `Provider usage limit; resume no earlier than ${pause.notBefore}`;
+          break;
+        }
+      }
       if (!terminal && !options.readOnly) {
         const last = store.all().at(-1);
         if (
@@ -304,8 +320,16 @@ export async function runStudy(
           const resultEvent = store.result(scope, resultPayload(result));
           options.fault?.("after-result", date);
           if (result.outcome === "completed") terminal = resultEvent;
+          else if (c.availabilityPolicy) {
+            availability = quotaPause(store, resultEvent);
+            if (availability) {
+              failure = `Provider usage limit; resume no earlier than ${availability.notBefore}`;
+              break;
+            }
+          }
         }
       }
+      if (availability) break;
       const failures = closedFailures();
       const exhausted = failures.length === POLICY.maxAttemptsPerDay &&
         failures.every((e, i) => e.scope.attempt === i + 1);
@@ -379,7 +403,8 @@ export async function runStudy(
     const summary = {
       protocol: STUDY_PROTOCOL,
       kind: c.kind,
-      status: stopped ? "invalid" : days.length === dates.length ? "completed" : "incomplete",
+      status: availability ? "paused" : stopped ? "invalid" : days.length === dates.length ? "completed" : "incomplete",
+      ...(availability ? { availability } : {}),
       failure: failure ?? null,
       committedDays: days.length,
       validDays: attempts.length,

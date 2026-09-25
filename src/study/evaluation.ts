@@ -1,3 +1,4 @@
+import { QUOTA_PAUSE_POLICY } from "./availability.ts";
 import { PI_MODEL_ID } from "../pi/route.ts";
 import { existsSync, readFileSync } from "node:fs";
 import { join, resolve } from "node:path";
@@ -32,6 +33,7 @@ export interface EvaluationInput {
   history?: number;
   timeoutMs?: number;
   concurrency?: number;
+  pauseOnQuota?: boolean;
 }
 
 /** Every model uses the same Cartesian product; there is no continuous-year path. */
@@ -72,6 +74,7 @@ export async function prepareEvaluation(input: EvaluationInput) {
   // Validate ALL quarters before creating any artifact or making any model call.
   for (const job of schedule) {
     const config: StudyConfig = {
+      ...(input.pauseOnQuota ? { availabilityPolicy: QUOTA_PAUSE_POLICY } : {}),
       protocol: STUDY_PROTOCOL,
       kind: job.model === CONTROL_MODEL ? "control" : "environment",
       runId: job.runId,
@@ -95,7 +98,7 @@ export async function prepareEvaluation(input: EvaluationInput) {
       funding: prepared.config.contributions });
   }
   return {
-    version: EVALUATION_VERSION,
+    version: input.pauseOnQuota ? "independent-quarters-apr2025-mar2026-v5-quota-pause" : EVALUATION_VERSION,
     evalId: input.evalId,
     start: EVALUATION_QUARTERS[0]!.start,
     end: EVALUATION_QUARTERS.at(-1)!.end,
@@ -223,6 +226,7 @@ export async function runEvaluation(input: EvaluationInput, options: {
     // Concurrent children share only this derived report. Serialize atomic writes so
     // they cannot race on summary.json.tmp or overwrite a newer snapshot.
     let writes = Promise.resolve();
+    let quotaPaused = false;
     const persist = () => {
       writes = writes.then(() => writeFileAtomic(
         join(dir, "summary.json"),
@@ -248,6 +252,7 @@ export async function runEvaluation(input: EvaluationInput, options: {
               ? { control: options.control ?? deterministicControl } : {}),
           });
           quarters[index] = quarterResult(job, result);
+          if (result.summary.availability) quotaPaused = true;
         }
       } catch (e) {
         if (options.readOnly) throw e;
@@ -260,7 +265,7 @@ export async function runEvaluation(input: EvaluationInput, options: {
     const settled: PromiseSettledResult<void>[] = new Array(batch.length);
     let next = 0;
     await Promise.all(Array.from({ length: plan.execution.maxConcurrentRuns }, async () => {
-      while (next < batch.length) {
+      while (next < batch.length && (options.readOnly || !quotaPaused)) {
         const index = next++;
         try {
           await execute(batch[index]!);

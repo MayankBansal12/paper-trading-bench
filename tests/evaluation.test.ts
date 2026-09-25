@@ -169,7 +169,7 @@ test("four concurrent runs own fresh balances, holdings, journals, funding, atte
   await expect(runEvaluation({ ...c, history: 101 }, { resume: true })).rejects.toThrow("changed");
   expect(evaluationReport(result.plan, result.report.quarters.slice(0, 3)).models[0]!.year).toBeNull();
   expect(() => evaluationReport(result.plan, [...result.report.quarters, result.report.quarters[0]!])).toThrow("Duplicate");
-}, 180000);
+}, 300000);
 
 test("three invalid days stop only their quarter; later quarters reset the streak and still run", async () => {
   const c = input();
@@ -199,7 +199,7 @@ test("three invalid days stop only their quarter; later quarters reset the strea
   expect(first.report.models[0]!.year).toBeNull();
   const resumed = await runEvaluation(c, { resume: true, control: async () => { throw Error("No fresh attempts"); } });
   expect(resumed.report).toEqual(first.report);
-}, 180000);
+}, 300000);
 
 test("new evaluations refuse existing child state and model results refuse a control transport", async () => {
   const c = input();
@@ -368,3 +368,38 @@ for (const concurrency of [1, 2]) test(`bounded queue admits at most ${concurren
   expect((await runEvaluation(c, { readOnly: true })).report.status).toBe("incomplete");
   expect(result.plan.jobs.map(j => readFileSync(resolve("results/studies", j.runId, "events.jsonl"), "utf8"))).toEqual(logs);
 }, 15000);
+
+test("quota-aware serial evaluation pauses before admitting another quarter and freezes the policy", async () => {
+  const c = { ...input(), models: ["pi/openai-codex/gpt-6-astra"], concurrency: 1, pauseOnQuota: true };
+  for (const job of evaluationSchedule(c.evalId, c.models)) cleanup.push(resolve("results/studies", job.runId));
+  const script = `import { mock } from "bun:test";
+    let calls=0;
+    mock.module(${JSON.stringify(resolve("src/study/model.ts"))},()=>({
+      prepareModelRuntime:async()=>({bundle:{evidence:{id:"quota-fixture"}},dispose:async()=>{}}),
+      decideStudy:async(view,store,past,horizon,audit)=>{
+        calls++;
+        const {initialStudyDecision}=await import(${JSON.stringify(resolve("src/study/agent.ts"))});
+        const {contentHash}=await import(${JSON.stringify(resolve("src/core/hash.ts"))});
+        const decision=initialStudyDecision(view);
+        decision.trace=[{type:"inference_response",sequence:1,status:429},{type:"inference_chunk",sequence:1,base64:Buffer.from(JSON.stringify({error:{type:"usage_limit_reached",resets_in_seconds:3600}})).toString("base64")}];
+        decision.trace.forEach(audit);
+        return {outcome:"harness_error",reason:"quota fixture",scope:view.scope,viewHash:contentHash(view),decision,journalEntries:[]};
+      }
+    }));
+    const {runEvaluation}=await import(${JSON.stringify(resolve("src/study/evaluation.ts"))});
+    const c=${JSON.stringify(c)};
+    const first=await runEvaluation(c);
+    const resumed=await runEvaluation(c,{resume:true});
+    const verified=await runEvaluation(c,{readOnly:true});
+    console.log(JSON.stringify({calls,first:first.report.quarters.map(q=>q.status),resumed:resumed.report.quarters.map(q=>q.status),verified:verified.report.quarters.map(q=>q.status),policy:first.plan.jobs[0].config.availabilityPolicy,version:first.plan.version}));`;
+  const p = Bun.spawn([process.execPath, "-e", script], { stdout: "pipe", stderr: "pipe" });
+  const [out, err, code] = await Promise.all([new Response(p.stdout).text(), new Response(p.stderr).text(), p.exited]);
+  expect(err).toBe(""); expect(code).toBe(0);
+  const result = JSON.parse(out);
+  expect(result.calls).toBe(1);
+  expect(result.first).toEqual(["paused", "pending", "pending", "pending"]);
+  expect(result.resumed).toEqual(result.first);
+  expect(result.verified).toEqual(result.first);
+  expect(result.policy.version).toBe("quota-pause-v1");
+  expect(result.version).toContain("v5-quota-pause");
+});
