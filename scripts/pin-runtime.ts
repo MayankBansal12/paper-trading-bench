@@ -50,37 +50,54 @@ if (isPiModel(model)) {
   if (pkg.name !== "@earendil-works/pi-coding-agent" || pkg.version !== piClientVersion(model)) throw Error("Wrong Pi package/version");
   versions.pi = pkg.version; versions.node = piNodeVersion(model);
   await binary("node", node);
-  // Resolve the installed dependency graph before copying. pnpm may hoist siblings
-  // outside Pi's directory; copying just that directory would omit required code.
-  const graph = new Map<string, { root: string; version: string }>();
-  async function visit(source: string) {
-    const p = JSON.parse(await readFile(join(source, "package.json"), "utf8"));
-    const existing = graph.get(p.name);
-    if (existing) {
-      if (existing.root !== source) throw Error(`Multiple installed copies of ${p.name}; use an isolated npm install for pinning`);
+  // Preserve nested versions. Fill any hoisted dependencies missing from the copy.
+  const privateRoot = join(out, "pi");
+  await cp(root, privateRoot, { recursive: true, dereference: true });
+  const visited = new Map<string, string>();
+  async function packageRoot(source: string, name: string) {
+    const require = createRequire(join(source, "package.json"));
+    for (const base of require.resolve.paths(name) ?? []) {
+      const path = join(base, name, "package.json");
+      if (await Bun.file(path).exists()) return realpath(dirname(path));
+    }
+  }
+  async function content(source: string): Promise<string> {
+    const hash = createHash("sha256");
+    async function walk(dir: string) {
+      for (const e of (await readdir(dir, { withFileTypes: true })).sort((a,b) => a.name.localeCompare(b.name))) {
+        if (e.name === "node_modules") continue;
+        const p = join(dir,e.name);
+        if ((await stat(p)).isDirectory()) await walk(p);
+        else hash.update(p.slice(source.length)).update(await readFile(p));
+      }
+    }
+    await walk(source);return hash.digest("hex");
+  }
+  async function visit(source: string, dest: string) {
+    if (visited.has(dest)) {
+      if (visited.get(dest) !== await content(source)) throw Error("Conflicting dependency at " + dest);
       return;
     }
-    graph.set(p.name, { root: source, version: p.version });
-    const require = createRequire(join(source, "package.json"));
+    const identity = await content(source);
+    if (identity !== await content(dest)) throw Error("Package changed while copying: " + dest);
+    visited.set(dest, identity);
+    const p = JSON.parse(await readFile(join(source, "package.json"), "utf8"));
     for (const name of Object.keys({ ...p.dependencies, ...p.optionalDependencies })) {
-      let child: string | undefined;
-      for (const base of require.resolve.paths(name) ?? []) {
-        const path = join(base, name, "package.json");
-        if (await Bun.file(path).exists()) { child = await realpath(dirname(path)); break; }
-      }
+      const child = await packageRoot(source, name);
       if (!child) {
         if (Object.hasOwn(p.optionalDependencies ?? {}, name)) continue;
-        throw Error(`Missing installed dependency: ${name}`);
+        throw Error("Missing installed dependency: " + name);
       }
-      await visit(child);
+      let target = await packageRoot(dest,name);
+      if (!target?.startsWith(privateRoot + "/") || await content(child) !== await content(target)) {
+        target = join(dest,"node_modules",name);
+        await mkdir(dirname(target),{recursive:true});
+        await cp(child,target,{recursive:true,dereference:true});
+      }
+      await visit(child,target);
     }
   }
-  await visit(root);
-  for (const [name, entry] of graph) {
-    const dest = name === pkg.name ? join(out, "pi") : join(out, "pi/node_modules", name);
-    await cp(entry.root, dest, { recursive: true, dereference: true,
-      filter: (source) => !source.slice(entry.root.length).split('/').includes('node_modules') });
-  }
+  await visit(root,privateRoot);
   await symlink("../pi/dist/bundle/cli.js", join(out, "bin/pi"));
   const source = process.env.BENCH_PI_MODELS_STORE ?? join(process.env.PI_CODING_AGENT_DIR ?? join(homedir(), ".pi/agent"), "models-store.json");
   const store = JSON.parse(await readFile(source, "utf8")), route = piRoute(model);
