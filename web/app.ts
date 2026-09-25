@@ -191,7 +191,7 @@ async function sessions(parts: string[], ticket: number) {
   const select = document.querySelector<HTMLSelectElement>("#date")!;
   const list = (term = "") => {
     const visible = days.filter((x: any) =>
-      `${x.date} ${x.journal?.text ?? ""} ${x.orders.map((o: any) => o.ticker).join(" ")}`
+      `${x.date} ${x.journal?.text ?? ""} ${(x.orders ?? []).map((o: any) => o.ticker).join(" ")}`
         .toLowerCase()
         .includes(term.toLowerCase()),
     );
