@@ -1,0 +1,810 @@
+{
+  "baseline_ref": "archive/pre-publication-20260925",
+  "baseline_commit": "f2a385d2cfa4296e1b5b79f41488d210f823d019",
+  "prior_result_prs": [
+    {
+      "number": 14,
+      "url": "https://github.com/MayankBansal12/paper-trading-bench/pull/14",
+      "head": "01847f904682b1e88c3f84a66de11d1a45b374cf",
+      "title": "Publish Pi GPT-6 Astra qualification and evaluation evidence",
+      "recorded_summary": "Annual outcome: **incomplete**. Valid days: **51/251**; invalid days: 12; retried days: 12; completed quarters: 0/4. The annual score remains unavailable.\n\nPublishes the 3/3 valid Pi/Astra smoke ($50,372.93 closing equity), preserves the initial adapter-failed smoke and all attempts, and records pinned source/runtime/dataset identities and local audit-bundle checksums. The annual cohort uses two concurrent independent quarters. No annual score is claimed while incomplete.\n\nChecks: typecheck; 318 full-suite tests; 5 focused Pi tests; real-CLI synthetic transport/security/failure qualification; original-source replay of both smoke artifacts. Earlier failed test invocations and the failed first smoke are disclosed in the report.\n\nStacked on implementation PR #13; no merge is performed.\n",
+      "files": [
+        {
+          "path": "results/published/astra-pi-20260916/README.md",
+          "bytes": 3379,
+          "sha256": "3f0940b086ddf05b38463b1128506d530c221402fdffd3e0303e4f77b55eead1"
+        },
+        {
+          "path": "results/published/astra-pi-20260916/annual-execution.json",
+          "bytes": 191,
+          "sha256": "b367cad3afe41a26b7727d2dd88748595db552fbbe6b901c0124841f7b090967"
+        },
+        {
+          "path": "results/published/astra-pi-20260916/annual-summary.json",
+          "bytes": 12580,
+          "sha256": "14a9b8d5d83fd42718fa221170bc208cd5830ab5b15002eb9eb349641b201773"
+        },
+        {
+          "path": "results/published/astra-pi-20260916/final-audit-bundle.sha256",
+          "bytes": 163,
+          "sha256": "68ac08565c4431794e0532fea2ae4084f98c7adfe295706cb5076373774fc39b"
+        },
+        {
+          "path": "results/published/astra-pi-20260916/initial-audit-bundle.sha256",
+          "bytes": 165,
+          "sha256": "68ff745e24a9415c1894296168f8dc30d648c1d6b06b8f271fd55f45aec44035"
+        },
+        {
+          "path": "results/published/astra-pi-20260916/original-smoke-summary.json",
+          "bytes": 939,
+          "sha256": "100291846d226bf036b34621649de81d47972a0f502c1809d2f6e5db90a78e82"
+        },
+        {
+          "path": "results/published/astra-pi-20260916/provenance.json",
+          "bytes": 4239,
+          "sha256": "ebfddc37c742d59457a1ed23cfed7f881c67a1d9de79937c1fdaf378671423e2"
+        },
+        {
+          "path": "results/published/astra-pi-20260916/publication-script.py",
+          "bytes": 12356,
+          "sha256": "29c1596180d66926e70143f0fca70b24da2e1793642a5b3d45859f523f2ce2e2"
+        },
+        {
+          "path": "results/published/astra-pi-20260916/smoke-summary.json",
+          "bytes": 1500,
+          "sha256": "9657ab5e38abea4275a032207a4db351cf0d35990fc8da0dd5135eee3fa8ce44"
+        }
+      ]
+    },
+    {
+      "number": 16,
+      "url": "https://github.com/MayankBansal12/paper-trading-bench/pull/16",
+      "head": "209bbe59f9095387dba6036d0268f44b6615646f",
+      "title": "Track quota-aware Astra evaluation through verified completion",
+      "recorded_summary": "State: **completed**, phase: **annual**.\n\nRecorded valid days: **251/251**; invalid days: 0; retried days: 4; complete quarters: 4/4. Independent quarter profits sum to **$15,820.29**; mean quarterly TWR **5.27%**.\n\nPreserves the old stopped cohort and publishes the fresh quota-aware cohort's pinned provenance, checkpoint summaries and local audit-bundle checksums. No retry allowances are reset. Each settled checkpoint is replayed; completion is claimed only after all four quarters finish and verify.\n",
+      "files": [
+        {
+          "path": "results/published/astra-pi-quota-v1-20260916/001-annual-summary.json",
+          "bytes": 8147,
+          "sha256": "e7fda1529280095994a0f106e15605a6ba013a383b301d3a0c60ba39d0bb9480"
+        },
+        {
+          "path": "results/published/astra-pi-quota-v1-20260916/001-smoke-summary.json",
+          "bytes": 1500,
+          "sha256": "24d3f37a0f680b9cf576e93b8c571758beeeacd1ab1f53c83423dc2360d3841b"
+        },
+        {
+          "path": "results/published/astra-pi-quota-v1-20260916/002-annual-summary.json",
+          "bytes": 11075,
+          "sha256": "948a0b213785feec95f8c3afef0d702edd053a55fbaa844223def9c245523e17"
+        },
+        {
+          "path": "results/published/astra-pi-quota-v1-20260916/003-annual-summary.json",
+          "bytes": 13265,
+          "sha256": "a9433f577bfcefb5db3b156638c164ac9bd7f25a6ca947aa02ce539ec91232f2"
+        },
+        {
+          "path": "results/published/astra-pi-quota-v1-20260916/004-annual-summary.json",
+          "bytes": 12972,
+          "sha256": "2b0947595b3bba8c53ee8c50a9c46f7d9ba62d275a21c1e07cea225d64f6947b"
+        },
+        {
+          "path": "results/published/astra-pi-quota-v1-20260916/README.md",
+          "bytes": 2104,
+          "sha256": "50b7a5757ff4dd611420e5bc431eaaf4302d9bc7b06148bc3712e40c96fda96e"
+        },
+        {
+          "path": "results/published/astra-pi-quota-v1-20260916/SCHEDULING.md",
+          "bytes": 1685,
+          "sha256": "8e0b9154e8909e7d4ac308db687102bbd1663bb46c4d8e16af49a9cf1bde76a0"
+        },
+        {
+          "path": "results/published/astra-pi-quota-v1-20260916/automation.json",
+          "bytes": 921,
+          "sha256": "4c882bf4fae39a398ce41636f0aa32f827b97df90eda8aeb64e12718de8b1d0b"
+        },
+        {
+          "path": "results/published/astra-pi-quota-v1-20260916/exact-reset-schedule.json",
+          "bytes": 946,
+          "sha256": "ba7f4868d47c7e49dd2bda1604f1f91568b8552c6d9ba99dcbd8d439ccbbf27e"
+        },
+        {
+          "path": "results/published/astra-pi-quota-v1-20260916/provenance.json",
+          "bytes": 12409,
+          "sha256": "bd28cd50d67ed635352a273e87ebf5e6253982de889db89e8b568b3a3b03bc0d"
+        }
+      ]
+    },
+    {
+      "number": 18,
+      "url": "https://github.com/MayankBansal12/paper-trading-bench/pull/18",
+      "head": "4628d1588876ad938ed15e921c0ad0a7f09f2bfb",
+      "title": "Track GPT-5.6 Sol evaluation through verified completion",
+      "recorded_summary": "State: **waiting**, phase: **annual**. Next model attempt no earlier than **2026-09-17T14:55:06.000Z**.\n\nRecorded valid days: **13/251**; invalid days: 0; retried days: 1; complete quarters: 0/4. No annual score is available yet.\n\nPreserves the old stopped cohort and publishes the fresh quota-aware cohort's pinned provenance, checkpoint summaries and local audit-bundle checksums. No retry allowances are reset. Each settled checkpoint is replayed; completion is claimed only after all four quarters finish and verify.\n",
+      "files": [
+        {
+          "path": "results/published/sol-pi-quota-v1-20260916/001-annual-summary.json",
+          "bytes": 5376,
+          "sha256": "0e1b5044349b0d04d28892d15b7c2e9374a165f39da41aba97128be3da166018"
+        },
+        {
+          "path": "results/published/sol-pi-quota-v1-20260916/001-smoke-summary.json",
+          "bytes": 1933,
+          "sha256": "0455a39f1d375e62edd5392a5e589e2bd75d592dc7b64ec04a290c4eb05f1948"
+        },
+        {
+          "path": "results/published/sol-pi-quota-v1-20260916/README.md",
+          "bytes": 2119,
+          "sha256": "64ec7053adc7bbcab1b00dbc18baffd53ae92d5d248ebf6caf0fd1d8e542bc15"
+        },
+        {
+          "path": "results/published/sol-pi-quota-v1-20260916/RESTART.md",
+          "bytes": 579,
+          "sha256": "b9e3e10c4e325e5660bc5d8d551175a133cf318c40597a4eec94c125f4749c18"
+        },
+        {
+          "path": "results/published/sol-pi-quota-v1-20260916/SCHEDULING.md",
+          "bytes": 1685,
+          "sha256": "8e0b9154e8909e7d4ac308db687102bbd1663bb46c4d8e16af49a9cf1bde76a0"
+        },
+        {
+          "path": "results/published/sol-pi-quota-v1-20260916/exact-reset-schedule.json",
+          "bytes": 946,
+          "sha256": "ba7f4868d47c7e49dd2bda1604f1f91568b8552c6d9ba99dcbd8d439ccbbf27e"
+        },
+        {
+          "path": "results/published/sol-pi-quota-v1-20260916/provenance.json",
+          "bytes": 5600,
+          "sha256": "899fde7620621874d120f0f846e680f8a68479a60dde90efec1757e50680dcef"
+        }
+      ]
+    },
+    {
+      "number": 19,
+      "url": "https://github.com/MayankBansal12/paper-trading-bench/pull/19",
+      "head": "283c89792bf844e79c9849313619c2fb26ef5d91",
+      "title": "Track GPT-5.6 Sol evaluation through verified completion",
+      "recorded_summary": "State: **waiting**, phase: **annual**. Next model attempt no earlier than **2026-09-19T05:12:11.000Z**.\n\nRecorded valid days: **186/251**; invalid days: 0; retried days: 11; complete quarters: 2/4. No annual score is available yet.\n\nThis is a user-authorized scheduling-only continuation after an external quota reset. Original manifests, completed days and failed attempts are unchanged. The continuation receipt pins the old/new source and runtime identities; prior quota failures alone may bypass their obsolete wait. Original per-quarter binaries and catalog metadata are restored privately after host package drift; only the launcher dispatch path changes. Trading workers, prompts, data, accounting, isolation flags and retry limits are byte-identical.\n\nPreserves the old stopped cohort and publishes this quota-aware cohort's pinned provenance, checkpoint summaries and local audit-bundle checksums. No retry allowances are reset. Each settled checkpoint is replayed; completion is claimed only after all four quarters finish and verify.\n",
+      "files": [
+        {
+          "path": "results/published/sol-pi-quota-r2-20260917/001-annual-summary.json",
+          "bytes": 5376,
+          "sha256": "41fba836342f10e542846330810c97ba911a5c8cd03b9c206a16d2182ffb0e5f"
+        },
+        {
+          "path": "results/published/sol-pi-quota-r2-20260917/001-smoke-summary.json",
+          "bytes": 1790,
+          "sha256": "3c68dfcbde8d1d44327c05e5ebbc362498da7c224bcd7ee3a5282fef1a184ec8"
+        },
+        {
+          "path": "results/published/sol-pi-quota-r2-20260917/002-annual-summary.json",
+          "bytes": 8073,
+          "sha256": "3ef586c0be204f596f1709611df829a85962341d61dbcb704a0c608cadab710f"
+        },
+        {
+          "path": "results/published/sol-pi-quota-r2-20260917/003-annual-summary.json",
+          "bytes": 11856,
+          "sha256": "09760c98d3be9d2892714b97d1c85f110fbe04a8c5eca5f1af030c339cb64e89"
+        },
+        {
+          "path": "results/published/sol-pi-quota-r2-20260917/004-annual-summary.json",
+          "bytes": 12572,
+          "sha256": "24a947715fce9cd7df4c7e92cbb0c794e115a142d485d77db9e59a84fec39072"
+        },
+        {
+          "path": "results/published/sol-pi-quota-r2-20260917/005-annual-summary.json",
+          "bytes": 16364,
+          "sha256": "b992538cd4d79fb745907d01fc047658950c365eee90ff5ae6f5717629ff2bf0"
+        },
+        {
+          "path": "results/published/sol-pi-quota-r2-20260917/006-annual-summary.json",
+          "bytes": 16884,
+          "sha256": "505fecb4968700a0cd08991b00b830b9ad3e69a28d65387187a02cf58dc69afa"
+        },
+        {
+          "path": "results/published/sol-pi-quota-r2-20260917/007-annual-summary.json",
+          "bytes": 17771,
+          "sha256": "8e5fec941c9ad39fc0b322c61806bb48ce6adf88eaf4d666bfa6ae58dd9ee9e8"
+        },
+        {
+          "path": "results/published/sol-pi-quota-r2-20260917/008-manual-reset-authorized-summary.json",
+          "bytes": 17771,
+          "sha256": "8e5fec941c9ad39fc0b322c61806bb48ce6adf88eaf4d666bfa6ae58dd9ee9e8"
+        },
+        {
+          "path": "results/published/sol-pi-quota-r2-20260917/009-manual-reset-runtime-restored-summary.json",
+          "bytes": 17771,
+          "sha256": "8e5fec941c9ad39fc0b322c61806bb48ce6adf88eaf4d666bfa6ae58dd9ee9e8"
+        },
+        {
+          "path": "results/published/sol-pi-quota-r2-20260917/010-annual-summary.json",
+          "bytes": 16467,
+          "sha256": "404cbfe05dd6d59ca96eae6c555f166638ea4892d3cdedbbfc696878dde0e9cc"
+        },
+        {
+          "path": "results/published/sol-pi-quota-r2-20260917/010-manual-reset-identity-verified-summary.json",
+          "bytes": 17771,
+          "sha256": "8e5fec941c9ad39fc0b322c61806bb48ce6adf88eaf4d666bfa6ae58dd9ee9e8"
+        },
+        {
+          "path": "results/published/sol-pi-quota-r2-20260917/011-live-continuation.json",
+          "bytes": 1605,
+          "sha256": "4fd0b5ba57108dedfed6d7805251bc3dd9006b5175a08f7a15dd6b6e9425b1cd"
+        },
+        {
+          "path": "results/published/sol-pi-quota-r2-20260917/README.md",
+          "bytes": 2685,
+          "sha256": "dacc19a1f492a7b0727d06572613e74cc3c8ba92c1d4b2c507e8647a853c8740"
+        },
+        {
+          "path": "results/published/sol-pi-quota-r2-20260917/provenance.json",
+          "bytes": 25957,
+          "sha256": "f16d217691bc612b6f7a54cb1eb0f5b5fa9ba8e81a67eaec636ac62c625e13e5"
+        }
+      ]
+    }
+  ],
+  "removed_from_default_tree": [
+    {
+      "path": "archive/README.md",
+      "sha256": "05a6709200097f15a79bb54615cc03359965fd4561c172679a2251ea66ca4007",
+      "bytes": 1519
+    },
+    {
+      "path": "archive/v10-7f077b6.tar.gz",
+      "sha256": "1e2c6857a7a1c96dd187b881414d50c36de585cbdb6900ad3f318819da5f43e7",
+      "bytes": 259292
+    },
+    {
+      "path": "archive/v10-reproduction-inputs.tar.gz",
+      "sha256": "a8b9379aa357efd527b1d4c879c06099aa79b5aa05874e3326c563f84984eb91",
+      "bytes": 145972
+    },
+    {
+      "path": "results/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "results/audits/v9-20260913-integrity/checks.json",
+      "sha256": "fa51ae3689b5c6733cb7273884e01653a2828811211b55594e918e9bb0352001",
+      "bytes": 22977
+    },
+    {
+      "path": "results/audits/v9-20260913-integrity/report.md",
+      "sha256": "0eb48b35da8abb41761a1331ac38fb69441b0bbc0ac625a302c436923292298b",
+      "bytes": 10699
+    },
+    {
+      "path": "results/published/luna-main-20260915/README.md",
+      "sha256": "2e2ab3fa511adab73e8df11f63a398e479aee5f34f83b5ee9faef0ab37c3e7a4",
+      "bytes": 7166
+    },
+    {
+      "path": "results/published/luna-main-20260915/artifact-files.sha256",
+      "sha256": "8f60e50d6c0bcf38c51f7a5d88ba40058e9711e6872ec58b1d3a3597de4f9a54",
+      "bytes": 94742
+    },
+    {
+      "path": "results/published/luna-main-20260915/audit-bundle.sha256",
+      "sha256": "954793090862a31d8e2ec786f2e78cbf7e1859a37e3d62efeb045c9c12f97a7c",
+      "bytes": 115
+    },
+    {
+      "path": "results/published/luna-main-20260915/historical-verification.json",
+      "sha256": "f87945b14bb39e0e3ea0a29d0034a8c83f08159677433eaeb3d9efbe4c1c3b6e",
+      "bytes": 16371
+    },
+    {
+      "path": "results/published/luna-main-20260915/provenance.json",
+      "sha256": "f7c1c7e44ca0cb1ba2b19c464c67bb426bbcf600cab52f73b95ee7d4ba0013d7",
+      "bytes": 13614
+    },
+    {
+      "path": "results/qualifications/openai-gpt-5.6-luna-2026-09-14T23-07-07.737Z-056c2271-feeb-49ef-998b-bba9e990cc3f.json",
+      "sha256": "07e448c8d9abdee2539b90526d4e9207bf1989e3ff3b2b4aa06e8b0cdd7d1163",
+      "bytes": 2960
+    },
+    {
+      "path": "results/qualifications/openai-gpt-5.6-luna-2026-09-14T23-27-11.871Z-de36c042-6aec-478f-b1cc-5076ba7f6c8a.json",
+      "sha256": "ed31dab008f5a40a936180f8df26f06eb665929bd9c89375ad513f38c1758391",
+      "bytes": 2960
+    },
+    {
+      "path": "results/qualifications/openai-gpt-5.6-luna-2026-09-14T23-27-12.104Z-d81fe5ea-2706-4f05-93a6-cc7d401db304.json",
+      "sha256": "5c6b5555cb82d303ed83a40b5367966683f2894716458a8142b932c1ba6fed15",
+      "bytes": 2960
+    },
+    {
+      "path": "results/qualifications/openai-gpt-5.6-luna-2026-09-14T23-27-12.633Z-2a5ed9b3-51fe-4dcd-8738-57946f3ad0ed.json",
+      "sha256": "141ecf870005a7767c84606c3ec52055a279777b960133e1f6554ff4bbda26e5",
+      "bytes": 2960
+    },
+    {
+      "path": "results/qualifications/openai-gpt-5.6-luna-2026-09-14T23-29-16.336Z-967a4a93-268a-4057-a357-e2339bd1c7ac.json",
+      "sha256": "3f05a3c9aa94442bcb319e3cadcd18b9e39cb473fc38feedc896fd67dcd10dfe",
+      "bytes": 2960
+    },
+    {
+      "path": "results/qualifications/openai-gpt-5.6-luna-2026-09-15T06-18-35.965Z-c31321f4-1fd5-4b24-baee-44a9d39c7ae3.json",
+      "sha256": "230e19d57a06ed1a4ea526131fef1014395c525d453ed5235c30657579afea6b",
+      "bytes": 2960
+    },
+    {
+      "path": "results/qualifications/openai-gpt-5.6-luna-2026-09-15T06-22-09.754Z-2679f78b-4761-4cc5-8ec8-5c87ce5e5ea5.json",
+      "sha256": "dfa9ada2ae53938608b12eabd260344eb166d458789ccdec051f6e3448cf5dab",
+      "bytes": 2960
+    },
+    {
+      "path": "results/qualifications/openai-gpt-5.6-luna-2026-09-15T06-22-10.261Z-64d7afe2-268b-4f31-96e8-c3b4b3cbcc33.json",
+      "sha256": "78c9eabe5056e28b9e3ddf6b9f9074796d7dba68597c098a3b2aaf83ecead21f",
+      "bytes": 2960
+    },
+    {
+      "path": "results/qualifications/openai-gpt-5.6-luna-2026-09-15T06-22-13.433Z-971774c8-c5be-4b50-9470-163214c9c184.json",
+      "sha256": "ab061fe5b2fe8070a73e8363aed4228148fe156165f92ceacf71a3f14fe18b8a",
+      "bytes": 2960
+    },
+    {
+      "path": "results/qualifications/openai-gpt-5.6-luna-2026-09-15T06-22-16.922Z-699f4fc0-73e0-4181-a63b-0dc958259261.json",
+      "sha256": "c6b6032f20d8b12a7b25422bd42feabe64b7142dc0680abfcaad67600603dbc5",
+      "bytes": 2960
+    },
+    {
+      "path": "results/qualifications/openai-gpt-5.6-luna-2026-09-15T10-24-04.444Z-6f6ac3c2-4fe5-40d4-a60e-844e633abd82.json",
+      "sha256": "f19ab41891e29b3ca8122fe1a632dc54b5525f7732790b350be7f6584f690713",
+      "bytes": 2960
+    },
+    {
+      "path": "results/qualifications/openai-gpt-5.6-luna-2026-09-15T10-24-48.236Z-f1d6884f-1842-41d4-b90d-6e3a423c3672.json",
+      "sha256": "e4a7c518e5dab3d6757656964b22bd16930515e57972c747cf51af8ba1debd4c",
+      "bytes": 2960
+    },
+    {
+      "path": "results/qualifications/openai-gpt-5.6-luna-2026-09-15T10-24-52.044Z-17f3406e-1697-448c-84d9-6e872e03ae4d.json",
+      "sha256": "6da1c313f21b2a6d458e91bd27d893bbcb077f44954ae3eb338fd2d1a7d8d58e",
+      "bytes": 2960
+    },
+    {
+      "path": "results/qualifications/openai-gpt-5.6-luna-2026-09-15T10-25-02.441Z-34d7eec9-c869-47fe-9681-6fd5d3d33017.json",
+      "sha256": "b96372bedb3fb76621f45daa07c1be8cb1b6260d2588279ff13825935ee0f35f",
+      "bytes": 2960
+    },
+    {
+      "path": "results/qualifications/openai-gpt-5.6-luna-2026-09-15T11-32-54.257Z-d9f732bd-4041-419e-a372-f527c0286d41.json",
+      "sha256": "d73f5b84d80b9e2d76e9ee7ed854b21fdcb098d7a8fbd4c7d50085d06cefded2",
+      "bytes": 2959
+    },
+    {
+      "path": "results/qualifications/openai-gpt-5.6-luna-2026-09-15T20-23-55.976Z-4734a52c-37d9-451b-bf1b-2343e9d44fc8.json",
+      "sha256": "65b68e641dd1692d02957298c17ee22638f958e69df3de60952be7fe618f451f",
+      "bytes": 2959
+    },
+    {
+      "path": "results/qualifications/opencode-go-glm-5.3-flash-2026-09-15T11-32-56.212Z-eb5bbb84-90ba-4488-8fdd-02d1ce280848.json",
+      "sha256": "2382be5c3cd4f1ba091ca30629e89b72df6eb5502d30fe7dc9f07195b40b9a19",
+      "bytes": 2149
+    },
+    {
+      "path": "results/qualifications/opencode-go-glm-5.3-flash-2026-09-15T11-33-14.569Z-04b5429f-667b-4baa-a559-43b719cc8275.json",
+      "sha256": "91a5aadcc7b647ae9df57d0a19fd87cbc1dcf26050c17c729b105a3c5e7fc66c",
+      "bytes": 2149
+    },
+    {
+      "path": "results/qualifications/opencode-go-glm-5.3-flash-2026-09-15T11-35-11.365Z-01a8be12-331e-4fbf-8390-2e6d12d13169.json",
+      "sha256": "1416358b2a88a72ab6bf27e50ea15bf57f6098afe0f9c91b9c3632d2d0748045",
+      "bytes": 2149
+    },
+    {
+      "path": "results/qualifications/opencode-go-glm-5.3-flash-2026-09-15T11-43-58.589Z-08ed439f-2bd9-478e-bd38-8ed72f700d3f.json",
+      "sha256": "71b38ce7aa722b68661b1857df7fc92bba3f9ccb28fd45a91cda1133ade1b71f",
+      "bytes": 2149
+    },
+    {
+      "path": "results/qualifications/opencode-go-glm-5.3-flash-2026-09-15T11-49-32.783Z-6e9fd15a-b73c-4ace-aebb-dddd7cdc8b92.json",
+      "sha256": "9a4f2bc4857dce7bfaa6cbc91cfbae5ff21db7ef48686bc96748608f0f9ad3a8",
+      "bytes": 2149
+    },
+    {
+      "path": "results/qualifications/opencode-go-glm-5.3-flash-2026-09-15T11-51-32.854Z-6e2231bd-699b-4831-b579-71d39cf0e7f7.json",
+      "sha256": "6844a2edbead7aa49b08ef14b8c4ddaa253f941c34fd1f365d688f5db54c0eca",
+      "bytes": 2149
+    },
+    {
+      "path": "results/qualifications/opencode-go-glm-5.3-flash-2026-09-15T11-51-47.811Z-9deafc21-bd02-432f-80ac-f8f37037e7e6.json",
+      "sha256": "dc71c82ee3d936f3c2204924e9c7db5b51c31a0a2bfd1740bc94149682906a5b",
+      "bytes": 2149
+    },
+    {
+      "path": "results/qualifications/opencode-go-glm-5.3-flash-2026-09-15T11-52-02.966Z-0aa12b12-dd86-4cf5-9a7d-beb038a1db13.json",
+      "sha256": "1309c75b9f112e3bc128a293f559712fb671fdb2d1fd5a4d63e25bf68bd22f2c",
+      "bytes": 2149
+    },
+    {
+      "path": "results/qualifications/opencode-go-glm-5.3-flash-2026-09-15T11-52-17.858Z-2ed3b7d9-5879-4c79-bd9c-14c051914a6f.json",
+      "sha256": "b4641bf4d3c646909bc01c2f8cf3c62f8214556ddf5a6eb067e2bc75bfbce8d7",
+      "bytes": 2149
+    },
+    {
+      "path": "results/qualifications/opencode-go-glm-5.3-flash-2026-09-15T12-00-59.277Z-603abc31-2e2d-4be8-8416-8769fa380b27.json",
+      "sha256": "ab04843974ef348e2c68426689c9190f71f6ccb474e12dc1cacde0fe64c218c5",
+      "bytes": 2149
+    },
+    {
+      "path": "results/qualifications/opencode-go-glm-5.3-flash-2026-09-15T12-07-14.076Z-554417d0-ee2a-4e4d-9292-7a183c0b58c5.json",
+      "sha256": "c45591269fead25f5c9f5e9e45da055a2736dd202143bfb5f7b13f7ca96dcf3b",
+      "bytes": 2149
+    },
+    {
+      "path": "results/qualifications/opencode-go-glm-5.3-flash-2026-09-15T12-07-28.979Z-61050bc7-143e-4185-9f88-ce31954ce7aa.json",
+      "sha256": "629d781534a379ce290695df7cff8a69af246788d0898f0bcd225fd309d14259",
+      "bytes": 2149
+    },
+    {
+      "path": "results/qualifications/opencode-go-glm-5.3-flash-2026-09-15T12-07-43.985Z-3eb6341b-4c4e-48dc-8dc8-c025cd7314f4.json",
+      "sha256": "7e4fdffcf5160a482301fd815b72e582eacb756c46cee02fe0228c818eef2b47",
+      "bytes": 2149
+    },
+    {
+      "path": "results/qualifications/opencode-go-glm-5.3-flash-2026-09-15T12-07-59.010Z-2e43f671-1857-486a-9935-3d09851afca2.json",
+      "sha256": "883d2f3fea8f1ef1544da56927503b7031cda77766e0895562dcf29e3085356f",
+      "bytes": 2149
+    },
+    {
+      "path": "results/qualifications/opencode-go-glm-5.3-flash-2026-09-15T12-17-22.674Z-86536821-4190-4469-8d20-1c6b24a4c21f.json",
+      "sha256": "815d16ddecd3e3931d00637460f6daf4fc58232458d8a8e8a2749ecac5785c91",
+      "bytes": 2149
+    },
+    {
+      "path": "results/qualifications/opencode-muse-2026-09-12T07-53-35-413Z.json",
+      "sha256": "46d56da1b8718cdb208a845e0425134c01a5aaa1005bd32017bd2d1098ac37e0",
+      "bytes": 2643
+    },
+    {
+      "path": "results/qualifications/opencode-muse-2026-09-12T08-04-01-118Z.json",
+      "sha256": "1c314c84c4a619cbdeb88634d2afffad7de66e010c6b714f25a153d67940c364",
+      "bytes": 2643
+    },
+    {
+      "path": "results/qualifications/opencode-muse-2026-09-12T08-06-18-446Z.json",
+      "sha256": "4c847cb9c0b1194257b474ff2dc55562be047b7cceec446e18f971de02f427fe",
+      "bytes": 2878
+    },
+    {
+      "path": "results/qualifications/opencode-muse-2026-09-12T08-30-01-990Z.json",
+      "sha256": "63fa007456a2af5d7a01e3bbcf7f1ec468c2d524d3308ad5d36ef4935e472b4c",
+      "bytes": 2878
+    },
+    {
+      "path": "results/qualifications/opencode-muse-2026-09-13T12-06-31-303Z.json",
+      "sha256": "9c213d1f9b47e204ab0be8e35ca94235742953730e570090b98252a4250fa5ff",
+      "bytes": 2878
+    },
+    {
+      "path": "results/qualifications/opencode-muse-2026-09-13T15-53-29-169Z.json",
+      "sha256": "f4ac07a1ceaf04d9bac0e47889fde6b613e7cea1e20f9dad415e613c26b0e9e2",
+      "bytes": 2878
+    },
+    {
+      "path": "results/qualifications/opencode-muse-2026-09-14T12-36-19-650Z.json",
+      "sha256": "5549d4d32d82dcd9f79fbf5360654d250d7b420deee7027e5ee1a0006415f815",
+      "bytes": 2878
+    },
+    {
+      "path": "results/qualifications/opencode-muse-spark-1.2-contributor-free-2026-09-14T23-07-05.835Z-c96ef58d-3995-4e3f-9170-7a0e936fdc70.json",
+      "sha256": "1bbb2dfeb1281491ac3bc25fb32daee8bdbdf52463efb46fb44f501d99c5090f",
+      "bytes": 2878
+    },
+    {
+      "path": "results/qualifications/opencode-muse-spark-1.2-contributor-free-2026-09-14T23-29-12.698Z-93528111-2935-4eb4-85e9-4ec4f730022a.json",
+      "sha256": "a5a5ab2b185ee4b2b6a50b2c75e5b749be64f1bb578a6287e258cea979789b8a",
+      "bytes": 2878
+    },
+    {
+      "path": "results/qualifications/opencode-muse-spark-1.2-contributor-free-2026-09-15T06-22-14.582Z-333dea1a-9d1c-4067-be60-842bde3fe3ca.json",
+      "sha256": "3daf00ff983b46225e85f5a3c83b48524167d23f559d44cf155d971964b5211c",
+      "bytes": 3550
+    },
+    {
+      "path": "results/qualifications/opencode-muse-spark-1.2-contributor-free-2026-09-15T06-22-15.139Z-6e47a4b0-6e83-4fc5-b5b9-cec11d91bcb4.json",
+      "sha256": "b6a9a3f5dd75df1efff53d71f33dfb5881f3ece357cf335cd581a53403b18715",
+      "bytes": 3550
+    },
+    {
+      "path": "results/qualifications/opencode-muse-spark-1.2-contributor-free-2026-09-15T11-32-52.342Z-a13800cd-d406-480e-87a0-574ee5bdd0cd.json",
+      "sha256": "bb8c77b8e2d290ee6690f98f812e28725eb901280ec948e25c8e7d0c2f604c4d",
+      "bytes": 2877
+    },
+    {
+      "path": "results/qualifications/opencode-muse-spark-1.3-contributor-free-2026-09-14T23-07-03.934Z-ea9a58b1-a64c-4815-85a0-b3d217fee725.json",
+      "sha256": "be2e346e9bbe98a8d23be602af2f9f1c160a193117f51403d4ba813975fc16f3",
+      "bytes": 2878
+    },
+    {
+      "path": "results/qualifications/opencode-muse-spark-1.3-contributor-free-2026-09-14T23-29-10.558Z-8f649338-69c7-41e5-a2c4-b70a8700d045.json",
+      "sha256": "8f0f114be81e25951b0e3222af7009bf2913288749ac0c9246af94e22a1482f8",
+      "bytes": 2878
+    },
+    {
+      "path": "results/qualifications/opencode-muse-spark-1.3-contributor-free-2026-09-15T06-22-09.456Z-bdd00531-fb2f-41df-975d-2aa38de845c6.json",
+      "sha256": "267b4fdcb4c5641193847570917f08985e6a3fbbbd0a6df2fc9b298bf05856c0",
+      "bytes": 2878
+    },
+    {
+      "path": "results/qualifications/opencode-muse-spark-1.3-contributor-free-2026-09-15T06-22-11.658Z-f5c1bbc8-fbf5-4c77-a95a-964e91fd4413.json",
+      "sha256": "719ebebc381891014b9f658b979915099a316b97efcf147962c751ae4258b714",
+      "bytes": 2878
+    },
+    {
+      "path": "results/qualifications/opencode-muse-spark-1.3-contributor-free-2026-09-15T06-22-12.279Z-892b258c-901a-4239-8c0b-45d94357264d.json",
+      "sha256": "3a6c7ff6fe5feb2a974f79cfbc8776b30f63a3686344784498af241c81a9ba9a",
+      "bytes": 3214
+    },
+    {
+      "path": "results/qualifications/opencode-muse-spark-1.3-contributor-free-2026-09-15T07-03-31.187Z-fa7624ad-1ab8-416a-aabb-eb0573619965.json",
+      "sha256": "b06ee0eb67c3a423327ed67e8bd918b25c7debf0d4ec2ff3a1ea980201df070d",
+      "bytes": 2878
+    },
+    {
+      "path": "results/qualifications/opencode-muse-spark-1.3-contributor-free-2026-09-15T07-05-39.447Z-841c4681-73b8-42e3-98e1-a18078cf10a0.json",
+      "sha256": "d8e45230279f135cdbb1719001fb3d0e4f444e746d4b5a549f1732e578a1b907",
+      "bytes": 2878
+    },
+    {
+      "path": "results/qualifications/opencode-muse-spark-1.3-contributor-free-2026-09-15T07-05-52.979Z-3fc33ada-863b-4e86-94b0-14ad555a9a4c.json",
+      "sha256": "cf042287d576f6c72f772f72b4fd2212ef22ed6cb5ac651c087b54e25b8bbc5e",
+      "bytes": 2878
+    },
+    {
+      "path": "results/qualifications/opencode-muse-spark-1.3-contributor-free-2026-09-15T07-06-09.400Z-634f7e95-fcae-490d-a658-b693dd41ff37.json",
+      "sha256": "997174f2ec969eb4c503be7b342d4db349194c48b1b83200715e057e2563bd74",
+      "bytes": 2878
+    },
+    {
+      "path": "results/qualifications/opencode-muse-spark-1.3-contributor-free-2026-09-15T11-32-50.386Z-22ff90d4-be0a-4e89-b5be-6fddbb40e265.json",
+      "sha256": "dfe66ed1f84857a63693efcde9fe5aec2bf1e80cbd87e748d725217c2c6348b2",
+      "bytes": 2877
+    },
+    {
+      "path": "results/qualifications/opencode-muse-spark-1.3-contributor-free-2026-09-15T13-04-47.175Z-a114831d-3724-43b0-9e80-649c4410303f.json",
+      "sha256": "5b1a46c7a65bbdf4d99857894b88ed44c6932a891018369285db5a56827ec815",
+      "bytes": 2878
+    },
+    {
+      "path": "results/qualifications/v10-unlimited-turns-20260913/evidence.json",
+      "sha256": "773b13aa58ee6f434e1fce15a06e741deebcbea808b0652d020e9cbe2addebdb",
+      "bytes": 10271
+    },
+    {
+      "path": "results/qualifications/v10-unlimited-turns-20260913/source.tar.gz",
+      "sha256": "17f8aea63823e1359d99e9c0f8c059cdc6113b438791da8d17d4eb1d76089492",
+      "bytes": 225335
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/README.md",
+      "sha256": "355f8d54215efe7a1301f4d1844a0aa15013aeb02bdbcfe05ca36d48e87c7cf3",
+      "bytes": 2418
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/adapter-fixtures.tar.gz",
+      "sha256": "4524932caf90b0bb9845e641090c111749665f17b165fa8b3441d114d4d25343",
+      "bytes": 808353
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/archived-test-install-diagnostics.tar.gz",
+      "sha256": "002dc16a0dded546032ccdef254f8f1595884e65e5590777ffb126de1b5e6ff2",
+      "bytes": 28110
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/archived-tests-final-policy.log",
+      "sha256": "f8f4ee71b8ceaff0218f97a58ff36c1593a7c7fe601bd90caf726fc7187bb53f",
+      "bytes": 47522
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/control-final-replay.json",
+      "sha256": "5979494a6e61714c1fceae3640e5b3cc1bcb2e23f9799325ac4ac47b058129a5",
+      "bytes": 715
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/control-final-review.log",
+      "sha256": "de6594aff35cb28601df4aabf513eba0ee0b0da6c04d569ab0cf1b50e1b286c7",
+      "bytes": 837
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/control-final.log",
+      "sha256": "9fcd0624df9d179149bfb9d9436e4b07601be3aba3305f95147076403eff370d",
+      "bytes": 827
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/control-final.tar.gz",
+      "sha256": "2262fb00519295030d572f26f57abfacd6d2f994305966045a0d89797ac0569d",
+      "bytes": 282629
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/control-replay.json",
+      "sha256": "d08bceee717b5855f38ea31b148ff076c30633610e8977ec527bbc29b5067862",
+      "bytes": 715
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/control-review.log",
+      "sha256": "2b8302c7a118d31c2b6fd297898f5cbe6d65ab1bca184e06d912354206305dd7",
+      "bytes": 831
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/control.log",
+      "sha256": "91079f680008254cf199bdcc811a81b9ee329cd56b664b6c481e2fc83e0682df",
+      "bytes": 821
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/dataset-gap-summary.json",
+      "sha256": "bd859919548abbf1f7dd72029a55c5ec08ebee801f59e124b120ef6ed6bc4e53",
+      "bytes": 528
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/evidence.json",
+      "sha256": "ba1feb1c828b66e64a24f667171f89e9b197c21d5441cb94067a9b6efbfc00a0",
+      "bytes": 9575
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/live-initial-context.txt",
+      "sha256": "558904f5125d898226919fadcb080ebbb04b968f3e34e02518c34d666ab1124e",
+      "bytes": 1569
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/live-preflight.json",
+      "sha256": "259f8b00b7c1cf042d46bcb1a16dc3aad46c5242d9c58eff2b7b8f5ca59f8b99",
+      "bytes": 975
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/live-replay.json",
+      "sha256": "3fadfa1813d77cd9dde8aa903eb8251cbfcd6ea244b211eaa1c9536a3022f5f8",
+      "bytes": 1144
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/live-review.log",
+      "sha256": "b32f2872c3545df70664fd5a03ddb8b413f9b7fd2a1d8084459c391c3bda0caf",
+      "bytes": 1257
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/live-review.md",
+      "sha256": "18fce52222853634352fbe32a416689dbc4b09819b37de67d9eb4d77a576425c",
+      "bytes": 3705
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/live-smoke-c94d997.tar.gz",
+      "sha256": "13e939c171e3e1374d031f6a45574f7495d612965460e5c8bbc9d91369d05df3",
+      "bytes": 1891406
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/live-smoke.log",
+      "sha256": "75c245b433cad90e9d82c8af2cbeaa8631b8770b92fbe12380c50c2e57c21bff",
+      "bytes": 1329
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/model-preflight.json",
+      "sha256": "f4ac07a1ceaf04d9bac0e47889fde6b613e7cea1e20f9dad415e613c26b0e9e2",
+      "bytes": 2878
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/model-preflight.log",
+      "sha256": "3ad42385e0a62545e58a475e0d6aff7ebaadf8ee419e0007729dea2549e460b9",
+      "bytes": 3114
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/offline-tests-final.log",
+      "sha256": "d1b79cddecda220f478b46519206acce7da92c64e0ee76e76d1d163478324294",
+      "bytes": 29092
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/offline-tests.log",
+      "sha256": "f64e3e0f0f61e55dc4de6284eaaa0c2a0d922494d31b6e997bac59a3caf0247b",
+      "bytes": 29083
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/sandbox-check.log",
+      "sha256": "ca68f8a31df83111ade864f132d3069f677639401f94b6b67403f00e771f27a3",
+      "bytes": 3517
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/sandbox-final.json",
+      "sha256": "4958280713cddde04504761d6d98a0348cdd52cbfccebb7e003cf6506689a0d4",
+      "bytes": 3480
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/sandbox-final.log",
+      "sha256": "58ffc59f8b045ae3b71a88efa624806d5202f735fd2a7cb19da4a411aec4d2b5",
+      "bytes": 3517
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/source-9254544.tar.gz",
+      "sha256": "d6d789aef852796ba16b621bd70d3be3b45ca6e0af276fdce968819cd7cec283",
+      "bytes": 328524
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/source-c94d997.tar.gz",
+      "sha256": "34aafb901dba9f0c258272998ab25149d03440652a2a125b42811ca0c8dfb746",
+      "bytes": 328021
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/submission-fixture-final.log",
+      "sha256": "98615e0f049acdeb433b4f5172c9360d23e31b7369db6cb74503e478563544a0",
+      "bytes": 662
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/submission-fixture-head.log",
+      "sha256": "8251fb02d3bd2498d272897ee7c11cb1a7f120cbc7ca311a234fb7d7eb5ff449",
+      "bytes": 662
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/submission-fixture-r2.log",
+      "sha256": "f9a88e8153a64deee7d30cb7d5a89745aa324799db001190688bc0d383b9fd90",
+      "bytes": 1749
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/submission-fixture-r3.log",
+      "sha256": "c93b382c7d2da6312db9f5742570eb369c32a45f98682c379d0cd5d372c583fe",
+      "bytes": 662
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/submission-fixture-r4.log",
+      "sha256": "355f4e726f475fe83b8235971d96166ddd82e81f7ef0490b4ae1b7b1646ddfb0",
+      "bytes": 662
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/submission-fixture.log",
+      "sha256": "2e09c2e0728b2a49380e2ed8cdcf0f8bd9e483734ca0a5d340a46f77d1f42ca4",
+      "bytes": 630
+    },
+    {
+      "path": "results/qualifications/v11-simplification-20260913/watchdog-fixture.log",
+      "sha256": "698cd123c2f174b40ccab47b1f5b34b273d1fe86d86a673dc2506c49dbda8212",
+      "bytes": 722
+    },
+    {
+      "path": "results/qualifications/v8-environment-20260912/evidence.json",
+      "sha256": "0edca95e10b1e3624080d8b6caa8a82b1f1cf8c3bfd44cba9e5f8668dbe2088f",
+      "bytes": 4518
+    },
+    {
+      "path": "results/qualifications/v8-environment-20260912/qualified-source.tar.gz",
+      "sha256": "160a755fe09047e788a5b5039914e22b25c1ed4659f88c5bdeb167a89fe2997f",
+      "bytes": 204709
+    },
+    {
+      "path": "results/qualifications/v8-environment-20260912/v7-replay.json",
+      "sha256": "72c3146a3e1e329cfdf481cc09319dc467d06bf8d5baa5079f7fd4ef3b5d3037",
+      "bytes": 48
+    },
+    {
+      "path": "results/qualifications/v9-journal-20260913-evidence.json",
+      "sha256": "fb2997412c7c1837e8097d998de5f09bd48c2039083f7b926ccf1784b038d331",
+      "bytes": 3893
+    },
+    {
+      "path": "results/qualifications/v9-journal-20260913-r2-source.tar.gz",
+      "sha256": "33e252751991bf5ba8dedfdf7fb4cbfd02fbcd51bec42f6d33776128525780de",
+      "bytes": 146009
+    },
+    {
+      "path": "results/qualifications/v9-journal-20260913-source.tar.gz",
+      "sha256": "876e4dde9587e254abd8bb288d3ea13034bfd68d65396d64cb48eb67cc73cb83",
+      "bytes": 145784
+    },
+    {
+      "path": "results/reports/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "results/runs/.gitkeep",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  ],
+  "note": "Historical attempts and result snapshots are preserved; these entries are not current leaderboard rows.",
+  "result_pr_archive": {
+    "asset": "historical-result-prs.tar.gz",
+    "sha256": "d1fcc7240c0858aff531912101837889b8dac42e5a84cb138e738307ecf02ff2",
+    "bytes": 38004
+  }
+}
