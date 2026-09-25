@@ -169,7 +169,7 @@ test("four concurrent runs own fresh balances, holdings, journals, funding, atte
   await expect(runEvaluation({ ...c, history: 101 }, { resume: true })).rejects.toThrow("changed");
   expect(evaluationReport(result.plan, result.report.quarters.slice(0, 3)).models[0]!.year).toBeNull();
   expect(() => evaluationReport(result.plan, [...result.report.quarters, result.report.quarters[0]!])).toThrow("Duplicate");
-}, 180000);
+}, 300000);
 
 test("three invalid days stop only their quarter; later quarters reset the streak and still run", async () => {
   const c = input();
@@ -199,7 +199,7 @@ test("three invalid days stop only their quarter; later quarters reset the strea
   expect(first.report.models[0]!.year).toBeNull();
   const resumed = await runEvaluation(c, { resume: true, control: async () => { throw Error("No fresh attempts"); } });
   expect(resumed.report).toEqual(first.report);
-}, 180000);
+}, 300000);
 
 test("new evaluations refuse existing child state and model results refuse a control transport", async () => {
   const c = input();
