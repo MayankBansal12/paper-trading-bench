@@ -1,5 +1,5 @@
 // No inference: exercise the real pinned Pi CLI and sandbox against synthetic SSE.
-import { writeFile, rm } from "node:fs/promises";
+import { writeFile, cp } from "node:fs/promises";
 import { setup } from "../tests/studyTestSupport.ts";
 import { preparePiRuntime, decidePi } from "../src/pi/agent.ts";
 import { validateAccepted } from "../src/study/accept.ts";
@@ -129,7 +129,7 @@ try {
       forward,
     );
     await writeFile(
-      `/tmp/pi-qualification-${scenario}.json`,
+      `${process.env.BENCH_QUALIFICATION_OUTPUT ?? "/tmp"}/pi-qualification-${scenario}.json`,
       JSON.stringify(result, null, 2),
     );
     if (scenario === "success" || scenario === "correction") {
@@ -189,7 +189,7 @@ try {
       outcome: result.outcome,
       usage: result.decision.usage,
     });
-    await rm(s.dir, { recursive: true, force: true });
+    await cp(s.dir, `${process.env.BENCH_QUALIFICATION_OUTPUT}/${scenario}-artifacts`, { recursive: true });
   }
   console.log(
     JSON.stringify({
@@ -201,5 +201,5 @@ try {
   );
 } finally {
   await runtime.dispose();
-  await rm(s.dir, { recursive: true, force: true });
+  await cp(s.dir, `${process.env.BENCH_QUALIFICATION_OUTPUT}/${scenario}-artifacts`, { recursive: true });
 }

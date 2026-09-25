@@ -14,7 +14,12 @@
     "sandbox:provision": "sh scripts/sandbox/provision.sh",
     "sandbox:check": "bun run src/index.ts sandbox-check",
     "study:control": "bun run scripts/qualify-study-control.ts",
-    "bench": "bun run src/index.ts"
+    "bench": "bun run src/index.ts",
+    "runtime:pin": "bun scripts/pin-runtime.ts",
+    "runtime:check": "bun scripts/qualify-pi.ts",
+    "supervise": "python3 scripts/supervise.py",
+    "test:supervisor": "python3 -m unittest discover -s tests -p \"*_test.py\"",
+    "viewer": "bun scripts/visualizer.ts"
   },
   "dependencies": {
     "typebox": "1.1.38"

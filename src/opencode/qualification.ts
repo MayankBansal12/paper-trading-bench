@@ -24,6 +24,9 @@ export const QUALIFIED_ROUTES = Object.freeze([
   Object.freeze({ id: "opencode-go/glm-5.3-flash", provider: "opencode-go", model: "glm-5.3-flash",
     apiURL: "https://opencode.ai/zen/go/v1", npm: "@ai-sdk/openai-compatible", authEnv: "OPENCODE_API_KEY", auth: "api",
     cost: { input: 0.15, output: 0.5, cacheRead: 0.03, cacheWrite: 0 } }),
+  Object.freeze({ id: "opencode-go/deepseek-v4.1-flash", provider: "opencode-go", model: "deepseek-v4.1-flash",
+    apiURL: "https://opencode.ai/zen/go/v1", npm: "@ai-sdk/openai-compatible", authEnv: "OPENCODE_API_KEY", auth: "api",
+    cost: { input: 0.15, output: 0.6, cacheRead: 0.003, cacheWrite: 0 } }),
 ]);
 export type QualifiedRoute = (typeof QUALIFIED_ROUTES)[number];
 export const QUALIFIED_MODEL_IDS: readonly string[] = Object.freeze(QUALIFIED_ROUTES.map(r => r.id));

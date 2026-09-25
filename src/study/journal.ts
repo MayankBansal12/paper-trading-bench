@@ -83,7 +83,8 @@ export function durableCreate(path: string, value: unknown): void {
 export class JournalStore {
   readonly path: string;
   private events: JournalEvent[] = [];
-  constructor(readonly dir: string) {
+  /** `carry` seeds attempts already consumed on one date by an authenticated parent run (never refunded). */
+  constructor(readonly dir: string, private carry?: { date: string; attempts: number }) {
     mkdirSync(dir, { recursive: true });
     this.path = join(dir, "events.jsonl");
     if (!existsSync(this.path)) return;
@@ -120,7 +121,7 @@ export class JournalStore {
     return (
       1 +
       Math.max(
-        0,
+        this.carry?.date === date ? this.carry.attempts : 0,
         ...this.events
           .filter((e) => e.scope.date === date)
           .map((e) => e.scope.attempt),

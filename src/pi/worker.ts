@@ -37,6 +37,7 @@ for (const path of [
   "/proc/1/root/home/ai",
   "/etc/shadow",
   "/var/run/docker.sock",
+  ...(launch.forbiddenPaths ?? []),
 ]) {
   try {
     await readFile(path);
@@ -100,7 +101,7 @@ await writeFile("/work/pi/models-store.json", JSON.stringify(launch.catalog));
 await writeFile(
   "/work/pi/auth.json",
   JSON.stringify({
-    "openai-codex": { type: "api_key", key: launch.capability },
+    [launch.settings.defaultProvider]: { type: "api_key", key: launch.capability },
   }),
 );
 const child = Bun.spawn(
@@ -122,11 +123,11 @@ const child = Bun.spawn(
     "--extension",
     "/work/benchmark-plugin.mjs",
     "--provider",
-    "openai-codex",
+    launch.settings.defaultProvider,
     "--model",
     launch.settings.defaultModel,
     "--thinking",
-    "medium",
+    launch.settings.defaultThinkingLevel,
     "--tools",
     launch.definitions.map((d: any) => "trading_" + d.name).join(","),
     "--system-prompt",

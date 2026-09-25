@@ -17,4 +17,4 @@ All agent changes to this repository must be delivered through pull requests.
   cohort. Preserve all attempts and invalid days. Never rewrite manifests or
   hashes to make old results pass verification under new code.
 
-See [the evaluation runbook](docs/EVAL_RUNBOOK.md) for execution and publication.
+See [the evaluation runbook](docs/SETUP.md) for execution and publication.

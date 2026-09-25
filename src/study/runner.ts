@@ -1,7 +1,11 @@
 import { implementationMatches, runtimeMatches } from "./continuation.ts";
+import { continuationFits, loadParentPrefix, type ContinuationCheckpoint } from "./segment.ts";
+import { registerInheritedRun, unregisterInheritedRun } from "./tools.ts";
 import { QUOTA_PAUSE_POLICY, quotaPause, type QuotaPause } from "./availability.ts";
-import { isPiModel } from "../pi/route.ts";
+import { isPiModel, PI_MUSE_MODEL_ID } from "../pi/route.ts";
+import { isClaudeModel } from "../claude/route.ts";
 import { studyRoute } from "./routes.ts";
+import { assertStorage } from "./storage.ts";
 import { mkdirSync, existsSync, readFileSync, readdirSync } from "node:fs";
 import { resolve, join } from "node:path";
 import {
@@ -54,6 +58,7 @@ export interface StudyConfig {
   history: number;
   limits: StudyLimits;
   policy: typeof POLICY;
+  continuation?: ContinuationCheckpoint;
 }
 export interface Day {
   date: string;
@@ -85,7 +90,7 @@ export async function prepareStudyData(c: StudyConfig) {
     c.history > POLICY.maxHistory
   )
     throw new Error("History must be 60..252");
-  if (c.availabilityPolicy && (!isPiModel(c.model) || contentHash(c.availabilityPolicy) !== contentHash(QUOTA_PAUSE_POLICY)))
+  if (c.availabilityPolicy && (!(isPiModel(c.model) || isClaudeModel(c.model) || ["opencode-go/deepseek-v4.1-flash", "opencode-go/glm-5.3-flash"].includes(c.model ?? "")) || contentHash(c.availabilityPolicy) !== contentHash(QUOTA_PAUSE_POLICY)))
     throw new Error("Unqualified availability policy or model");
   const market = await loadDataset(c.dataDir);
   if (market.version !== c.datasetHash)
@@ -212,25 +217,33 @@ export async function runStudy(
         funding: config.contributions,
       });
     }
-    const store = new JournalStore(dir);
-    const past: JournalEntry[] = [],
-      days: Day[] = [],
+    const parent = c.continuation ? loadParentPrefix(c.continuation) : undefined;
+    const offset = parent?.days.length ?? 0;
+    if (c.continuation) registerInheritedRun(c.runId, c.continuation.parentRunId);
+    if (parent && !continuationFits(parent, c as any, dates))
+      throw new Error("Continuation parent does not match this quarter");
+    const carry = parent?.carried.length
+      ? { date: parent.carried[0]!.scope.date, attempts: Math.max(...parent.carried.map((e) => e.scope.attempt)) } : undefined;
+    const store = new JournalStore(dir, carry);
+    const past: JournalEntry[] = parent ? [...parent.past] : [],
+      days: Day[] = parent ? [...parent.days] : [],
       attempts: StudyAttempt[] = [];
-    let portfolio = createInitialPortfolio(STARTING_CAPITAL),
+    let portfolio = parent ? parent.portfolio : createInitialPortfolio(STARTING_CAPITAL),
       failure: string | undefined;
     let availability: QuotaPause | undefined;
-    let consecutiveInvalidDays = 0, maxConsecutiveInvalidDays = 0;
+    let consecutiveInvalidDays = parent?.consecutiveInvalidDays ?? 0, maxConsecutiveInvalidDays = parent?.maxConsecutiveInvalidDays ?? 0;
     const files = existsSync(join(dir, "days"))
       ? readdirSync(join(dir, "days"))
           .filter((f) => f.endsWith(".json"))
           .sort()
       : [];
-    if (files.some((f, i) => f !== `${dates[i]}.json`))
+    if (files.some((f, i) => f !== `${dates[offset + i]}.json`))
       throw new Error("Days are not a contiguous prefix");
     // Reusable runtime is prepared lazily before the first new attempt, outside every daily watchdog.
-    for (const date of dates) {
+    for (const [dateIndex, date] of dates.entries()) {
+      if (dateIndex < offset) continue;
       if (consecutiveInvalidDays >= POLICY.maxConsecutiveInvalidDays) {
-        if (files.length > days.length) throw new Error("Day commits extend beyond the invalid-day stop");
+        if (files.length > days.length - offset) throw new Error("Day commits extend beyond the invalid-day stop");
         break;
       }
       const dayPath = join(dir, "days", `${date}.json`);
@@ -243,7 +256,7 @@ export async function runStudy(
             e.payload.outcome === "completed",
         )
         .at(-1);
-      const closedFailures = () => store.all().filter((e) =>
+      const closedFailures = () => [...(parent?.carried ?? []), ...store.all()].filter((e) =>
         e.scope.date === date && (e.kind === "failed" ||
           (e.kind === "result" && e.payload.outcome !== "completed")),
       );
@@ -252,7 +265,8 @@ export async function runStudy(
       // A recorded quota failure keeps its attempt number. During cooldown no
       // new runtime, provider request, retry, invalid day or later day is created.
       if (!terminal && !existsSync(dayPath) && c.availabilityPolicy) {
-        const pause = quotaPause(store, closedFailures().at(-1));
+        // Only this run's own failures can pause it; carried parent failures count toward attempts, never toward a wait.
+        const pause = quotaPause(store, closedFailures().filter((e) => e.scope.runId === c.runId).at(-1));
         if (pause && (options.readOnly || Date.now() < Date.parse(pause.notBefore))) {
           availability = pause;
           failure = `Provider usage limit; resume no earlier than ${pause.notBefore}`;
@@ -272,6 +286,7 @@ export async function runStudy(
         // A fresh attempt starts from the last committed state, never failed memory.
         // Persisted attempts count across process restarts; resume cannot grant a third.
         while (!terminal && store.nextAttempt(date) <= POLICY.maxAttemptsPerDay) {
+          assertStorage(dir);
           if (!options.control && c.kind === "control")
             throw new Error("Control requires explicit deterministic transport");
           if (!options.control && !runtime) {
@@ -283,6 +298,12 @@ export async function runStudy(
               )
                 throw new Error("Runtime changed; start a new cohort");
             } else durableCreate(runtimePath, runtime.bundle.evidence);
+          }
+          // Runtime preparation also needs disk space. Recheck before inference.
+          assertStorage(dir);
+          if (!options.control) {
+            try { await runtime!.credential.authorize(AbortSignal.timeout(60_000)); }
+            catch { throw new Error("BENCH_AUTH_PAUSE: host login unavailable; no attempt started"); }
           }
           const scope = scopeFor(c.runId, date, store.nextAttempt(date));
           const view = makeView(
@@ -301,11 +322,13 @@ export async function runStudy(
                 (e) => store.audit(scope, e),
                 runtime!,
               );
+          let terminalVerificationError: string | undefined;
           // Controls persist the same raw prompt/tool boundary as the model adapter.
           if (result.outcome === "completed")
             try {
               validateAccepted(result, view, c.kind === "control", past, horizon, c.model);
             } catch (e) {
+              if (c.model === PI_MUSE_MODEL_ID) terminalVerificationError = String(e);
               result = {
                 ...result,
                 outcome: "harness_error",
@@ -318,6 +341,11 @@ export async function runStudy(
               };
             }
           const resultEvent = store.result(scope, resultPayload(result));
+          // An integrity audit failure is terminal infrastructure evidence, not
+          // a reason to spend the remaining attempt on an unchanged verifier.
+          // Persist the failed attempt first; never refund it or relabel a day.
+          if (terminalVerificationError)
+            throw new Error("TERMINAL_VERIFICATION_ERROR: " + terminalVerificationError);
           options.fault?.("after-result", date);
           if (result.outcome === "completed") terminal = resultEvent;
           else if (c.availabilityPolicy) {
@@ -396,7 +424,7 @@ export async function runStudy(
           failure = `${POLICY.maxConsecutiveInvalidDays} consecutive invalid trading days through ${date}: ${reason}`;
       }
     }
-    const events = store.all();
+    const events = [...(parent?.events ?? []), ...store.all()];
     const resultEvents = events.filter((e) => e.kind === "result");
     const begins = events.filter((e) => e.kind === "begin");
     const attemptedDates = new Set(begins.map((e) => e.scope.date));
@@ -412,7 +440,20 @@ export async function runStudy(
       ...(availability ? { availability } : {}),
       failure: failure ?? null,
       committedDays: days.length,
-      validDays: attempts.length,
+      validDays: (parent ? parent.days.filter((d) => d.status === "completed").length : 0) + attempts.length,
+      ...(parent ? { continuation: {
+        version: c.continuation!.version, parentRunId: c.continuation!.parentRunId, inheritedDays: offset,
+        newlyCommittedDays: days.length - offset, totalDays: days.length, parentEventRoot: c.continuation!.eventRoot,
+        parentLastDayHash: c.continuation!.lastDayHash, newEventRoot: store.root,
+        ...(c.continuation!.recovery ? { recovery: {
+          label: "SUPPLEMENTAL RECOVERY: fresh attempts after the parent's last valid day; the parent's later failed attempts are superseded here, not refunded, and the parent's own score is unchanged",
+          boundaryDate: c.continuation!.recovery.boundaryDate,
+          parentEventRoot: c.continuation!.recovery.parentEventRoot,
+          parentLastDayHash: c.continuation!.recovery.parentLastDayHash,
+          supersededDays: c.continuation!.recovery.supersededDays.map((d) => d.date),
+          supersededAttempts: c.continuation!.recovery.supersededAttempts.length,
+        } } : {}),
+      } } : {}),
       consecutiveInvalidDays,
       maxConsecutiveInvalidDays,
       stopped,
@@ -443,6 +484,7 @@ export async function runStudy(
     };
     return { dir, summary, days, attempts };
   } finally {
+    unregisterInheritedRun(c.runId);
     await runtime?.dispose();
     await release();
   }

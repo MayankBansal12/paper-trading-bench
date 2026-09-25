@@ -150,7 +150,7 @@ export async function serveGateway(
         });
       }
       if (body.model !== route.model) return deny("model");
-      if (route.auth === "oauth" && url.pathname !== "/inference/responses") return deny("provider-route");
+      if ((route.auth === "oauth" || pi) && url.pathname !== "/inference/responses") return deny("provider-route");
       // Provider-hosted retrieval is also outside the experiment. No URL media,
       // uploaded files, response continuations, external MCP or server-side tools.
       const contentSafe = (value: any): boolean =>
@@ -269,6 +269,7 @@ export async function serveGateway(
           name === "user-agent" ||
           name === "accept" ||
           (route.auth === "oauth" && name === "session-id") ||
+          (pi && name === "x-client-request-id") ||
           name.startsWith("x-opencode-") ||
           name.startsWith("x-stainless-")
         )
@@ -281,8 +282,11 @@ export async function serveGateway(
           : await credential.authorize(abort.signal);
         authHeaders.forEach((value, name) => headers.set(name, value));
         if (route.provider === "opencode-go") {
-          headers.set("user-agent", `opencode/${QUALIFIED_OPENCODE_CLIENT_VERSION}`);
-          headers.set("x-opencode-session", edgeSession);
+          // Keep the genuine Pi user agent. Never impersonate OpenCode for Go entitlement.
+          if (!pi) headers.set("user-agent", `opencode/${QUALIFIED_OPENCODE_CLIENT_VERSION}`);
+          headers.set("x-opencode-session", headers.get("x-opencode-session") ?? headers.get("x-client-request-id") ?? edgeSession);
+          if (pi) audit({ type: "pi_go_upstream", sequence, url: route.apiURL + "/responses",
+            userAgent: headers.get("user-agent"), session: headers.get("x-opencode-session") });
         }
         const response = await forward(
           route.auth === "oauth" ? CODEX_RESPONSES_URL
@@ -299,6 +303,8 @@ export async function serveGateway(
           type: "inference_response",
           sequence,
           status: response.status,
+          receivedAt: new Date().toISOString(),
+          retryAfter: response.headers.get("retry-after"),
         });
         const outHeaders = new Headers(response.headers);
         outHeaders.delete("content-length");

@@ -194,7 +194,7 @@ export async function decideStudy(
     audit(protocol);
     await writeFile(
       join(dir, "launch.json"),
-      JSON.stringify({
+      JSON.stringify({ forbiddenPaths: runtime.bundle.evidence.forbiddenPaths ?? [],
         model: route.id,
         auth: gatewayClientAuth(route.id, gateway.capability),
         prompt,

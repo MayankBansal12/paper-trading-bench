@@ -4,4 +4,4 @@ These deterministic, seeded daily OHLCV arrays are test inputs, not real market 
 
 The dataset loader validates the calendar and prices and includes their content hashes in dataset identity. Tests use these files for accounting, causal observation windows, tools and recovery. They cannot qualify as a historical model benchmark.
 
-Import real data into a separate, ignored dataset directory; never replace fixtures with downloaded prices. See the [data guide](../../src/data/README.md) and [environment contract](../../docs/STUDY_ENVIRONMENT.md).
+Import real data into a separate, ignored dataset directory; never replace fixtures with downloaded prices. See the [data guide](../../src/data/README.md) and [environment contract](../../docs/METHODOLOGY.md).

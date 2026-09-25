@@ -9,10 +9,11 @@ import {
   rm,
   copyFile,
 } from "node:fs/promises";
-import { tmpdir } from "node:os";
+import { tmpdir, homedir } from "node:os";
 import { createHash, randomUUID } from "node:crypto";
+import { constants } from "node:fs";
 import { contentHash, textHash } from "../core/hash.ts";
-export const SANDBOX_POLICY = "bwrap-systemd-unix-gateway-v2";
+export const SANDBOX_POLICY = "bwrap-systemd-user-unix-gateway-pi-v1";
 export interface SandboxProcess {
   process: ReturnType<typeof Bun.spawn>;
   stop: () => Promise<void>;
@@ -51,6 +52,12 @@ export async function sandboxIdentity(expected?: any) {
   const bun = await readFile(process.execPath);
   const identity = {
     policy: SANDBOX_POLICY,
+    forbiddenPaths: [
+      join(homedir(), ".pi/agent/auth.json"), join(homedir(), ".local/share/opencode/auth.json"),
+      join(homedir(), ".bashrc"), resolve("README.md"), "/proc/1/root" + homedir(),
+      `/run/user/${process.getuid!()}/bus`,
+      ...(process.env.BENCH_DATASET ? [join(process.env.BENCH_DATASET, "manifest.json")] : []),
+    ],
     bwrap: v,
     hashes,
     opencodeHash: createHash("sha256").update(binary).digest("hex"),
@@ -100,7 +107,7 @@ export async function prepareSandboxRuntime(expected?: any): Promise<PreparedSan
         evidence.hashes[".sandbox/seccomp.bpf"],
       ],
     ]) {
-      await copyFile(source!, join(dir, name!));
+      await copyFile(source!, join(dir, name!), constants.COPYFILE_FICLONE);
       if (
         createHash("sha256")
           .update(await readFile(join(dir, name!)))
@@ -142,11 +149,14 @@ export async function launchSandbox(
   for (const name of ["launch.json", "benchmark-plugin.mjs"])
     await chmod(join(setup, name), 0o444);
   const evidence = runtime.evidence;
+  // Rootless host authorization is tied to /usr/bin/bwrap. Pin its bytes while
+  // retaining that authorized path; a relocated copy loses network-namespace setup.
+  if (createHash("sha256").update(await readFile("/usr/bin/bwrap")).digest("hex") !== evidence.bwrapHash)
+    throw new Error("Authorized host Bubblewrap changed from the pinned runtime");
   const unit = "trading-bench-" + randomUUID();
+  const rootless = evidence.policy === "bwrap-systemd-user-unix-gateway-pi-v1";
   const args = [
-    "sudo",
-    "-n",
-    "systemd-run",
+    ...(rootless ? ["systemd-run", "--user"] : ["sudo", "-n", "systemd-run"]),
     "--quiet",
     "--pipe",
     "--wait",
@@ -169,13 +179,20 @@ export async function launchSandbox(
     socket,
     join(runtime.dir, "worker.ts"),
     String(Math.max(1, Math.ceil(timeoutMs / 1000))),
-    join(runtime.dir, "bwrap"),
+    // Rootless hosts may authorize user namespaces only for the installed
+    // Bubblewrap executable (file capabilities/AppArmor). Its bytes are pinned
+    // in the identity and checked again by the supervisor; a private copy can
+    // lose those host execution attributes even when byte-identical.
+    rootless ? "/usr/bin/bwrap" : join(runtime.dir, "bwrap"),
   ];
   const child = Bun.spawn(args, {
     stdin: "ignore",
     stdout: "pipe",
     stderr: "pipe",
-    env: { PATH: "/usr/bin:/bin", LANG: "C.UTF-8" },
+    env: { PATH: "/usr/bin:/bin", LANG: "C.UTF-8", ...(rootless ? {
+      XDG_RUNTIME_DIR: `/run/user/${process.getuid!()}`,
+      DBUS_SESSION_BUS_ADDRESS: `unix:path=/run/user/${process.getuid!()}/bus`,
+    } : {}) },
   });
   const hostNamespaces = Object.fromEntries(
     await Promise.all(
@@ -191,13 +208,11 @@ export async function launchSandbox(
     stop: async () => {
       const p = Bun.spawn(
         [
-          "sudo",
-          "-n",
-          "systemctl",
+          ...(rootless ? ["systemctl", "--user"] : ["sudo", "-n", "systemctl"]),
           "kill",
           "--kill-whom=all",
           "--signal=KILL",
-          unit,
+          unit + ".service",
         ],
         { stdout: "ignore", stderr: "ignore" },
       );
@@ -231,6 +246,7 @@ export function validateSandboxState(checks: any, evidence: any) {
     "external",
     "write:/runtime/worker.ts",
     "write:/work/benchmark-plugin.mjs",
+    ...(evidence.forbiddenPaths ?? []),
   ])
     if (checks[k] !== "denied")
       throw new Error(
@@ -258,7 +274,7 @@ export async function qualifySandbox(prepared?: PreparedSandboxRuntime) {
     await chmod(socket, 0o600);
     await writeFile(
       join(dir, "launch.json"),
-      JSON.stringify({ probe: true, capability }),
+      JSON.stringify({ probe: true, capability, forbiddenPaths: runtime.evidence.forbiddenPaths ?? [] }),
     );
     await writeFile(join(dir, "benchmark-plugin.mjs"), "");
     const run = await launchSandbox(dir, socket, 10000, runtime);

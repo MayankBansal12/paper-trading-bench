@@ -14,12 +14,13 @@ import {
 } from "../study/protocol.ts";
 import { assertProviderContext } from "../opencode/context.ts";
 import { validateSandboxState } from "../study/sandbox.ts";
+import { validatePiCatalog } from "./runtime.ts";
 import {
   piRoute,
   PI_MODEL_ID,
-  PI_PROVIDER,
-  PI_VERSION,
+  piClientVersion,
   PI_THINKING,
+  PI_MUSE_MODEL_ID,
 } from "./route.ts";
 const integer = (n: any) => Number.isSafeInteger(n) && n >= 0;
 const id = (value: string) => value.split("|")[0];
@@ -85,7 +86,7 @@ export function piUsage(trace: any[]): LiveUsage {
     pendingToolCalls: starts.length - ends.length,
   };
 }
-export function providerResponses(trace: any[]) {
+export function providerResponses(trace: any[], expectedModel = PI_MODEL_ID) {
   const requests = trace.filter((e) => e.type === "inference_request");
   return requests.map((r) => {
     const bytes = Buffer.concat(
@@ -125,12 +126,29 @@ export function providerResponses(trace: any[]) {
     if (
       Array.isArray(finalOutput) &&
       finalOutput.length &&
-      canonical(finalOutput) !== canonical(output)
+      !sameCompletedOutput(finalOutput, output, expectedModel)
     )
       throw new Error(
         "Pi terminal output differs from streamed completed items",
       );
     return { ...terminal[0].response, output };
+  });
+}
+function sameCompletedOutput(final: any[], streamed: any[], model: string): boolean {
+  if (final.length !== streamed.length) return false;
+  return final.every((item, i) => {
+    const prior = streamed[i];
+    if (canonical(item) === canonical(prior)) return true;
+    // Muse emits fresh opaque encrypted reasoning envelopes in the terminal
+    // snapshot. Raw envelopes remain untouched in the wire evidence and in Pi.
+    // Only this field on matched reasoning items may differ; IDs, order, public
+    // summaries, tool calls, arguments, and message text still compare exactly.
+    if (model !== PI_MUSE_MODEL_ID || item?.type !== "reasoning" || prior?.type !== "reasoning" ||
+        typeof item.encrypted_content !== "string" || !item.encrypted_content ||
+        typeof prior.encrypted_content !== "string" || !prior.encrypted_content) return false;
+    const { encrypted_content: terminalEnvelope, ...terminalRest } = item;
+    const { encrypted_content: streamEnvelope, ...streamRest } = prior;
+    return canonical(terminalRest) === canonical(streamRest);
   });
 }
 export function validatePiAccepted(
@@ -145,7 +163,7 @@ export function validatePiAccepted(
   const protocol = trace.find((e) => e.type === "protocol");
   const system = systemPrompt(view.limits);
   if (
-    protocol?.provider !== PI_PROVIDER ||
+    protocol?.provider !== route.provider ||
     protocol.model !== route.model ||
     a.decision.effectiveSystemPrompt !== system ||
     a.decision.promptHash !== textHash(system)
@@ -156,16 +174,17 @@ export function validatePiAccepted(
   if (
     q.length !== 1 ||
     q[0].evidence.exactModel !== route.id ||
-    q[0].evidence.clientVersion !== PI_VERSION ||
+    q[0].evidence.clientVersion !== piClientVersion(expectedModel) ||
     q[0].evidence.noInference !== true ||
     q[0].evidence.thinking !== PI_THINKING ||
     q[0].evidence.packageHash !== runtime?.packageHash ||
     contentHash(q[0].evidence.model) !== runtime?.catalogHash
   )
     throw new Error("Pi runtime qualification drift");
+  validatePiCatalog(expectedModel, q[0].evidence.model);
   if (
     runtime?.model !== route.id ||
-    runtime.version !== PI_VERSION ||
+    runtime.version !== piClientVersion(expectedModel) ||
     runtime.thinking !== PI_THINKING ||
     runtime.transport !== "sse"
   )
@@ -180,7 +199,7 @@ export function validatePiAccepted(
     throw new Error("Pi usage differs on replay");
   const requests = trace.filter((e) => e.type === "inference_request");
   const messages = piMessages(trace);
-  const responses = providerResponses(trace);
+  const responses = providerResponses(trace, expectedModel);
   if (!requests.length || requests.length !== messages.length)
     throw new Error("Pi request/message count differs");
   for (let i = 0; i < requests.length; i++) {
@@ -195,6 +214,12 @@ export function validatePiAccepted(
       r.bodyHash !== contentHash(r.body)
     )
       throw new Error("Pi inference identity drift");
+    if (route.provider === "opencode-go") {
+      const upstream = trace.filter(e => e.type === "pi_go_upstream" && e.sequence === r.sequence);
+      if (upstream.length !== 1 || upstream[0].url !== route.apiURL + "/responses" ||
+          !upstream[0].userAgent?.startsWith("pi (") || typeof upstream[0].session !== "string" || !upstream[0].session)
+        throw new Error("Pi Go upstream client identity drift");
+    }
     assertProviderContext(
       r.body,
       system,
@@ -224,8 +249,8 @@ export function validatePiAccepted(
     }
     if (
       m.model !== route.model ||
-      m.provider !== PI_PROVIDER ||
-      m.api !== "openai-codex-responses" ||
+      m.provider !== route.provider ||
+      m.api !== route.api ||
       !["toolUse", "stop"].includes(m.stopReason) ||
       m.errorMessage
     )

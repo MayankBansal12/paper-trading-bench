@@ -1,17 +1,21 @@
 import { createHash } from "node:crypto";
+import { constants } from "node:fs";
 import { readFile, realpath, readdir, cp, chmod } from "node:fs/promises";
 import { resolve, dirname, join, relative } from "node:path";
 import { homedir } from "node:os";
-import { contentHash, textHash } from "../core/hash.ts";
+import { contentHash } from "../core/hash.ts";
 import { prepareSandboxRuntime, qualifySandbox } from "../study/sandbox.ts";
 import {
   piRoute,
   PI_PROVIDER,
-  PI_VERSION,
+  piClientVersion,
+  piNodeVersion,
   PI_THINKING,
   PI_MODEL_ID,
+  PI_MUSE_MODEL_ID,
+  PI_MUSE_CATALOG_COST,
 } from "./route.ts";
-import type { ProviderCredential } from "../opencode/credentials.ts";
+import { loadProviderCredential, type ProviderCredential } from "../opencode/credentials.ts";
 const bytesHash = (value: Uint8Array) =>
   createHash("sha256").update(value).digest("hex");
 export async function treeHash(root: string): Promise<string> {
@@ -87,24 +91,37 @@ export function piCredential(node: string, cli: string): ProviderCredential {
     },
   };
 }
+export function validatePiCatalog(modelId: string, model: any) {
+  const route = piRoute(modelId);
+  const clientVersion = piClientVersion(modelId);
+  if (model.id !== route.model || model.provider !== route.provider || model.api !== route.api ||
+      model.baseUrl !== route.apiURL || model.reasoning !== true ||
+      (model.headers && Object.keys(model.headers).length)) throw new Error("Pi route metadata drift");
+  if (modelId === PI_MUSE_MODEL_ID &&
+      (contentHash(model.cost) !== contentHash(PI_MUSE_CATALOG_COST) ||
+       model.thinkingLevelMap?.medium !== PI_THINKING ||
+       model.compat?.sessionAffinityFormat !== "openai-nosession"))
+    throw new Error("Pi Go pricing or capability drift");
+}
 export async function preparePiRuntime(modelId = PI_MODEL_ID, expected?: any) {
   const route = piRoute(modelId);
+  const clientVersion = piClientVersion(modelId);
   const started = Date.now();
-  const entry = await realpath(Bun.which("pi") ?? "/missing-pi");
+  const entry = await realpath(process.env.BENCH_PI_ENTRY ?? Bun.which("pi") ?? "/missing-pi");
   const root = resolve(dirname(entry), "../..");
   const pkg = JSON.parse(await readFile(join(root, "package.json"), "utf8"));
   if (
     pkg.name !== "@earendil-works/pi-coding-agent" ||
-    pkg.version !== PI_VERSION
+    pkg.version !== clientVersion
   )
-    throw new Error(`Pi ${PI_VERSION} is required`);
+    throw new Error(`Pi ${clientVersion} is required`);
   const agentDir =
     process.env.PI_CODING_AGENT_DIR ?? join(homedir(), ".pi/agent");
   const store = JSON.parse(
-    await readFile(join(agentDir, "models-store.json"), "utf8"),
+    await readFile(process.env.BENCH_PI_MODELS_STORE ?? join(agentDir, "models-store.json"), "utf8"),
   );
   const matches =
-    store[PI_PROVIDER]?.models?.filter((m: any) => m.id === route.model) ?? [];
+    store[route.provider]?.models?.filter((m: any) => m.id === route.model) ?? [];
   if (matches.length !== 1)
     throw new Error("Exact Pi model missing/duplicated in host Pi catalog");
   let model = matches[0];
@@ -114,14 +131,11 @@ export async function preparePiRuntime(modelId = PI_MODEL_ID, expected?: any) {
     if (contentHash(model) !== expected.pi.catalogHash || model.id !== route.model)
       throw new Error("Pinned catalog does not match recorded model");
   }
-  if (
-    model.provider !== PI_PROVIDER ||
-    model.api !== "openai-codex-responses" ||
-    model.baseUrl !== "https://chatgpt.com/backend-api" ||
-    model.reasoning !== true
-  )
-    throw new Error("Pi route metadata drift");
-  const ready = JSON.parse(
+  validatePiCatalog(modelId, model);
+  const goCredential = route.provider === "opencode-go"
+    ? await loadProviderCredential({ provider: "opencode-go" }) : undefined;
+  if (!goCredential) {
+    const ready = JSON.parse(
     await command([
       "pi",
       "auth",
@@ -132,11 +146,12 @@ export async function preparePiRuntime(modelId = PI_MODEL_ID, expected?: any) {
       "--no-refresh",
     ]),
   );
-  if (ready.status !== "ready" || ready.authType !== "oauth")
-    throw new Error("Pi OpenAI Codex OAuth is not ready");
+    if (ready.status !== "ready" || ready.authType !== "oauth")
+      throw new Error("Pi OpenAI Codex OAuth is not ready");
+  }
   const nodeVersion = await command([Bun.which("node")!, "--version"]);
-  if (nodeVersion !== "v22.23.1")
-    throw new Error("Pi adapter requires qualified Node v22.23.1");
+  if (nodeVersion !== piNodeVersion(modelId))
+    throw new Error("Pi adapter Node version differs from the pinned route");
   if (model.headers && Object.keys(model.headers).length)
     throw new Error("Pi model-specific headers are not qualified");
   const packageHash = await treeHash(root);
@@ -146,6 +161,7 @@ export async function preparePiRuntime(modelId = PI_MODEL_ID, expected?: any) {
     await cp(root, join(bundle.dir, "pi"), {
       recursive: true,
       dereference: true,
+      mode: constants.COPYFILE_FICLONE,
     });
     if ((await treeHash(join(bundle.dir, "pi"))) !== packageHash)
       throw new Error("Pi package changed while freezing runtime");
@@ -156,7 +172,7 @@ export async function preparePiRuntime(modelId = PI_MODEL_ID, expected?: any) {
     await chmod(join(bundle.dir, "worker.ts"), 0o555);
     const { id: oldId, ...base } = bundle.evidence;
     const pi = {
-      version: PI_VERSION,
+      version: clientVersion,
       packageHash,
       nodeVersion,
       nodeHash: bytesHash(await readFile(join(bundle.dir, "node"))),
@@ -164,7 +180,7 @@ export async function preparePiRuntime(modelId = PI_MODEL_ID, expected?: any) {
       thinking: PI_THINKING,
       model: modelId,
       catalogHash: contentHash(model),
-      auth: "host-pi-oauth",
+      auth: goCredential ? "host-opencode-go-api-broker" : "host-pi-oauth",
       transport: "sse",
       subscriptionCost: "unavailable",
     };
@@ -178,13 +194,13 @@ export async function preparePiRuntime(modelId = PI_MODEL_ID, expected?: any) {
       setupMs: Date.now() - started,
       qualification: {
         exactModel: modelId,
-        clientVersion: PI_VERSION,
+        clientVersion: clientVersion,
         model,
         noInference: true,
         thinking: PI_THINKING,
         packageHash,
       },
-      credential: piCredential(
+      credential: goCredential ?? piCredential(
         join(bundle.dir, "node"),
         join(bundle.dir, "pi/dist/bundle/cli.js"),
       ),
