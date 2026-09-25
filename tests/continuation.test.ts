@@ -1,7 +1,7 @@
 import { test, expect } from "bun:test";
 import { mkdtempSync, writeFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { join } from "node:path";
+import { join, basename } from "node:path";
 import { contentHash } from "../src/core/hash.ts";
 import { implementationMatches, quotaWasReset } from "../src/study/continuation.ts";
 const identity = (hashes: Record<string,string>) => ({ hashes, hash: contentHash(hashes) });
@@ -11,10 +11,13 @@ test("explicit continuation permits only pinned scheduling changes and unchanged
   const saved=identity({"src/study/runner.ts":"old","src/study/tools.ts":"same"});
   const current=identity({"src/study/runner.ts":"new","src/study/tools.ts":"same","src/study/continuation.ts":"receipt"});
   const config={model:"pi/openai-codex/gpt-5.6-sol"};
-  const receipt={version:"manual-quota-reset-v1",authorization:"user-confirmed-external-quota-reset",authorizedAt:"2026-09-18T00:00:00Z",failureHashes:[],configHash:contentHash(config),previousImplementationHash:saved.hash,continuedImplementationHash:current.hash};
+  const receipt={runId:basename(dir),version:"manual-quota-reset-v1",authorization:"user-confirmed-external-quota-reset",authorizedAt:"2026-09-18T00:00:00Z",failureHashes:[],configHash:contentHash(config),previousImplementationHash:saved.hash,continuedImplementationHash:current.hash};
   expect(implementationMatches(saved,current,dir,config)).toBe(false);
   writeFileSync(join(dir,"manual-quota-reset.json"),JSON.stringify(receipt));
   expect(implementationMatches(saved,current,dir,config)).toBe(true);
+  writeFileSync(join(dir,"manual-quota-reset.json"),JSON.stringify({...receipt,runId:"other-cohort"}));
+  expect(implementationMatches(saved,current,dir,config)).toBe(false);
+  writeFileSync(join(dir,"manual-quota-reset.json"),JSON.stringify(receipt));
   expect(implementationMatches(saved,current,dir,{...config,model:"different"})).toBe(false);
   const changedTrading=identity({...current.hashes,"src/study/tools.ts":"changed"});
   writeFileSync(join(dir,"manual-quota-reset.json"),JSON.stringify({...receipt,continuedImplementationHash:changedTrading.hash}));
@@ -40,9 +43,11 @@ test("runtime continuation allows only launch-path change with identical actual 
  try{
   const evidence=(launch:string,binary="same")=>{const data={policy:"same",hashes:{"scripts/sandbox/launch.sh":launch,"worker":"same"},bwrapHash:binary,pi:{catalogHash:"same"}};return {...data,id:contentHash(data)};};
   const before=evidence("old"),after=evidence("new");
-  const r={version:"manual-quota-reset-v1",authorization:"user-confirmed-external-quota-reset",authorizedAt:"2026-09-18T00:00:00Z",failureHashes:[],previousRuntimeHash:contentHash(before),continuedRuntimeHash:contentHash(after)};
+  const r={runId:basename(dir),version:"manual-quota-reset-v1",authorization:"user-confirmed-external-quota-reset",authorizedAt:"2026-09-18T00:00:00Z",failureHashes:[],previousRuntimeHash:contentHash(before),continuedRuntimeHash:contentHash(after)};
   writeFileSync(join(dir,"manual-quota-reset.json"),JSON.stringify(r));
   expect(runtimeMatches(before,after,dir)).toBe(true);
+  writeFileSync(join(dir,"manual-quota-reset.json"),JSON.stringify({...r,runId:"other-cohort"}));
+  expect(runtimeMatches(before,after,dir)).toBe(false);
   const changed=evidence("new","changed");
   writeFileSync(join(dir,"manual-quota-reset.json"),JSON.stringify({...r,continuedRuntimeHash:contentHash(changed)}));
   expect(runtimeMatches(before,changed,dir)).toBe(false);

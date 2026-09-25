@@ -1,5 +1,5 @@
 import { existsSync, readFileSync } from "node:fs";
-import { join } from "node:path";
+import { join, basename } from "node:path";
 import { contentHash } from "../core/hash.ts";
 import type { JournalEvent } from "./journal.ts";
 
@@ -25,7 +25,7 @@ export function readContinuation(dir: string): any | undefined {
 export function implementationMatches(saved: any, current: any, dir: string, config: unknown): boolean {
   if (contentHash(saved) === contentHash(current)) return true;
   const r = readContinuation(dir);
-  if (!r || r.configHash !== contentHash(config) ||
+  if (!r || r.runId !== basename(dir) || r.configHash !== contentHash(config) ||
       r.previousImplementationHash !== saved.hash || r.continuedImplementationHash !== current.hash ||
       saved.hash !== contentHash(saved.hashes) || current.hash !== contentHash(current.hashes)) return false;
   // Trading, prompts, data, accounting, journal and model workers stay identical.
@@ -45,7 +45,7 @@ export function quotaWasReset(dir: string, event: JournalEvent): boolean {
 export function runtimeMatches(saved: any, current: any, dir: string): boolean {
   if (contentHash(saved) === contentHash(current)) return true;
   const receipt = readContinuation(dir);
-  if (!receipt || receipt.previousRuntimeHash !== contentHash(saved) ||
+  if (!receipt || receipt.runId !== basename(dir) || receipt.previousRuntimeHash !== contentHash(saved) ||
       receipt.continuedRuntimeHash !== contentHash(current)) return false;
   // Actual executables, catalog, model, workers, limits and isolation policy stay
   // identical. Only the launch script now executes the hash-pinned bwrap copy.
