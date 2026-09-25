@@ -124,7 +124,7 @@ const child = Bun.spawn(
     "--provider",
     "openai-codex",
     "--model",
-    "gpt-6-astra",
+    launch.settings.defaultModel,
     "--thinking",
     "medium",
     "--tools",

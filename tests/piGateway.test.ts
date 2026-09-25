@@ -5,9 +5,10 @@ import { zstdCompressSync } from "node:zlib";
 import { setup } from "./studyTestSupport.ts";
 import { serveGateway } from "../src/study/gateway.ts";
 import { systemPrompt } from "../src/study/protocol.ts";
-import { PI_MODEL, PI_MODEL_ID } from "../src/pi/route.ts";
+import { piRoute, PI_MODEL_ID, PI_SOL_MODEL_ID } from "../src/pi/route.ts";
 
-test("Pi gateway decodes bounded zstd, pins context/model/tools/reasoning and keeps OAuth host-side", async () => {
+for (const modelId of [PI_MODEL_ID, PI_SOL_MODEL_ID]) test(`${modelId} gateway decodes bounded zstd, pins context/model/tools/reasoning and keeps OAuth host-side`, async () => {
+  const PI_MODEL = piRoute(modelId).model;
   const s = setup(),
     trace: any[] = [];
   let forwarded = 0;
@@ -35,7 +36,7 @@ test("Pi gateway decodes bounded zstd, pins context/model/tools/reasoning and ke
       return Response.json({ ok: true });
     }) as typeof fetch,
     () => {},
-    PI_MODEL_ID,
+    modelId,
   );
   const body = {
     model: PI_MODEL,

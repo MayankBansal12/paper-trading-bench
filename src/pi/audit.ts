@@ -15,7 +15,7 @@ import {
 import { assertProviderContext } from "../opencode/context.ts";
 import { validateSandboxState } from "../study/sandbox.ts";
 import {
-  PI_MODEL,
+  piRoute,
   PI_MODEL_ID,
   PI_PROVIDER,
   PI_VERSION,
@@ -138,13 +138,15 @@ export function validatePiAccepted(
   view: SessionView,
   past: JournalEntry[],
   horizon: SessionHorizon,
+  expectedModel = PI_MODEL_ID,
 ) {
+  const route = piRoute(expectedModel);
   const trace = a.decision.trace;
   const protocol = trace.find((e) => e.type === "protocol");
   const system = systemPrompt(view.limits);
   if (
     protocol?.provider !== PI_PROVIDER ||
-    protocol.model !== PI_MODEL ||
+    protocol.model !== route.model ||
     a.decision.effectiveSystemPrompt !== system ||
     a.decision.promptHash !== textHash(system)
   )
@@ -153,7 +155,7 @@ export function validatePiAccepted(
   const runtime = (a.sandbox as any)?.pi;
   if (
     q.length !== 1 ||
-    q[0].evidence.exactModel !== PI_MODEL_ID ||
+    q[0].evidence.exactModel !== route.id ||
     q[0].evidence.clientVersion !== PI_VERSION ||
     q[0].evidence.noInference !== true ||
     q[0].evidence.thinking !== PI_THINKING ||
@@ -162,7 +164,7 @@ export function validatePiAccepted(
   )
     throw new Error("Pi runtime qualification drift");
   if (
-    runtime?.model !== PI_MODEL_ID ||
+    runtime?.model !== route.id ||
     runtime.version !== PI_VERSION ||
     runtime.thinking !== PI_THINKING ||
     runtime.transport !== "sse"
@@ -186,8 +188,8 @@ export function validatePiAccepted(
       m = messages[i],
       response = responses[i];
     if (
-      r.model !== PI_MODEL ||
-      r.body?.model !== PI_MODEL ||
+      r.model !== route.model ||
+      r.body?.model !== route.model ||
       r.route !== "/inference/responses" ||
       r.body.reasoning?.effort !== PI_THINKING ||
       r.bodyHash !== contentHash(r.body)
@@ -221,16 +223,16 @@ export function validatePiAccepted(
         throw new Error("Pi replay tool-schema drift");
     }
     if (
-      m.model !== PI_MODEL ||
+      m.model !== route.model ||
       m.provider !== PI_PROVIDER ||
       m.api !== "openai-codex-responses" ||
       !["toolUse", "stop"].includes(m.stopReason) ||
       m.errorMessage
     )
       throw new Error("Pi assistant response identity or completion invalid");
-    if (response.model !== PI_MODEL)
+    if (response.model !== route.model)
       throw new Error(
-        "Provider resolved a different Astra model: " + response.model,
+        "Provider resolved a different Pi model: " + response.model,
       );
     const u = response.usage,
       cached = u?.input_tokens_details?.cached_tokens ?? 0;
