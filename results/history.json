@@ -806,5 +806,17 @@
     "asset": "historical-result-prs.tar.gz",
     "sha256": "d1fcc7240c0858aff531912101837889b8dac42e5a84cb138e738307ecf02ff2",
     "bytes": 38004
-  }
+  },
+  "closed_prior_prs": [
+    {
+      "number": 20,
+      "url": "https://github.com/MayankBansal12/paper-trading-bench/pull/20",
+      "outcome": "OpenCode free-route implementation, closed at owner request."
+    },
+    {
+      "number": 21,
+      "url": "https://github.com/MayankBansal12/paper-trading-bench/pull/21",
+      "outcome": "Muse free-route smoke blocked by HTTP 403; zero valid days and six failed attempts. Annual never started. Closed at owner request; failed evidence remains on that PR and its archives."
+    }
+  ]
 }
