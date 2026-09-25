@@ -1,6 +1,5 @@
 // Copy installed clients into a private runtime. No login or model inference.
 import { cp, mkdir, readFile, readdir, realpath, stat, symlink, writeFile } from "node:fs/promises";
-import { createRequire } from "node:module";
 import { basename, dirname, join, resolve } from "node:path";
 import { homedir } from "node:os";
 import { createHash } from "node:crypto";
@@ -55,10 +54,15 @@ if (isPiModel(model)) {
   await cp(root, privateRoot, { recursive: true, dereference: true });
   const visited = new Map<string, string>();
   async function packageRoot(source: string, name: string) {
-    const require = createRequire(join(source, "package.json"));
-    for (const base of require.resolve.paths(name) ?? []) {
-      const path = join(base, name, "package.json");
+    // Use Node's filesystem search order. Bun treats some names (e.g. node-fetch)
+    // as built-in aliases in createRequire.resolve.paths, hiding installed files.
+    let dir = source;
+    while (true) {
+      const path = join(dir,"node_modules",name,"package.json");
       if (await Bun.file(path).exists()) return realpath(dirname(path));
+      const parent = dirname(dir);
+      if (parent === dir) return;
+      dir = parent;
     }
   }
   async function content(source: string): Promise<string> {
