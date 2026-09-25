@@ -1,4 +1,4 @@
-// Order execution. Convention (documented in docs/STUDY_ENVIRONMENT.md):
+// Order execution. Convention (documented in docs/METHODOLOGY.md):
 //   Decisions for day D are made using bars with date < D only (D's own
 //   session hasn't happened yet from the agent's point of view — see
 //   data/ohlcv.ts asOfBefore()). Orders for day D fill AT day D's OPEN — the

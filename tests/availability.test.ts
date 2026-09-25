@@ -22,7 +22,7 @@ test("Go quota uses the exhausted response Retry-After and excludes generic thro
  expect(quotaPause(trace("RateLimitError", "3600"), event)).toBeUndefined();
  expect(quotaPause(trace("GoUsageLimitError", "invalid"), event)?.notBefore).toBe("2026-09-16T20:05:00.000Z");
 });
-for (const model of ["pi/openai-codex/gpt-6-astra", "opencode-go/deepseek-v4.1-flash"]) test(`${model}: pause/resume makes no calls during cooldown and never grants a third attempt`,async()=>{
+for (const model of ["pi/openai-codex/gpt-6-astra", "opencode-go/deepseek-v4.1-flash", "opencode-go/glm-5.3-flash"]) test(`${model}: pause/resume makes no calls during cooldown and never grants a third attempt`,async()=>{
  const script=`import { mock } from "bun:test";
  import {rm} from "node:fs/promises";
  let calls=0; const clock=Date.now; let offset=0; Date.now=()=>clock()+offset;
@@ -90,4 +90,23 @@ test("manual quota reset resumes existing attempts but cannot bypass a new quota
  const p=Bun.spawn([process.execPath,"-e",script],{stdout:"pipe",stderr:"pipe"});
  const [out,err,code]=await Promise.all([new Response(p.stdout).text(),new Response(p.stderr).text(),p.exited]);
  expect(err).toBe("");expect(code).toBe(0);expect(JSON.parse(out).calls).toBe(2);
+});
+
+test("expired host login pauses before an attempt or model call", async () => {
+ const script = `import {mock} from "bun:test";
+ import {rm} from "node:fs/promises";
+ mock.module(${JSON.stringify(resolve("src/study/model.ts"))},()=>({
+  prepareModelRuntime:async()=>({credential:{authorize:async()=>{throw Error("expired")}},bundle:{evidence:{id:"offline-auth"}},dispose:async()=>{}}),
+  decideStudy:async()=>{throw Error("Must not invoke model")} }));
+ const {config}=await import(${JSON.stringify(resolve("tests/studyTestSupport.ts"))});
+ const {runStudy}=await import(${JSON.stringify(resolve("src/study/runner.ts"))});
+ const c={...await config("2024-04-02","2024-04-02"),kind:"environment",model:"pi/openai-codex/gpt-6-astra"};
+ try {
+  try {await runStudy(c);throw Error("Expected authentication pause")} catch(e) {if(!e.message.includes("BENCH_AUTH_PAUSE"))throw e}
+  const r=await runStudy(c,{readOnly:true});
+  if(r.summary.attempts!==0||r.summary.committedDays!==0)throw Error("Login failure consumed evidence budget");
+ }finally{await rm("results/studies/"+c.runId,{recursive:true,force:true})}`;
+ const p=Bun.spawn([process.execPath,"-e",script],{stdout:"pipe",stderr:"pipe"});
+ const [err,code]=await Promise.all([new Response(p.stderr).text(),p.exited]);
+ expect(err).toBe("");expect(code).toBe(0);
 });

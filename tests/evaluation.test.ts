@@ -308,12 +308,12 @@ test("all registered model jobs start concurrently with their own model configur
     const prepared = actual.prepareStudyData;
     const started = [];
     const barrier = Promise.withResolvers();
-    const timer = setTimeout(() => barrier.reject(Error("Sixteen jobs did not start concurrently")), 5000);
+    const timer = setTimeout(() => barrier.reject(Error("Model jobs did not start concurrently")), 5000);
     mock.module(runnerPath, () => ({
       prepareStudyData: prepared,
       runStudy: async config => {
         started.push({ model: config.model, runId: config.runId, start: config.start });
-        if (started.length === 16) { clearTimeout(timer); barrier.resolve(); }
+        if (started.length === ${EVALUATION_MODELS.length * 4}) { clearTimeout(timer); barrier.resolve(); }
         await barrier.promise;
         throw Error("Offline model runner fixture");
       },
@@ -326,7 +326,7 @@ test("all registered model jobs start concurrently with their own model configur
   expect(err).toBe(""); expect(code).toBe(0);
   const result = JSON.parse(out);
   expect(result.started).toHaveLength(EVALUATION_MODELS.length * 4);
-  expect(new Set(result.started.map((j: any) => j.runId)).size).toBe(16);
+  expect(new Set(result.started.map((j: any) => j.runId)).size).toBe(EVALUATION_MODELS.length * 4);
   for (const model of EVALUATION_MODELS) expect(result.started.filter((j: any) => j.model === model)).toHaveLength(4);
   expect(result.report.quarters.every((q: any) => q.error.includes("Offline model runner fixture"))).toBe(true);
 }, 10000);

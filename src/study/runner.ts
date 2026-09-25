@@ -90,7 +90,7 @@ export async function prepareStudyData(c: StudyConfig) {
     c.history > POLICY.maxHistory
   )
     throw new Error("History must be 60..252");
-  if (c.availabilityPolicy && (!(isPiModel(c.model) || isClaudeModel(c.model) || c.model === "opencode-go/deepseek-v4.1-flash") || contentHash(c.availabilityPolicy) !== contentHash(QUOTA_PAUSE_POLICY)))
+  if (c.availabilityPolicy && (!(isPiModel(c.model) || isClaudeModel(c.model) || ["opencode-go/deepseek-v4.1-flash", "opencode-go/glm-5.3-flash"].includes(c.model ?? "")) || contentHash(c.availabilityPolicy) !== contentHash(QUOTA_PAUSE_POLICY)))
     throw new Error("Unqualified availability policy or model");
   const market = await loadDataset(c.dataDir);
   if (market.version !== c.datasetHash)
