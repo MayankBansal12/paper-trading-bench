@@ -286,3 +286,5 @@ try {
 } catch (e) {
   root.innerHTML = `<p class="error" role="alert">${esc(e instanceof Error ? e.message : e)}</p>`;
 }
+
+export {};

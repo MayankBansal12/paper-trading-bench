@@ -6,7 +6,7 @@
   "description": "Repeatable simulated portfolio and original journal environment",
   "scripts": {
     "fixtures:generate": "bun run scripts/generate-fixtures.ts",
-    "typecheck": "tsc --noEmit",
+    "typecheck": "tsc --noEmit && tsc -p tsconfig.tools.json",
     "test": "bun test",
     "data:import": "bun run scripts/import-yahoo.ts",
     "model:preflight": "bun run scripts/qualify-opencode.ts",
