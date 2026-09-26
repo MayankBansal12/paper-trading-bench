@@ -42,7 +42,9 @@ In 30 hand-picked cases, 22 actions matched the stated rule, 6 involved discreti
 
 ## How consistent were they over time?
 
-**Outcomes moved together by quarter.** All ten models made money in Q2 and Q3 2025. Q4 split four up and six down. In Q1 2026 nine of ten lost money; only Astra gained ($2,441), with an average cash balance of 57% that quarter.
+**Outcomes moved together by quarter.** All ten models made money in Q2 and Q3 2025. Q4 split four up and six down. In Q1 2026 nine of ten lost money; only Astra gained.
+
+**Astra's defensive positioning stood out.** It was the only model profitable in all four quarters: **$8,876, $2,058, $2,446 and $2,441**, respectively. It also had the lowest variation in quarterly TWR in this sample. Average cash was **56.5%**, its largest issuer position was **16.35%** of equity, and its worst quarterly drawdown was **3.75%**, the smallest worst-quarter drawdown among the ten models. These results support a defensive, comparatively steady approach, with lower total profit than the leading models. They do not establish that the approach will outperform in other periods.
 
 Some habits held in every quarter. Sol 5.6 never made a partial sale: all 108 of its sales were full exits. Astra's average cash stayed between 54% and 58%. Opus 5.5 held on 46–56 days each quarter. Other habits shifted. Opus 5's full exits rose from 14 to 24, 26 and then 65. GLM's average cash went from 13% to 8%, 30% and 55%, and Sonnet's from 23% to 15%, 12% and 45%. These data can't show whether the shifts were deliberate adaptation or reactions to different prices.
 
@@ -84,6 +86,8 @@ The objective was total account value.
 
 **All ten ended with positive net profit while their realized trading P&L was negative.** Gains still open at quarter-end ($16,501–$44,951 per model) and dividends outweighed the losses realized through sales.
 
+Astra's **−$886 net realized P&L** was the smallest net realized loss. That is after **$7,803 of gains** offset **$8,689 of losses** on executed sales; it does not mean its losing trades cost only $886.
+
 Their sale choices fit that pattern. On days when a model sold anything, it was far more likely to sell a holding showing a loss than one showing a gain. Opus 5 sold 35% of its losing positions on those days versus 6% of its gaining ones. For Sol 5.6 the figures were 22% versus 3%. Luna had the smallest gap (44% vs 28%). "Showing a gain or loss" means the previous close compared with the average cost in the opening portfolio. The sale happened at the next open, which could land on the other side.
 
 Loss-making sales outnumbered profitable ones for nine models. Luna was the exception, mostly through partial trims: 33 profitable sales versus 26 at a loss. Sol 5.6 had few large wins and many small losses. Its 26 profitable exits averaged about $816, compared with about $353 for its 82 losing exits. Models were not forced to sell at quarter-end: open holdings were valued instead. Liquidation at those marks would move the open gain from unrealized to realized.
@@ -93,6 +97,12 @@ Loss-making sales outnumbered profitable ones for nine models. Luna was the exce
 - The clearest differences were how much models looked before acting, how much cash they kept, whether they resized or replaced holdings, and whether their journals recorded explicit price triggers.
 - In the queried-stock sample, purchases were more frequent after sharp rises than falls. On selling days, all ten sold a larger fraction of losing holdings than gaining ones.
 - More research did not line up with more profit. DeepSeek made the most calls and earned the least. Opus 5 earned the most with a moderate number of calls, and Opus 5.5 placed third with the fewest. This is one market sample; it doesn't establish cause or a stable ranking. No passive buy-and-hold comparison is included, so positive profit does not establish an advantage over passive investing.
+
+## Could prior knowledge affect decisions?
+
+**Tools exposed only past market data, but some journals introduced unsupported news and fundamental explanations. The experiment cannot rule out training-data familiarity or isolate its effect on decisions.**
+
+Examples include [Opus 5's tariff-event reference on April 3](https://mayankbansal12.github.io/paper-trading-bench/index.html#sessions/opus-5/2025-04-03), [DeepSeek's earnings calendar on April 24](https://mayankbansal12.github.io/paper-trading-bench/index.html#sessions/deepseek-4-1-flash/2025-04-24), and [Sonnet's earnings explanations on November 3](https://mayankbansal12.github.io/paper-trading-bench/index.html#sessions/sonnet-5/2025-11-03). The market tools supplied none of that news or financial-report information. The statements could reflect prior knowledge, inference or hallucination; they do not establish knowledge of future prices or deliberate cheating.
 
 <details><summary>Selection and run details</summary>
 

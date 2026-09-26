@@ -21,8 +21,8 @@ The model has four tools:
 | `journal` | Search original committed notes |
 | `submit_day` | Submit ordered trades and a journal; empty orders mean HOLD |
 
-There is no browsing or news tool. Future prices are unavailable to the model.
-Decisions use information through the previous close. Orders execute in their
+There is no browsing or news tool. The tools expose no future prices.
+Supplied market data ends at the previous close. Orders execute in their
 submitted order at the next open; the day's close values the resulting portfolio.
 The engine handles dividends and splits. It does not force quarter-end liquidation.
 
@@ -75,7 +75,11 @@ Continuations record their parent and boundary state. Supplemental recoveries ke
 original failures and disclose extra attempts; they do not turn the original into
 an uninterrupted run. The results manifest records selected quarters and exceptions.
 
+Tools exposed only past market data, but some journals introduced unsupported news
+and fundamental explanations. The experiment cannot rule out training-data
+familiarity or isolate its effect on decisions.
+
 These are observations from one market sample, with differing clients and source
 revisions. Supported securities do not prove historical index membership. Results
-do not isolate model weights, rule out training-data familiarity or establish a
-stable ranking. Rerunning a model can produce different decisions.
+do not isolate model weights or establish a stable ranking. Rerunning a model can
+produce different decisions.

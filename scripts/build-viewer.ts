@@ -41,7 +41,7 @@ const money = (v: number) =>
   }).format(v);
 const style: Record<string, string> = {
   "Astra 6":
-    "Cautious confirmation entries, substantial cash, selective reductions.",
+    "Defensive positioning with 56.5% average cash; the only model profitable in all four quarters in this sample.",
   "Sol 5.6":
     "Broad relative-strength screening and whole-position replacement.",
   "Sol 6":
@@ -269,6 +269,10 @@ await page(
       .replaceAll(
         "https://mayankbansal12.github.io/paper-trading-bench/study.html#",
         "#",
+      )
+      .replaceAll(
+        "https://mayankbansal12.github.io/paper-trading-bench/index.html#",
+        "index.html#",
       ),
   ) +
     `<h2 id="evidence">Selected original sessions</h2><p>Examples explain the findings; they are not an unbiased estimate of rule compliance.</p>${cards}<details><summary>Evidence coverage and accounting</summary><p>The comparison uses ${number(manifest.accounted_days)} days, ${number(manifest.valid_days)} valid decisions, ${number(manifest.fills)} fills and ${number(manifest.attempts)} selected attempts. All ${number(manifest.quarters)} quarter accounts reconcile in independent float and Decimal calculations. Original event-chain verification was performed during extraction; this site checks compact file hashes and recalculates accounting, not a new pinned-runtime replay.</p><p>Automatic context was directly checked for ${number(observedAttempts)} attempts across ${observedMemory.length} models. For the others, the matching pinned protocol and committed sequence establish the preload policy; this does not prove the model used its journals. Query coverage differs by model and is displayed with denominators.</p><p><a href="data/rule-review.json">30 purposive rule cases</a> · <a href="data/price-opportunities.json">Price-response denominators</a> · <a href="data/memory-audit.json">Memory coverage</a> · <a href="methodology.html#selection">Selection history</a></p></details>`,
