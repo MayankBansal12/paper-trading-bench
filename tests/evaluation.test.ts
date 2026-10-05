@@ -289,6 +289,7 @@ test("default plan includes the registered OpenCode models and subsets retain ex
     "openai/gpt-5.6-luna",
     "opencode-go/glm-5.3-flash",
     "opencode-go/deepseek-v4.1-flash",
+    "opencode-go/kimi-k3",
   ]);
   expect(plan.jobs).toHaveLength(EVALUATION_MODELS.length * 4);
   for (const model of plan.models) {

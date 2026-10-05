@@ -37,5 +37,6 @@ results/archives/
 # Private clients and supervisor state
 .runtime/
 results/supervision/
+results/qualifications/
 dist/
 __pycache__/

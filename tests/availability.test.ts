@@ -22,7 +22,7 @@ test("Go quota uses the exhausted response Retry-After and excludes generic thro
  expect(quotaPause(trace("RateLimitError", "3600"), event)).toBeUndefined();
  expect(quotaPause(trace("GoUsageLimitError", "invalid"), event)?.notBefore).toBe("2026-09-16T20:05:00.000Z");
 });
-for (const model of ["pi/openai-codex/gpt-6-astra", "opencode-go/deepseek-v4.1-flash", "opencode-go/glm-5.3-flash"]) test(`${model}: pause/resume makes no calls during cooldown and never grants a third attempt`,async()=>{
+for (const model of ["pi/openai-codex/gpt-6-astra", "opencode-go/deepseek-v4.1-flash", "opencode-go/glm-5.3-flash", "opencode-go/kimi-k3"]) test(`${model}: pause/resume makes no calls during cooldown and never grants a third attempt`,async()=>{
  const script=`import { mock } from "bun:test";
  import {rm} from "node:fs/promises";
  let calls=0; const clock=Date.now; let offset=0; Date.now=()=>clock()+offset;

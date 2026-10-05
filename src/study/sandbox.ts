@@ -14,6 +14,11 @@ import { createHash, randomUUID } from "node:crypto";
 import { constants } from "node:fs";
 import { contentHash, textHash } from "../core/hash.ts";
 export const SANDBOX_POLICY = "bwrap-systemd-user-unix-gateway-pi-v1";
+export function sandboxPolicy(launcher = process.env.BENCH_SANDBOX_LAUNCHER) {
+  if (launcher === undefined || launcher === "user") return SANDBOX_POLICY;
+  if (launcher === "system") return "bwrap-systemd-unix-gateway-v1";
+  throw new Error("BENCH_SANDBOX_LAUNCHER must be user or system");
+}
 export interface SandboxProcess {
   process: ReturnType<typeof Bun.spawn>;
   stop: () => Promise<void>;
@@ -51,7 +56,7 @@ export async function sandboxIdentity(expected?: any) {
   const binary = await readFile(binaryPath(expected?.opencodeHash, Bun.which("opencode") ?? "/missing"));
   const bun = await readFile(process.execPath);
   const identity = {
-    policy: SANDBOX_POLICY,
+    policy: sandboxPolicy(),
     forbiddenPaths: [
       join(homedir(), ".pi/agent/auth.json"), join(homedir(), ".local/share/opencode/auth.json"),
       join(homedir(), ".bashrc"), resolve("README.md"), "/proc/1/root" + homedir(),
@@ -83,6 +88,8 @@ export interface PreparedSandboxRuntime {
 /** Copy and verify trusted executables once; daily launches mount these same files read-only. */
 export async function prepareSandboxRuntime(expected?: any): Promise<PreparedSandboxRuntime> {
   const evidence = await sandboxIdentity(expected);
+  if (expected?.policy && evidence.policy !== expected.policy)
+    throw new Error("Sandbox launcher differs from recorded runtime");
   if (expected && (evidence.opencodeHash !== expected.opencodeHash || evidence.bwrapHash !== expected.bwrapHash))
     throw new Error("Pinned executable differs from recorded runtime");
   const dir = await mkdtemp(join(tmpdir(), "study-immutable-runtime-"));

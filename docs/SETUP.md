@@ -15,6 +15,12 @@ The sandbox denies host files and direct network access. A scoped Unix socket
 connects it to the host gateway. Credentials stay on the host. Run the sandbox
 check on each execution machine; having `bwrap` installed is not sufficient.
 
+On hosts that block unprivileged network namespaces, set
+`BENCH_SANDBOX_LAUNCHER=system` for OpenCode/Pi to use noninteractive
+`sudo systemd-run` and `sudo systemctl`. The sandbox still drops all capabilities,
+isolates namespaces and applies seccomp. The launcher policy is recorded in the
+runtime identity; preserve the setting for resume and replay. The default is `user`.
+
 ## Clients and models
 
 Install and log in with the native client before pinning it. These are the recorded
@@ -29,6 +35,7 @@ client versions; catalog presence does not prove current entitlement.
 | Muse 1.3 | `pi/opencode-go/muse-spark-1.3-contributor` | Pi 0.85.1 | 24.13.0 |
 | GLM Flash | `opencode-go/glm-5.3-flash` | OpenCode 1.18.30 | — |
 | DeepSeek Flash | `opencode-go/deepseek-v4.1-flash` | OpenCode 1.18.30 | — |
+| Kimi K3 | `opencode-go/kimi-k3` | OpenCode 1.18.30 | — |
 | Sonnet 5 | `claude-code/anthropic/claude-sonnet-5` | Claude Code 2.1.274 | — |
 | Opus 5 | `claude-code/anthropic/claude-opus-5` | Claude Code 2.1.274 | — |
 | Opus 5.5 | `claude-code/anthropic/claude-opus-5-5` | Claude Code 2.1.280 | — |
@@ -38,6 +45,10 @@ Opus 5.5's newer client requests a larger output cap than Opus 5. These differen
 are part of the result provenance. Historical Pi/Go sandbox dependencies may differ;
 private Pi setups accept OpenCode 1.18.30 or 1.18.31 as an inert sandbox dependency,
 recording the exact binary hash. OpenCode inference routes require 1.18.30.
+
+Kimi K3 uses OpenCode's native default reasoning with no variant or effort override.
+Its Go route requires fresh catalog evidence and a live smoke before evaluation;
+catalog-listed prices describe usage accounting, not an additional subscription invoice.
 
 Pi uses its host Codex OAuth login. Go uses the host OpenCode auth store or
 `OPENCODE_GO_API_KEY`. Claude uses its host subscription login (`claude`, then
