@@ -1,0 +1,129 @@
+{
+  "schemaVersion": 1,
+  "snapshotAt": "20261005T083120920141Z",
+  "snapshotKind": "live checkpoint; active attempts and replay remain pending",
+  "sourceRevision": "361051d4eda8ce784e3437171d41d20eb9086604",
+  "host": "afdasf",
+  "model": "opencode-go/kimi-k3",
+  "reasoning": "OpenCode native default; no variant or effort override",
+  "client": "OpenCode 1.18.30",
+  "datasetHash": "5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901",
+  "plannedSessions": [
+    62,
+    64,
+    64,
+    61
+  ],
+  "concurrency": 1,
+  "availabilityPolicy": "quota-pause-v1; failures retain their attempt count",
+  "supervisor": {
+    "config": {
+      "model": "opencode-go/kimi-k3",
+      "id": "kimi-k3-opencode-default-20261005",
+      "data": "/home/ai/code/paper-trading-bench/datasets/historical/nasdaq100_2025q2-2026q1_v1",
+      "revision": "361051d4eda8ce784e3437171d41d20eb9086604"
+    },
+    "phase": "smoke",
+    "status": "running",
+    "launches": 1
+  },
+  "runs": [
+    {
+      "runId": "kimi-k3-opencode-default-20261005-smoke",
+      "config": {
+        "availabilityPolicy": {
+          "version": "quota-pause-v1",
+          "fallbackCooldownMs": 21600000,
+          "resetBufferMs": 300000
+        },
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "smoke",
+        "runId": "kimi-k3-opencode-default-20261005-smoke",
+        "model": "opencode-go/kimi-k3",
+        "dataDir": "/home/ai/code/paper-trading-bench/datasets/historical/nasdaq100_2025q2-2026q1_v1",
+        "datasetHash": "5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901",
+        "universeVersion": "dataset",
+        "start": "2025-04-01",
+        "end": "2025-04-03",
+        "history": 100,
+        "limits": {
+          "maxTurns": null,
+          "maxToolCalls": null,
+          "timeoutMs": 3600000
+        },
+        "policy": {
+          "version": "v12-portfolio-journal-submit",
+          "maxHistory": 252,
+          "maxOrders": 128,
+          "maxAttemptsPerDay": 2,
+          "maxConsecutiveInvalidDays": 3,
+          "defaultTimeoutMs": 3600000,
+          "maxEntryChars": 2000,
+          "maxReadChars": 12000,
+          "maxJournalIndexEntries": 20,
+          "recentJournalEntries": 3,
+          "maxJournalTags": 8,
+          "maxJournalTagChars": 48,
+          "maxRequestBytes": 32768,
+          "maxResponseBytes": 524288,
+          "maxOutputBytes": 16777216,
+          "reports": "disabled",
+          "journal": "own-committed-past-only"
+        }
+      },
+      "repositoryRevision": "361051d4eda8ce784e3437171d41d20eb9086604",
+      "implementationHash": "657636ab62eb84a6bc4fc34cd6925a9e93318c11552586b2494b226ccc6a685d",
+      "runtimeId": "6fd49769fa9e9fb464bcf883ad9b1b773599f5774ce73768a865538dd904090a",
+      "runtimeFileSha256": "ec256a88969d1fe141cabca9b56e537ed815010570ba7307ac00a2470c954384",
+      "coverage": {
+        "committedDays": 1,
+        "validDays": 1,
+        "invalidDays": 0,
+        "retriedDays": 0,
+        "lastDate": "2025-04-01"
+      },
+      "results": [
+        {
+          "date": "2025-04-01",
+          "attempt": 1,
+          "outcome": "completed",
+          "reason": null,
+          "hash": "0b69ebfe0eb01645725c58635ca4938ed1492280cdcfba03f03e302c4a597ae1"
+        }
+      ]
+    }
+  ],
+  "verification": [],
+  "checks": {
+    "sourceRevision": "361051d4eda8ce784e3437171d41d20eb9086604",
+    "sourceClean": true,
+    "passed": [
+      "pnpm install --frozen-lockfile",
+      "pnpm typecheck",
+      "pnpm test: 382 passed, 0 failed",
+      "pnpm test:supervisor: 6 passed; Decimal ledger and editorial checks passed",
+      "exact K3 catalog qualification without inference",
+      "system-launcher sandbox-check including dynamic read denials",
+      "251-session annual dataset preflight (62/64/64/61)",
+      "git diff --check",
+      "systemd unit validation"
+    ],
+    "initialFailures": [
+      "Rootless Bubblewrap denied network namespace setup by host AppArmor; new explicit system launcher passed.",
+      "K3 quota pause was not allowlisted; route and retry-preservation test added.",
+      "OpenCode worker omitted dynamic forbidden-path read probes; corrected and actual isolation probe passed.",
+      "Initial suite: stale expected model list; corrected. Intermediate suite: detected source edits during execution; final unchanged-source suite passed."
+    ],
+    "liveInferenceBeforeSmoke": 0,
+    "diskSafeguards": {
+      "minFreeBytes": 2147483648,
+      "maxResultsBytes": 3221225472
+    }
+  },
+  "priorPiRun": "Separate RedmiBook cohort: last recorded 8 days; preserved, not resumed or included here.",
+  "audit": {
+    "path": "/home/ai/.bb/thread-storage/thr_dtnr7yc9jp/kimi-k3-20261005/audit/20261005T083120920141Z.tar.gz",
+    "sha256": "a1b9cd1cf65a6f418d560c50f06fb3718a910a92324218d65a803b64c3cefdbf",
+    "bytes": 111608020
+  }
+}
