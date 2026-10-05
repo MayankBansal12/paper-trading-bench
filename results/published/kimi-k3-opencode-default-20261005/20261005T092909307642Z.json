@@ -1,0 +1,1400 @@
+{
+  "schemaVersion": 1,
+  "snapshotAt": "20261005T092909307642Z",
+  "snapshotKind": "settled",
+  "sourceRevision": "361051d4eda8ce784e3437171d41d20eb9086604",
+  "host": "afdasf",
+  "model": "opencode-go/kimi-k3",
+  "reasoning": "OpenCode native default; no variant or effort override",
+  "client": "OpenCode 1.18.30",
+  "datasetHash": "5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901",
+  "plannedSessions": [
+    62,
+    64,
+    64,
+    61
+  ],
+  "concurrency": 1,
+  "availabilityPolicy": "quota-pause-v1; failures retain their attempt count",
+  "supervisor": {
+    "config": {
+      "model": "opencode-go/kimi-k3",
+      "id": "kimi-k3-opencode-default-20261005",
+      "data": "/home/ai/code/paper-trading-bench/datasets/historical/nasdaq100_2025q2-2026q1_v1",
+      "revision": "361051d4eda8ce784e3437171d41d20eb9086604"
+    },
+    "phase": "annual",
+    "status": "blocked",
+    "launches": 2,
+    "report": {
+      "version": "independent-quarters-apr2025-mar2026-v5-quota-pause",
+      "evalId": "kimi-k3-opencode-default-20261005",
+      "start": "2025-04-01",
+      "end": "2026-03-31",
+      "status": "incomplete",
+      "interpretation": "Four independent quarterly portfolios per model. Dollar outcomes are summed; mean quarterly TWR is not an annual compounded return. Independent account balances must not be plotted as one equity curve. These environment results do not establish scored NDX membership eligibility.",
+      "models": [
+        {
+          "model": "opencode-go/kimi-k3",
+          "complete": false,
+          "completedQuarters": 0,
+          "accountedSessions": 22,
+          "validDays": 10,
+          "invalidDays": 12,
+          "retriedDays": 12,
+          "plannedContributions": 600000,
+          "accountedContributions": 200000,
+          "year": null
+        }
+      ],
+      "quarters": [
+        {
+          "runId": "kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2025-Q2",
+          "model": "opencode-go/kimi-k3",
+          "label": "2025-Q2",
+          "start": "2025-04-01",
+          "end": "2025-06-30",
+          "status": "invalid",
+          "summary": {
+            "protocol": "v12-portfolio-journal-submit",
+            "kind": "environment",
+            "status": "invalid",
+            "failure": "3 consecutive invalid trading days through 2025-04-17: Missing/failed sandbox client audit",
+            "committedDays": 13,
+            "validDays": 10,
+            "consecutiveInvalidDays": 3,
+            "maxConsecutiveInvalidDays": 3,
+            "stopped": true,
+            "totalDays": 62,
+            "attemptedDays": 13,
+            "retriedDays": 3,
+            "invalidDays": 3,
+            "unattemptedDays": 49,
+            "invalidSessions": [
+              {
+                "date": "2025-04-15",
+                "attempts": 2,
+                "reason": "Missing/failed sandbox client audit"
+              },
+              {
+                "date": "2025-04-16",
+                "attempts": 2,
+                "reason": "Missing/failed sandbox client audit"
+              },
+              {
+                "date": "2025-04-17",
+                "attempts": 2,
+                "reason": "Missing/failed sandbox client audit"
+              }
+            ],
+            "portfolio": {
+              "cash": 4087.06,
+              "holdings": {
+                "EXC": {
+                  "units": 120.192421,
+                  "avgCost": 45.76,
+                  "lastClose": 47.2599983215332,
+                  "value": 5680.29
+                },
+                "MDLZ": {
+                  "units": 80.645238,
+                  "avgCost": 68.2,
+                  "lastClose": 67.31999969482422,
+                  "value": 5429.04
+                },
+                "KDP": {
+                  "units": 157.142999,
+                  "avgCost": 35,
+                  "lastClose": 35.400001525878906,
+                  "value": 5562.86
+                },
+                "NVDA": {
+                  "units": 43,
+                  "avgCost": 109.37,
+                  "lastClose": 101.48999786376953,
+                  "value": 4364.07
+                },
+                "MSFT": {
+                  "units": 16.940743,
+                  "avgCost": 381.73,
+                  "lastClose": 367.7799987792969,
+                  "value": 6230.47
+                },
+                "AVGO": {
+                  "units": 24,
+                  "avgCost": 175.3,
+                  "lastClose": 170.99000549316406,
+                  "value": 4103.76
+                },
+                "NFLX": {
+                  "units": 4,
+                  "avgCost": 931.94,
+                  "lastClose": 973.0300140380859,
+                  "value": 3892.12
+                },
+                "ROST": {
+                  "units": 39.805393,
+                  "avgCost": 136.8,
+                  "lastClose": 139.6300048828125,
+                  "value": 5558.03
+                },
+                "WMT": {
+                  "units": 30.877867,
+                  "avgCost": 90.68,
+                  "lastClose": 93.22000122070312,
+                  "value": 2878.43
+                }
+              },
+              "holdingsValue": 43699.07,
+              "netWorth": 47786.13
+            },
+            "fills": 25,
+            "rejectedOrders": 0,
+            "journalEntries": 10,
+            "eventRoot": "7bac9876073cd405fed72f2193097107aa892a7e8e9b56daf6b28d53daef5e02",
+            "commitRoot": "8e81aaa681974171f276d2547ead6d867e69e8963ded2d6f6677ca2dfb30f403",
+            "attempts": 16,
+            "failures": 6,
+            "usageUnavailableAttempts": 6
+          },
+          "error": null,
+          "metrics": {
+            "startingCapital": 50000,
+            "endingNetWorth": 47786.13,
+            "totalContributions": 50000,
+            "netProfit": -2213.87,
+            "timeWeightedReturnPct": -4.4277,
+            "totalReturnPct": -4.4277,
+            "maxDrawdownPct": -6.1928,
+            "dailyVolatilityPct": 1.5644,
+            "annualizedVolatilityPct": 24.8333,
+            "sharpe": -3.4125,
+            "avgTurnoverPct": 15.9174,
+            "tradeCount": 25,
+            "failedOrderCount": 0,
+            "boundedStopCount": 0,
+            "daysRun": 13
+          }
+        },
+        {
+          "runId": "kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2025-Q3",
+          "model": "opencode-go/kimi-k3",
+          "label": "2025-Q3",
+          "start": "2025-07-01",
+          "end": "2025-09-30",
+          "status": "invalid",
+          "summary": {
+            "protocol": "v12-portfolio-journal-submit",
+            "kind": "environment",
+            "status": "invalid",
+            "failure": "3 consecutive invalid trading days through 2025-07-03: Missing/failed sandbox client audit",
+            "committedDays": 3,
+            "validDays": 0,
+            "consecutiveInvalidDays": 3,
+            "maxConsecutiveInvalidDays": 3,
+            "stopped": true,
+            "totalDays": 64,
+            "attemptedDays": 3,
+            "retriedDays": 3,
+            "invalidDays": 3,
+            "unattemptedDays": 61,
+            "invalidSessions": [
+              {
+                "date": "2025-07-01",
+                "attempts": 2,
+                "reason": "Missing/failed sandbox client audit"
+              },
+              {
+                "date": "2025-07-02",
+                "attempts": 2,
+                "reason": "Missing/failed sandbox client audit"
+              },
+              {
+                "date": "2025-07-03",
+                "attempts": 2,
+                "reason": "Missing/failed sandbox client audit"
+              }
+            ],
+            "portfolio": {
+              "cash": 50000,
+              "holdings": {},
+              "holdingsValue": 0,
+              "netWorth": 50000
+            },
+            "fills": 0,
+            "rejectedOrders": 0,
+            "journalEntries": 0,
+            "eventRoot": "ca0687b3a809c75e403d5b70ee29c6bc856e024b43b54e0345bfc6d2cf2afb34",
+            "commitRoot": "e5bc7b108e74b958231642596439642bb9a4745ec4abc96d6b0746fc0693dd21",
+            "attempts": 6,
+            "failures": 6,
+            "usageUnavailableAttempts": 6
+          },
+          "error": null,
+          "metrics": {
+            "startingCapital": 50000,
+            "endingNetWorth": 50000,
+            "totalContributions": 50000,
+            "netProfit": 0,
+            "timeWeightedReturnPct": 0,
+            "totalReturnPct": 0,
+            "maxDrawdownPct": 0,
+            "dailyVolatilityPct": 0,
+            "annualizedVolatilityPct": 0,
+            "sharpe": null,
+            "avgTurnoverPct": 0,
+            "tradeCount": 0,
+            "failedOrderCount": 0,
+            "boundedStopCount": 0,
+            "daysRun": 3
+          }
+        },
+        {
+          "runId": "kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2025-Q4",
+          "model": "opencode-go/kimi-k3",
+          "label": "2025-Q4",
+          "start": "2025-10-01",
+          "end": "2025-12-31",
+          "status": "invalid",
+          "summary": {
+            "protocol": "v12-portfolio-journal-submit",
+            "kind": "environment",
+            "status": "invalid",
+            "failure": "3 consecutive invalid trading days through 2025-10-03: Missing/failed sandbox client audit",
+            "committedDays": 3,
+            "validDays": 0,
+            "consecutiveInvalidDays": 3,
+            "maxConsecutiveInvalidDays": 3,
+            "stopped": true,
+            "totalDays": 64,
+            "attemptedDays": 3,
+            "retriedDays": 3,
+            "invalidDays": 3,
+            "unattemptedDays": 61,
+            "invalidSessions": [
+              {
+                "date": "2025-10-01",
+                "attempts": 2,
+                "reason": "Missing/failed sandbox client audit"
+              },
+              {
+                "date": "2025-10-02",
+                "attempts": 2,
+                "reason": "Missing/failed sandbox client audit"
+              },
+              {
+                "date": "2025-10-03",
+                "attempts": 2,
+                "reason": "Missing/failed sandbox client audit"
+              }
+            ],
+            "portfolio": {
+              "cash": 50000,
+              "holdings": {},
+              "holdingsValue": 0,
+              "netWorth": 50000
+            },
+            "fills": 0,
+            "rejectedOrders": 0,
+            "journalEntries": 0,
+            "eventRoot": "17675f54eae48118373f85eb0c54d8b4f208a2510fceab8fca91c37c6b069f7c",
+            "commitRoot": "9ee217a9718e66c2abb74b49d707d7681e7a8753247abd598a12630c8590926b",
+            "attempts": 6,
+            "failures": 6,
+            "usageUnavailableAttempts": 6
+          },
+          "error": null,
+          "metrics": {
+            "startingCapital": 50000,
+            "endingNetWorth": 50000,
+            "totalContributions": 50000,
+            "netProfit": 0,
+            "timeWeightedReturnPct": 0,
+            "totalReturnPct": 0,
+            "maxDrawdownPct": 0,
+            "dailyVolatilityPct": 0,
+            "annualizedVolatilityPct": 0,
+            "sharpe": null,
+            "avgTurnoverPct": 0,
+            "tradeCount": 0,
+            "failedOrderCount": 0,
+            "boundedStopCount": 0,
+            "daysRun": 3
+          }
+        },
+        {
+          "runId": "kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2026-Q1",
+          "model": "opencode-go/kimi-k3",
+          "label": "2026-Q1",
+          "start": "2026-01-01",
+          "end": "2026-03-31",
+          "status": "invalid",
+          "summary": {
+            "protocol": "v12-portfolio-journal-submit",
+            "kind": "environment",
+            "status": "invalid",
+            "failure": "3 consecutive invalid trading days through 2026-01-06: Missing/failed sandbox client audit",
+            "committedDays": 3,
+            "validDays": 0,
+            "consecutiveInvalidDays": 3,
+            "maxConsecutiveInvalidDays": 3,
+            "stopped": true,
+            "totalDays": 61,
+            "attemptedDays": 3,
+            "retriedDays": 3,
+            "invalidDays": 3,
+            "unattemptedDays": 58,
+            "invalidSessions": [
+              {
+                "date": "2026-01-02",
+                "attempts": 2,
+                "reason": "Missing/failed sandbox client audit"
+              },
+              {
+                "date": "2026-01-05",
+                "attempts": 2,
+                "reason": "Missing/failed sandbox client audit"
+              },
+              {
+                "date": "2026-01-06",
+                "attempts": 2,
+                "reason": "Missing/failed sandbox client audit"
+              }
+            ],
+            "portfolio": {
+              "cash": 50000,
+              "holdings": {},
+              "holdingsValue": 0,
+              "netWorth": 50000
+            },
+            "fills": 0,
+            "rejectedOrders": 0,
+            "journalEntries": 0,
+            "eventRoot": "45e0d4d0b8f9ac2ddb2259f20bd177739e8ea4ff9f491c3e4d4c7d763e734776",
+            "commitRoot": "2e9354c82ea2b74dfa650a34a9bd9a3c469bf9598f583adcd7c5639292fac880",
+            "attempts": 6,
+            "failures": 6,
+            "usageUnavailableAttempts": 6
+          },
+          "error": null,
+          "metrics": {
+            "startingCapital": 50000,
+            "endingNetWorth": 50000,
+            "totalContributions": 50000,
+            "netProfit": 0,
+            "timeWeightedReturnPct": 0,
+            "totalReturnPct": 0,
+            "maxDrawdownPct": 0,
+            "dailyVolatilityPct": 0,
+            "annualizedVolatilityPct": 0,
+            "sharpe": null,
+            "avgTurnoverPct": 0,
+            "tradeCount": 0,
+            "failedOrderCount": 0,
+            "boundedStopCount": 0,
+            "daysRun": 3
+          }
+        }
+      ]
+    }
+  },
+  "runs": [
+    {
+      "runId": "kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2025-Q2",
+      "config": {
+        "availabilityPolicy": {
+          "version": "quota-pause-v1",
+          "fallbackCooldownMs": 21600000,
+          "resetBufferMs": 300000
+        },
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "runId": "kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2025-Q2",
+        "model": "opencode-go/kimi-k3",
+        "dataDir": "/home/ai/code/paper-trading-bench/datasets/historical/nasdaq100_2025q2-2026q1_v1",
+        "datasetHash": "5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901",
+        "universeVersion": "dataset",
+        "start": "2025-04-01",
+        "end": "2025-06-30",
+        "history": 100,
+        "limits": {
+          "maxTurns": null,
+          "maxToolCalls": null,
+          "timeoutMs": 3600000
+        },
+        "policy": {
+          "version": "v12-portfolio-journal-submit",
+          "maxHistory": 252,
+          "maxOrders": 128,
+          "maxAttemptsPerDay": 2,
+          "maxConsecutiveInvalidDays": 3,
+          "defaultTimeoutMs": 3600000,
+          "maxEntryChars": 2000,
+          "maxReadChars": 12000,
+          "maxJournalIndexEntries": 20,
+          "recentJournalEntries": 3,
+          "maxJournalTags": 8,
+          "maxJournalTagChars": 48,
+          "maxRequestBytes": 32768,
+          "maxResponseBytes": 524288,
+          "maxOutputBytes": 16777216,
+          "reports": "disabled",
+          "journal": "own-committed-past-only"
+        }
+      },
+      "repositoryRevision": "361051d4eda8ce784e3437171d41d20eb9086604",
+      "implementationHash": "657636ab62eb84a6bc4fc34cd6925a9e93318c11552586b2494b226ccc6a685d",
+      "runtimeId": "6fd49769fa9e9fb464bcf883ad9b1b773599f5774ce73768a865538dd904090a",
+      "runtimeFileSha256": "ec256a88969d1fe141cabca9b56e537ed815010570ba7307ac00a2470c954384",
+      "coverage": {
+        "committedDays": 13,
+        "validDays": 10,
+        "invalidDays": 3,
+        "retriedDays": 3,
+        "lastDate": "2025-04-17"
+      },
+      "results": [
+        {
+          "date": "2025-04-01",
+          "attempt": 1,
+          "outcome": "completed",
+          "reason": null,
+          "hash": "4326ef5869e3c77e7f3504d65c31766ff26a994cddf485133f0c8286fea6cb28"
+        },
+        {
+          "date": "2025-04-02",
+          "attempt": 1,
+          "outcome": "completed",
+          "reason": null,
+          "hash": "08e76d439eff2f71af58ebfe6ad497379b02f6154ec9c5049caf66a77cb22c70"
+        },
+        {
+          "date": "2025-04-03",
+          "attempt": 1,
+          "outcome": "completed",
+          "reason": null,
+          "hash": "416472b71d33c7ac347124b3b0bbe26ec888b9f267560ba005f72d99cf966fb6"
+        },
+        {
+          "date": "2025-04-04",
+          "attempt": 1,
+          "outcome": "completed",
+          "reason": null,
+          "hash": "cc89d74947dddaae1875c5154bc916892e1b2fe4c2b552ed535a2233050281b5"
+        },
+        {
+          "date": "2025-04-07",
+          "attempt": 1,
+          "outcome": "completed",
+          "reason": null,
+          "hash": "2aefde94d3b07c68faff1442fe088ac11395a35944a130c3030c2a0da69fc650"
+        },
+        {
+          "date": "2025-04-08",
+          "attempt": 1,
+          "outcome": "completed",
+          "reason": null,
+          "hash": "d46a4f759d5b5bd149cff41b0249856dd58a6e1b183227559a083a9d3bbdcbe9"
+        },
+        {
+          "date": "2025-04-09",
+          "attempt": 1,
+          "outcome": "completed",
+          "reason": null,
+          "hash": "7174e70501239a5c909fada1592ed6c91ccb1e3df09ec69984a666ec4a030e17"
+        },
+        {
+          "date": "2025-04-10",
+          "attempt": 1,
+          "outcome": "completed",
+          "reason": null,
+          "hash": "e05188cd2e3ccbde805669a698dd6a6b65c056cf0483033d9c0787abdc465dfb"
+        },
+        {
+          "date": "2025-04-11",
+          "attempt": 1,
+          "outcome": "completed",
+          "reason": null,
+          "hash": "dca1dd3328e13dcc8f474e38a0cf52ad46d641d2995c7e29b231b434f2126f01"
+        },
+        {
+          "date": "2025-04-14",
+          "attempt": 1,
+          "outcome": "completed",
+          "reason": null,
+          "hash": "9d6e9e631671f7fdd869b6fd518e22ceb3796964b7d880c3d7e561a66813a2a6"
+        },
+        {
+          "date": "2025-04-15",
+          "attempt": 1,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "f1b9a194883c1fca3f3d8d4117bd2ac403485655c174d0bdfae21ac2d164a359"
+        },
+        {
+          "date": "2025-04-15",
+          "attempt": 2,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "19642c39c0fd0906b8ba160e311de4d9937b52f52b4a656e6f010404167dd8bf"
+        },
+        {
+          "date": "2025-04-16",
+          "attempt": 1,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "4e43c30232b545e4915944dc14133d4e2c79362ae3ca188bdde81a8dfe79576b"
+        },
+        {
+          "date": "2025-04-16",
+          "attempt": 2,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "a42433e0e86f591cf54e396886b4b065816b421b590a7b23488aaf01cd8e5f42"
+        },
+        {
+          "date": "2025-04-17",
+          "attempt": 1,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "4c7fee4598bda3189e7c4800e3f27607f78d08afae7f1d2bfb8b9e38d680e074"
+        },
+        {
+          "date": "2025-04-17",
+          "attempt": 2,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "7bac9876073cd405fed72f2193097107aa892a7e8e9b56daf6b28d53daef5e02"
+        }
+      ]
+    },
+    {
+      "runId": "kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2025-Q3",
+      "config": {
+        "availabilityPolicy": {
+          "version": "quota-pause-v1",
+          "fallbackCooldownMs": 21600000,
+          "resetBufferMs": 300000
+        },
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "runId": "kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2025-Q3",
+        "model": "opencode-go/kimi-k3",
+        "dataDir": "/home/ai/code/paper-trading-bench/datasets/historical/nasdaq100_2025q2-2026q1_v1",
+        "datasetHash": "5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901",
+        "universeVersion": "dataset",
+        "start": "2025-07-01",
+        "end": "2025-09-30",
+        "history": 100,
+        "limits": {
+          "maxTurns": null,
+          "maxToolCalls": null,
+          "timeoutMs": 3600000
+        },
+        "policy": {
+          "version": "v12-portfolio-journal-submit",
+          "maxHistory": 252,
+          "maxOrders": 128,
+          "maxAttemptsPerDay": 2,
+          "maxConsecutiveInvalidDays": 3,
+          "defaultTimeoutMs": 3600000,
+          "maxEntryChars": 2000,
+          "maxReadChars": 12000,
+          "maxJournalIndexEntries": 20,
+          "recentJournalEntries": 3,
+          "maxJournalTags": 8,
+          "maxJournalTagChars": 48,
+          "maxRequestBytes": 32768,
+          "maxResponseBytes": 524288,
+          "maxOutputBytes": 16777216,
+          "reports": "disabled",
+          "journal": "own-committed-past-only"
+        }
+      },
+      "repositoryRevision": "361051d4eda8ce784e3437171d41d20eb9086604",
+      "implementationHash": "657636ab62eb84a6bc4fc34cd6925a9e93318c11552586b2494b226ccc6a685d",
+      "runtimeId": "6fd49769fa9e9fb464bcf883ad9b1b773599f5774ce73768a865538dd904090a",
+      "runtimeFileSha256": "ec256a88969d1fe141cabca9b56e537ed815010570ba7307ac00a2470c954384",
+      "coverage": {
+        "committedDays": 3,
+        "validDays": 0,
+        "invalidDays": 3,
+        "retriedDays": 3,
+        "lastDate": "2025-07-03"
+      },
+      "results": [
+        {
+          "date": "2025-07-01",
+          "attempt": 1,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "a9f3bad2750355d2990888cf31e0f6029abf108c8b00c0e24682f24c11240144"
+        },
+        {
+          "date": "2025-07-01",
+          "attempt": 2,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "b30f97730064b40e00a0914d25710c94665cf8f8b357b0e66be5b29209f82f54"
+        },
+        {
+          "date": "2025-07-02",
+          "attempt": 1,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "1ca56d940ad0bed4cedb7a5090402c2cba5e2da663556914202c59046885de0e"
+        },
+        {
+          "date": "2025-07-02",
+          "attempt": 2,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "33fae29fa04431cd6fbda109adb2002efc77a045c109b4d489fb90aca0b3ed1a"
+        },
+        {
+          "date": "2025-07-03",
+          "attempt": 1,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "fce7d6ddd8151dc376eec5f5c4e744b0a804c4ff43eddfc0af1f5a1f9c26531c"
+        },
+        {
+          "date": "2025-07-03",
+          "attempt": 2,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "ca0687b3a809c75e403d5b70ee29c6bc856e024b43b54e0345bfc6d2cf2afb34"
+        }
+      ]
+    },
+    {
+      "runId": "kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2025-Q4",
+      "config": {
+        "availabilityPolicy": {
+          "version": "quota-pause-v1",
+          "fallbackCooldownMs": 21600000,
+          "resetBufferMs": 300000
+        },
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "runId": "kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2025-Q4",
+        "model": "opencode-go/kimi-k3",
+        "dataDir": "/home/ai/code/paper-trading-bench/datasets/historical/nasdaq100_2025q2-2026q1_v1",
+        "datasetHash": "5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901",
+        "universeVersion": "dataset",
+        "start": "2025-10-01",
+        "end": "2025-12-31",
+        "history": 100,
+        "limits": {
+          "maxTurns": null,
+          "maxToolCalls": null,
+          "timeoutMs": 3600000
+        },
+        "policy": {
+          "version": "v12-portfolio-journal-submit",
+          "maxHistory": 252,
+          "maxOrders": 128,
+          "maxAttemptsPerDay": 2,
+          "maxConsecutiveInvalidDays": 3,
+          "defaultTimeoutMs": 3600000,
+          "maxEntryChars": 2000,
+          "maxReadChars": 12000,
+          "maxJournalIndexEntries": 20,
+          "recentJournalEntries": 3,
+          "maxJournalTags": 8,
+          "maxJournalTagChars": 48,
+          "maxRequestBytes": 32768,
+          "maxResponseBytes": 524288,
+          "maxOutputBytes": 16777216,
+          "reports": "disabled",
+          "journal": "own-committed-past-only"
+        }
+      },
+      "repositoryRevision": "361051d4eda8ce784e3437171d41d20eb9086604",
+      "implementationHash": "657636ab62eb84a6bc4fc34cd6925a9e93318c11552586b2494b226ccc6a685d",
+      "runtimeId": "6fd49769fa9e9fb464bcf883ad9b1b773599f5774ce73768a865538dd904090a",
+      "runtimeFileSha256": "ec256a88969d1fe141cabca9b56e537ed815010570ba7307ac00a2470c954384",
+      "coverage": {
+        "committedDays": 3,
+        "validDays": 0,
+        "invalidDays": 3,
+        "retriedDays": 3,
+        "lastDate": "2025-10-03"
+      },
+      "results": [
+        {
+          "date": "2025-10-01",
+          "attempt": 1,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "a1ff27716184fecfb58b3228143cc0447efbc592611eea643bbc48223b9e803d"
+        },
+        {
+          "date": "2025-10-01",
+          "attempt": 2,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "43a46d94ec93db46e3004a55fb870307a6228b75cebcc45fa73ed93aa170ba57"
+        },
+        {
+          "date": "2025-10-02",
+          "attempt": 1,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "f4d560418938b56d405e299bdf78cba8c69409ebb9ac0923a80dcd594c58c079"
+        },
+        {
+          "date": "2025-10-02",
+          "attempt": 2,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "905e1371948b5b9630717f4e034d521f7480c2d93502189fdc5f92a7d97b95f9"
+        },
+        {
+          "date": "2025-10-03",
+          "attempt": 1,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "fe0ac2ecb94414c68e4ce91f68ebac610ef51d3d18eeb10f3ed9497e318b9fbb"
+        },
+        {
+          "date": "2025-10-03",
+          "attempt": 2,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "17675f54eae48118373f85eb0c54d8b4f208a2510fceab8fca91c37c6b069f7c"
+        }
+      ]
+    },
+    {
+      "runId": "kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2026-Q1",
+      "config": {
+        "availabilityPolicy": {
+          "version": "quota-pause-v1",
+          "fallbackCooldownMs": 21600000,
+          "resetBufferMs": 300000
+        },
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "runId": "kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2026-Q1",
+        "model": "opencode-go/kimi-k3",
+        "dataDir": "/home/ai/code/paper-trading-bench/datasets/historical/nasdaq100_2025q2-2026q1_v1",
+        "datasetHash": "5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901",
+        "universeVersion": "dataset",
+        "start": "2026-01-01",
+        "end": "2026-03-31",
+        "history": 100,
+        "limits": {
+          "maxTurns": null,
+          "maxToolCalls": null,
+          "timeoutMs": 3600000
+        },
+        "policy": {
+          "version": "v12-portfolio-journal-submit",
+          "maxHistory": 252,
+          "maxOrders": 128,
+          "maxAttemptsPerDay": 2,
+          "maxConsecutiveInvalidDays": 3,
+          "defaultTimeoutMs": 3600000,
+          "maxEntryChars": 2000,
+          "maxReadChars": 12000,
+          "maxJournalIndexEntries": 20,
+          "recentJournalEntries": 3,
+          "maxJournalTags": 8,
+          "maxJournalTagChars": 48,
+          "maxRequestBytes": 32768,
+          "maxResponseBytes": 524288,
+          "maxOutputBytes": 16777216,
+          "reports": "disabled",
+          "journal": "own-committed-past-only"
+        }
+      },
+      "repositoryRevision": "361051d4eda8ce784e3437171d41d20eb9086604",
+      "implementationHash": "657636ab62eb84a6bc4fc34cd6925a9e93318c11552586b2494b226ccc6a685d",
+      "runtimeId": "6fd49769fa9e9fb464bcf883ad9b1b773599f5774ce73768a865538dd904090a",
+      "runtimeFileSha256": "ec256a88969d1fe141cabca9b56e537ed815010570ba7307ac00a2470c954384",
+      "coverage": {
+        "committedDays": 3,
+        "validDays": 0,
+        "invalidDays": 3,
+        "retriedDays": 3,
+        "lastDate": "2026-01-06"
+      },
+      "results": [
+        {
+          "date": "2026-01-02",
+          "attempt": 1,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "707cd717f056efa49a599e9a24ff10c8459ea46c9c6a93607650fe25dd0ce3fd"
+        },
+        {
+          "date": "2026-01-02",
+          "attempt": 2,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "d9299477d52ebfa65aa6efee801b3b3ad359edb8b7c9d3f9d077c8af56e2d991"
+        },
+        {
+          "date": "2026-01-05",
+          "attempt": 1,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "d1e9c998e0620630061d3dbbdb38ae6c0a8c0fee71bbd5d054613ccb0357bfdf"
+        },
+        {
+          "date": "2026-01-05",
+          "attempt": 2,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "4a293c9b71663e675f7fd4abc70458101e63f4a4786538840f871d26110328d8"
+        },
+        {
+          "date": "2026-01-06",
+          "attempt": 1,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "f5d6dd960b93e178610adfd5dbcb9d56f59afa27b6dce7efc27c1601242c7d4d"
+        },
+        {
+          "date": "2026-01-06",
+          "attempt": 2,
+          "outcome": "harness_error",
+          "reason": "Missing/failed sandbox client audit",
+          "hash": "45e0d4d0b8f9ac2ddb2259f20bd177739e8ea4ff9f491c3e4d4c7d763e734776"
+        }
+      ]
+    },
+    {
+      "runId": "kimi-k3-opencode-default-20261005-smoke",
+      "config": {
+        "availabilityPolicy": {
+          "version": "quota-pause-v1",
+          "fallbackCooldownMs": 21600000,
+          "resetBufferMs": 300000
+        },
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "smoke",
+        "runId": "kimi-k3-opencode-default-20261005-smoke",
+        "model": "opencode-go/kimi-k3",
+        "dataDir": "/home/ai/code/paper-trading-bench/datasets/historical/nasdaq100_2025q2-2026q1_v1",
+        "datasetHash": "5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901",
+        "universeVersion": "dataset",
+        "start": "2025-04-01",
+        "end": "2025-04-03",
+        "history": 100,
+        "limits": {
+          "maxTurns": null,
+          "maxToolCalls": null,
+          "timeoutMs": 3600000
+        },
+        "policy": {
+          "version": "v12-portfolio-journal-submit",
+          "maxHistory": 252,
+          "maxOrders": 128,
+          "maxAttemptsPerDay": 2,
+          "maxConsecutiveInvalidDays": 3,
+          "defaultTimeoutMs": 3600000,
+          "maxEntryChars": 2000,
+          "maxReadChars": 12000,
+          "maxJournalIndexEntries": 20,
+          "recentJournalEntries": 3,
+          "maxJournalTags": 8,
+          "maxJournalTagChars": 48,
+          "maxRequestBytes": 32768,
+          "maxResponseBytes": 524288,
+          "maxOutputBytes": 16777216,
+          "reports": "disabled",
+          "journal": "own-committed-past-only"
+        }
+      },
+      "repositoryRevision": "361051d4eda8ce784e3437171d41d20eb9086604",
+      "implementationHash": "657636ab62eb84a6bc4fc34cd6925a9e93318c11552586b2494b226ccc6a685d",
+      "runtimeId": "6fd49769fa9e9fb464bcf883ad9b1b773599f5774ce73768a865538dd904090a",
+      "runtimeFileSha256": "ec256a88969d1fe141cabca9b56e537ed815010570ba7307ac00a2470c954384",
+      "coverage": {
+        "committedDays": 3,
+        "validDays": 3,
+        "invalidDays": 0,
+        "retriedDays": 0,
+        "lastDate": "2025-04-03"
+      },
+      "results": [
+        {
+          "date": "2025-04-01",
+          "attempt": 1,
+          "outcome": "completed",
+          "reason": null,
+          "hash": "0b69ebfe0eb01645725c58635ca4938ed1492280cdcfba03f03e302c4a597ae1"
+        },
+        {
+          "date": "2025-04-02",
+          "attempt": 1,
+          "outcome": "completed",
+          "reason": null,
+          "hash": "3de2493b81bae2a1ed89db2af09b9a9cd217790d7433e1cd577191c17c4b7671"
+        },
+        {
+          "date": "2025-04-03",
+          "attempt": 1,
+          "outcome": "completed",
+          "reason": null,
+          "hash": "bfd4fa6d1a56a3955c36761420c8dc17b18f42fc62ef82a574b9dad154aeb166"
+        }
+      ]
+    }
+  ],
+  "verification": [
+    {
+      "runId": "kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2025-Q2",
+      "command": [
+        "bun",
+        "src/index.ts",
+        "verify",
+        "--dir",
+        "results/studies/kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2025-Q2"
+      ],
+      "exitCode": 0,
+      "report": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "status": "invalid",
+        "failure": "3 consecutive invalid trading days through 2025-04-17: Missing/failed sandbox client audit",
+        "committedDays": 13,
+        "validDays": 10,
+        "consecutiveInvalidDays": 3,
+        "maxConsecutiveInvalidDays": 3,
+        "stopped": true,
+        "totalDays": 62,
+        "attemptedDays": 13,
+        "retriedDays": 3,
+        "invalidDays": 3,
+        "unattemptedDays": 49,
+        "invalidSessions": [
+          {
+            "date": "2025-04-15",
+            "attempts": 2,
+            "reason": "Missing/failed sandbox client audit"
+          },
+          {
+            "date": "2025-04-16",
+            "attempts": 2,
+            "reason": "Missing/failed sandbox client audit"
+          },
+          {
+            "date": "2025-04-17",
+            "attempts": 2,
+            "reason": "Missing/failed sandbox client audit"
+          }
+        ],
+        "portfolio": {
+          "cash": 4087.06,
+          "holdings": {
+            "EXC": {
+              "units": 120.192421,
+              "avgCost": 45.76,
+              "lastClose": 47.2599983215332,
+              "value": 5680.29
+            },
+            "MDLZ": {
+              "units": 80.645238,
+              "avgCost": 68.2,
+              "lastClose": 67.31999969482422,
+              "value": 5429.04
+            },
+            "KDP": {
+              "units": 157.142999,
+              "avgCost": 35,
+              "lastClose": 35.400001525878906,
+              "value": 5562.86
+            },
+            "NVDA": {
+              "units": 43,
+              "avgCost": 109.37,
+              "lastClose": 101.48999786376953,
+              "value": 4364.07
+            },
+            "MSFT": {
+              "units": 16.940743,
+              "avgCost": 381.73,
+              "lastClose": 367.7799987792969,
+              "value": 6230.47
+            },
+            "AVGO": {
+              "units": 24,
+              "avgCost": 175.3,
+              "lastClose": 170.99000549316406,
+              "value": 4103.76
+            },
+            "NFLX": {
+              "units": 4,
+              "avgCost": 931.94,
+              "lastClose": 973.0300140380859,
+              "value": 3892.12
+            },
+            "ROST": {
+              "units": 39.805393,
+              "avgCost": 136.8,
+              "lastClose": 139.6300048828125,
+              "value": 5558.03
+            },
+            "WMT": {
+              "units": 30.877867,
+              "avgCost": 90.68,
+              "lastClose": 93.22000122070312,
+              "value": 2878.43
+            }
+          },
+          "holdingsValue": 43699.07,
+          "netWorth": 47786.13
+        },
+        "fills": 25,
+        "rejectedOrders": 0,
+        "journalEntries": 10,
+        "eventRoot": "7bac9876073cd405fed72f2193097107aa892a7e8e9b56daf6b28d53daef5e02",
+        "commitRoot": "8e81aaa681974171f276d2547ead6d867e69e8963ded2d6f6677ca2dfb30f403",
+        "attempts": 16,
+        "failures": 6,
+        "usageUnavailableAttempts": 6
+      },
+      "error": null
+    },
+    {
+      "runId": "kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2025-Q3",
+      "command": [
+        "bun",
+        "src/index.ts",
+        "verify",
+        "--dir",
+        "results/studies/kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2025-Q3"
+      ],
+      "exitCode": 0,
+      "report": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "status": "invalid",
+        "failure": "3 consecutive invalid trading days through 2025-07-03: Missing/failed sandbox client audit",
+        "committedDays": 3,
+        "validDays": 0,
+        "consecutiveInvalidDays": 3,
+        "maxConsecutiveInvalidDays": 3,
+        "stopped": true,
+        "totalDays": 64,
+        "attemptedDays": 3,
+        "retriedDays": 3,
+        "invalidDays": 3,
+        "unattemptedDays": 61,
+        "invalidSessions": [
+          {
+            "date": "2025-07-01",
+            "attempts": 2,
+            "reason": "Missing/failed sandbox client audit"
+          },
+          {
+            "date": "2025-07-02",
+            "attempts": 2,
+            "reason": "Missing/failed sandbox client audit"
+          },
+          {
+            "date": "2025-07-03",
+            "attempts": 2,
+            "reason": "Missing/failed sandbox client audit"
+          }
+        ],
+        "portfolio": {
+          "cash": 50000,
+          "holdings": {},
+          "holdingsValue": 0,
+          "netWorth": 50000
+        },
+        "fills": 0,
+        "rejectedOrders": 0,
+        "journalEntries": 0,
+        "eventRoot": "ca0687b3a809c75e403d5b70ee29c6bc856e024b43b54e0345bfc6d2cf2afb34",
+        "commitRoot": "e5bc7b108e74b958231642596439642bb9a4745ec4abc96d6b0746fc0693dd21",
+        "attempts": 6,
+        "failures": 6,
+        "usageUnavailableAttempts": 6
+      },
+      "error": null
+    },
+    {
+      "runId": "kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2025-Q4",
+      "command": [
+        "bun",
+        "src/index.ts",
+        "verify",
+        "--dir",
+        "results/studies/kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2025-Q4"
+      ],
+      "exitCode": 0,
+      "report": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "status": "invalid",
+        "failure": "3 consecutive invalid trading days through 2025-10-03: Missing/failed sandbox client audit",
+        "committedDays": 3,
+        "validDays": 0,
+        "consecutiveInvalidDays": 3,
+        "maxConsecutiveInvalidDays": 3,
+        "stopped": true,
+        "totalDays": 64,
+        "attemptedDays": 3,
+        "retriedDays": 3,
+        "invalidDays": 3,
+        "unattemptedDays": 61,
+        "invalidSessions": [
+          {
+            "date": "2025-10-01",
+            "attempts": 2,
+            "reason": "Missing/failed sandbox client audit"
+          },
+          {
+            "date": "2025-10-02",
+            "attempts": 2,
+            "reason": "Missing/failed sandbox client audit"
+          },
+          {
+            "date": "2025-10-03",
+            "attempts": 2,
+            "reason": "Missing/failed sandbox client audit"
+          }
+        ],
+        "portfolio": {
+          "cash": 50000,
+          "holdings": {},
+          "holdingsValue": 0,
+          "netWorth": 50000
+        },
+        "fills": 0,
+        "rejectedOrders": 0,
+        "journalEntries": 0,
+        "eventRoot": "17675f54eae48118373f85eb0c54d8b4f208a2510fceab8fca91c37c6b069f7c",
+        "commitRoot": "9ee217a9718e66c2abb74b49d707d7681e7a8753247abd598a12630c8590926b",
+        "attempts": 6,
+        "failures": 6,
+        "usageUnavailableAttempts": 6
+      },
+      "error": null
+    },
+    {
+      "runId": "kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2026-Q1",
+      "command": [
+        "bun",
+        "src/index.ts",
+        "verify",
+        "--dir",
+        "results/studies/kimi-k3-opencode-default-20261005-opencode-go-kimi-k3-5e91873c26c8-2026-Q1"
+      ],
+      "exitCode": 0,
+      "report": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "environment",
+        "status": "invalid",
+        "failure": "3 consecutive invalid trading days through 2026-01-06: Missing/failed sandbox client audit",
+        "committedDays": 3,
+        "validDays": 0,
+        "consecutiveInvalidDays": 3,
+        "maxConsecutiveInvalidDays": 3,
+        "stopped": true,
+        "totalDays": 61,
+        "attemptedDays": 3,
+        "retriedDays": 3,
+        "invalidDays": 3,
+        "unattemptedDays": 58,
+        "invalidSessions": [
+          {
+            "date": "2026-01-02",
+            "attempts": 2,
+            "reason": "Missing/failed sandbox client audit"
+          },
+          {
+            "date": "2026-01-05",
+            "attempts": 2,
+            "reason": "Missing/failed sandbox client audit"
+          },
+          {
+            "date": "2026-01-06",
+            "attempts": 2,
+            "reason": "Missing/failed sandbox client audit"
+          }
+        ],
+        "portfolio": {
+          "cash": 50000,
+          "holdings": {},
+          "holdingsValue": 0,
+          "netWorth": 50000
+        },
+        "fills": 0,
+        "rejectedOrders": 0,
+        "journalEntries": 0,
+        "eventRoot": "45e0d4d0b8f9ac2ddb2259f20bd177739e8ea4ff9f491c3e4d4c7d763e734776",
+        "commitRoot": "2e9354c82ea2b74dfa650a34a9bd9a3c469bf9598f583adcd7c5639292fac880",
+        "attempts": 6,
+        "failures": 6,
+        "usageUnavailableAttempts": 6
+      },
+      "error": null
+    },
+    {
+      "runId": "kimi-k3-opencode-default-20261005-smoke",
+      "command": [
+        "bun",
+        "src/index.ts",
+        "verify",
+        "--dir",
+        "results/studies/kimi-k3-opencode-default-20261005-smoke"
+      ],
+      "exitCode": 0,
+      "report": {
+        "protocol": "v12-portfolio-journal-submit",
+        "kind": "smoke",
+        "status": "completed",
+        "failure": null,
+        "committedDays": 3,
+        "validDays": 3,
+        "consecutiveInvalidDays": 0,
+        "maxConsecutiveInvalidDays": 0,
+        "stopped": false,
+        "totalDays": 3,
+        "attemptedDays": 3,
+        "retriedDays": 0,
+        "invalidDays": 0,
+        "unattemptedDays": 0,
+        "invalidSessions": [],
+        "portfolio": {
+          "cash": 1996.04,
+          "holdings": {
+            "MNST": {
+              "units": 85,
+              "avgCost": 58.5,
+              "lastClose": 59.650001525878906,
+              "value": 5070.25
+            },
+            "GILD": {
+              "units": 44,
+              "avgCost": 112,
+              "lastClose": 112.38999938964844,
+              "value": 4945.16
+            },
+            "PAYX": {
+              "units": 29,
+              "avgCost": 154.07,
+              "lastClose": 153.52999877929688,
+              "value": 4452.37
+            },
+            "AAPL": {
+              "units": 20,
+              "avgCost": 219.81,
+              "lastClose": 203.19000244140625,
+              "value": 4063.8
+            },
+            "XEL": {
+              "units": 56,
+              "avgCost": 70.61,
+              "lastClose": 72.13999938964844,
+              "value": 4039.84
+            },
+            "FANG": {
+              "units": 25,
+              "avgCost": 160.24,
+              "lastClose": 141.27999877929688,
+              "value": 3532
+            },
+            "TMUS": {
+              "units": 13,
+              "avgCost": 265.95,
+              "lastClose": 267.8900146484375,
+              "value": 3482.57
+            },
+            "VRSK": {
+              "units": 10,
+              "avgCost": 296.82,
+              "lastClose": 305.0899963378906,
+              "value": 3050.9
+            },
+            "CCEP": {
+              "units": 34,
+              "avgCost": 86.86,
+              "lastClose": 89.81999969482422,
+              "value": 3053.88
+            },
+            "ROP": {
+              "units": 5,
+              "avgCost": 585.8,
+              "lastClose": 579.7000122070312,
+              "value": 2898.5
+            },
+            "WMT": {
+              "units": 28,
+              "avgCost": 88.2,
+              "lastClose": 87.26000213623047,
+              "value": 2443.28
+            },
+            "COST": {
+              "units": 2,
+              "avgCost": 950.84,
+              "lastClose": 967.0800170898438,
+              "value": 1934.16
+            },
+            "KDP": {
+              "units": 62.199747,
+              "avgCost": 35.37,
+              "lastClose": 35.630001068115234,
+              "value": 2216.18
+            },
+            "ROST": {
+              "units": 18.481479,
+              "avgCost": 129.86,
+              "lastClose": 131.2100067138672,
+              "value": 2424.95
+            }
+          },
+          "holdingsValue": 47607.84,
+          "netWorth": 49603.88
+        },
+        "fills": 14,
+        "rejectedOrders": 0,
+        "journalEntries": 3,
+        "eventRoot": "bfd4fa6d1a56a3955c36761420c8dc17b18f42fc62ef82a574b9dad154aeb166",
+        "commitRoot": "673aed43d2039496ed5f287e0d64b113475d57a793e897c98be9a4cb616288ff",
+        "attempts": 3,
+        "failures": 0,
+        "usageUnavailableAttempts": 0
+      },
+      "error": null
+    }
+  ],
+  "checks": {
+    "sourceRevision": "361051d4eda8ce784e3437171d41d20eb9086604",
+    "sourceClean": true,
+    "passed": [
+      "pnpm install --frozen-lockfile",
+      "pnpm typecheck",
+      "pnpm test: 382 passed, 0 failed",
+      "pnpm test:supervisor: 6 passed; Decimal ledger and editorial checks passed",
+      "exact K3 catalog qualification without inference",
+      "system-launcher sandbox-check including dynamic read denials",
+      "251-session annual dataset preflight (62/64/64/61)",
+      "git diff --check",
+      "systemd unit validation"
+    ],
+    "initialFailures": [
+      "Rootless Bubblewrap denied network namespace setup by host AppArmor; new explicit system launcher passed.",
+      "K3 quota pause was not allowlisted; route and retry-preservation test added.",
+      "OpenCode worker omitted dynamic forbidden-path read probes; corrected and actual isolation probe passed.",
+      "Initial suite: stale expected model list; corrected. Intermediate suite: detected source edits during execution; final unchanged-source suite passed."
+    ],
+    "liveInferenceBeforeSmoke": 0,
+    "diskSafeguards": {
+      "minFreeBytes": 2147483648,
+      "maxResultsBytes": 3221225472
+    }
+  },
+  "priorPiRun": "Separate RedmiBook cohort: last recorded 8 days; preserved, not resumed or included here.",
+  "audit": {
+    "path": "/home/ai/.bb/thread-storage/thr_dtnr7yc9jp/kimi-k3-20261005/audit/20261005T092909307642Z.tar.gz",
+    "sha256": "ad1b7171f003e1f52889ebe4912750291a0ff039c4801509e395301c20d23d3b",
+    "bytes": 118761240
+  }
+}
