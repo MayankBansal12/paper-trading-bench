@@ -1,0 +1,26 @@
+{
+  "recordedAt": "2026-10-05T10:24:31.194154+00:00",
+  "authorization": "User requested: can you pause this run for kimi k3",
+  "action": "Disabled and stopped paper-bench-kimi-k3-20261005.service",
+  "serviceState": "failed/inactive, MainPID=0; automatic startup disabled",
+  "supervisorStatePreserved": "blocked; execution had already stopped before this pause request",
+  "annualCoverage": {
+    "validDays": 10,
+    "invalidDays": 12,
+    "plannedSessions": 251
+  },
+  "smokeCoverage": {
+    "validDays": 3,
+    "invalidDays": 0
+  },
+  "failure": "Missing/failed sandbox client audit",
+  "lastSettledCheckpoint": "20261005T092909307642Z",
+  "audit": {
+    "path": "/home/ai/.bb/thread-storage/thr_dtnr7yc9jp/kimi-k3-20261005/audit/20261005T092909307642Z.tar.gz",
+    "sha256": "ad1b7171f003e1f52889ebe4912750291a0ff039c4801509e395301c20d23d3b",
+    "bytes": 118761240
+  },
+  "verification": "All five recorded study directories passed artifact replay; invalid days remain invalid. Confirmed no active Kimi sandbox units.",
+  "resumeConstraint": "No automatic restart; terminal stopped quarters remain stopped. Any future continuation requires an explicit request and the recorded protocol.",
+  "changesToRunArtifacts": false
+}

@@ -1,5 +1,7 @@
 # Kimi K3 through OpenCode Go
 
+User-requested pause: automatic startup is disabled and no Kimi worker is active. The run had already stopped after audit errors, with 10 valid and 12 invalid annual days. Saved artifacts are unchanged; see [pause record](user-pause.json).
+
 Snapshot: 20261005T092909307642Z. Supervisor phase: **annual**; status: **blocked**.
 OpenCode 1.18.30, exact `opencode-go/kimi-k3`, native default reasoning with no override. Source `361051d4eda8ce784e3437171d41d20eb9086604`; one independent quarter at a time. The full evaluation plans 251 sessions across four quarters. Incomplete coverage has no annual score.
 
