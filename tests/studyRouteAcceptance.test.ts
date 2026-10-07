@@ -69,6 +69,10 @@ for (const route of QUALIFIED_ROUTES) test(`${route.id}: completed decisions and
     const other = QUALIFIED_ROUTES.find(r => r.id !== route.id)!;
     expect(() => validateAccepted(structuredClone(attempt), s.view, false, [], horizon, other.id)).toThrow();
     expect(() => validateAccepted(structuredClone(attempt), s.view, false, [], horizon, "unknown/model")).toThrow("Unqualified");
+    const denied = structuredClone(attempt);
+    denied.decision.trace.push({ type: "gateway_denied", reason: "request-size", detail: { stage: "decompress" } });
+    expect(() => validateAccepted(denied, s.view, false, [], horizon, route.id))
+      .toThrow("Tool/gateway request rejected: request-size at decompress");
     for (const cost of [...[NaN, Infinity, -1], ...(priced ? [] : [0.01])]) {
       const changed = structuredClone(attempt);
       changed.decision.usage.costUsd = cost;

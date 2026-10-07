@@ -1,12 +1,12 @@
 {
   "version": 1,
-  "as_of": "2026-09-25",
-  "models": 10,
-  "accounted_days": 2510,
-  "valid_days": 2506,
-  "attempts": 2578,
-  "fills": 3191,
-  "quarters": 40,
+  "as_of": "2026-10-07",
+  "models": 12,
+  "accounted_days": 3012,
+  "valid_days": 3007,
+  "attempts": 3088,
+  "fills": 3512,
+  "quarters": 48,
   "dataset": "nasdaq100_2025q2-2026q1_v1",
   "dataset_sha256": "5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901",
   "funding_per_model": 600000,
@@ -460,13 +460,103 @@
       "records": 256,
       "bytes": 955642,
       "sha256": "5deef719cc06ce9a5ecdf57879bf3272ca2389ebe96853fae9632bcc898720ba"
+    },
+    {
+      "path": "sol-6-1/2025-Q2.jsonl",
+      "kind": "sessions",
+      "model": "Sol 6.1",
+      "quarter": "2025-Q2",
+      "records": 62,
+      "bytes": 1468938,
+      "sha256": "f17d0d8dbf7acfede6b449ae8782b5c1809dfdc8fe71695742ca38583794aa71"
+    },
+    {
+      "path": "sol-6-1/2025-Q3.jsonl",
+      "kind": "sessions",
+      "model": "Sol 6.1",
+      "quarter": "2025-Q3",
+      "records": 64,
+      "bytes": 1450025,
+      "sha256": "b8b28b3279c79d72db19c2663e7f1cced2dc5b86415110778cbee76d946c412a"
+    },
+    {
+      "path": "sol-6-1/2025-Q4.jsonl",
+      "kind": "sessions",
+      "model": "Sol 6.1",
+      "quarter": "2025-Q4",
+      "records": 64,
+      "bytes": 1411611,
+      "sha256": "6cbfb0d672c95ba2088b0a973ee49d91f1caa4d8f806e3e47713dbc850729fca"
+    },
+    {
+      "path": "sol-6-1/2026-Q1.jsonl",
+      "kind": "sessions",
+      "model": "Sol 6.1",
+      "quarter": "2026-Q1",
+      "records": 61,
+      "bytes": 1657949,
+      "sha256": "57b2eb319eac1da132a2b4b8a0562847c3ce6e831cddbb6f9b5c045b2b0ca3b7"
+    },
+    {
+      "path": "sol-6-1/attempts.jsonl",
+      "kind": "attempts",
+      "model": "Sol 6.1",
+      "quarter": null,
+      "records": 259,
+      "bytes": 2416327,
+      "sha256": "ae42c282763cb1d02d6d883792fd51d6e5953ad85120deab3ad979899a1f2440"
+    },
+    {
+      "path": "sonnet-5-5/2025-Q2.jsonl",
+      "kind": "sessions",
+      "model": "Sonnet 5.5",
+      "quarter": "2025-Q2",
+      "records": 62,
+      "bytes": 501508,
+      "sha256": "d2fce27c906635c42b4daacbda94550ecab138c5a6dc75560629f2ae41662321"
+    },
+    {
+      "path": "sonnet-5-5/2025-Q3.jsonl",
+      "kind": "sessions",
+      "model": "Sonnet 5.5",
+      "quarter": "2025-Q3",
+      "records": 64,
+      "bytes": 495899,
+      "sha256": "9370ed19ec2ca22c2cdb57400774617aa602f79e76d9cbea25e1ccb9603f5494"
+    },
+    {
+      "path": "sonnet-5-5/2025-Q4.jsonl",
+      "kind": "sessions",
+      "model": "Sonnet 5.5",
+      "quarter": "2025-Q4",
+      "records": 64,
+      "bytes": 465298,
+      "sha256": "d252ca4121d49e3b02573f0e9fdd33215d77c68186f27a4418f12e21884b41e5"
+    },
+    {
+      "path": "sonnet-5-5/2026-Q1.jsonl",
+      "kind": "sessions",
+      "model": "Sonnet 5.5",
+      "quarter": "2026-Q1",
+      "records": 61,
+      "bytes": 460786,
+      "sha256": "8e12a50d815b488d03d9791e46d71afa5fc36b78aecef6fd0903aa16be0fd374"
+    },
+    {
+      "path": "sonnet-5-5/attempts.jsonl",
+      "kind": "attempts",
+      "model": "Sonnet 5.5",
+      "quarter": null,
+      "records": 251,
+      "bytes": 1092641,
+      "sha256": "53f86f6d1b1df9ed77f4e358ebfcfde94d4a0151b01b06dc266f26f1897bcab7"
     }
   ],
-  "provenance_sha256": "66521951f68a874143977a46a68d42e263bc17b507e6c9a71cd63b4899757788",
+  "provenance_sha256": "b82b5f470e6eebaa7dbc04c32cfaa3900161c459722f2a6299028914691287db",
   "exceptions": [
     {
       "model": "Opus 5",
-      "note": "The newer Q2 repeat is selected after both outcomes were known, at the owner\u2019s request. Other quarters are unchanged. This is post-result selection, not evidence that the original was invalid.",
+      "note": "The newer Q2 repeat is selected after both outcomes were known, at the owner’s request. Other quarters are unchanged. This is post-result selection, not evidence that the original was invalid.",
       "selected_q2_profit": 22129.52,
       "original_q2_profit": 26577.59,
       "original_total_profit": 37030.65,
@@ -524,7 +614,35 @@
       "label": "luna6/inventory.json",
       "sha256": "49915c8e928d48135ca470b89dacb515bd6269488d792b7627a0ff6ed1e5de37",
       "bytes": 33475
+    },
+    {
+      "label": "redmibook-20261007/days.jsonl",
+      "sha256": "5c2e19e43e0e5384266e84040f5040b3abdfd7a3f3b2fdee877e18706d6798cd",
+      "bytes": 7970287
+    },
+    {
+      "label": "redmibook-20261007/attempts.jsonl",
+      "sha256": "4ef11a9232c01a5cc465f9b5261ce78b2c1f0b1c999cb079ab72b50810fc12b7",
+      "bytes": 3531635
+    },
+    {
+      "label": "redmibook-20261007/inventory.json",
+      "sha256": "913f4bcd380a26dfe6252d550fdc076ec5cde29805d5aeede12e190af20ac47c",
+      "bytes": 70975
+    },
+    {
+      "label": "redmibook-20261007/opening-context-proof.jsonl",
+      "sha256": "833698f7944d1927030fe5fe56468a596ed41a3b2da3abd6f8eabc05ed0b3445",
+      "bytes": 112452
     }
   ],
-  "format": "Compact derived extracts, not replacement original hash-chain events. Original hashes identify the archived evidence; file hashes verify these published bytes. Host paths normalized to archive-relative locations. Journals, orders, accounting and attempt outcomes retained."
+  "format": "Compact derived extracts, not replacement original hash-chain events. Original hashes identify the archived evidence; file hashes verify these published bytes. Host paths normalized to archive-relative locations. Journals, orders, accounting and attempt outcomes retained.",
+  "supporting_sha256": {
+    "memory-audit.json": "3bc01d31f215f6c11aa32981a468395b98c62f0ce3922fbaa85cd7d11d94bc0b",
+    "rule-review.json": "19a35cfb37e63718bfa4dd680db0ce2bbb20cb5345e562bbe87723e07bc279ba"
+  },
+  "import_verification": {
+    "path": "../qualifications/2026-10-models.json",
+    "sha256": "dfc245c5fc71fc7cd637f2f93e75a4cb417cc49409fa6686427e681e1a36c981"
+  }
 }

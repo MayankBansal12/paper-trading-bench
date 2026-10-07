@@ -9,7 +9,9 @@ months adds $50,000 each: $150,000 per quarter, $600,000 across four accounts.
 Portfolios and memory never carry between quarters.
 
 Every day starts a new client session. Its context contains the date, portfolio,
-eligible tickers, previous-close marks and three recent committed journals.
+eligible ticker names, previous-close marks for held stocks and up to three recent
+committed journals. Prices for unheld stocks require a tool query or a price
+previously recorded in a journal.
 The model has four tools:
 
 | Tool | Purpose |
@@ -19,8 +21,8 @@ The model has four tools:
 | `journal` | Search original committed notes |
 | `submit_day` | Submit ordered trades and a journal; empty orders mean HOLD |
 
-There is no browsing or news tool. Future prices are unavailable to the model.
-Decisions use information through the previous close. Orders execute in their
+There is no browsing or news tool. The tools expose no future prices.
+Supplied market data ends at the previous close. Orders execute in their
 submitted order at the next open; the day's close values the resulting portfolio.
 The engine handles dividends and splits. It does not force quarter-end liquidation.
 
@@ -31,10 +33,15 @@ fill. Submitted journals are stated explanations, not access to private reasonin
 ## Failures and memory
 
 An attempt has a 60-minute watchdog, with no fixed turn or tool-call limit.
+Each request has a size limit: 2 MiB for Pi/OpenCode and 4 MiB for Claude Code.
+A history-tool response can reach 512 KiB, so accumulated query output can hit
+the request limit before the watchdog. These limits differ by client.
 Recoverable tool errors can be corrected within the attempt. At most two attempts
 are allowed per day. After both fail, that day is invalid and holdings carry
 forward without new orders. Three consecutive invalid days stop the quarter.
 Failed attempts remain in the evidence and their journals are not preloaded.
+The stored outcome `harness_error` is broad: inspect its recorded reason and
+provider responses to distinguish quota, transport, client and audit failures.
 
 Quota-aware runs pause until the provider's reset plus five minutes. The shared
 supervisor checks login and storage before a new attempt; this does not refund
@@ -68,7 +75,18 @@ Continuations record their parent and boundary state. Supplemental recoveries ke
 original failures and disclose extra attempts; they do not turn the original into
 an uninterrupted run. The results manifest records selected quarters and exceptions.
 
+Tools exposed only past market data, but some journals introduced unsupported news
+and fundamental explanations. The experiment cannot rule out training-data
+familiarity or isolate its effect on decisions.
+
+The October additions keep the same dataset and trading protocol. Sol 6.1 uses
+Pi 0.87.0 with an updated official model catalog. Sonnet 5.5 uses Claude Code
+2.1.280, medium effort and a 32,000-token output cap; its gateway admits the
+client's plain date wrapper and replaces the host date with the simulated date.
+Those client/source differences remain part of the comparison. Exact historical
+sources and verification receipts are linked from the results documentation.
+
 These are observations from one market sample, with differing clients and source
 revisions. Supported securities do not prove historical index membership. Results
-do not isolate model weights, rule out training-data familiarity or establish a
-stable ranking. Rerunning a model can produce different decisions.
+do not isolate model weights or establish a stable ranking. Rerunning a model can
+produce different decisions.

@@ -94,15 +94,18 @@ export function validateAccepted(
     a.decision.rationale !== a.journalEntries[0]!.text
   )
     throw new Error("Final note mismatch");
-  if (
-    a.decision.trace.some(
-      (e) =>
-        e.type === "gateway_denied" ||
-        (e.type === "tool_attempt" &&
-          !(STUDY_TOOLS as readonly unknown[]).includes(e.name)),
-    )
-  )
-    throw new Error("Unauthorized tool/gateway request");
+  const rejected = a.decision.trace.filter(
+    (e) =>
+      e.type === "gateway_denied" ||
+      (e.type === "tool_attempt" &&
+        !(STUDY_TOOLS as readonly unknown[]).includes(e.name)),
+  );
+  if (rejected.length) {
+    const reasons = [...new Set(rejected.map((e: any) => e.type === "gateway_denied"
+      ? `${e.reason ?? "unspecified"}${e.detail?.stage ? " at " + e.detail.stage : ""}`
+      : "unauthorized-tool"))];
+    throw new Error("Tool/gateway request rejected: " + reasons.join(", "));
+  }
   if (a.decision.elapsedMs > view.limits.timeoutMs + 5000)
     throw new Error("Accepted decision exceeded budget");
   verifyToolEvidence(a, view, past);

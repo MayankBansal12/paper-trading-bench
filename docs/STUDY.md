@@ -1,91 +1,101 @@
-# Same tools. Different investment habits.
+# Same tools, different habits
 
-Ten models, four independent quarterly accounts each, April 2025–March 2026. Each quarter starts fresh.
+Twelve models each managed four separate quarterly accounts from April 2025 to March 2026: 251 trading days and $600,000 of total funding per model. Every day was a fresh session. We compare their recorded actions and explanations, not private reasoning.
 
-## What did an average session look like?
+<h2 id="latest-results">Updated October 7, 2026</h2>
 
-The usual routine was **inspect prices, then submit a decision**. The main difference was how widely a model looked before acting. Tool calls are not reasoning steps: one model response can request several tools, and every submission also counts as a call.
+**Sol 6.1 and Sonnet 5.5 are now included with complete session evidence.** Their profits were $13,746.63 and $25,482.34. All 48 quarterly accounts reconcile. Two additions change the story: Sol 6.1 joins Astra as a defensive model that gained in the final quarter; Sonnet 5.5 placed second without requesting market data or making a single sale.
 
-**Astra, Muse and Luna 6 started with price history on about nine out of ten valid days.** They typically queried a smaller set of stocks; median returned breadth was eight names for Astra and seven for Muse and Luna. Their sessions averaged 2.18, 2.41 and 2.80 calls respectively. This resembles checking a shortlist rather than rescreening the entire market.
+## What each session starts with
 
-**Sol 5.6, Sol 6 and DeepSeek usually started with a market snapshot.** Both Sols had a median returned breadth of 96 stocks. DeepSeek’s was 33, but it averaged the most calls—5.49 a day, including 726 price-history calls across its valid sessions. The Sols averaged 3.81 and 3.34 calls. For example, Sol 5.6 used **snapshot → history → submission** on September 30; DeepSeek used **snapshot → three history requests → submission** on September 10. These illustrate workflows, not measured sequence frequencies. Broader queries exposed more candidates; exposure does not prove influence.
+The opening context supplies cash, held stocks' units, average costs and previous closes, the 96 eligible stock names, and up to three recent journals. **It supplies no prices for unheld stocks and no news.** Older prices may appear in the model's own notes. `market_snapshot` returns previous closes; `price_history` returns daily bars; `journal` searches older notes. `submit_day` ends the day with orders and a journal.
 
-**Opus 5.5 was the exception:** 195 of 251 sessions called only `submit_day`. Its average was 1.26 calls. It often retained an already-invested, diversified core using the supplied context. No extra queries does not mean no supplied information or reasoning. Opus 5 usually opened with history; Sonnet and GLM mixed history and snapshots more evenly. They averaged 2.79, 2.25 and 2.97 calls respectively.
+At each quarter's first session, holdings and journals are empty. A model that submits buys before making a query has chosen its basket without supplied price data.
 
-## Did models revisit their journals?
+## A typical day
 
-**Extra journal retrieval was uncommon; journal access was not.** Up to three prior committed journals were supplied automatically. We can measure requests for more history, not whether a model mentally “read” or relied on every supplied entry.
+Three workflows dominated, with different versions sometimes behaving very differently.
 
-GLM explicitly requested journals on **20/250 valid days**, Sol 5.6 on **17/250**. DeepSeek and Muse did so on 12 days each; Sol 6 and Luna 6 on ten; Astra on seven; Opus 5.5 on three; Opus 5 on one. **Sonnet made no explicit journal calls.** That does not establish that Sonnet ignored its automatically supplied history.
+<!-- workflow-table -->
 
-Requests also differ from retrievals. Luna made ten requests in valid sessions, but only nine succeeded. Its eleventh request, counted across all attempts, belonged to the preserved failed attempt. Counting only the tool name would miss this distinction.
+- **Check a shortlist, then decide.** Astra used exactly History → Submit on 208/251 days, Muse on 185/250, Sol 6.1 on 162/250 and Sonnet 5 on 135/251. Opus 5 and Luna also usually started with history but more often made another request.
+- **Scan widely, then investigate.** Sol 5.6 and Sol 6 usually opened with all 96 previous closes, then requested history for a shortlist. That exact sequence occurred on 87 and 94 days. DeepSeek made more follow-ups: a median five calls per day, the most in the sample.
+- **Act from the supplied context.** Sonnet 5.5 made **253 calls across 251 sessions, all submissions**. Two were corrections within a session. It bought on 14 days and held on 237. Opus 5.5 made no research call on 195 days: 178 holds and 17 trades. GLM's 31 query-free days were all holds.
 
-## What did they say before buying, selling or holding?
+`price_history` was the favorite research tool for ten models. Opus 5.5 slightly favored snapshots; Sonnet 5.5 made no research calls. History depth also differed: Sol 5.6 requested at least 20 bars in 96% of its history requests, Luna in 84%, Sol 6.1 in 64%, Sonnet 5 in 9% and Opus 5 in 5%.
 
-The journals show **different conditions for acting**, rather than one shared strategy. These are submitted explanations written before execution—not access to private reasoning.
+**Turns measure interaction, not depth of thought.** A recorded model request can produce several tool calls. Valid-day averages range from Sonnet 5.5's 1.01 turns to DeepSeek's 3.52. More exchanges do not establish better research or decisions.
 
-- **Astra required confirmation and limited the bet in its May 8 NVDA entry.** After the prior close reached 117.06, above its 115 threshold, it bought a $4,000 starter. Its journal explained that one close was not sustained confirmation.
-- **Opus 5 revised a sell condition on April 9.** LIN had fallen 10.5% below its recorded cost, beyond its earlier 8% trim condition. It postponed the sale, saying it would not sell into the panic, and changed the trigger to a close below 408.65. These are separate episodes, not a same-date comparison.
-- **Sol 5.6 followed a price rule even on a profitable position.** On September 26, it exited MU after the prior close fell below 157; the sale still realized a $1,651 gain. Selling after weakness did not necessarily mean selling at a loss.
-- **Sonnet’s September 4 journal explained a $3,500 ISRG add as buying weakness.** Luna 6 also adjusted retained holdings: 133 adds and 54 trims, but only five full exits. Sol 5.6 made 108 sells, every one a full exit.
+## Did they revisit their journals?
 
-A HOLD label alone says very little about exposure. On April 10, **Astra held with roughly 90% cash; Opus 5 held with roughly 10% cash; Luna 6 bought $13,000.** They faced the same rebound with very different existing portfolios.
+**Rarely beyond the supplied notes.** GLM requested extra journals on 20/250 valid days and Sol 5.6 on 17/250. Every other model did so on twelve days or fewer; neither Sonnet did. Automatic preloading is directly checked for seven models and follows the recorded protocol for the other five. Availability does not prove use.
 
-## Which recognizable strategies emerged?
+Nine of twelve used the dedicated stock filter. Sol 5.6 made the most requests: **33 on 16 days**, compared with Sol 6.1's 15 on 11 and Astra's 9 on 7. DeepSeek searched stock symbols through keywords instead. Results were paginated with a 12,000-character note budget, so a request did not necessarily retrieve every entry. No accepted session asked for a later page.
 
-**The closest matches were momentum trading, breakout confirmation, selective dip buying and holding a core portfolio.** These labels describe observed behavior; they do not establish that a model implemented a formal strategy consistently.
+<!-- journal-table -->
 
-| Closest observed style | Models | What distinguished their approach |
+## What came before a trade?
+
+**Sonnet 5.5 shows that querying was optional.** On [January 2](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-sonnet55-start), it wrote “First session: no analysis done” and bought $10,000 each of Alphabet, Microsoft, Broadcom and Costco. Twelve of its fourteen buying days were quarter openings or monthly deposit days. On [March 2](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-sonnet55-deposit), it added $48,000 to existing holdings after receiving $50,000. Held-stock marks were available, but it never requested price history. This was a model-selected buy-and-hold approach, not a predefined passive benchmark.
+
+Opus 5.5 sometimes compared held marks with written price triggers: “MU closed 219 (>215 partial-profit rule)” ([October 27](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-opus55-rule)). It also opened AAPL and WMT positions [without querying either stock's price that day](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-opus55-wmt). These records show actions and stated explanations, not everything the model considered.
+
+**All eleven models with queried history bought more often after a sharp rise than a sharp fall, and sold more often after a sharp fall.** Sonnet 5.5 has no observations for this comparison. Sol 6.1 bought after 17/195 observed rises of at least 3%, versus 0/147 falls, and sold after 42/147 falls.
+
+<!-- price-table -->
+
+The unit is a *covered ticker-day*: one stock on a day with at least two returned bars. Change compares the last two closes. Purchases include additions; partial sales count. Models selected what to query, so the comparison is conditional, not a controlled test. Sparse queries cannot describe Opus 5.5's entire year. Sonnet 5 bought after sharp falls most often: 9/120 observations, still less often than after rises (38/118).
+
+## Stated rules and follow-through
+
+Astra and Sol 6.1 both bought $4,000 of NVDA on May 8 after observing a close of 117.06. [Astra](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-astra) cited clearance of 115; [Sol 6.1](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-sol61-entry) described a recovery breakout, sized it as a pilot and specified review levels. That is a concrete similarity, not proof of a shared decision process.
+
+Rules could also leave room for judgment. [Sol 5.6](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-sol) exited MU below its 157 threshold despite realizing a $1,651 gain. [Opus 5](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-opus) postponed a LIN trim and moved its trigger. [DeepSeek](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-deepseek) bought NVDA below its earlier 190 entry line. On [March 31](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-sol61-exit), Sol 6.1 exited MRVL after a breach of its review threshold rather than waiting for the lower exit threshold, citing a failed breakout.
+
+The retained 30 hand-picked cases from the original ten models contain 22 aligned actions, six discretionary changes and two execution mismatches. This is illustration, not a compliance rate. The new examples above are outside that sample.
+
+## Consistency depends on what we measure
+
+**Astra remains the only model profitable in all four quarters.** Its profits were $8,876, $2,058, $2,446 and $2,441. It had the lowest quarterly TWR variation, 56.5% average cash and the smallest worst-quarter drawdown, 3.75%.
+
+**Sol 6.1 was also defensive.** It averaged 46.7% cash; its largest issuer position reached 16.6% of equity, and its worst-quarter drawdown was 3.96%. Compared with Sol 6, full exits fell from 121 to 54 while trims rose from 6 to 53. Its smaller profit came with less invested exposure and smaller drawdowns in this sample; this does not isolate stock-selection skill.
+
+**The market period changed the ranking.** All twelve made money in Q2 and Q3 2025. Q4 had four profitable models; Q1 had just two: Astra and Sol 6.1. Summing Q2–Q3 versus Q4–Q1 profits, Opus 5 fell from first to eleventh (+$42,563 then −$9,980). Astra rose from twelfth to first (+$10,934 then +$4,886), and Sol 6.1 from eleventh to second. These are separate accounts, not a continuous portfolio.
+
+Some habits persisted: Sol 5.6 made only full exits, Astra held about 54–58% cash each quarter, and Sonnet 5.5 never sold. Others shifted: GLM's average cash rose from 13% and 8% in the first two quarters to 30% and 55% later. Different outcomes can reflect changing exposure, price conditions or decisions; one run cannot separate their causes.
+
+## Distinct approaches
+
+| Approach | Models | What the records show |
 |---|---|---|
-| **Momentum / relative-strength rotation** | Sol 5.6, Sol 6 | Compare stronger candidates and exit weakening positions. Sol 5.6 replaced whole positions; Sol 6 made more additions. Selling could also lead to [holding cash](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-sol6-style). |
-| **Breakout confirmation with cautious sizing** | Astra 6 | Wait for a price threshold, start small, and retain cash while conditions remain uncertain. Its [NVDA starter](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-astra) illustrates this. |
-| **Selective, concentrated entries** | Muse 1.3 | Wait, then make larger purchases when price, range and volume conditions qualify. Its [Alphabet addition](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-muse-style) concentrated the portfolio despite substantial cash. |
-| **Dip buying within a retained core** | Sonnet 5, GLM Flash | Add selectively to chosen holdings on weakness, while retaining exit rules. Sonnet's [ISRG add](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-sonnet) fits; GLM also used [renewed-strength conditions](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-glm-style). |
-| **Active sizing around core holdings** | Luna 6 | Keep core positions while adjusting their size: 133 additions and 54 trims, versus five full exits. |
-| **Staged dip buying with discretionary rules** | Opus 5 | Began Q2 with defensive stocks and about half in cash, then bought megacaps in stages. Its [April LIN decision](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-opus) delayed a planned trim; later basket-level rules could still prompt exits. |
-| **Buy-and-hold with selective risk reductions** | Opus 5.5 | Retain a broadly invested core—206 HOLD sessions—with occasional [trims and exits](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-opus55-style). |
-| **Active momentum rotation with flexible thresholds** | DeepSeek | Repeatedly investigate candidates, rotate and reenter; sometimes [relax a previously stated threshold](https://mayankbansal12.github.io/paper-trading-bench/study.html#case-deepseek). |
+| Scan broadly, replace positions | Sol 5.6, Sol 6 | Whole-universe close scans; Sol 5.6's 108 sales were all exits. Sol 6 added and re-entered more. |
+| Select strength, retain cash | Sol 6.1 | 47% average cash, 54 exits and 53 trims; history preceded every fill. |
+| Frequent rotation | DeepSeek | 197 trading days, 650 fills; bought on 70 of 129 selling days. |
+| Stay invested, stage purchases | Opus 5 | 14% average cash, 556 fills; bought on 63 of 112 selling days. |
+| Hold a core with written triggers | Opus 5.5 | 206 holds; occasional sales, with no same-day purchases. |
+| Resize a concentrated core | Luna 6 | 133 additions, 54 trims and five exits. |
+| Add to chosen holdings | Sonnet 5, GLM Flash | 184 and 108 additions, respectively. |
+| Buy mainly when funded, then hold | Sonnet 5.5 | 62 purchases, no sales or research calls; 237 holds. |
+| Confirm, start small, keep cash | Astra 6 | 57% average cash, stable across quarters; small threshold-based entries in the cited examples. |
+| Wait, then buy selectively | Muse 1.3 | 192 holds, 60% average cash and only eleven additions. |
 
-**Models blended these approaches.** The strongest evidence is for price-based decisions with discretionary judgment, rather than one fixed strategy throughout the run.
+These are observed habits, not permanent model personalities. Versions and client/source revisions differ.
 
-## How consistent were they over time?
+## Cash, concentration and activity are different risks
 
-**Some habits persisted; others changed substantially.** Sol 5.6 made no partial sells in any quarter. Astra’s quarterly cash averages stayed at about 54–58%. Those are stronger population-level observations than a few persuasive journal excerpts.
+**Cash does not guarantee diversification.** Muse kept the most average cash, yet its largest issuer reached 46.9% of the whole account. Astra's largest was 16.35%. The amount invested and how it is spread are separate choices.
 
-Sonnet’s quarterly average cash moved from 23%, to 15%, to 12%, then 45%. GLM went from 13% and 8% in the first two quarters to 30% and 55% later. Opus 5’s full exits increased from 14 in Q2 2025 to 65 in Q1 2026. The models’ activity changed with the period, but these observations cannot isolate whether that was deliberate adaptation, changing opportunities or inconsistent rules. 
+**Quiet trading does not mean low exposure.** Sonnet 5.5 kept 85.4% invested, traded only fourteen days and had the deepest quarterly drawdown, 12.05%. Opus 5.5 kept 86.7% invested with a Q1 drawdown of 11.51%. Meanwhile Opus 5 and DeepSeek both traded about 10% of equity daily but finished first and last. Turnover measures activity, not quality; with no simulated fees, it is not an incurred trading-cost penalty.
 
-The close review of 30 selected rule/action cases found **22 directionally aligned responses, six discretionary interpretations or changes, and two execution mismatches**. This is evidence of both follow-through and exceptions—not a compliance rate for all decisions. For example, DeepSeek bought NVDA on December 24 despite its observed close of 189.21 remaining below an earlier 190 entry threshold.
+## Profit: selling losers, keeping winners
 
-## Did they buy after falls or rises?
-
-A **ticker-day** is one stock on one session date. These comparisons cover only tool-returned histories with enough closes to measure the change; purchases include additions to existing holdings. Within that coverage, sharp one-day falls more often accompanied sales or no action than purchases. After falls of at least 3%, purchases were rare: **Astra 0/121, Sol 5.6 0/1,319, Sol 6 0/389, DeepSeek 0/552 and Muse 0/174**. Sonnet bought in 9 of 120 such ticker-days; Opus 5 in 4 of 242; Opus 5.5 in 2 of 35; GLM in 2 of 121; Luna in 1 of 138.
-
-The covered data also show purchases at recent highs. A **20-close high** is the highest close in the latest 20 returned sessions, including the last close. Astra bought in 31/96 such ticker-days; Sol 5.6 in 159/2,225 and Sol 6 in 136/990. **These fractions are not a fair aggressiveness ranking:** Sol 5.6 queried far more stocks, creating many more opportunities to do nothing. Opus 5.5 had only 21 covered high-price observations, so its 20 purchases there cannot describe its mostly query-free year.
-
-The defensible conclusion is narrower: **some covered purchases followed recent strength, while some models also bought selected weakness.** Tool receipts establish that a price was available, not that the model noticed it or acted because of it. Journal examples add stated reasons. Price-only data do not corroborate their occasional news or fundamental claims.
-
-## What else do tool calls reveal?
-
-**More calls can mean more investigation—or more friction.** DeepSeek had 141 tool errors within valid sessions; GLM had 153; Luna had 86. Astra had none. Recoverable tool errors, rejected trade orders and an entirely failed attempt are different events. They should not all be counted as investment decisions or HOLDs.
-
-For Luna, all HOLD sessions still had successful market receipts. Its tool errors therefore do not justify describing those HOLDs as decisions made without market data. Likewise, Opus 5.5’s submit-only days do not prove an outage: it submitted accepted decisions without additional tool queries.
-
-The activity leaderboard is not the performance leaderboard. DeepSeek made the most calls but earned less than the other nine models. Opus 5 earned the most with a moderate call count. This single run does not establish that more or fewer queries cause better returns.
-
-## Were profits made by selling winners or keeping them?
-
-**All ten finished with positive net profit, yet each had negative summed realized trading P&L.** Gains in positions still open at the ends of the four quarters, plus dividends, outweighed the realized trading losses.
-
-That is consistent with keeping some winners while selling weaker positions, but does not prove every loss was a sensible stop or that retaining those shares was optimal. Quarter-end holdings were marked to market, not forced to sell; a different liquidation convention would change the realized/unrealized split.
-
-**Nine of ten models had more loss-making sales than profitable sales.** Luna was the exception, but its 33 winning sales earned $3,514 while 26 losing sales lost $8,282. Sales include partial reductions, not just full exits. Opus 5’s sales realized a net loss of $13,244, while quarter-end open gains totaled $44,951 and dividends $875, producing its $32,583 net result (figures rounded). Sale proceeds themselves are not earnings.
-
-The comparison below uses actual executed cash and a weighted-average historical cost basis, adjusts for splits, and separates dividends. Both independent accounting calculations reconcile every quarter. Dollar outcomes sum four independent accounts, with $600,000 total funding per model.
+The objective was total account value, not realized profit alone.
 
 <!-- pnl-table -->
 | Model | Realized | Unrealized | Dividends | Net profit |
 |---|---:|---:|---:|---:|
 | Opus 5 | $-13,244 | $44,951 | $875 | $32,583 |
+| Sonnet 5.5 | $0 | $24,982 | $501 | $25,482 |
 | Sol 6 | $-12,684 | $37,084 | $930 | $25,329 |
 | Opus 5.5 | $-7,129 | $30,988 | $644 | $24,502 |
 | Luna 6 | $-4,768 | $28,957 | $227 | $24,416 |
@@ -93,12 +103,35 @@ The comparison below uses actual executed cash and a weighted-average historical
 | GLM 5.3 Flash | $-10,771 | $32,968 | $408 | $22,604 |
 | Astra 6 | $-886 | $16,501 | $206 | $15,820 |
 | Sonnet 5 | $-10,418 | $25,647 | $535 | $15,764 |
+| Sol 6.1 | $-5,441 | $18,769 | $419 | $13,747 |
 | Muse Spark 1.3 | $-4,474 | $17,524 | $67 | $13,118 |
 | DeepSeek 4.1 Flash | $-16,791 | $27,872 | $421 | $11,502 |
 <!-- /pnl-table -->
 
-## What this study supports
+**Eleven models had negative realized trading P&L but positive net profit.** Open gains and dividends outweighed losses realized on sales. Sonnet 5.5 is the exception: no sales meant **$0 realized**, with $24,982 open gains and $501 dividends.
 
-The clearest differences were **search breadth, willingness to deploy cash, whether models adjusted or replaced holdings, and the conditions they gave for acting**. Identical HOLD labels concealed different exposures and timing. We have evidence for these behaviors in this market sample—not permanent model personalities or a proven best strategy.
+Astra's **−$886 net realized P&L** was the smallest net realized loss: $7,803 of gains offset $8,689 of losses. Its losing trades did not cost just $886.
 
-Luna 6 replaces Luna 5.6; Terra is excluded. Query coverage and runtime differences limit comparisons. [The viewer](https://mayankbansal12.github.io/paper-trading-bench/) provides the per-model numbers; supporting sessions and methods are expandable below.
+<!-- sell-selection-table -->
+
+**All eleven sellers more readily sold holdings marked below cost.** On selling days, Sol 6.1 sold 71/185 losing position observations versus 36/522 gaining ones; Sol 5.6 sold 85/378 versus 23/766. These compare the previous close with opening average cost. Execution at the next open can change the sign, and selling while buying does not prove the proceeds funded the purchase.
+
+Ten of the eleven sellers had more losing sales than winning ones. Luna was the exception: 33 wins and 26 losses, mostly partial trims. Sol 5.6's 26 winning exits averaged about $816, versus $353 lost on its 82 losing exits. Models were not forced to sell at quarter-end: remaining holdings were valued instead. Liquidating at those marks would reclassify open gains as realized.
+
+## What this supports—and what it cannot
+
+- Versions differed in research, exposure and position management. Sol 6.1 was more defensive than Sol 6; Sonnet 5.5 eliminated research and selling compared with Sonnet 5.
+- More queries did not correspond to higher profit: query-free Sonnet 5.5 placed second, while the most active researcher, DeepSeek, finished last. That is not evidence that research is harmful.
+- Positive profit does not establish an advantage over passive investing. No predefined buy-and-hold comparison is included. Four quarters and one selected run per model do not establish a stable ranking.
+
+**Tools exposed only past market data, but some journals introduced unsupported news and fundamental explanations. The experiment cannot rule out training-data familiarity or isolate its effect on decisions.**
+
+Examples include [Opus 5's tariff reference](https://mayankbansal12.github.io/paper-trading-bench/index.html#sessions/opus-5/2025-04-03), [DeepSeek's earnings calendar](https://mayankbansal12.github.io/paper-trading-bench/index.html#sessions/deepseek-4-1-flash/2025-04-24), and [Sonnet 5's earnings explanations](https://mayankbansal12.github.io/paper-trading-bench/index.html#sessions/sonnet-5/2025-11-03). The tools supplied none of this news. These could be prior knowledge, inference or hallucination; they do not establish future-price knowledge or deliberate cheating.
+
+<details><summary>Selection and run details</summary>
+
+Opus 5's newer Q2 repeat was selected after both results were known; the original made $26,578 and the selected one $22,130. Opus 5.5 includes seven supplemental dates after three invalid original days, which remain preserved. Sonnet 5's final twenty dates used a recorded continuation. Luna 6 replaces Luna 5.6; Terra is excluded.
+
+All attempts and five selected invalid days remain, including Sol 6.1's December 17 non-submission. Recoverable tool errors are separate from invalid days. The October import rechecked event/day chains, actual journal context, exact accepted model/effort and archive checksums. The original replay/review outputs are retained; this import made no new inference or runtime replay. Clients, revisions and request-size limits differ; see [Methodology](METHODOLOGY.md).
+
+</details>

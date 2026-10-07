@@ -11,6 +11,7 @@ import { STUDY_TOOLS, POLICY } from "./protocol.ts";
 import { SessionTools } from "./tools.ts";
 import { QUALIFIED_ZEN_MODEL_ID, QUALIFIED_OPENCODE_CLIENT_VERSION } from "../opencode/qualification.ts";
 import { CODEX_RESPONSES_URL, type ProviderCredential } from "../opencode/credentials.ts";
+const MAX_REQUEST_BYTES = 2 * 1024 * 1024;
 export async function serveGateway(
   socket: string,
   tools: SessionTools,
@@ -34,8 +35,8 @@ export async function serveGateway(
     inferences = 0;
   const abort = new AbortController();
   const bindings: Array<{ callID: string; tool: string; args: unknown }> = [];
-  const deny = (reason: string, status = 403) => {
-    audit({ type: "gateway_denied", reason });
+  const deny = (reason: string, status = 403, detail?: Record<string, string>) => {
+    audit({ type: "gateway_denied", reason, ...(detail ? { detail } : {}) });
     return new Response("Request denied", { status });
   };
   // Bun 1.3.14 honors idleTimeout on Unix sockets but its types forbid the key.
@@ -44,7 +45,7 @@ export async function serveGateway(
   const socketOptions: { unix: string } = Object.assign({ unix: socket }, { idleTimeout: 0 });
   const server = Bun.serve({
     ...socketOptions,
-    maxRequestBodySize: 2 * 1024 * 1024,
+    maxRequestBodySize: MAX_REQUEST_BYTES,
     async fetch(req, server) {
       server.timeout(req, 0); // Host session deadline bounds slow inference on this Unix socket.
       if (closed || Date.now() >= deadline) return deny("expired");
@@ -61,15 +62,30 @@ export async function serveGateway(
         });
       }
       if (url.search || req.method !== "POST") return deny("method/path");
-      let raw: string;
+      const encoding = req.headers.get("content-encoding");
+      if (encoding && !(pi && encoding === "zstd")) return deny("unsupported-encoding");
+      let bytes: Buffer;
       try {
-        const encoding = req.headers.get("content-encoding");
-        if (encoding && !(pi && encoding === "zstd")) return deny("unsupported-encoding");
-        raw = encoding === "zstd"
-          ? zstdDecompressSync(Buffer.from(await req.arrayBuffer()), { maxOutputLength: 2 * 1024 * 1024 }).toString("utf8")
-          : await req.text();
-        if (Buffer.byteLength(raw) > 2 * 1024 * 1024) return deny("request-size", 413);
-      } catch { return deny("invalid-compressed-request", 400); }
+        bytes = Buffer.from(await req.arrayBuffer());
+      } catch (error) {
+        // Bun 1.3.14 uses this message for streamed bodies; covered by the gateway fixture.
+        const tooLarge = error instanceof Error && error.message === "Request body exceeded maxRequestBodySize";
+        return deny(tooLarge ? "request-size" : "request-body-read-failed", tooLarge ? 413 : 400,
+          { stage: "read", encoding: encoding ?? "identity" });
+      }
+      if (bytes.length > MAX_REQUEST_BYTES) return deny("request-size", 413, { stage: "read" });
+      if (encoding === "zstd") {
+        try {
+          bytes = zstdDecompressSync(bytes, { maxOutputLength: MAX_REQUEST_BYTES });
+        } catch (error) {
+          const tooLarge = (error as { code?: string })?.code === "ERR_BUFFER_TOO_LARGE";
+          return deny(tooLarge ? "request-size" : "invalid-compressed-request", tooLarge ? 413 : 400,
+            { stage: "decompress", encoding: "zstd" });
+        }
+      }
+      if (bytes.length > MAX_REQUEST_BYTES) return deny("request-size", 413, { stage: "decode" });
+      const raw = encoding === "zstd" ? bytes.toString("utf8") : new TextDecoder().decode(bytes);
+      if (Buffer.byteLength(raw) > MAX_REQUEST_BYTES) return deny("request-size", 413, { stage: "decode" });
       if (closed || Date.now() >= deadline) return deny("expired");
       let body: any;
       try {

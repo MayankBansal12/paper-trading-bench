@@ -33,7 +33,9 @@ client versions; catalog presence does not prove current entitlement.
 | Opus 5 | `claude-code/anthropic/claude-opus-5` | Claude Code 2.1.274 | — |
 | Opus 5.5 | `claude-code/anthropic/claude-opus-5-5` | Claude Code 2.1.280 | — |
 
-Pi and Claude use medium effort. OpenCode retains its recorded native defaults.
+Pi and Claude use medium effort, enforced by their gateways. Some historical
+provenance summaries omit the request-level reasoning field; an empty field does
+not establish that reasoning was disabled. OpenCode retains its recorded native defaults.
 Opus 5.5's newer client requests a larger output cap than Opus 5. These differences
 are part of the result provenance. Historical Pi/Go sandbox dependencies may differ;
 private Pi setups accept OpenCode 1.18.30 or 1.18.31 as an inert sandbox dependency,
@@ -98,6 +100,11 @@ with `WorkingDirectory` set to the pinned checkout, private runtime variables in
 `systemctl --user enable --now YOUR-UNIT`; enable user lingering if needed. Keep the
 machine awake. Host services and login setup are operational prerequisites, not
 part of the model's sandbox.
+
+A blocked state needs diagnosis before further inference. Gateway denials retain
+their reason (for example, request size versus invalid compression); they are not
+quota waits. A code or runtime correction requires a separately identified run.
+Use the recorded implementation to inspect the old evidence.
 
 Inspect raw runs with `pnpm viewer:raw --port 4174`. Verify an annual using the original
 source and flags, adding `--verify=true` to its `bench eval` command. Keep raw logs,

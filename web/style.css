@@ -268,7 +268,7 @@ td a {
 }
 .two-col {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 1.2rem;
 }
 .card {
@@ -407,6 +407,10 @@ pre code {
 .study .pnl th:first-child {
   text-align: left;
 }
+.study .workflow th:first-child,
+.study .workflow td:first-child {
+  white-space: nowrap;
+}
 .study blockquote {
   margin: 1rem 0;
   padding: 0.8rem 1.2rem;
@@ -473,7 +477,7 @@ footer {
     gap: 0.5rem;
   }
   .two-col {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 0;
   }
   th,
