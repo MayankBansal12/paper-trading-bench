@@ -1,5 +1,7 @@
 # Kimi K3 through OpenCode Go
 
+**Cancelled at the user’s request.** The supervisor and publication services are stopped and masked; all saved attempts and audit bundles remain unchanged. No further evaluation is scheduled. See the [cancellation record](user-cancel.json).
+
 User-requested pause: automatic startup is disabled and no Kimi worker is active. The run had already stopped after audit errors, with 10 valid and 12 invalid annual days. Saved artifacts are unchanged; see [pause record](user-pause.json).
 
 Snapshot: 20261005T092909307642Z. Supervisor phase: **annual**; status: **blocked**.

@@ -1,0 +1,31 @@
+{
+  "recordedAt": "2026-10-07T06:30:12.111911+00:00",
+  "authorization": "User requested: cancel the kimi run we're not doing it",
+  "status": "cancelled",
+  "action": "Stopped and masked the Kimi supervisor and publication services; archived their unit definitions. No automatic restart or further evaluation is scheduled.",
+  "checks": {
+    "activeSandboxUnits": [],
+    "sandboxUnitsChecked": 37,
+    "supervisorMainPID": 0,
+    "supervisorUnitFileState": "masked",
+    "publisherMainPID": 0,
+    "publisherUnitFileState": "masked",
+    "kimiTimers": 0
+  },
+  "annualCoverage": {
+    "validDays": 10,
+    "invalidDays": 12,
+    "plannedSessions": 251
+  },
+  "smokeCoverage": {
+    "validDays": 3,
+    "invalidDays": 0
+  },
+  "audit": {
+    "path": "/home/ai/.bb/thread-storage/thr_dtnr7yc9jp/kimi-k3-20261005/audit/20261005T092909307642Z.tar.gz",
+    "sha256": "ad1b7171f003e1f52889ebe4912750291a0ff039c4801509e395301c20d23d3b",
+    "bytes": 118761240
+  },
+  "historicalSupervisorState": "blocked after Missing/failed sandbox client audit; preserved unchanged",
+  "changesToRunArtifacts": false
+}
