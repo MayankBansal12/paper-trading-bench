@@ -6,7 +6,7 @@ How do language models invest when they have the same trading tools?
 **[Behavior study](https://mayankbansal12.github.io/paper-trading-bench/study.html)** ·
 [Methodology](docs/METHODOLOGY.md) · [Setup](docs/SETUP.md)
 
-Ten models, four independent quarterly accounts, April 2025–March 2026. Each model
+Twelve models, four independent quarterly accounts, April 2025–March 2026. Each model
 has 251 sessions and $600,000 in total funding. Every day starts a fresh agent
 session with its portfolio, held-position prices and up to three recent journals. Orders
 execute at the next open; holdings are valued at the close.
@@ -23,6 +23,10 @@ pnpm viewer                 # http://127.0.0.1:4173
 The viewer reads [compact evidence](results/README.md), including all selected
 sessions and failed attempts. Results are sorted by net profit. Raw provider logs,
 datasets and credentials stay outside Git.
+
+Sol 6.1 and Sonnet 5.5 are included with complete compact sessions, all attempts
+and reconciled quarterly accounts. [Import verification](results/qualifications/2026-10-models.json)
+records the source/runtime pins, smoke outcomes and original archive checksums.
 
 ## Run a model
 

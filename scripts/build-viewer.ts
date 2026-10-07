@@ -20,6 +20,14 @@ for (const [name, sha] of Object.entries({
   if (new Bun.CryptoHasher("sha256").update(bytes).digest("hex") !== sha)
     throw Error("Evidence checksum mismatch: " + name);
 }
+const imported = manifest.import_verification;
+if (manifest.files.some((f: any) => ["Sol 6.1", "Sonnet 5.5"].includes(f.model)) && !imported)
+  throw Error("Missing import verification for imported models");
+if (imported) {
+  const bytes = await readFile(join(src, imported.path));
+  if (new Bun.CryptoHasher("sha256").update(bytes).digest("hex") !== imported.sha256)
+    throw Error("Evidence checksum mismatch: import verification");
+}
 const slug = (s: string) =>
   s
     .toLowerCase()
@@ -44,6 +52,8 @@ const style: Record<string, string> = {
     "Defensive positioning with 56.5% average cash; the only model profitable in all four quarters in this sample.",
   "Sol 5.6":
     "Broad relative-strength screening and whole-position replacement.",
+  "Sol 6.1": "Selective strength entries, staged reductions and substantial cash reserves.",
+  "Sonnet 5.5": "Buys a large-cap core, mainly when funded; no research calls or sales.",
   "Sol 6":
     "Broad screening, more additions, and greater concentration in retained winners.",
   "Opus 5":
@@ -61,6 +71,7 @@ const style: Record<string, string> = {
 };
 await rm(out, { recursive: true, force: true });
 await mkdir(join(out, "data"), { recursive: true });
+if (imported) await cp(join(src, imported.path), join(out, "data/import-verification.json"));
 const days: any[] = [];
 for (const f of manifest.files) {
   const path = join(src, f.path),
@@ -93,6 +104,8 @@ const models = metrics.models
     if (valid.length !== m.valid_days) throw Error("Workflow coverage mismatch: " + m.model);
     const research = valid.map((d) => d.tool_calls.filter((t: any) => t.name !== "submit_day").length).sort((a, b) => a - b);
     const mid = Math.floor(research.length / 2);
+    const tickerJournalCounts = valid.map((d) => d.tool_calls.filter((t: any) =>
+      t.name === "journal" && typeof t.arguments?.ticker === "string" && t.arguments.ticker.trim()).length);
     const saleSelection = { loss_positions: 0, loss_sold: 0, gain_positions: 0, gain_sold: 0 };
     for (const d of valid) {
       const sold = new Set(d.fills.filter((f: any) => f.side === "SELL").map((f: any) => f.ticker));
@@ -133,6 +146,8 @@ const models = metrics.models
       worst_drawdown: Math.max(...qs.map((q: any) => q.max_drawdown_pct)),
       average_calls: m.calls_per_valid_day.mean,
       workflow_sequences: workflows,
+      ticker_journal_requests: tickerJournalCounts.reduce((s, n) => s + n, 0),
+      ticker_journal_days: tickerJournalCounts.filter((n) => n > 0).length,
       sale_selection: saleSelection,
       research_calls: {
         mean: research.reduce((s, n) => s + n, 0) / research.length,
@@ -216,20 +231,26 @@ const page = async (name: string, title: string, body: string) => {
 };
 const table = `<div class="table-wrap pnl"><table><thead><tr><th>Model</th><th>Realized</th><th>Unrealized</th><th>Dividends</th><th>Net profit</th></tr></thead><tbody>${models.map((m: any) => `<tr><td>${esc(m.model)}</td>${["realized", "unrealized", "dividend_income", "net_profit"].map((k) => `<td>${money(m[k])}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
 const toolLabel: Record<string, string> = { market_snapshot: "Snapshot", price_history: "History", journal: "Journal", submit_day: "Submit" };
-const workflowTable = `<div class="table-wrap workflow"><table><thead><tr><th>Model</th><th>Calls: mean / median</th><th>Most common sequence</th><th>Valid days using it</th><th>Extra journal days</th></tr></thead><tbody>${models.map((m: any) => {
+const workflowTable = `<div class="table-wrap workflow"><table><thead><tr><th>Model</th><th>Tool calls: mean / median</th><th>Model turns: mean / median</th><th>Most common sequence</th><th>Valid days using it</th><th>Extra journal days</th></tr></thead><tbody>${models.map((m: any) => {
   const w = m.workflow_sequences[0];
-  return `<tr><td><a href="index.html#sessions/${slug(m.model)}">${esc(m.model)}</a></td><td>${m.average_calls.toFixed(2)} / ${m.calls_per_valid_day.median}</td><td>${w.tools.map((t: string) => toolLabel[t] ?? esc(t)).join(" → ")}</td><td>${w.count} / ${m.valid_days}</td><td>${m.journal_days} / ${m.valid_days}</td></tr>`;
-}).join("")}</tbody></table></div><p class="note">Counts use valid sessions and include failed tool requests and submission corrections. “Most common” need not mean a majority. Sequence is recorded call order, not a count of reasoning steps. Models are ordered by net profit.</p>`;
+  return `<tr><td><a href="index.html#sessions/${slug(m.model)}">${esc(m.model)}</a></td><td>${m.average_calls.toFixed(2)} / ${m.calls_per_valid_day.median}</td><td>${m.model_turns_per_valid_day.mean.toFixed(2)} / ${m.model_turns_per_valid_day.median}</td><td>${w.tools.map((t: string) => toolLabel[t] ?? esc(t)).join(" → ")}</td><td>${w.count} / ${m.valid_days}</td><td>${m.journal_days} / ${m.valid_days}</td></tr>`;
+}).join("")}</tbody></table></div><p class="note">Counts use valid sessions and include failed tool requests and submission corrections. A model turn is a recorded inference request; one turn can request several tools. Neither count measures private reasoning. “Most common” need not mean a majority. Models are ordered by net profit.</p>`;
+const journalTable = `<details><summary>Stock-specific journal searches</summary><div class="table-wrap"><table><thead><tr><th>Model</th><th>Ticker-filter requests</th><th>Valid days using them</th></tr></thead><tbody>${models.map((m: any) => `<tr><td>${esc(m.model)}</td><td>${m.ticker_journal_requests}</td><td>${m.ticker_journal_days} / ${m.valid_days}</td></tr>`).join("")}</tbody></table></div><p>Counts require the dedicated ticker argument, including requests combined with keywords or dates. Keyword-only stock searches are outside this table. These are requests, not successful retrievals or proof that every matching entry was read.</p></details>`;
 const opportunities = await read("price-opportunities.json");
-const saleTable = `<details><summary>Which holdings did models choose to sell?</summary><div class="table-wrap"><table><thead><tr><th>Model</th><th>Losing holdings sold</th><th>Gaining holdings sold</th><th>Sell-days also buying</th></tr></thead><tbody>${models.map((m: any) => `<tr><td>${esc(m.model)}</td><td>${m.sale_selection.loss_sold} / ${m.sale_selection.loss_positions}</td><td>${m.sale_selection.gain_sold} / ${m.sale_selection.gain_positions}</td><td>${m.sell_and_buy_days} / ${m.sell_days}</td></tr>`).join("")}</tbody></table></div><p>Only valid days with at least one executed sale are included. Each held stock counts once per such day; any partial or full sale counts as sold. Loss/gain compares its previous-close mark with the account’s rounded average cost; equal marks are excluded. These are position–day counts, not unique stocks, invested dollars or realized sale profits. Execution at the next open can change the sign. Same-day buying does not prove where the purchase money came from.</p></details>`;
-const priceTable = `<details><summary>Buying and selling after sharp moves · all ten models</summary><div class="table-wrap"><table><thead><tr><th>Model</th><th>Buy after fall</th><th>Buy after rise</th><th>Sell after fall</th><th>Sell after rise</th></tr></thead><tbody>${models.map((m: any) => {
+const saleFraction = (n: number, d: number) => d ? `${n} / ${d}` : "—";
+const saleTable = `<details><summary>Which holdings did models choose to sell?</summary><div class="table-wrap"><table><thead><tr><th>Model</th><th>Losing holdings sold</th><th>Gaining holdings sold</th><th>Sell-days also buying</th></tr></thead><tbody>${models.map((m: any) => `<tr><td>${esc(m.model)}</td><td>${saleFraction(m.sale_selection.loss_sold, m.sale_selection.loss_positions)}</td><td>${saleFraction(m.sale_selection.gain_sold, m.sale_selection.gain_positions)}</td><td>${saleFraction(m.sell_and_buy_days, m.sell_days)}</td></tr>`).join("")}</tbody></table></div><p>Only valid days with at least one executed sale are included. Sonnet 5.5 never sold; its denominators are absent, not zero loss rates. Each held stock counts once per such day; any partial or full sale counts as sold. Loss/gain compares its previous-close mark with the account’s rounded average cost; equal marks are excluded. These are position–day counts, not unique stocks, invested dollars or realized sale profits. Execution at the next open can change the sign. Same-day buying does not prove where the purchase money came from.</p></details>`;
+const priceTable = `<details><summary>Buying and selling after sharp moves · ${models.length} models; queried history only</summary><div class="table-wrap"><table><thead><tr><th>Model</th><th>Buy after fall</th><th>Buy after rise</th><th>Sell after fall</th><th>Sell after rise</th></tr></thead><tbody>${models.map((m: any) => {
   const rows = opportunities.find((p: any) => p.model === m.model).rows;
   const down = rows.find((r: any) => r.condition === "down_at_least_3pct_1d");
   const up = rows.find((r: any) => r.condition === "up_at_least_3pct_1d");
-  const fraction = (r: any, side: string) => `${r.response[side] + r.response.BOTH} / ${r.queried_ticker_days}`;
+  const fraction = (r: any, side: string) => r ? `${r.response[side] + r.response.BOTH} / ${r.queried_ticker_days}` : "— no observations";
   return `<tr><td>${esc(m.model)}</td><td>${fraction(down, "BUY")}</td><td>${fraction(up, "BUY")}</td><td>${fraction(down, "SELL")}</td><td>${fraction(up, "SELL")}</td></tr>`;
-}).join("")}</tbody></table></div><p>Each fraction counts stock–date observations with an executed purchase or sale, out of queried stocks with a rise or fall of at least 3% between the last two returned closes. Additions and partial sells count; a stock bought and sold the same day appears on both sides. Unqueried stocks and missing history are outside this table. The model chose what to query, so this is a conditional comparison, not a controlled test of price sensitivity.</p></details>`;
+}).join("")}</tbody></table></div><p>Each fraction counts stock–date observations with an executed purchase or sale, out of queried stocks with a rise or fall of at least 3% between the last two returned closes. Additions and partial sells count; a stock bought and sold the same day appears on both sides. Unqueried stocks and missing history are outside this table. Sonnet 5.5 requested no history, so its price responses cannot be measured here. The model chose what to query, so this is a conditional comparison, not a controlled test of price sensitivity.</p></details>`;
 const pairs: [string, string, string][] = [
+  ["sol61-entry", "Sol 6.1", "2025-05-08"],
+  ["sol61-exit", "Sol 6.1", "2026-03-31"],
+  ["sonnet55-start", "Sonnet 5.5", "2026-01-02"],
+  ["sonnet55-deposit", "Sonnet 5.5", "2026-03-02"],
   ["astra", "Astra 6", "2025-05-08"],
   ["opus", "Opus 5", "2025-04-09"],
   ["sol", "Sol 5.6", "2025-09-26"],
@@ -263,6 +284,7 @@ await page(
     md
       .replace("](METHODOLOGY.md)", "](methodology.html)")
       .replace("<!-- workflow-table -->", workflowTable)
+      .replace("<!-- journal-table -->", journalTable)
       .replace("<!-- price-table -->", priceTable)
       .replace("<!-- sell-selection-table -->", saleTable)
       .replace(/<!-- pnl-table -->[\s\S]*?<!-- \/pnl-table -->/, table)
@@ -282,7 +304,7 @@ await page(
   "methodology",
   "Methodology",
   Bun.markdown.html(method) +
-    `<h2 id="selection">Selected runs</h2><p>Snapshot: September 25, 2026. Luna 6 replaces Luna 5.6; incomplete Terra and earlier failed cohorts are excluded from the leaderboard. Historical evidence is preserved separately.</p>${manifest.exceptions.map((x: any) => `<h3>${esc(x.model)}</h3><p>${esc(x.note)}</p>`).join("")}<p><a href="data/manifest.json">Compact evidence manifest</a> · <a href="data/provenance.json">Exact run identities</a> · <a href="https://github.com/MayankBansal12/paper-trading-bench/blob/main/docs/SETUP.md">Setup and replication</a></p>`,
+    `<h2 id="selection">Selected runs</h2><p>Snapshot: ${esc(manifest.as_of)}. Luna 6 replaces Luna 5.6; incomplete Terra and earlier failed cohorts are excluded from the leaderboard. Historical evidence is preserved separately.</p>${manifest.exceptions.map((x: any) => `<h3>${esc(x.model)}</h3><p>${esc(x.note)}</p>`).join("")}<p><a href="data/manifest.json">Compact evidence manifest</a> · <a href="data/provenance.json">Exact run identities</a> · <a href="data/import-verification.json">October import verification and smoke outcomes</a> · <a href="https://github.com/MayankBansal12/paper-trading-bench/blob/main/docs/SETUP.md">Setup and replication</a></p>`,
 );
 await writeFile(join(out, ".nojekyll"), "");
 console.log(`Built ${models.length} models / ${days.length} sessions in dist/`);

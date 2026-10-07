@@ -35,6 +35,28 @@ class EvidenceTests(unittest.TestCase):
                     f.write(' ')
                 self.check_rejection(root, 'Input checksum: ' + name)
 
+    def test_import_receipt_cannot_be_removed(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            out = self.fixture(root)
+            path = out / 'manifest.json'
+            manifest = json.loads(path.read_text())
+            del manifest['import_verification']
+            path.write_text(json.dumps(manifest))
+            self.check_rejection(root, 'Missing import verification for imported models')
+
+    def test_changed_import_or_source_bundle_is_rejected(self):
+        for target, error in [('qualifications/2026-10-models.json', 'import verification'),
+                              ('sources/pi-bench-sol61-source.bundle', 'source bundle')]:
+            with self.subTest(target=target), tempfile.TemporaryDirectory() as tmp:
+                root = Path(tmp)
+                self.fixture(root)
+                for folder in ['qualifications', 'sources']:
+                    shutil.copytree(ROOT / 'results' / folder, root / 'results' / folder)
+                with (root / 'results' / target).open('ab') as f:
+                    f.write(b' ')
+                self.check_rejection(root, 'Input checksum: ' + error)
+
     def test_rule_totals_are_recomputed_even_when_bytes_match_manifest(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

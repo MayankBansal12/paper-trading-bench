@@ -58,3 +58,18 @@ for case in rules['cases']:
  assert case['exact_prior_quote'] in a['journal']['text']
  assert a['day_hash']==case['prior_day_hash'] and b['day_hash']==case['response_day_hash']
 print(f"All {len(rules['cases'])} editorial rule cases match their source journals")
+
+# Full recorded opening contexts are present for both October imports. Recheck
+# the actual notes, including failed attempts, rather than merely their counts.
+context_checks=0
+for model in ['Sol 6.1','Sonnet 5.5']:
+ files=[f for f in manifest['files'] if f['model']==model and f['kind']=='attempts']
+ attempts=[a for f in files for a in jl(O/f['path'])]
+ for a in attempts:
+  prior=sorted([d for d in days if d['model']==model and d['quarter']==a['quarter'] and d['date']<a['date'] and d['status']=='completed'],key=lambda d:d['date'])
+  ctx=a['opening_journal_context']
+  assert ctx['recent_journals']==[d['journal'] for d in prior[-3:][::-1]]
+  assert ctx['committed_journal_entries']==len(prior)
+  context_checks+=1
+assert context_checks==510
+print(f'{context_checks} imported opening contexts match prior committed journals')

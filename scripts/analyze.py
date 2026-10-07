@@ -15,6 +15,15 @@ for name in ['memory-audit.json','rule-review.json']:
 rules=json.loads((O/'rule-review.json').read_text())
 assert len(rules['cases'])==30, 'Rule review must retain all 30 selected cases'
 assert dict(Counter(c['assessment'] for c in rules['cases']))==rules['counts'], 'Rule review counts disagree with cases'
+receipt=MANIFEST.get('import_verification')
+if any(f['model'] in ('Sol 6.1','Sonnet 5.5') for f in MANIFEST['files']):
+ assert receipt, 'Missing import verification for imported models'
+if receipt:
+ import_path=O/receipt['path']
+ assert hashlib.sha256(import_path.read_bytes()).hexdigest()==receipt['sha256'], 'Input checksum: import verification'
+ for m in json.loads(import_path.read_text())['models']:
+  source=m['source']; bundle=ROOT/'results'/source['bundle']
+  assert hashlib.sha256(bundle.read_bytes()).hexdigest()==source['sha256'], 'Input checksum: source bundle'
 CHECK='--check' in sys.argv
 def jl(p):return [json.loads(l) for l in p.open()]
 def dump(n,x):

@@ -79,6 +79,13 @@ Tools exposed only past market data, but some journals introduced unsupported ne
 and fundamental explanations. The experiment cannot rule out training-data
 familiarity or isolate its effect on decisions.
 
+The October additions keep the same dataset and trading protocol. Sol 6.1 uses
+Pi 0.87.0 with an updated official model catalog. Sonnet 5.5 uses Claude Code
+2.1.280, medium effort and a 32,000-token output cap; its gateway admits the
+client's plain date wrapper and replaces the host date with the simulated date.
+Those client/source differences remain part of the comparison. Exact historical
+sources and verification receipts are linked from the results documentation.
+
 These are observations from one market sample, with differing clients and source
 revisions. Supported securities do not prove historical index membership. Results
 do not isolate model weights or establish a stable ranking. Rerunning a model can

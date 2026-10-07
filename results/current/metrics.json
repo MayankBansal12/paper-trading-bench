@@ -1141,6 +1141,136 @@
       "strategy_quarter_coverage": 4
     },
     {
+      "model": "Sol 6.1",
+      "valid_days": 250,
+      "attempts": 259,
+      "uncommitted_attempts": 9,
+      "retried_dates": 8,
+      "journal_calls_valid": 15,
+      "journal_days": 11,
+      "journal_calls_per_valid_day": 0.06,
+      "journal_calls_all_attempts": 16,
+      "journal_attempts": 12,
+      "journal_calls_per_attempt": 0.06177606177606178,
+      "calls_valid": {
+        "market_snapshot": 63,
+        "price_history": 281,
+        "submit_day": 250,
+        "journal": 15
+      },
+      "calls_all_attempts": {
+        "market_snapshot": 70,
+        "price_history": 295,
+        "submit_day": 250,
+        "journal": 16
+      },
+      "calls_per_valid_day": {
+        "n": 250,
+        "mean": 2.436,
+        "median": 2.0,
+        "p90": 3,
+        "max": 8
+      },
+      "calls_per_attempt": {
+        "n": 259,
+        "mean": 2.436293436293436,
+        "median": 2,
+        "p90": 3,
+        "max": 8
+      },
+      "model_turns_per_valid_day": {
+        "n": 250,
+        "mean": 2.384,
+        "median": 2.0,
+        "p90": 3,
+        "max": 4
+      },
+      "inference_requests_per_attempt": {
+        "n": 259,
+        "mean": 2.4015444015444016,
+        "median": 2,
+        "p90": 3,
+        "max": 4
+      },
+      "first_tool": {
+        "market_snapshot": 50,
+        "price_history": 200
+      },
+      "only_submit_days": 0,
+      "valid_tool_errors": 2,
+      "all_attempt_tool_errors": 2,
+      "execution_rejections": 0,
+      "duplicate_query_calls": 0,
+      "duplicate_query_days": 0,
+      "received_query_breadth": {
+        "n": 250,
+        "mean": 31.24,
+        "median": 10.0,
+        "p90": 96,
+        "max": 96
+      },
+      "lookback_arguments": {
+        "65": 3,
+        "25": 19,
+        "21": 2,
+        "22": 3,
+        "20": 14,
+        "10": 23,
+        "60": 18,
+        "15": 38,
+        "12": 18,
+        "30": 5,
+        "6": 2,
+        "40": 1,
+        "35": 1,
+        "5": 17,
+        "55": 47,
+        "50": 58,
+        "3": 3,
+        "51": 8,
+        "8": 1
+      },
+      "favorites": [
+        {
+          "issuer": "NVDA",
+          "weight": 4.768016602793418,
+          "held_days": 141
+        },
+        {
+          "issuer": "Alphabet",
+          "weight": 4.734088377902561,
+          "held_days": 130
+        },
+        {
+          "issuer": "MSFT",
+          "weight": 4.567700938650157,
+          "held_days": 107
+        },
+        {
+          "issuer": "WMT",
+          "weight": 3.3045222433144974,
+          "held_days": 142
+        },
+        {
+          "issuer": "META",
+          "weight": 2.994006201244631,
+          "held_days": 103
+        }
+      ],
+      "mean_cash_pct": 46.73671556525768,
+      "max_issuer_pct": 16.574344903003826,
+      "mean_hhi": 0.16079393245637513,
+      "gross_turnover": 4.085285049016294,
+      "traded_days": 153,
+      "hold_days": 97,
+      "fills": 259,
+      "attempt_outcomes": {
+        "completed": 250,
+        "harness_error": 9
+      },
+      "strategy_quarter_coverage": 4
+    },
+    {
       "model": "Sonnet 5",
       "valid_days": 251,
       "attempts": 256,
@@ -1259,6 +1389,108 @@
         "completed": 251,
         "interrupted": 1,
         "harness_error": 4
+      },
+      "strategy_quarter_coverage": 4
+    },
+    {
+      "model": "Sonnet 5.5",
+      "valid_days": 251,
+      "attempts": 251,
+      "uncommitted_attempts": 0,
+      "retried_dates": 0,
+      "journal_calls_valid": 0,
+      "journal_days": 0,
+      "journal_calls_per_valid_day": 0.0,
+      "journal_calls_all_attempts": 0,
+      "journal_attempts": 0,
+      "journal_calls_per_attempt": 0.0,
+      "calls_valid": {
+        "submit_day": 253
+      },
+      "calls_all_attempts": {
+        "submit_day": 253
+      },
+      "calls_per_valid_day": {
+        "n": 251,
+        "mean": 1.0079681274900398,
+        "median": 1,
+        "p90": 1,
+        "max": 2
+      },
+      "calls_per_attempt": {
+        "n": 251,
+        "mean": 1.0079681274900398,
+        "median": 1,
+        "p90": 1,
+        "max": 2
+      },
+      "model_turns_per_valid_day": {
+        "n": 251,
+        "mean": 1.0079681274900398,
+        "median": 1,
+        "p90": 1,
+        "max": 2
+      },
+      "inference_requests_per_attempt": {
+        "n": 251,
+        "mean": 1.0079681274900398,
+        "median": 1,
+        "p90": 1,
+        "max": 2
+      },
+      "first_tool": {
+        "submit_day": 251
+      },
+      "only_submit_days": 249,
+      "valid_tool_errors": 2,
+      "all_attempt_tool_errors": 2,
+      "execution_rejections": 0,
+      "duplicate_query_calls": 0,
+      "duplicate_query_days": 0,
+      "received_query_breadth": {
+        "n": 251,
+        "mean": 0,
+        "median": 0,
+        "p90": 0,
+        "max": 0
+      },
+      "lookback_arguments": {},
+      "favorites": [
+        {
+          "issuer": "MSFT",
+          "weight": 14.576977042276889,
+          "held_days": 251
+        },
+        {
+          "issuer": "AVGO",
+          "weight": 12.572809903641353,
+          "held_days": 230
+        },
+        {
+          "issuer": "Alphabet",
+          "weight": 11.991613544142952,
+          "held_days": 208
+        },
+        {
+          "issuer": "NVDA",
+          "weight": 11.663647552858885,
+          "held_days": 228
+        },
+        {
+          "issuer": "COST",
+          "weight": 9.697137581629702,
+          "held_days": 251
+        }
+      ],
+      "mean_cash_pct": 14.61594952285061,
+      "max_issuer_pct": 24.822991753353058,
+      "mean_hhi": 0.15861789866775153,
+      "gross_turnover": 2.493968071663486,
+      "traded_days": 14,
+      "hold_days": 237,
+      "fills": 62,
+      "attempt_outcomes": {
+        "completed": 251
       },
       "strategy_quarter_coverage": 4
     }
@@ -7550,6 +7782,642 @@
       }
     },
     {
+      "model": "Sol 6.1",
+      "quarter": "2025-Q2",
+      "days": 62,
+      "valid": 62,
+      "counts": {
+        "initial": 6,
+        "traded": 49,
+        "explicit_hold": 13,
+        "exit": 9,
+        "later": 13,
+        "add": 34,
+        "trim": 18
+      },
+      "mean_cash_pct": 55.23992579987045,
+      "mean_hhi": 0.21460136935059088,
+      "max_issuer_pct": 11.959279815246926,
+      "max_drawdown_pct": 3.708581042384307,
+      "daily_volatility_pct": 0.5487097434075184,
+      "twr_pct": 6.53627010926765,
+      "realized": -1502.3342245030974,
+      "realized_positive": 717.143754042494,
+      "realized_negative": -2219.477978545591,
+      "unrealized": 10577.374224503097,
+      "dividend_income": 67.07000000000001,
+      "unexplained_cash_effect": -2.546585164964199e-11,
+      "net_profit": 9142.109999999986,
+      "pnl_residual": 1.2434497875801753e-11,
+      "sell_proceeds": 73916.96,
+      "sale_cost_allocated": 75419.2942245031,
+      "winning_sales": 8,
+      "losing_sales": 19,
+      "flat_sales": 0,
+      "median_fill_pct": 1.9787790463236035,
+      "gross_turnover_pct": 4.400500203409452,
+      "favorites": [
+        {
+          "issuer": "WMT",
+          "mean_weight": 6.960905100202861,
+          "held_days": 54
+        },
+        {
+          "issuer": "MSFT",
+          "mean_weight": 6.2829083219193755,
+          "held_days": 40
+        },
+        {
+          "issuer": "NFLX",
+          "mean_weight": 5.420214217396494,
+          "held_days": 49
+        },
+        {
+          "issuer": "NVDA",
+          "mean_weight": 4.1287856637015645,
+          "held_days": 36
+        },
+        {
+          "issuer": "AXON",
+          "mean_weight": 3.7061964007971158,
+          "held_days": 44
+        }
+      ],
+      "corporate_income_events": [
+        {
+          "date": "2025-04-04",
+          "ticker": "ROP",
+          "type": "dividend",
+          "units": 5.12121,
+          "per_share": 0.825,
+          "cash": 4.22
+        },
+        {
+          "date": "2025-05-09",
+          "ticker": "WMT",
+          "type": "dividend",
+          "units": 95.647034,
+          "per_share": 0.235,
+          "cash": 22.48
+        },
+        {
+          "date": "2025-05-15",
+          "ticker": "MSFT",
+          "type": "dividend",
+          "units": 22.865726,
+          "per_share": 0.83,
+          "cash": 18.98
+        },
+        {
+          "date": "2025-06-06",
+          "ticker": "BKNG",
+          "type": "dividend",
+          "units": 1.515491,
+          "per_share": 9.6,
+          "cash": 14.55
+        },
+        {
+          "date": "2025-06-11",
+          "ticker": "NVDA",
+          "type": "dividend",
+          "units": 84.005941,
+          "per_share": 0.01,
+          "cash": 0.84
+        },
+        {
+          "date": "2025-06-16",
+          "ticker": "META",
+          "type": "dividend",
+          "units": 11.421258,
+          "per_share": 0.525,
+          "cash": 6.0
+        }
+      ],
+      "ending_cost_basis": {
+        "WMT": {
+          "units": 72.045683,
+          "cost": 6939.338980905575
+        },
+        "NFLX": {
+          "units": 9.81464,
+          "cost": 11274.179249796656
+        },
+        "AXON": {
+          "units": 14.832995,
+          "cost": 10729.032062014916
+        },
+        "CRWD": {
+          "units": 13.926782,
+          "cost": 6781.914769897647
+        },
+        "MSFT": {
+          "units": 37.89372,
+          "cost": 17000
+        },
+        "BKNG": {
+          "units": 1.131446,
+          "cost": 6040.887078841115
+        },
+        "META": {
+          "units": 15.600452,
+          "cost": 10260.232775720615
+        },
+        "NVDA": {
+          "units": 110.803071,
+          "cost": 15000
+        },
+        "AMZN": {
+          "units": 27.519211,
+          "cost": 6008.438479675428
+        },
+        "AMD": {
+          "units": 36.221253,
+          "cost": 4546.682378644951
+        }
+      }
+    },
+    {
+      "model": "Sol 6.1",
+      "quarter": "2025-Q3",
+      "days": 64,
+      "valid": 64,
+      "counts": {
+        "initial": 9,
+        "traded": 31,
+        "explicit_hold": 33,
+        "exit": 14,
+        "later": 9,
+        "add": 11,
+        "trim": 6,
+        "reentry": 2
+      },
+      "mean_cash_pct": 38.732221195308334,
+      "mean_hhi": 0.13884495192144597,
+      "max_issuer_pct": 16.574344903003826,
+      "max_drawdown_pct": 2.7824504436063546,
+      "daily_volatility_pct": 0.6898356042020213,
+      "twr_pct": 4.172984250605882,
+      "realized": -325.6870509767864,
+      "realized_positive": 2454.2128580382887,
+      "realized_negative": -2779.899909015075,
+      "unrealized": 3417.897050976786,
+      "dividend_income": 140.38,
+      "unexplained_cash_effect": -6.366462912410498e-12,
+      "net_profit": 3232.5899999999965,
+      "pnl_residual": 3.296918293926865e-12,
+      "sell_proceeds": 87594.5,
+      "sale_cost_allocated": 87920.18705097679,
+      "winning_sales": 6,
+      "losing_sales": 14,
+      "flat_sales": 0,
+      "median_fill_pct": 3.86291648153126,
+      "gross_turnover_pct": 3.861957504117005,
+      "favorites": [
+        {
+          "issuer": "META",
+          "mean_weight": 8.674686271115974,
+          "held_days": 64
+        },
+        {
+          "issuer": "AVGO",
+          "mean_weight": 7.94408789820631,
+          "held_days": 63
+        },
+        {
+          "issuer": "MSFT",
+          "mean_weight": 7.938875223319511,
+          "held_days": 40
+        },
+        {
+          "issuer": "NVDA",
+          "mean_weight": 7.235191783473107,
+          "held_days": 54
+        },
+        {
+          "issuer": "ORLY",
+          "mean_weight": 4.55959007808721,
+          "held_days": 46
+        }
+      ],
+      "corporate_income_events": [
+        {
+          "date": "2025-07-03",
+          "ticker": "CSCO",
+          "type": "dividend",
+          "units": 57.653576,
+          "per_share": 0.41,
+          "cash": 23.64
+        },
+        {
+          "date": "2025-08-08",
+          "ticker": "AEP",
+          "type": "dividend",
+          "units": 52.580886,
+          "per_share": 0.93,
+          "cash": 48.9
+        },
+        {
+          "date": "2025-08-15",
+          "ticker": "WMT",
+          "type": "dividend",
+          "units": 59.571972,
+          "per_share": 0.235,
+          "cash": 14.0
+        },
+        {
+          "date": "2025-08-18",
+          "ticker": "CEG",
+          "type": "dividend",
+          "units": 12.471759,
+          "per_share": 0.388,
+          "cash": 4.84
+        },
+        {
+          "date": "2025-08-21",
+          "ticker": "MSFT",
+          "type": "dividend",
+          "units": 16.113773,
+          "per_share": 0.83,
+          "cash": 13.37
+        },
+        {
+          "date": "2025-09-08",
+          "ticker": "GOOGL",
+          "type": "dividend",
+          "units": 60.563254,
+          "per_share": 0.21,
+          "cash": 12.72
+        },
+        {
+          "date": "2025-09-22",
+          "ticker": "AVGO",
+          "type": "dividend",
+          "units": 28.088391,
+          "per_share": 0.59,
+          "cash": 16.57
+        },
+        {
+          "date": "2025-09-22",
+          "ticker": "META",
+          "type": "dividend",
+          "units": 12.075588,
+          "per_share": 0.525,
+          "cash": 6.34
+        }
+      ],
+      "ending_cost_basis": {
+        "META": {
+          "units": 6.037794,
+          "cost": 4500.0
+        },
+        "ORLY": {
+          "units": 117.356511,
+          "cost": 12114.511720664706
+        },
+        "ALNY": {
+          "units": 8.571442,
+          "cost": 3465.3011373735817
+        },
+        "GOOGL": {
+          "units": 60.563254,
+          "cost": 12500
+        },
+        "AAPL": {
+          "units": 32.219109,
+          "cost": 8000
+        },
+        "NVDA": {
+          "units": 16.486248,
+          "cost": 3000.000090984926
+        }
+      }
+    },
+    {
+      "model": "Sol 6.1",
+      "quarter": "2025-Q4",
+      "days": 64,
+      "valid": 63,
+      "counts": {
+        "initial": 10,
+        "traded": 34,
+        "explicit_hold": 29,
+        "exit": 14,
+        "add": 10,
+        "later": 11,
+        "trim": 3,
+        "invalid": 1,
+        "reentry": 2
+      },
+      "mean_cash_pct": 49.77174724055798,
+      "mean_hhi": 0.16581249970174733,
+      "max_issuer_pct": 14.239101635366547,
+      "max_drawdown_pct": 3.1803906518688363,
+      "daily_volatility_pct": 0.6566157194046337,
+      "twr_pct": 2.158040139127282,
+      "realized": -3042.955880677501,
+      "realized_positive": 1006.6941193224989,
+      "realized_negative": -4049.65,
+      "unrealized": 2165.8158806775,
+      "dividend_income": 74.17999999999999,
+      "unexplained_cash_effect": -2.9103830456733704e-11,
+      "net_profit": -802.9599999999919,
+      "pnl_residual": 3.849720542348223e-11,
+      "sell_proceeds": 72551.7,
+      "sale_cost_allocated": 75594.6558806775,
+      "winning_sales": 4,
+      "losing_sales": 13,
+      "flat_sales": 0,
+      "median_fill_pct": 4.006633496716656,
+      "gross_turnover_pct": 3.821319485059278,
+      "favorites": [
+        {
+          "issuer": "AAPL",
+          "mean_weight": 10.01880235422512,
+          "held_days": 64
+        },
+        {
+          "issuer": "Alphabet",
+          "mean_weight": 9.009302834395456,
+          "held_days": 64
+        },
+        {
+          "issuer": "NVDA",
+          "mean_weight": 5.653243972272976,
+          "held_days": 38
+        },
+        {
+          "issuer": "MU",
+          "mean_weight": 3.9467704884887183,
+          "held_days": 44
+        },
+        {
+          "issuer": "MSFT",
+          "mean_weight": 3.8885094585896725,
+          "held_days": 27
+        }
+      ],
+      "corporate_income_events": [
+        {
+          "date": "2025-10-03",
+          "ticker": "MU",
+          "type": "dividend",
+          "units": 18.115971,
+          "per_share": 0.115,
+          "cash": 2.08
+        },
+        {
+          "date": "2025-11-10",
+          "ticker": "AAPL",
+          "type": "dividend",
+          "units": 27.344298,
+          "per_share": 0.26,
+          "cash": 7.11
+        },
+        {
+          "date": "2025-12-08",
+          "ticker": "GOOGL",
+          "type": "dividend",
+          "units": 38.85431,
+          "per_share": 0.21,
+          "cash": 8.16
+        },
+        {
+          "date": "2025-12-12",
+          "ticker": "WMT",
+          "type": "dividend",
+          "units": 72.391682,
+          "per_share": 0.235,
+          "cash": 17.01
+        },
+        {
+          "date": "2025-12-15",
+          "ticker": "GILD",
+          "type": "dividend",
+          "units": 47.259018,
+          "per_share": 0.79,
+          "cash": 37.33
+        },
+        {
+          "date": "2025-12-29",
+          "ticker": "MU",
+          "type": "dividend",
+          "units": 21.648945,
+          "per_share": 0.115,
+          "cash": 2.49
+        }
+      ],
+      "ending_cost_basis": {
+        "AAPL": {
+          "units": 45.50832,
+          "cost": 12129.666014349084
+        },
+        "GOOGL": {
+          "units": 38.85431,
+          "cost": 10775.678104973415
+        },
+        "MNST": {
+          "units": 161.722629,
+          "cost": 12000
+        },
+        "WMT": {
+          "units": 72.391682,
+          "cost": 8000
+        },
+        "MAR": {
+          "units": 19.768072,
+          "cost": 6000
+        },
+        "CSCO": {
+          "units": 76.151858,
+          "cost": 6000
+        },
+        "ROST": {
+          "units": 32.943528,
+          "cost": 6000
+        },
+        "MU": {
+          "units": 21.648945,
+          "cost": 6000
+        },
+        "NVDA": {
+          "units": 31.964225,
+          "cost": 6000
+        }
+      }
+    },
+    {
+      "model": "Sol 6.1",
+      "quarter": "2026-Q1",
+      "days": 61,
+      "valid": 61,
+      "counts": {
+        "initial": 8,
+        "traded": 39,
+        "explicit_hold": 22,
+        "trim": 26,
+        "exit": 17,
+        "later": 14,
+        "add": 12,
+        "reentry": 1
+      },
+      "mean_cash_pct": 43.307970940856826,
+      "mean_hhi": 0.12474955212825194,
+      "max_issuer_pct": 16.12068828889815,
+      "max_drawdown_pct": 3.9606126997076663,
+      "daily_volatility_pct": 0.7756707822016684,
+      "twr_pct": 8.22513070657449,
+      "realized": -570.5143733667123,
+      "realized_positive": 3122.1330354460124,
+      "realized_negative": -3692.647408812725,
+      "unrealized": 2607.6643733667124,
+      "dividend_income": 137.74,
+      "unexplained_cash_effect": 4.729372449219227e-11,
+      "net_profit": 2174.890000000014,
+      "pnl_residual": -3.342393029015511e-11,
+      "sell_proceeds": 101309.01,
+      "sale_cost_allocated": 101879.52437336672,
+      "winning_sales": 19,
+      "losing_sales": 24,
+      "flat_sales": 0,
+      "median_fill_pct": 2.1925385576023775,
+      "gross_turnover_pct": 4.276160776793796,
+      "favorites": [
+        {
+          "issuer": "ROST",
+          "mean_weight": 8.8544077974924,
+          "held_days": 61
+        },
+        {
+          "issuer": "MNST",
+          "mean_weight": 6.357854670094135,
+          "held_days": 52
+        },
+        {
+          "issuer": "MU",
+          "mean_weight": 6.093446798953292,
+          "held_days": 57
+        },
+        {
+          "issuer": "Alphabet",
+          "mean_weight": 5.374969433857281,
+          "held_days": 28
+        },
+        {
+          "issuer": "LRCX",
+          "mean_weight": 5.063967375353943,
+          "held_days": 44
+        }
+      ],
+      "corporate_income_events": [
+        {
+          "date": "2026-02-10",
+          "ticker": "AEP",
+          "type": "dividend",
+          "units": 25.004208,
+          "per_share": 0.95,
+          "cash": 23.75
+        },
+        {
+          "date": "2026-02-11",
+          "ticker": "PCAR",
+          "type": "dividend",
+          "units": 43.683755,
+          "per_share": 0.33,
+          "cash": 14.42
+        },
+        {
+          "date": "2026-02-17",
+          "ticker": "BKR",
+          "type": "dividend",
+          "units": 71.723237,
+          "per_share": 0.23,
+          "cash": 16.5
+        },
+        {
+          "date": "2026-02-27",
+          "ticker": "CSX",
+          "type": "dividend",
+          "units": 132.66132,
+          "per_share": 0.14,
+          "cash": 18.57
+        },
+        {
+          "date": "2026-03-03",
+          "ticker": "ADI",
+          "type": "dividend",
+          "units": 9.749317,
+          "per_share": 1.1,
+          "cash": 10.72
+        },
+        {
+          "date": "2026-03-04",
+          "ticker": "LRCX",
+          "type": "dividend",
+          "units": 14.056803,
+          "per_share": 0.26,
+          "cash": 3.65
+        },
+        {
+          "date": "2026-03-11",
+          "ticker": "LIN",
+          "type": "dividend",
+          "units": 9.628127,
+          "per_share": 1.6,
+          "cash": 15.41
+        },
+        {
+          "date": "2026-03-13",
+          "ticker": "GILD",
+          "type": "dividend",
+          "units": 13.332337,
+          "per_share": 0.82,
+          "cash": 10.93
+        },
+        {
+          "date": "2026-03-13",
+          "ticker": "ROST",
+          "type": "dividend",
+          "units": 46.438738,
+          "per_share": 0.445,
+          "cash": 20.67
+        },
+        {
+          "date": "2026-03-20",
+          "ticker": "WMT",
+          "type": "dividend",
+          "units": 12.59072,
+          "per_share": 0.248,
+          "cash": 3.12
+        }
+      ],
+      "ending_cost_basis": {
+        "ROST": {
+          "units": 46.438738,
+          "cost": 8500
+        },
+        "WMT": {
+          "units": 12.59072,
+          "cost": 1500.00010424345
+        },
+        "CSX": {
+          "units": 66.484244,
+          "cost": 2620.475522389838
+        },
+        "AEP": {
+          "units": 41.107287,
+          "cost": 5000
+        },
+        "LIN": {
+          "units": 9.628127,
+          "cost": 4500.0
+        },
+        "FANG": {
+          "units": 28.882108,
+          "cost": 5500
+        }
+      }
+    },
+    {
       "model": "Sonnet 5",
       "quarter": "2025-Q2",
       "days": 62,
@@ -8228,6 +9096,621 @@
         "INTU": {
           "units": 16.884162,
           "cost": 7000
+        }
+      }
+    },
+    {
+      "model": "Sonnet 5.5",
+      "quarter": "2025-Q2",
+      "days": 62,
+      "valid": 62,
+      "counts": {
+        "initial": 5,
+        "traded": 3,
+        "explicit_hold": 59,
+        "later": 6,
+        "add": 4
+      },
+      "mean_cash_pct": 15.471556761684067,
+      "mean_hhi": 0.14529276934392843,
+      "max_issuer_pct": 21.519042510782562,
+      "max_drawdown_pct": 6.31484394398627,
+      "daily_volatility_pct": 1.2832894565394646,
+      "twr_pct": 18.385360952029494,
+      "realized": 0.0,
+      "realized_positive": 0,
+      "realized_negative": 0,
+      "unrealized": 19346.159999999996,
+      "dividend_income": 186.29,
+      "unexplained_cash_effect": 0.0,
+      "net_profit": 19532.45000000001,
+      "pnl_residual": 1.5432988220709376e-11,
+      "sell_proceeds": 0,
+      "sale_cost_allocated": 0,
+      "winning_sales": 0,
+      "losing_sales": 0,
+      "flat_sales": 0,
+      "median_fill_pct": 7.380072348325244,
+      "gross_turnover_pct": 2.458421267599195,
+      "favorites": [
+        {
+          "issuer": "MSFT",
+          "mean_weight": 16.192496952894533,
+          "held_days": 62
+        },
+        {
+          "issuer": "WMT",
+          "mean_weight": 12.746157656439063,
+          "held_days": 62
+        },
+        {
+          "issuer": "COST",
+          "mean_weight": 12.39988223309416,
+          "held_days": 62
+        },
+        {
+          "issuer": "AMZN",
+          "mean_weight": 8.096797737655368,
+          "held_days": 62
+        },
+        {
+          "issuer": "AVGO",
+          "mean_weight": 6.653084464140518,
+          "held_days": 41
+        }
+      ],
+      "corporate_income_events": [
+        {
+          "date": "2025-05-02",
+          "ticker": "COST",
+          "type": "dividend",
+          "units": 10.610985,
+          "per_share": 1.3,
+          "cash": 13.79
+        },
+        {
+          "date": "2025-05-09",
+          "ticker": "WMT",
+          "type": "dividend",
+          "units": 114.233549,
+          "per_share": 0.235,
+          "cash": 26.84
+        },
+        {
+          "date": "2025-05-15",
+          "ticker": "MSFT",
+          "type": "dividend",
+          "units": 26.691592,
+          "per_share": 0.83,
+          "cash": 22.15
+        },
+        {
+          "date": "2025-06-06",
+          "ticker": "PEP",
+          "type": "dividend",
+          "units": 33.224831,
+          "per_share": 1.423,
+          "cash": 47.28
+        },
+        {
+          "date": "2025-06-09",
+          "ticker": "GOOGL",
+          "type": "dividend",
+          "units": 106.32415,
+          "per_share": 0.21,
+          "cash": 22.33
+        },
+        {
+          "date": "2025-06-11",
+          "ticker": "NVDA",
+          "type": "dividend",
+          "units": 66.324769,
+          "per_share": 0.01,
+          "cash": 0.66
+        },
+        {
+          "date": "2025-06-16",
+          "ticker": "META",
+          "type": "dividend",
+          "units": 12.667215,
+          "per_share": 0.525,
+          "cash": 6.65
+        },
+        {
+          "date": "2025-06-20",
+          "ticker": "AVGO",
+          "type": "dividend",
+          "units": 78.962034,
+          "per_share": 0.59,
+          "cash": 46.59
+        }
+      ],
+      "ending_cost_basis": {
+        "MSFT": {
+          "units": 59.504296,
+          "cost": 25000
+        },
+        "COST": {
+          "units": 10.610985,
+          "cost": 10000
+        },
+        "WMT": {
+          "units": 114.233549,
+          "cost": 10000
+        },
+        "PEP": {
+          "units": 33.224831,
+          "cost": 5000
+        },
+        "AMZN": {
+          "units": 75.400845,
+          "cost": 15000
+        },
+        "GOOGL": {
+          "units": 106.32415,
+          "cost": 17500
+        },
+        "META": {
+          "units": 12.667215,
+          "cost": 7500
+        },
+        "NVDA": {
+          "units": 66.324769,
+          "cost": 7500
+        },
+        "AVGO": {
+          "units": 78.962034,
+          "cost": 17500
+        },
+        "NFLX": {
+          "units": 6.681399,
+          "cost": 7500
+        },
+        "ISRG": {
+          "units": 14.47542,
+          "cost": 7500
+        }
+      }
+    },
+    {
+      "model": "Sonnet 5.5",
+      "quarter": "2025-Q3",
+      "days": 64,
+      "valid": 64,
+      "counts": {
+        "initial": 5,
+        "traded": 3,
+        "explicit_hold": 61,
+        "later": 5,
+        "add": 5
+      },
+      "mean_cash_pct": 9.480319403194985,
+      "mean_hhi": 0.15018756690001667,
+      "max_issuer_pct": 22.077266921602877,
+      "max_drawdown_pct": 3.9856762569750015,
+      "daily_volatility_pct": 0.9117495127463096,
+      "twr_pct": 15.024238173250716,
+      "realized": 0.0,
+      "realized_positive": 0,
+      "realized_negative": 0,
+      "unrealized": 14818.830000000004,
+      "dividend_income": 104.86000000000001,
+      "unexplained_cash_effect": -2.7284841053187847e-12,
+      "net_profit": 14923.690000000002,
+      "pnl_residual": 1.4779288903810084e-12,
+      "sell_proceeds": 0,
+      "sale_cost_allocated": 0,
+      "winning_sales": 0,
+      "losing_sales": 0,
+      "flat_sales": 0,
+      "median_fill_pct": 9.682344857367765,
+      "gross_turnover_pct": 2.597559715247457,
+      "favorites": [
+        {
+          "issuer": "NVDA",
+          "mean_weight": 16.214117874677633,
+          "held_days": 64
+        },
+        {
+          "issuer": "MSFT",
+          "mean_weight": 15.24663775138343,
+          "held_days": 64
+        },
+        {
+          "issuer": "AVGO",
+          "mean_weight": 15.190598671759433,
+          "held_days": 64
+        },
+        {
+          "issuer": "META",
+          "mean_weight": 11.855868224132672,
+          "held_days": 64
+        },
+        {
+          "issuer": "Alphabet",
+          "mean_weight": 8.233817212482343,
+          "held_days": 42
+        }
+      ],
+      "corporate_income_events": [
+        {
+          "date": "2025-08-01",
+          "ticker": "COST",
+          "type": "dividend",
+          "units": 5.05051,
+          "per_share": 1.3,
+          "cash": 6.57
+        },
+        {
+          "date": "2025-08-11",
+          "ticker": "AAPL",
+          "type": "dividend",
+          "units": 37.93809,
+          "per_share": 0.26,
+          "cash": 9.86
+        },
+        {
+          "date": "2025-08-21",
+          "ticker": "MSFT",
+          "type": "dividend",
+          "units": 20.142213,
+          "per_share": 0.83,
+          "cash": 16.72
+        },
+        {
+          "date": "2025-09-08",
+          "ticker": "GOOGL",
+          "type": "dividend",
+          "units": 100.877157,
+          "per_share": 0.21,
+          "cash": 21.18
+        },
+        {
+          "date": "2025-09-11",
+          "ticker": "NVDA",
+          "type": "dividend",
+          "units": 152.21897,
+          "per_share": 0.01,
+          "cash": 1.52
+        },
+        {
+          "date": "2025-09-22",
+          "ticker": "AVGO",
+          "type": "dividend",
+          "units": 71.004614,
+          "per_share": 0.59,
+          "cash": 41.89
+        },
+        {
+          "date": "2025-09-22",
+          "ticker": "META",
+          "type": "dividend",
+          "units": 13.570737,
+          "per_share": 0.525,
+          "cash": 7.12
+        }
+      ],
+      "ending_cost_basis": {
+        "MSFT": {
+          "units": 50.114042,
+          "cost": 25000
+        },
+        "NVDA": {
+          "units": 152.21897,
+          "cost": 25000
+        },
+        "AVGO": {
+          "units": 71.004614,
+          "cost": 20000
+        },
+        "COST": {
+          "units": 5.05051,
+          "cost": 5000
+        },
+        "META": {
+          "units": 13.570737,
+          "cost": 10000
+        },
+        "GOOGL": {
+          "units": 100.877157,
+          "cost": 20000
+        },
+        "AMZN": {
+          "units": 81.829432,
+          "cost": 18000
+        },
+        "AAPL": {
+          "units": 37.93809,
+          "cost": 8000
+        },
+        "NFLX": {
+          "units": 5.159031,
+          "cost": 6000
+        },
+        "PLTR": {
+          "units": 38.697225,
+          "cost": 6000
+        }
+      }
+    },
+    {
+      "model": "Sonnet 5.5",
+      "quarter": "2025-Q4",
+      "days": 64,
+      "valid": 64,
+      "counts": {
+        "initial": 6,
+        "traded": 4,
+        "explicit_hold": 60,
+        "add": 11
+      },
+      "mean_cash_pct": 20.913959546618063,
+      "mean_hhi": 0.18516050587160904,
+      "max_issuer_pct": 24.822991753353058,
+      "max_drawdown_pct": 7.323835631959685,
+      "daily_volatility_pct": 1.127353641249511,
+      "twr_pct": 3.687634210613111,
+      "realized": 0.0,
+      "realized_positive": 0,
+      "realized_negative": 0,
+      "unrealized": -1347.0999999999985,
+      "dividend_income": 107.42999999999999,
+      "unexplained_cash_effect": -7.275957614183426e-12,
+      "net_profit": -1239.6700000000128,
+      "pnl_residual": -6.977529665164184e-12,
+      "sell_proceeds": 0,
+      "sale_cost_allocated": 0,
+      "winning_sales": 0,
+      "losing_sales": 0,
+      "flat_sales": 0,
+      "median_fill_pct": 5.793248798890554,
+      "gross_turnover_pct": 2.2556712683982547,
+      "favorites": [
+        {
+          "issuer": "Alphabet",
+          "mean_weight": 18.927811905115114,
+          "held_days": 64
+        },
+        {
+          "issuer": "AVGO",
+          "mean_weight": 14.315150500665691,
+          "held_days": 64
+        },
+        {
+          "issuer": "MSFT",
+          "mean_weight": 13.997956586465367,
+          "held_days": 64
+        },
+        {
+          "issuer": "NVDA",
+          "mean_weight": 12.681411952054415,
+          "held_days": 64
+        },
+        {
+          "issuer": "AMZN",
+          "mean_weight": 11.88118655059931,
+          "held_days": 64
+        }
+      ],
+      "corporate_income_events": [
+        {
+          "date": "2025-10-31",
+          "ticker": "COST",
+          "type": "dividend",
+          "units": 6.500547,
+          "per_share": 1.3,
+          "cash": 8.45
+        },
+        {
+          "date": "2025-11-20",
+          "ticker": "MSFT",
+          "type": "dividend",
+          "units": 27.082713,
+          "per_share": 0.91,
+          "cash": 24.65
+        },
+        {
+          "date": "2025-12-04",
+          "ticker": "NVDA",
+          "type": "dividend",
+          "units": 72.022322,
+          "per_share": 0.01,
+          "cash": 0.72
+        },
+        {
+          "date": "2025-12-08",
+          "ticker": "GOOGL",
+          "type": "dividend",
+          "units": 117.540431,
+          "per_share": 0.21,
+          "cash": 24.68
+        },
+        {
+          "date": "2025-12-22",
+          "ticker": "AVGO",
+          "type": "dividend",
+          "units": 75.276338,
+          "per_share": 0.65,
+          "cash": 48.93
+        }
+      ],
+      "ending_cost_basis": {
+        "MSFT": {
+          "units": 39.366728,
+          "cost": 20000
+        },
+        "NVDA": {
+          "units": 72.022322,
+          "cost": 14000
+        },
+        "AVGO": {
+          "units": 75.276338,
+          "cost": 28000
+        },
+        "COST": {
+          "units": 6.500547,
+          "cost": 6000
+        },
+        "GOOGL": {
+          "units": 117.540431,
+          "cost": 34000
+        },
+        "AMZN": {
+          "units": 76.827094,
+          "cost": 18000
+        }
+      }
+    },
+    {
+      "model": "Sonnet 5.5",
+      "quarter": "2026-Q1",
+      "days": 61,
+      "valid": 61,
+      "counts": {
+        "initial": 4,
+        "traded": 4,
+        "explicit_hold": 57,
+        "later": 4,
+        "add": 7
+      },
+      "mean_cash_pct": 12.526769806935338,
+      "mean_hhi": 0.15315842965406598,
+      "max_issuer_pct": 22.800292777567353,
+      "max_drawdown_pct": 12.04677290101639,
+      "daily_volatility_pct": 1.1204492207124093,
+      "twr_pct": -6.346181963507824,
+      "realized": 0.0,
+      "realized_positive": 0,
+      "realized_negative": 0,
+      "unrealized": -7836.27,
+      "dividend_income": 102.14,
+      "unexplained_cash_effect": 0.0,
+      "net_profit": -7734.130000000005,
+      "pnl_residual": -4.220623850414995e-12,
+      "sell_proceeds": 0,
+      "sale_cost_allocated": 0,
+      "winning_sales": 0,
+      "losing_sales": 0,
+      "flat_sales": 0,
+      "median_fill_pct": 7.996402418551893,
+      "gross_turnover_pct": 2.6714276138206454,
+      "favorites": [
+        {
+          "issuer": "Alphabet",
+          "mean_weight": 14.695858471424982,
+          "held_days": 61
+        },
+        {
+          "issuer": "AVGO",
+          "mean_weight": 14.01501806560753,
+          "held_days": 61
+        },
+        {
+          "issuer": "COST",
+          "mean_weight": 13.612093907123832,
+          "held_days": 61
+        },
+        {
+          "issuer": "NVDA",
+          "mean_weight": 13.024160776162766,
+          "held_days": 59
+        },
+        {
+          "issuer": "MSFT",
+          "mean_weight": 12.839875228028093,
+          "held_days": 61
+        }
+      ],
+      "corporate_income_events": [
+        {
+          "date": "2026-01-30",
+          "ticker": "COST",
+          "type": "dividend",
+          "units": 11.612519,
+          "per_share": 1.3,
+          "cash": 15.1
+        },
+        {
+          "date": "2026-02-09",
+          "ticker": "AAPL",
+          "type": "dividend",
+          "units": 30.7657,
+          "per_share": 0.26,
+          "cash": 8.0
+        },
+        {
+          "date": "2026-02-19",
+          "ticker": "MSFT",
+          "type": "dividend",
+          "units": 20.644531,
+          "per_share": 0.91,
+          "cash": 18.79
+        },
+        {
+          "date": "2026-03-09",
+          "ticker": "GOOGL",
+          "type": "dividend",
+          "units": 64.533998,
+          "per_share": 0.21,
+          "cash": 13.55
+        },
+        {
+          "date": "2026-03-11",
+          "ticker": "NVDA",
+          "type": "dividend",
+          "units": 137.546573,
+          "per_share": 0.01,
+          "cash": 1.38
+        },
+        {
+          "date": "2026-03-16",
+          "ticker": "META",
+          "type": "dividend",
+          "units": 11.195081,
+          "per_share": 0.525,
+          "cash": 5.88
+        },
+        {
+          "date": "2026-03-23",
+          "ticker": "AVGO",
+          "type": "dividend",
+          "units": 60.671114,
+          "per_share": 0.65,
+          "cash": 39.44
+        }
+      ],
+      "ending_cost_basis": {
+        "GOOGL": {
+          "units": 64.533998,
+          "cost": 20000
+        },
+        "MSFT": {
+          "units": 41.008032,
+          "cost": 18000
+        },
+        "AVGO": {
+          "units": 60.671114,
+          "cost": 20000
+        },
+        "COST": {
+          "units": 11.612519,
+          "cost": 10000
+        },
+        "NVDA": {
+          "units": 137.546573,
+          "cost": 25000
+        },
+        "AMZN": {
+          "units": 85.83004,
+          "cost": 19000
+        },
+        "META": {
+          "units": 11.195081,
+          "cost": 8000
+        },
+        "AAPL": {
+          "units": 30.7657,
+          "cost": 8000
         }
       }
     }
@@ -9368,6 +10851,132 @@
       "sell_proceeds": 696013.89
     },
     {
+      "model": "Sol 6.1",
+      "type": "initial",
+      "fills": 33,
+      "covered_1day": 33,
+      "down_1day": 10,
+      "up_1day": 23,
+      "covered_20day_return": 33,
+      "negative_20day_return": 2,
+      "positive_20day_return": 31,
+      "covered_20close_high": 33,
+      "at_20close_high": 15,
+      "covered_observed_basis": 0,
+      "observed_loss_count": 0,
+      "realized_gain_count": 0,
+      "realized_loss_count": 0,
+      "realized_gain_dollars": 0,
+      "realized_loss_dollars": 0,
+      "realized_total": 0,
+      "sell_proceeds": 0
+    },
+    {
+      "model": "Sol 6.1",
+      "type": "later",
+      "fills": 47,
+      "covered_1day": 47,
+      "down_1day": 9,
+      "up_1day": 38,
+      "covered_20day_return": 39,
+      "negative_20day_return": 0,
+      "positive_20day_return": 39,
+      "covered_20close_high": 41,
+      "at_20close_high": 22,
+      "covered_observed_basis": 0,
+      "observed_loss_count": 0,
+      "realized_gain_count": 0,
+      "realized_loss_count": 0,
+      "realized_gain_dollars": 0,
+      "realized_loss_dollars": 0,
+      "realized_total": 0,
+      "sell_proceeds": 0
+    },
+    {
+      "model": "Sol 6.1",
+      "type": "reentry",
+      "fills": 5,
+      "covered_1day": 5,
+      "down_1day": 0,
+      "up_1day": 5,
+      "covered_20day_return": 5,
+      "negative_20day_return": 1,
+      "positive_20day_return": 4,
+      "covered_20close_high": 5,
+      "at_20close_high": 4,
+      "covered_observed_basis": 0,
+      "observed_loss_count": 0,
+      "realized_gain_count": 0,
+      "realized_loss_count": 0,
+      "realized_gain_dollars": 0,
+      "realized_loss_dollars": 0,
+      "realized_total": 0,
+      "sell_proceeds": 0
+    },
+    {
+      "model": "Sol 6.1",
+      "type": "add",
+      "fills": 67,
+      "covered_1day": 67,
+      "down_1day": 3,
+      "up_1day": 64,
+      "covered_20day_return": 32,
+      "negative_20day_return": 0,
+      "positive_20day_return": 32,
+      "covered_20close_high": 37,
+      "at_20close_high": 26,
+      "covered_observed_basis": 0,
+      "observed_loss_count": 0,
+      "realized_gain_count": 0,
+      "realized_loss_count": 0,
+      "realized_gain_dollars": 0,
+      "realized_loss_dollars": 0,
+      "realized_total": 0,
+      "sell_proceeds": 0
+    },
+    {
+      "model": "Sol 6.1",
+      "type": "trim",
+      "fills": 53,
+      "covered_1day": 53,
+      "down_1day": 53,
+      "up_1day": 0,
+      "covered_20day_return": 9,
+      "negative_20day_return": 3,
+      "positive_20day_return": 6,
+      "covered_20close_high": 12,
+      "at_20close_high": 0,
+      "covered_observed_basis": 53,
+      "observed_loss_count": 26,
+      "realized_gain_count": 27,
+      "realized_loss_count": 26,
+      "realized_gain_dollars": 4867.721084348559,
+      "realized_loss_dollars": -1744.090022435546,
+      "realized_total": 3123.6310619130127,
+      "sell_proceeds": 127478.56
+    },
+    {
+      "model": "Sol 6.1",
+      "type": "exit",
+      "fills": 54,
+      "covered_1day": 54,
+      "down_1day": 52,
+      "up_1day": 2,
+      "covered_20day_return": 34,
+      "negative_20day_return": 25,
+      "positive_20day_return": 9,
+      "covered_20close_high": 35,
+      "at_20close_high": 0,
+      "covered_observed_basis": 54,
+      "observed_loss_count": 45,
+      "realized_gain_count": 10,
+      "realized_loss_count": 44,
+      "realized_gain_dollars": 2432.4626825007354,
+      "realized_loss_dollars": -10997.585273937846,
+      "realized_total": -8565.12259143711,
+      "sell_proceeds": 207893.61000000002
+    },
+    {
       "model": "Sonnet 5",
       "type": "initial",
       "fills": 35,
@@ -9492,10 +11101,136 @@
       "realized_loss_dollars": -6812.031979623081,
       "realized_total": -6696.153368854572,
       "sell_proceeds": 100051.54
+    },
+    {
+      "model": "Sonnet 5.5",
+      "type": "initial",
+      "fills": 20,
+      "covered_1day": 0,
+      "down_1day": 0,
+      "up_1day": 0,
+      "covered_20day_return": 0,
+      "negative_20day_return": 0,
+      "positive_20day_return": 0,
+      "covered_20close_high": 0,
+      "at_20close_high": 0,
+      "covered_observed_basis": 0,
+      "observed_loss_count": 0,
+      "realized_gain_count": 0,
+      "realized_loss_count": 0,
+      "realized_gain_dollars": 0,
+      "realized_loss_dollars": 0,
+      "realized_total": 0,
+      "sell_proceeds": 0
+    },
+    {
+      "model": "Sonnet 5.5",
+      "type": "later",
+      "fills": 15,
+      "covered_1day": 0,
+      "down_1day": 0,
+      "up_1day": 0,
+      "covered_20day_return": 0,
+      "negative_20day_return": 0,
+      "positive_20day_return": 0,
+      "covered_20close_high": 0,
+      "at_20close_high": 0,
+      "covered_observed_basis": 0,
+      "observed_loss_count": 0,
+      "realized_gain_count": 0,
+      "realized_loss_count": 0,
+      "realized_gain_dollars": 0,
+      "realized_loss_dollars": 0,
+      "realized_total": 0,
+      "sell_proceeds": 0
+    },
+    {
+      "model": "Sonnet 5.5",
+      "type": "reentry",
+      "fills": 0,
+      "covered_1day": 0,
+      "down_1day": 0,
+      "up_1day": 0,
+      "covered_20day_return": 0,
+      "negative_20day_return": 0,
+      "positive_20day_return": 0,
+      "covered_20close_high": 0,
+      "at_20close_high": 0,
+      "covered_observed_basis": 0,
+      "observed_loss_count": 0,
+      "realized_gain_count": 0,
+      "realized_loss_count": 0,
+      "realized_gain_dollars": 0,
+      "realized_loss_dollars": 0,
+      "realized_total": 0,
+      "sell_proceeds": 0
+    },
+    {
+      "model": "Sonnet 5.5",
+      "type": "add",
+      "fills": 27,
+      "covered_1day": 0,
+      "down_1day": 0,
+      "up_1day": 0,
+      "covered_20day_return": 0,
+      "negative_20day_return": 0,
+      "positive_20day_return": 0,
+      "covered_20close_high": 0,
+      "at_20close_high": 0,
+      "covered_observed_basis": 0,
+      "observed_loss_count": 0,
+      "realized_gain_count": 0,
+      "realized_loss_count": 0,
+      "realized_gain_dollars": 0,
+      "realized_loss_dollars": 0,
+      "realized_total": 0,
+      "sell_proceeds": 0
+    },
+    {
+      "model": "Sonnet 5.5",
+      "type": "trim",
+      "fills": 0,
+      "covered_1day": 0,
+      "down_1day": 0,
+      "up_1day": 0,
+      "covered_20day_return": 0,
+      "negative_20day_return": 0,
+      "positive_20day_return": 0,
+      "covered_20close_high": 0,
+      "at_20close_high": 0,
+      "covered_observed_basis": 0,
+      "observed_loss_count": 0,
+      "realized_gain_count": 0,
+      "realized_loss_count": 0,
+      "realized_gain_dollars": 0,
+      "realized_loss_dollars": 0,
+      "realized_total": 0,
+      "sell_proceeds": 0
+    },
+    {
+      "model": "Sonnet 5.5",
+      "type": "exit",
+      "fills": 0,
+      "covered_1day": 0,
+      "down_1day": 0,
+      "up_1day": 0,
+      "covered_20day_return": 0,
+      "negative_20day_return": 0,
+      "positive_20day_return": 0,
+      "covered_20close_high": 0,
+      "at_20close_high": 0,
+      "covered_observed_basis": 0,
+      "observed_loss_count": 0,
+      "realized_gain_count": 0,
+      "realized_loss_count": 0,
+      "realized_gain_dollars": 0,
+      "realized_loss_dollars": 0,
+      "realized_total": 0,
+      "sell_proceeds": 0
     }
   ],
   "definition": "Perpetual weighted-average historical CASH cost; buy cash debits capitalize cost, partial sales allocate proportional cost, splits preserve total cost, dividends are separate income. Runtime rounded avgCost is used only for pretrade classification. Quarter-end remaining basis stays unrealized.",
-  "checks": 60750,
+  "checks": 70568,
   "all_passed": true,
   "cash_reconciliation_events": [],
   "source_inputs": {
@@ -9548,6 +11283,16 @@
     "sonnet-5/2025-Q3.jsonl": "a91148581e6c860b96bfc09c8588026d1ec2a213b7f1a940a529b649907622b7",
     "sonnet-5/2025-Q4.jsonl": "3bd0520851e23d773f7129d9f8269bde5d4caea5a42c26fe16ca8cc33e6a87af",
     "sonnet-5/2026-Q1.jsonl": "e3ad98e43cd6cbeaaecc3f67c8e225e13a5944b16d00034fad60636e9fff94c7",
-    "sonnet-5/attempts.jsonl": "5deef719cc06ce9a5ecdf57879bf3272ca2389ebe96853fae9632bcc898720ba"
+    "sonnet-5/attempts.jsonl": "5deef719cc06ce9a5ecdf57879bf3272ca2389ebe96853fae9632bcc898720ba",
+    "sol-6-1/2025-Q2.jsonl": "f17d0d8dbf7acfede6b449ae8782b5c1809dfdc8fe71695742ca38583794aa71",
+    "sol-6-1/2025-Q3.jsonl": "b8b28b3279c79d72db19c2663e7f1cced2dc5b86415110778cbee76d946c412a",
+    "sol-6-1/2025-Q4.jsonl": "6cbfb0d672c95ba2088b0a973ee49d91f1caa4d8f806e3e47713dbc850729fca",
+    "sol-6-1/2026-Q1.jsonl": "57b2eb319eac1da132a2b4b8a0562847c3ce6e831cddbb6f9b5c045b2b0ca3b7",
+    "sol-6-1/attempts.jsonl": "ae42c282763cb1d02d6d883792fd51d6e5953ad85120deab3ad979899a1f2440",
+    "sonnet-5-5/2025-Q2.jsonl": "d2fce27c906635c42b4daacbda94550ecab138c5a6dc75560629f2ae41662321",
+    "sonnet-5-5/2025-Q3.jsonl": "9370ed19ec2ca22c2cdb57400774617aa602f79e76d9cbea25e1ccb9603f5494",
+    "sonnet-5-5/2025-Q4.jsonl": "d252ca4121d49e3b02573f0e9fdd33215d77c68186f27a4418f12e21884b41e5",
+    "sonnet-5-5/2026-Q1.jsonl": "8e12a50d815b488d03d9791e46d71afa5fc36b78aecef6fd0903aa16be0fd374",
+    "sonnet-5-5/attempts.jsonl": "53f86f6d1b1df9ed77f4e358ebfcfde94d4a0151b01b06dc266f26f1897bcab7"
   }
 }

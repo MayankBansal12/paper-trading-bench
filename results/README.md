@@ -3,8 +3,15 @@
 [Open the viewer](https://mayankbansal12.github.io/paper-trading-bench/) ·
 [Read the study](https://mayankbansal12.github.io/paper-trading-bench/study.html)
 
-`current/` is the selected ten-model snapshot: 2,510 sessions, 2,506 valid decisions,
-2,578 attempts and 3,191 fills across 40 independent quarterly accounts.
+`current/` is the selected twelve-model snapshot: 3,012 sessions, 3,007 valid decisions,
+3,088 attempts and 3,512 fills across 48 independent quarterly accounts.
+
+Sol 6.1 and Sonnet 5.5 were imported on October 7 with all sessions and attempts.
+The [verification record](qualifications/2026-10-models.json) includes their smoke
+outcomes, exact identities, original archive checksums and retained replay/review
+log hashes. The import independently checked original event/day chains, actual
+journal context, accepted model/effort and accounting; it made no model calls or
+fresh runtime replay. The original ten models' session and attempt files are unchanged.
 
 - `manifest.json`: selection, coverage and compact file checksums.
 - `provenance.json`: exact source, runtime, dataset and original event/day anchors.
@@ -36,3 +43,11 @@ and the [historical index](history.json) retain earlier results and source pins.
 The repository is private; its release assets require repository access. The
 static viewer publishes only compact evidence. An archived source bundle enables
 historical replay; current source is for newly qualified cohorts.
+
+The two new source revisions are retained as small [Git bundles](sources/), each
+requiring base `5c4d027`. After fetching that base, use `git bundle verify <bundle>`
+and `git fetch <bundle> HEAD`, then create a separate checkout at the recorded
+revision. These are historical source identities, not permission to resume a
+cohort under changed code. Full run archives remain on RedmiBook in each cohort's
+`archives/` directory; their names, sizes and freshly checked SHA-256 values are
+in the verification record. No raw provider streams are published.

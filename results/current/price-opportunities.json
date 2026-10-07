@@ -801,6 +801,95 @@
     ]
   },
   {
+    "model": "Sol 6.1",
+    "rows": [
+      {
+        "condition": "1d_covered",
+        "covered_model_days": 250,
+        "queried_ticker_days": 2627,
+        "response": {
+          "BUY": 152,
+          "SELL": 107,
+          "BOTH": 0,
+          "NO FILL": 2368,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "20close_high_covered",
+        "covered_model_days": 168,
+        "queried_ticker_days": 1558,
+        "response": {
+          "BUY": 116,
+          "SELL": 47,
+          "BOTH": 0,
+          "NO FILL": 1395,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "20d_covered",
+        "covered_model_days": 158,
+        "queried_ticker_days": 1417,
+        "response": {
+          "BUY": 109,
+          "SELL": 43,
+          "BOTH": 0,
+          "NO FILL": 1265,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "at_20close_high",
+        "covered_model_days": 131,
+        "queried_ticker_days": 363,
+        "response": {
+          "BUY": 67,
+          "SELL": 0,
+          "BOTH": 0,
+          "NO FILL": 296,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "down_at_least_3pct_1d",
+        "covered_model_days": 80,
+        "queried_ticker_days": 147,
+        "response": {
+          "BUY": 0,
+          "SELL": 42,
+          "BOTH": 0,
+          "NO FILL": 105,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "negative_20d",
+        "covered_model_days": 103,
+        "queried_ticker_days": 257,
+        "response": {
+          "BUY": 3,
+          "SELL": 28,
+          "BOTH": 0,
+          "NO FILL": 226,
+          "FAILED": 0
+        }
+      },
+      {
+        "condition": "up_at_least_3pct_1d",
+        "covered_model_days": 116,
+        "queried_ticker_days": 195,
+        "response": {
+          "BUY": 17,
+          "SELL": 0,
+          "BOTH": 0,
+          "NO FILL": 178,
+          "FAILED": 0
+        }
+      }
+    ]
+  },
+  {
     "model": "Sonnet 5",
     "rows": [
       {
@@ -888,5 +977,9 @@
         }
       }
     ]
+  },
+  {
+    "model": "Sonnet 5.5",
+    "rows": []
   }
 ]
