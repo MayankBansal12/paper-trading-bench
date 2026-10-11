@@ -1,0 +1,152 @@
+{
+  "status": "annual-running",
+  "model": "claude-code/anthropic/claude-fable-5-1",
+  "effort": "medium",
+  "clientVersion": "2.1.296",
+  "sourceRevision": "c6a5c3c4e9795387586435637c672d0b71c96e64",
+  "runtimeId": "2215d4523c30a8e14d6233a4092f7f2ac946e86b17c360dd17cae83d59e34f1c",
+  "datasetHash": "5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901",
+  "host": "mayank-RedmiBook-15",
+  "smokeId": "fable51-claude-redmi-v1-20261011-smoke",
+  "annualId": "fable51-claude-redmi-v1-20261011",
+  "plannedAnnualSessions": 251,
+  "plannedContributions": 600000,
+  "concurrency": 1,
+  "quotaPolicy": "recorded provider reset plus 5 minutes; attempts retained",
+  "smokeGate": "3 valid, 0 invalid, pinned verify and review",
+  "baseAudit": {
+    "path": "/home/mayank/claude-bench-fable51/archives/base.tar.gz",
+    "sha256": "c7d57c9a8839d89f59de9e2b32bd5e9680dc28302d14f5f99bc26f47a87045f6",
+    "bytes": 162876216
+  },
+  "qualification": {
+    "providerCalls": 0,
+    "synthetic": [
+      {
+        "scenario": "success",
+        "outcome": "completed",
+        "requestsToStub": 2,
+        "providerRequests": 0,
+        "replayPassed": true,
+        "passed": true
+      },
+      {
+        "scenario": "correction",
+        "outcome": "completed",
+        "requestsToStub": 2,
+        "providerRequests": 0,
+        "replayPassed": true,
+        "passed": true
+      },
+      {
+        "scenario": "quota",
+        "outcome": "harness_error",
+        "requestsToStub": 1,
+        "providerRequests": 0,
+        "replayPassed": false,
+        "passed": true
+      },
+      {
+        "scenario": "watchdog",
+        "outcome": "budget_cutoff",
+        "requestsToStub": 1,
+        "providerRequests": 0,
+        "replayPassed": false,
+        "passed": true
+      }
+    ],
+    "datasetSessions": [
+      62,
+      64,
+      64,
+      61
+    ],
+    "typecheck": "passed",
+    "bunTests": {
+      "passed": 377,
+      "failed": 0,
+      "location": "RAM-backed test checkout"
+    },
+    "remoteAdapterAuthTests": 14,
+    "pythonTests": 10
+  },
+  "liveEvidence": {
+    "observedAt": "2026-10-11T21:51:22.150Z",
+    "httpStatus": 200,
+    "providerReportedModel": "claude-fable-5-1",
+    "completedSmokeVerification": true,
+    "annualFirstValidDay": "2025-04-01"
+  },
+  "subscriptionCostUsd": null,
+  "annualScore": null,
+  "retainedPreparationFailures": [
+    "First native qualifier mutated a readonly fixture; corrected before inference.",
+    "Initial local full suite: ENOSPC, 364 passed/9 failed. Repeated in RAM: 377 passed/0 failed."
+  ],
+  "operations": {
+    "supervisor": "fable51-claude-redmi-v1.service",
+    "recoveryTimer": "fable51-claude-redmi-v1.timer",
+    "readOnlyObserver": "fable51-claude-redmi-v1-evidence.timer",
+    "compactCourier": "auto_4er9w2ed6vs"
+  },
+  "comparability": [
+    "Same v12 tools, histories, portfolio/accounting and failure policy.",
+    "New native Claude client 2.1.296, adaptive thinking, medium effort, 64000 output cap; captured empty effort-only system message.",
+    "Source is pinned separately; no historical cohort is resumed under this implementation."
+  ],
+  "checkpointAt": "2026-10-11T21:55:05.180331+00:00",
+  "smoke": {
+    "valid": 3,
+    "invalid": 0,
+    "attempts": 3,
+    "retriedDays": 0,
+    "verify": "passed",
+    "review": "passed; supervisor annual gate admitted",
+    "eventRoot": "877c710d0c9c0847e9f0dc4de03e06f7667615316bfa5ff5948d1a8914418afb",
+    "commitRoot": "88e5954d988598f0dd0442d04a29bcd89cddcf0eff9e7de1f11c5210f94c1c53",
+    "toolCounts": {
+      "price_history": 3,
+      "submit_day": 5
+    },
+    "observedUsage": {
+      "missingSteps": 3,
+      "turns": 8,
+      "inputTokens": 22,
+      "promptTokens": 492974,
+      "completionTokens": 6748,
+      "cacheReadTokens": 323819,
+      "cacheWriteTokens": 169133,
+      "totalTokens": 499722,
+      "toolCalls": 8,
+      "attemptedToolCalls": 8,
+      "admittedToolCalls": 8,
+      "refusedToolCalls": 0,
+      "successfulToolCalls": 6,
+      "failedToolCalls": 2,
+      "pendingToolCalls": 0
+    },
+    "subscriptionCostUsd": null,
+    "audit": {
+      "path": "/home/mayank/claude-bench-fable51/archives/smoke.tar.gz",
+      "sha256": "03b8bd62761b5afb04ea0d6c85131cec5c55c4d95c6e85fb5d45b52ce614e85f",
+      "bytes": 629506
+    },
+    "checks": [
+      {
+        "file": "supervision/verify.log",
+        "sha256": "bd6013fa2083a13697df2db9ac47970aae03a9f0728d2157ca9fe00bd6612ea6"
+      },
+      {
+        "file": "supervision/review.log",
+        "sha256": "54e43530d18c910eead224e011e3d7a49a44260500926f88030a6733802f4b5b"
+      }
+    ]
+  },
+  "annual": {
+    "validDays": 2,
+    "invalidDays": 0,
+    "coverageIsLive": true,
+    "finalReplay": "pending",
+    "finalProfit": null
+  }
+}
