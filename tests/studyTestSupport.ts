@@ -30,7 +30,6 @@ export function setup(past: JournalEntry[] = [], date = "2025-02-03") {
       universe: ["AAPL", "MSFT"],
       portfolio: createInitialPortfolio(500),
       bars: { AAPL: [bar], MSFT: [bar] },
-      indicators: {},
       recentDays: [],
       limits: { maxTurns: null, maxToolCalls: null, timeoutMs: 10000 },
       horizon: { startDate: "2025-01-31", endDate: "2025-02-04" },

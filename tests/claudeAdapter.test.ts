@@ -303,3 +303,34 @@ test("native Opus 5.5 client request is admitted exactly; other clients, models 
   expect(checkClaudeRequest({ ...opus5, max_tokens: 64000 }, s.tools, s.tools.prompt(), CLAUDE_OPUS_MODEL).reason).toBe("effective-system-prompt");
   expect(checkClaudeRequest(requestBody(s, { max_tokens: 64000, system: native.system }), s.tools, s.tools.prompt()).reason).toBe("effective-system-prompt");
 });
+
+test("Fable 5.1 admits only its captured 2.1.296 envelope and medium effort", async () => {
+  const { CLAUDE_FABLE51_MODEL_ID, CLAUDE_FABLE51_MODEL, claudeClientVersion } = await import("../src/claude/route.ts");
+  const s = setup();
+  expect(claudeClientVersion(CLAUDE_FABLE51_MODEL_ID)).toBe("2.1.296");
+  expect(claudeRoute(CLAUDE_FABLE51_MODEL_ID).model).toBe(CLAUDE_FABLE51_MODEL);
+  for (const id of ["fable", "claude-fable-5-1", "claude-code/anthropic/claude-fable-5", "claude-code/anthropic/claude-fable-5-1[1m]"])
+    expect(isClaudeModel(id)).toBe(false);
+  const native = requestBody(s, {
+    model: CLAUDE_FABLE51_MODEL,
+    thinking: { type: "adaptive", display: "updates" },
+    messages: [{ role: "user", content: s.tools.prompt() }, { role: "system", content: [], output_config: { effort: "medium" } }],
+    system: [{ type: "text", text: "x-anthropic-billing-header: cc_version=2.1.296.9ec; cc_entrypoint=sdk-cli;" },
+      { type: "text", text: CLAUDE_SDK_SYSTEM }, { type: "text", text: systemPrompt(s.view.limits) }],
+  });
+  const check = (b: any) => checkClaudeRequest(b, s.tools, s.tools.prompt(), CLAUDE_FABLE51_MODEL);
+  expect(check(native).forward).toEqual(native);
+  // Native client also removes display on its retry after a 400; effort remains medium.
+  expect(check({ ...native, thinking: { type: "adaptive" } }).reason).toBeUndefined();
+  const mutate = (fn: (b: any) => void) => { const b = structuredClone(native); fn(b); return check(b).reason; };
+  expect(mutate(b => { b.model = "claude-fable-5"; })).toBe("model");
+  expect(mutate(b => { b.model = "claude-haiku-4-5"; })).toBe("model");
+  expect(mutate(b => { b.system[0].text = b.system[0].text.replace("2.1.296", "2.1.280"); })).toBe("effective-system-prompt");
+  expect(mutate(b => { b.max_tokens = 64001; })).toBe("max-tokens");
+  expect(mutate(b => { b.output_config.effort = "high"; })).toBe("claude-effort-drift");
+  expect(mutate(b => { b.thinking.budget_tokens = 999; })).toBe("claude-effort-drift");
+  expect(mutate(b => { b.messages[1].output_config.effort = "high"; })).toBe("external-content");
+  expect(mutate(b => { b.messages[1].content = [{ type: "text", text: "Today's date is 2026-10-11." }]; })).toBe("external-content");
+  expect(mutate(b => { b.messages[1].extra = true; })).toBe("external-content");
+  expect(mutate(b => { b.messages[0].content = "Different prompt"; })).toBe("effective-daily-prompt");
+});

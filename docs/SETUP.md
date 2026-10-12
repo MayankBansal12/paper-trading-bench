@@ -32,6 +32,12 @@ client versions; catalog presence does not prove current entitlement.
 | Sonnet 5 | `claude-code/anthropic/claude-sonnet-5` | Claude Code 2.1.274 | — |
 | Opus 5 | `claude-code/anthropic/claude-opus-5` | Claude Code 2.1.274 | — |
 | Opus 5.5 | `claude-code/anthropic/claude-opus-5-5` | Claude Code 2.1.280 | — |
+| Fable 5.1 | `claude-code/anthropic/claude-fable-5-1` | Claude Code 2.1.296 | — |
+
+Fable 5.1 uses the captured native 2.1.296 request format: adaptive thinking,
+a 64,000-token output cap and an empty system message carrying medium effort.
+Its client may remove `thinking.display` after a provider rejection; the model and
+effort checks remain exact. This is a new cohort, not a runtime upgrade of old runs.
 
 Pi and Claude use medium effort, enforced by their gateways. Some historical
 provenance summaries omit the request-level reasoning field; an empty field does
@@ -74,7 +80,12 @@ pnpm bench sandbox-check --model pi/openai-codex/gpt-6-luna
 pnpm runtime:check pi/openai-codex/gpt-6-luna
 ```
 
-Preflight and synthetic Pi qualification make no model calls. A live three-day
+For Claude, run `bun scripts/qualify-claude.ts EXACT_ROUTE NEW_OUTPUT_DIR`
+after pinning the client. It exercises success, tool correction, quota timing,
+timeout and replay rejection using synthetic responses in the real sandbox.
+It does not read the host login or call the provider.
+
+Preflight and synthetic client qualification make no model calls. A live three-day
 smoke must still pass exact identity, three valid days, replay and review before
 annual results are collected. The supervisor handles that sequence.
 

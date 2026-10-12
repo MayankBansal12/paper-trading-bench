@@ -1,0 +1,550 @@
+{
+  "checkedAt": "2026-10-12T04:18:47.373Z",
+  "checks": 13386,
+  "scope": "Checksums, compact day hashes, remote event/day chains, acceptance anchors, opening journals, exact request identity/effort, cash/units, fills, funding and independent quarter TWR/drawdown arithmetic. No new inference or runtime replay.",
+  "remote": {
+    "checkedAt": "2026-10-12T04:16:50.710532+00:00",
+    "source": "c6a5c3c4e9795387586435637c672d0b71c96e64",
+    "dirty": "",
+    "stateStatus": "completed",
+    "verifiedReports": [
+      {
+        "status": "completed",
+        "validDays": 3,
+        "modelSummary": null
+      },
+      {
+        "status": "completed",
+        "validDays": null,
+        "modelSummary": [
+          {
+            "model": "claude-code/anthropic/claude-fable-5-1",
+            "complete": true,
+            "completedQuarters": 4,
+            "accountedSessions": 251,
+            "validDays": 251,
+            "invalidDays": 0,
+            "retriedDays": 2,
+            "plannedContributions": 600000,
+            "accountedContributions": 600000,
+            "year": {
+              "totalContributions": 600000,
+              "sumOfQuarterEndingEquities": 623611.45,
+              "netProfit": 23611.45,
+              "profitOnContributionsPct": 3.94,
+              "meanQuarterTimeWeightedReturnPct": 6.13
+            }
+          }
+        ]
+      }
+    ],
+    "artifacts": [
+      {
+        "name": "archives/final.tar.gz",
+        "bytes": 19032912,
+        "sha256": "acc04150a1e9cda732ea0610c57ebbe880197b362d7c5fe041f090ae81a9bd46"
+      },
+      {
+        "name": "artifacts/final.json",
+        "bytes": 25097,
+        "sha256": "a9b6ba8e5f0b3583506f108f031a2f91d3734c4aebe53d5fba92c45fb0b28482"
+      },
+      {
+        "name": "repo/results/supervision/fable51-claude-redmi-v1-20261011/state.json",
+        "bytes": 17284,
+        "sha256": "6ed93e6b43056ea9096f4c14461e9912b91dfb715371863c00bb7a1f7adc0739"
+      },
+      {
+        "name": "repo/results/supervision/fable51-claude-redmi-v1-20261011/verify.log",
+        "bytes": 18254,
+        "sha256": "8e84cd63a59b03ed6c662fb31f1a6cc6893feed59f531096afe4a6a1d6e08f47"
+      },
+      {
+        "name": "repo/results/supervision/fable51-claude-redmi-v1-20261011/review.log",
+        "bytes": 12129,
+        "sha256": "bddfcb8ff9967b20a7bdc465bf77290f5311b2f8c14ec54a2856fb047528edad"
+      },
+      {
+        "name": "source.bundle",
+        "bytes": 1795479,
+        "sha256": "c92eefa146cd02f75b5d5056868c08d31bc27e351ed224010b7340b6d903c707"
+      }
+    ],
+    "units": "MainPID=0\nExecMainStatus=0\nActiveState=inactive\nSubState=dead\n"
+  },
+  "physical": {
+    "checkedAt": "2026-10-12T04:17:26.643Z",
+    "kind": "read-only physical event/day hash and anchor verification; no execution replay or inference",
+    "runs": [
+      {
+        "runId": "fable51-claude-redmi-v1-20261011-claude-code-anthropic-cla-fdcc65d2fb56-2025-Q2",
+        "events": 3786,
+        "days": 62,
+        "eventRoot": "23ee532a7e4d4578e16673817885f58be8f1a2b3f4f461cc3af022fa77053e02",
+        "commitRoot": "a1c013eb70bbaf8f8e698c134f80c163033c9f610d5711a5856e725a143924cf",
+        "manifestSha256": "e5941a05c95f299eb6a6633e57013cbca726c06306d7ebe0d5408ad7b17ba903",
+        "runtimeSha256": "6b852a90a2ff7bb0b4faa6d60ebb78927b99de74bb8891f78efed72447da4366",
+        "runtimeKeys": [
+          "policy",
+          "bwrap",
+          "hashes",
+          "claudeVersion",
+          "claudeHash",
+          "bunVersion",
+          "bunHash",
+          "bwrapHash",
+          "kernel",
+          "limits",
+          "id"
+        ],
+        "runtimeIdentity": "2215d4523c30a8e14d6233a4092f7f2ac946e86b17c360dd17cae83d59e34f1c",
+        "manifestKeys": [
+          "config",
+          "implementation",
+          "repositoryRevision",
+          "funding"
+        ]
+      },
+      {
+        "runId": "fable51-claude-redmi-v1-20261011-claude-code-anthropic-cla-fdcc65d2fb56-2025-Q3",
+        "events": 3825,
+        "days": 64,
+        "eventRoot": "7df23fe13eeffc5ed6149007170ff4df29f455ce98a4bc6fbb9fbe5f9366f1a8",
+        "commitRoot": "a830c3773f68ec76e8840226541353ab9b915f8090d41b33f0566234e2b07043",
+        "manifestSha256": "01d55fb78c7a1ceb6667317e8b748f6fa970bfc850d1bcf4515f5eb9adfa71b6",
+        "runtimeSha256": "6b852a90a2ff7bb0b4faa6d60ebb78927b99de74bb8891f78efed72447da4366",
+        "runtimeKeys": [
+          "policy",
+          "bwrap",
+          "hashes",
+          "claudeVersion",
+          "claudeHash",
+          "bunVersion",
+          "bunHash",
+          "bwrapHash",
+          "kernel",
+          "limits",
+          "id"
+        ],
+        "runtimeIdentity": "2215d4523c30a8e14d6233a4092f7f2ac946e86b17c360dd17cae83d59e34f1c",
+        "manifestKeys": [
+          "config",
+          "implementation",
+          "repositoryRevision",
+          "funding"
+        ]
+      },
+      {
+        "runId": "fable51-claude-redmi-v1-20261011-claude-code-anthropic-cla-fdcc65d2fb56-2025-Q4",
+        "events": 4503,
+        "days": 64,
+        "eventRoot": "2ba0b0701a61c1e9daf19f67e338c14eb4b4a9f57fd1f98610c15101e7d24ae8",
+        "commitRoot": "b127da99f0f5ba874e1dfde52cbf129f206caf7e9d9c6fdc666beaf5b996b287",
+        "manifestSha256": "a6526341fadfed28966a4c54d6043c5b4f70ba0f663893f89e31721fd4dbe9df",
+        "runtimeSha256": "6b852a90a2ff7bb0b4faa6d60ebb78927b99de74bb8891f78efed72447da4366",
+        "runtimeKeys": [
+          "policy",
+          "bwrap",
+          "hashes",
+          "claudeVersion",
+          "claudeHash",
+          "bunVersion",
+          "bunHash",
+          "bwrapHash",
+          "kernel",
+          "limits",
+          "id"
+        ],
+        "runtimeIdentity": "2215d4523c30a8e14d6233a4092f7f2ac946e86b17c360dd17cae83d59e34f1c",
+        "manifestKeys": [
+          "config",
+          "implementation",
+          "repositoryRevision",
+          "funding"
+        ]
+      },
+      {
+        "runId": "fable51-claude-redmi-v1-20261011-claude-code-anthropic-cla-fdcc65d2fb56-2026-Q1",
+        "events": 3953,
+        "days": 61,
+        "eventRoot": "625cbc3e6cd073037f3cb5d1da363f39404ef96fac0e3467c44916f3e601aa0b",
+        "commitRoot": "3a6c96a2db3467a80e4bce8d556c7110d939a6d1d08b1ca99731b604053e71de",
+        "manifestSha256": "5f5537473d06e9853072324cacbc31bc401e1bd9aa7dcb2acf35845d31402ae5",
+        "runtimeSha256": "6b852a90a2ff7bb0b4faa6d60ebb78927b99de74bb8891f78efed72447da4366",
+        "runtimeKeys": [
+          "policy",
+          "bwrap",
+          "hashes",
+          "claudeVersion",
+          "claudeHash",
+          "bunVersion",
+          "bunHash",
+          "bwrapHash",
+          "kernel",
+          "limits",
+          "id"
+        ],
+        "runtimeIdentity": "2215d4523c30a8e14d6233a4092f7f2ac946e86b17c360dd17cae83d59e34f1c",
+        "manifestKeys": [
+          "config",
+          "implementation",
+          "repositoryRevision",
+          "funding"
+        ]
+      },
+      {
+        "runId": "fable51-claude-redmi-v1-20261011-smoke",
+        "events": 240,
+        "days": 3,
+        "eventRoot": "877c710d0c9c0847e9f0dc4de03e06f7667615316bfa5ff5948d1a8914418afb",
+        "commitRoot": "88e5954d988598f0dd0442d04a29bcd89cddcf0eff9e7de1f11c5210f94c1c53",
+        "manifestSha256": "b55ea8f809720ac3a8ed105e49a6c1b9765427b50f008c8f77a6f59003c2e0e9",
+        "runtimeSha256": "6b852a90a2ff7bb0b4faa6d60ebb78927b99de74bb8891f78efed72447da4366",
+        "runtimeKeys": [
+          "policy",
+          "bwrap",
+          "hashes",
+          "claudeVersion",
+          "claudeHash",
+          "bunVersion",
+          "bunHash",
+          "bwrapHash",
+          "kernel",
+          "limits",
+          "id"
+        ],
+        "runtimeIdentity": "2215d4523c30a8e14d6233a4092f7f2ac946e86b17c360dd17cae83d59e34f1c",
+        "manifestKeys": [
+          "config",
+          "implementation",
+          "repositoryRevision",
+          "funding"
+        ]
+      }
+    ]
+  },
+  "transfers": [
+    {
+      "sha256": "a9b6ba8e5f0b3583506f108f031a2f91d3734c4aebe53d5fba92c45fb0b28482",
+      "bytes": 25097,
+      "file": "final.json"
+    },
+    {
+      "sha256": "12ca9b2bb40c077452bef743d8a7360ec3aec00b3265ae73ed892a5d50b91cef",
+      "bytes": 865963,
+      "file": "fable51-claude-redmi-v1-20261011-claude-code-anthropic-cla-fdcc65d2fb56-2025-Q2.jsonl"
+    },
+    {
+      "sha256": "eb08a22139b3a87dc3e7e1d71b7cd20523a6bb8e7d2400fd57702fed183f86eb",
+      "bytes": 907901,
+      "file": "fable51-claude-redmi-v1-20261011-claude-code-anthropic-cla-fdcc65d2fb56-2025-Q3.jsonl"
+    },
+    {
+      "sha256": "4c9dbde2aae340e3d5cd9cec6ac8327a3837c6a93421f0c283ce83bc8e5d5835",
+      "bytes": 1336641,
+      "file": "fable51-claude-redmi-v1-20261011-claude-code-anthropic-cla-fdcc65d2fb56-2025-Q4.jsonl"
+    },
+    {
+      "sha256": "965e953f78a736d53bc38754d4f2184a98a55e5f46461503bc6567b79eac384e",
+      "bytes": 1026056,
+      "file": "fable51-claude-redmi-v1-20261011-claude-code-anthropic-cla-fdcc65d2fb56-2026-Q1.jsonl"
+    },
+    {
+      "sha256": "553c35073f8a175a6e4a491ef4509ae442896b84a29d655b9d68d03c89cb4649",
+      "bytes": 36218,
+      "file": "fable51-claude-redmi-v1-20261011-smoke.jsonl"
+    }
+  ],
+  "runs": [
+    {
+      "runId": "fable51-claude-redmi-v1-20261011-claude-code-anthropic-cla-fdcc65d2fb56-2025-Q2",
+      "smoke": false,
+      "days": 62,
+      "attempts": 62,
+      "outcomes": {
+        "completed": 62
+      },
+      "fills": 60,
+      "netProfit": 14665.61,
+      "contributions": 150000,
+      "timeWeightedReturnPct": 9.5923,
+      "maxDrawdownPct": -4.3088,
+      "tools": {
+        "price_history": 53,
+        "submit_day": 72,
+        "market_snapshot": 4
+      },
+      "toolErrors": 10,
+      "requests": 129,
+      "observedUsage": {
+        "inputTokens": 382,
+        "promptTokens": 1862212,
+        "completionTokens": 98875,
+        "cacheReadTokens": 886615,
+        "cacheWriteTokens": 975215,
+        "totalTokens": 1961087,
+        "turns": 129
+      },
+      "attemptsMissingTokenTotals": 0,
+      "failures": [],
+      "counterDiscrepancies": []
+    },
+    {
+      "runId": "fable51-claude-redmi-v1-20261011-claude-code-anthropic-cla-fdcc65d2fb56-2025-Q3",
+      "smoke": false,
+      "days": 64,
+      "attempts": 65,
+      "outcomes": {
+        "completed": 64,
+        "harness_error": 1
+      },
+      "fills": 92,
+      "netProfit": 13357.62,
+      "contributions": 150000,
+      "timeWeightedReturnPct": 11.0036,
+      "maxDrawdownPct": -5.1915,
+      "tools": {
+        "price_history": 58,
+        "submit_day": 70,
+        "market_snapshot": 5
+      },
+      "toolErrors": 9,
+      "requests": 133,
+      "observedUsage": {
+        "inputTokens": 390,
+        "promptTokens": 1563604,
+        "completionTokens": 98262,
+        "cacheReadTokens": 758213,
+        "cacheWriteTokens": 805001,
+        "totalTokens": 1661866,
+        "turns": 133
+      },
+      "attemptsMissingTokenTotals": 1,
+      "failures": [
+        {
+          "date": "2025-07-21",
+          "attempt": 1,
+          "outcome": "harness_error",
+          "reason": "Error: Invalid usage counter",
+          "resultEventHash": "9dcae6346adf78476d15a21f77d8b1e1d133553b1dc6d758b3f1ca97e89f1c04",
+          "responseStatuses": [
+            200,
+            200
+          ],
+          "uncommittedSubmissions": 1
+        }
+      ],
+      "counterDiscrepancies": [
+        {
+          "date": "2025-07-21",
+          "attempt": 1,
+          "observedToolRequests": 2,
+          "reportedToolCalls": 0,
+          "reportedRefused": -2,
+          "reportedPending": -2
+        }
+      ]
+    },
+    {
+      "runId": "fable51-claude-redmi-v1-20261011-claude-code-anthropic-cla-fdcc65d2fb56-2025-Q4",
+      "smoke": false,
+      "days": 64,
+      "attempts": 65,
+      "outcomes": {
+        "completed": 64,
+        "harness_error": 1
+      },
+      "fills": 132,
+      "netProfit": -2035.23,
+      "contributions": 150000,
+      "timeWeightedReturnPct": 1.2621,
+      "maxDrawdownPct": -7.9295,
+      "tools": {
+        "price_history": 53,
+        "submit_day": 72,
+        "journal": 20,
+        "market_snapshot": 15
+      },
+      "toolErrors": 9,
+      "requests": 148,
+      "observedUsage": {
+        "inputTokens": 422,
+        "promptTokens": 3095686,
+        "completionTokens": 136792,
+        "cacheReadTokens": 1601189,
+        "cacheWriteTokens": 1494075,
+        "totalTokens": 3232478,
+        "turns": 148
+      },
+      "attemptsMissingTokenTotals": 1,
+      "failures": [
+        {
+          "date": "2025-10-17",
+          "attempt": 1,
+          "outcome": "harness_error",
+          "reason": "Claude Code did not submit a complete decision",
+          "resultEventHash": "e233b3d95907eac73a47c9934e41b4480ff7aa91bbe9cd228f24b3c32ba6ac5c",
+          "responseStatuses": [
+            429
+          ],
+          "uncommittedSubmissions": 0
+        }
+      ],
+      "counterDiscrepancies": []
+    },
+    {
+      "runId": "fable51-claude-redmi-v1-20261011-claude-code-anthropic-cla-fdcc65d2fb56-2026-Q1",
+      "smoke": false,
+      "days": 61,
+      "attempts": 61,
+      "outcomes": {
+        "completed": 61
+      },
+      "fills": 114,
+      "netProfit": -2376.55,
+      "contributions": 150000,
+      "timeWeightedReturnPct": 2.6653,
+      "maxDrawdownPct": -6.3619,
+      "tools": {
+        "market_snapshot": 18,
+        "price_history": 53,
+        "submit_day": 69,
+        "journal": 1
+      },
+      "toolErrors": 10,
+      "requests": 140,
+      "observedUsage": {
+        "inputTokens": 402,
+        "promptTokens": 2177627,
+        "completionTokens": 120873,
+        "cacheReadTokens": 1223971,
+        "cacheWriteTokens": 953254,
+        "totalTokens": 2298500,
+        "turns": 140
+      },
+      "attemptsMissingTokenTotals": 0,
+      "failures": [],
+      "counterDiscrepancies": []
+    },
+    {
+      "runId": "fable51-claude-redmi-v1-20261011-smoke",
+      "smoke": true,
+      "days": 3,
+      "attempts": 3,
+      "outcomes": {
+        "completed": 3
+      },
+      "fills": 10,
+      "netProfit": 273.01,
+      "contributions": 50000,
+      "timeWeightedReturnPct": 0.546,
+      "maxDrawdownPct": -0.2754,
+      "tools": {
+        "price_history": 3,
+        "submit_day": 5
+      },
+      "toolErrors": 2,
+      "requests": 8,
+      "observedUsage": {
+        "inputTokens": 22,
+        "promptTokens": 492974,
+        "completionTokens": 6748,
+        "cacheReadTokens": 323819,
+        "cacheWriteTokens": 169133,
+        "totalTokens": 499722,
+        "turns": 8
+      },
+      "attemptsMissingTokenTotals": 0,
+      "failures": [],
+      "counterDiscrepancies": []
+    }
+  ],
+  "annual": {
+    "days": 251,
+    "attempts": 253,
+    "fills": 398,
+    "netProfit": 23611.45,
+    "averageQuarterProfit": 5902.86,
+    "observedUsage": {
+      "inputTokens": 1596,
+      "promptTokens": 8699129,
+      "completionTokens": 454802,
+      "cacheReadTokens": 4469988,
+      "cacheWriteTokens": 4227545,
+      "totalTokens": 9153931,
+      "turns": 550
+    },
+    "attemptsMissingTokenTotals": 2,
+    "toolErrors": 38,
+    "requests": 550
+  },
+  "publishedCompactFiles": [
+    {
+      "runId": "fable51-claude-redmi-v1-20261011-claude-code-anthropic-cla-fdcc65d2fb56-2025-Q2",
+      "file": "compact/2025-Q2.jsonl.gz",
+      "sha256": "41681e2361f81441155fd058b9d9d146c7c0eb9e58ec80b61d4c8df3b12e8d7e",
+      "bytes": 109069,
+      "uncompressedSha256": "12ca9b2bb40c077452bef743d8a7360ec3aec00b3265ae73ed892a5d50b91cef",
+      "uncompressedBytes": 865963,
+      "days": 62,
+      "attempts": 62,
+      "originalEventsSha256": "31cb1300349e63e18fe214b34fd662b459f202d9d278c0240b01a6e62d40052d"
+    },
+    {
+      "runId": "fable51-claude-redmi-v1-20261011-claude-code-anthropic-cla-fdcc65d2fb56-2025-Q3",
+      "file": "compact/2025-Q3.jsonl.gz",
+      "sha256": "639a806723e522e7d70a29e59438c06ba5d9375b8151be88c0a322417d7f5b62",
+      "bytes": 113333,
+      "uncompressedSha256": "eb08a22139b3a87dc3e7e1d71b7cd20523a6bb8e7d2400fd57702fed183f86eb",
+      "uncompressedBytes": 907901,
+      "days": 64,
+      "attempts": 65,
+      "originalEventsSha256": "521391ff1b47dc8dfa64667f0c88aeef09dc9bcbd471fbfec48a3eda4ab9a3e6"
+    },
+    {
+      "runId": "fable51-claude-redmi-v1-20261011-claude-code-anthropic-cla-fdcc65d2fb56-2025-Q4",
+      "file": "compact/2025-Q4.jsonl.gz",
+      "sha256": "d17ee5195aa54fd105c2672a118e6cfd08468c49a8b4e13dab08bb30c519de96",
+      "bytes": 184745,
+      "uncompressedSha256": "4c9dbde2aae340e3d5cd9cec6ac8327a3837c6a93421f0c283ce83bc8e5d5835",
+      "uncompressedBytes": 1336641,
+      "days": 64,
+      "attempts": 65,
+      "originalEventsSha256": "b9a50bebea61d45c079bbcba6caa2c3df35bd1986b9bb905e7b0311a39454931"
+    },
+    {
+      "runId": "fable51-claude-redmi-v1-20261011-claude-code-anthropic-cla-fdcc65d2fb56-2026-Q1",
+      "file": "compact/2026-Q1.jsonl.gz",
+      "sha256": "bdcb8764604f3e8dc8b5de5fcac5171693d994ed8f34282fd415c529ca582ce7",
+      "bytes": 125870,
+      "uncompressedSha256": "965e953f78a736d53bc38754d4f2184a98a55e5f46461503bc6567b79eac384e",
+      "uncompressedBytes": 1026056,
+      "days": 61,
+      "attempts": 61,
+      "originalEventsSha256": "63806172b978a8b88d6633fa4e90e4fd1956027843b7596f360072e963dbb5d6"
+    },
+    {
+      "runId": "fable51-claude-redmi-v1-20261011-smoke",
+      "file": "compact/smoke.jsonl.gz",
+      "sha256": "d0f09b53ce70b72b9ff76abf87083e41436fc0566bdfad5543e98c61642703e4",
+      "bytes": 7461,
+      "uncompressedSha256": "553c35073f8a175a6e4a491ef4509ae442896b84a29d655b9d68d03c89cb4649",
+      "uncompressedBytes": 36218,
+      "days": 3,
+      "attempts": 3,
+      "originalEventsSha256": "94eb62eb8ad5ed1ee9e62daee2d39fac35ee3e947e1415eadd53a972f62d6c7e"
+    }
+  ],
+  "recordedVerification": {
+    "source": "c6a5c3c4e9795387586435637c672d0b71c96e64",
+    "smoke": "Pinned verify and review passed before annual admission.",
+    "annual": "Pinned annual verify and each quarter review passed before supervisor recorded completed.",
+    "executedAgainForHandoff": false
+  },
+  "limitations": [
+    "Compact files omit full market-history tool responses and provider streams; they cannot replace raw audits for runtime replay.",
+    "Request model/effort are rechecked from compact data; provider response acceptance uses the already completed pinned verification.",
+    "Usage totals exclude unobserved tokens on two failed attempts. Original unavailable-completeness labels and anomalous failed-attempt counters are preserved.",
+    "Independent accounts reset each quarter; aggregate net profit is not a continuous compounded annual return."
+  ]
+}

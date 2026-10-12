@@ -4,7 +4,7 @@ import { contentHash, canonical } from "../core/hash.ts";
 import { systemPrompt, STUDY_TOOLS, POLICY } from "../study/protocol.ts";
 import type { SessionTools } from "../study/tools.ts";
 import type { ProviderCredential } from "../opencode/credentials.ts";
-import { CLAUDE_MODEL, CLAUDE_OPUS_MODEL, CLAUDE_OPUS55_MODEL, CLAUDE_EFFORT, CLAUDE_MCP_PREFIX, claudeClientVersion } from "./route.ts";
+import { CLAUDE_MODEL, CLAUDE_OPUS_MODEL, CLAUDE_OPUS55_MODEL, CLAUDE_FABLE51_MODEL, CLAUDE_EFFORT, CLAUDE_MCP_PREFIX, claudeClientVersion } from "./route.ts";
 
 export const CLAUDE_SDK_SYSTEM = "You are a Claude agent, built on Anthropic's Claude Agent SDK.";
 export const ANTHROPIC_MESSAGES_URL = "https://api.anthropic.com/v1/messages?beta=true";
@@ -47,6 +47,12 @@ export function checkClaudeRequest(body: any, tools: SessionTools, dailyPrompt: 
   if (body.thinking?.type !== "adaptive" || body.output_config?.effort !== CLAUDE_EFFORT || Object.keys(body.output_config).length !== 1)
     return { reason: "claude-effort-drift" };
   const opus55 = model === CLAUDE_OPUS55_MODEL;
+  const fable51 = model === CLAUDE_FABLE51_MODEL;
+  // Genuine 2.1.296, captured without provider inference: adaptive updates and an
+  // empty system message carrying effort. No new instructions or real date are admitted.
+  if (fable51 && ![{ type: "adaptive", display: "updates" }, { type: "adaptive" }]
+      .some((allowed) => canonical(body.thinking) === canonical(allowed)))
+    return { reason: "claude-effort-drift" };
   if (!Number.isInteger(body.max_tokens) || body.max_tokens < 1 || body.max_tokens > (opus55 ? OPUS55_MAX_TOKENS : 64000)) return { reason: "max-tokens" };
   const system = body.system;
   if (
@@ -60,10 +66,16 @@ export function checkClaudeRequest(body: any, tools: SessionTools, dailyPrompt: 
   let rewrite: unknown;
   for (const [i, m] of messages.entries()) {
     if (!m || typeof m !== "object") return { reason: "external-content" };
-    if (opus55 && (Object.keys(m).some((k) => !OPUS55_MESSAGE_KEYS.includes(k)) ||
+    if ((opus55 || fable51) && (Object.keys(m).some((k) => !OPUS55_MESSAGE_KEYS.includes(k)) ||
         ("output_config" in m && canonical(m.output_config) !== canonical({ effort: CLAUDE_EFFORT }))))
       return { reason: "external-content" };
     if (m.role === "system") {
+      if (fable51) {
+        if (!Array.isArray(m.content) || m.content.length !== 0 ||
+            canonical(m.output_config) !== canonical({ effort: CLAUDE_EFFORT }))
+          return { reason: "external-content" };
+        continue;
+      }
       const t = textOf(m.content);
       const match = t?.length === 1 ? DATE_REMINDER.exec(t[0]!) : null;
       const opusPlain = (model === CLAUDE_OPUS_MODEL || opus55) && t?.length === 1 ? OPUS_DATE_REMINDER.exec(t[0]!) : null;
