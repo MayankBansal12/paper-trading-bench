@@ -1,0 +1,238 @@
+{
+  "id": "fable5-claude-redmi-v1-20261012",
+  "model": "claude-code/anthropic/claude-fable-5",
+  "effort": "medium",
+  "clientVersion": "2.1.296",
+  "source": "543a96170ffa56777d5022264a2ead38379ee3ae",
+  "runtimeId": "2215d4523c30a8e14d6233a4092f7f2ac946e86b17c360dd17cae83d59e34f1c",
+  "datasetHash": "5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901",
+  "checkedAt": "2026-10-12T18:56:08.016667+00:00",
+  "status": "running",
+  "phase": "annual",
+  "annualComplete": false,
+  "annualScore": null,
+  "liveQualification": "passed",
+  "coverage": {
+    "smoke": [
+      {
+        "runId": "fable5-claude-redmi-v1-20261012-smoke",
+        "smoke": true,
+        "valid": 3,
+        "invalid": 0,
+        "through": "2025-04-03"
+      }
+    ],
+    "annual": [
+      {
+        "runId": "fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2",
+        "smoke": false,
+        "valid": 3,
+        "invalid": 0,
+        "through": "2025-04-03"
+      }
+    ],
+    "plannedAnnualDays": 251
+  },
+  "runtime": {
+    "policy": "bwrap-systemd-user-unix-gateway-claude-v1",
+    "bwrap": "bubblewrap 0.9.0",
+    "hashes": {
+      "scripts/sandbox/launch-claude.sh": "7171a25c86165693c061d83abe404bf40dc525acd465ff95127bfb85a19c0f62",
+      "src/claude/worker.ts": "3b09f853a2cc2ec493ea6c6a88e54472082dd8e5dc135d0e3b143c001fae5202",
+      ".sandbox/seccomp.bpf": "791d20edbc3fa44a193adcfe6774c739f80e6806742cfbbdab3f0c8b4fba70e0"
+    },
+    "claudeVersion": "2.1.296",
+    "claudeHash": "24972e3bc859fab2b46ed4c1e51f7d6130f06d3bd550811a114640de3370d0de",
+    "bunVersion": "1.3.14",
+    "bunHash": "9fd36f87e4b90b07632b987a2e4ec81ca15a62c81bf983190cea6d715be2ad74",
+    "bwrapHash": "e318903862396f96de3df57264e0158682b952fd3fb53ac23d876413e7b30f71",
+    "kernel": "7.0.0-34-generic",
+    "limits": {
+      "memoryBytes": 2147483648,
+      "tasks": 128,
+      "tmpBytes": 67108864,
+      "workBytes": 268435456
+    },
+    "id": "2215d4523c30a8e14d6233a4092f7f2ac946e86b17c360dd17cae83d59e34f1c"
+  },
+  "plan": {
+    "quarterSessions": [
+      62,
+      64,
+      64,
+      61
+    ],
+    "totalFunding": 600000,
+    "independentQuarters": true,
+    "concurrency": 1,
+    "policy": {
+      "version": "v12-portfolio-journal-submit",
+      "maxHistory": 252,
+      "maxOrders": 128,
+      "maxAttemptsPerDay": 2,
+      "maxConsecutiveInvalidDays": 3,
+      "defaultTimeoutMs": 3600000,
+      "maxEntryChars": 2000,
+      "maxReadChars": 12000,
+      "maxJournalIndexEntries": 20,
+      "recentJournalEntries": 3,
+      "maxJournalTags": 8,
+      "maxJournalTagChars": 48,
+      "maxRequestBytes": 32768,
+      "maxResponseBytes": 524288,
+      "maxOutputBytes": 16777216,
+      "reports": "disabled",
+      "journal": "own-committed-past-only"
+    },
+    "limits": {
+      "maxTurns": null,
+      "maxToolCalls": null,
+      "timeoutMs": 3600000
+    },
+    "availabilityPolicy": {
+      "version": "quota-pause-v1",
+      "fallbackCooldownMs": 21600000,
+      "resetBufferMs": 300000
+    }
+  },
+  "checks": {
+    "nativeSandbox": [
+      {
+        "scenario": "success",
+        "outcome": "completed",
+        "requestsToStub": 2,
+        "providerRequests": 0,
+        "replayPassed": true,
+        "passed": true
+      },
+      {
+        "scenario": "correction",
+        "outcome": "completed",
+        "requestsToStub": 2,
+        "providerRequests": 0,
+        "replayPassed": true,
+        "passed": true
+      },
+      {
+        "scenario": "quota",
+        "outcome": "harness_error",
+        "requestsToStub": 1,
+        "providerRequests": 0,
+        "replayPassed": false,
+        "passed": true
+      },
+      {
+        "scenario": "watchdog",
+        "outcome": "budget_cutoff",
+        "requestsToStub": 1,
+        "providerRequests": 0,
+        "replayPassed": false,
+        "passed": true
+      }
+    ],
+    "typecheck": "passed (both tsconfig files; direct compiler)",
+    "adapterAuthTests": 15,
+    "pythonTests": 10,
+    "fullBunTests": {
+      "passed": 378,
+      "failed": 0
+    },
+    "earlierCheckFailures": [
+      {
+        "reason": "pnpm refused linked modules directory; dependency copy and direct TypeScript checks passed",
+        "logSha256": "4cda1a233ecaddca1ed897f6fc9ee185625b33a2116ec72ff3d35aa7403afcdf"
+      },
+      {
+        "reason": "Full suite started from wrong cwd and could not find relative fixture files; correct RAM-checkout cwd passed",
+        "passed": 297,
+        "failed": 81,
+        "logSha256": "32784d2f26fce17c1e01721016312a63f96ad834067328ff39f845e922913bb8"
+      }
+    ],
+    "noLiveCallsDuringOfflineQualification": true
+  },
+  "audits": {
+    "base": {
+      "path": "RedmiBook: claude-bench-fable5/archives/base.tar.gz",
+      "sha256": "f1ad6ba195b4bc870a7c4c5ed44c2fc134751529595a62b6fdf7a6bd4028cb59",
+      "bytes": 163439875
+    },
+    "smoke": {
+      "path": "RedmiBook: claude-bench-fable5/archives/smoke.tar.gz",
+      "sha256": "2157e66e70745ae601b082496ea557f4c1e5f0fd8ddf3e030b819e1ce5485944",
+      "bytes": 385573
+    }
+  },
+  "sourceBundle": {
+    "path": "RedmiBook: claude-bench-fable5/source.bundle",
+    "sha256": "ae2febd5b1662551d4df2352bc568ec88e6b321047f171fa463b24b63e4008b4",
+    "prerequisite": "5c4d02779375521dfd124d95c1ea93111497a628"
+  },
+  "supervision": {
+    "service": "fable5-claude-redmi-v1.service",
+    "quota": "exact recorded reset plus five minutes; attempts retained",
+    "auth": "pauses before a new attempt if host login is unavailable; never launches a refresh model call",
+    "terminalGuard": [
+      "completed",
+      "blocked"
+    ],
+    "automaticCompactTransfer": true,
+    "scriptSha256": {
+      "launch": "d055c53ac1bfd5ef05107ca959fba3b16c56cd18ee5f1192eea44e35b5a73294",
+      "observer": "d0fbf22299f623d80240404c857227ff11177fb6eb96a451c49e829cad5c87ef",
+      "courier": "e746583eaa84841645433ec7c381a8d8f2dfa7af226d76756da28481d685c4f2"
+    },
+    "allocationBytes": 6442450944,
+    "freeSpaceReserveBytes": 4294967296
+  },
+  "subscriptionCostUsd": null,
+  "smoke": {
+    "runId": "fable5-claude-redmi-v1-20261012-smoke",
+    "days": 3,
+    "valid": 3,
+    "invalid": 0,
+    "attempts": 3,
+    "usage": {
+      "missingSteps": 3,
+      "turns": 6,
+      "inputTokens": 12,
+      "promptTokens": 161574,
+      "completionTokens": 4045,
+      "cacheReadTokens": 18535,
+      "cacheWriteTokens": 143027,
+      "totalTokens": 165619,
+      "toolCalls": 6,
+      "attemptedToolCalls": 6,
+      "admittedToolCalls": 6,
+      "refusedToolCalls": 0,
+      "successfulToolCalls": 6,
+      "failedToolCalls": 0,
+      "pendingToolCalls": 0
+    },
+    "attemptsMissingTokens": 0,
+    "toolCounts": {
+      "price_history": 3,
+      "submit_day": 3
+    },
+    "uncommittedTail": [],
+    "eventsSha256": "c1433175fe6ac073d9993649ba1bbe00d944a8e1da5184136919c7785706682e",
+    "compact": {
+      "path": "compact/smoke.jsonl.gz",
+      "sha256": "996c4af60b68c7fd8c200f62198020915cbce634b1f65564fd0b69bc42c36ed0",
+      "bytes": 5942,
+      "uncompressedSha256": "308deb5a99edc0b319a99f77eb63327d65aeab2466c47dfd1266d812837544ef"
+    },
+    "verifiedByPinnedSupervisor": true,
+    "requestModels": {
+      "claude-fable-5": 6
+    },
+    "effort": {
+      "medium": 6
+    },
+    "gatewayDenials": [],
+    "providerResponseModels": {
+      "claude-fable-5": 6
+    },
+    "completeStreams": 6
+  }
+}
