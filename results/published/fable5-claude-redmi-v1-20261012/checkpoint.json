@@ -6,7 +6,7 @@
   "source": "543a96170ffa56777d5022264a2ead38379ee3ae",
   "runtimeId": "2215d4523c30a8e14d6233a4092f7f2ac946e86b17c360dd17cae83d59e34f1c",
   "datasetHash": "5960ed91303695159a2293d9583be4a80e9f1f5284a0b61db3c6c063d79bc901",
-  "checkedAt": "2026-10-12T18:56:08.016667+00:00",
+  "checkedAt": "2026-10-13T03:10:25.053104+00:00",
   "status": "running",
   "phase": "annual",
   "annualComplete": false,
@@ -26,9 +26,30 @@
       {
         "runId": "fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2",
         "smoke": false,
-        "valid": 3,
+        "valid": 62,
         "invalid": 0,
-        "through": "2025-04-03"
+        "through": "2025-06-30"
+      },
+      {
+        "runId": "fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3",
+        "smoke": false,
+        "valid": 64,
+        "invalid": 0,
+        "through": "2025-09-30"
+      },
+      {
+        "runId": "fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4",
+        "smoke": false,
+        "valid": 64,
+        "invalid": 0,
+        "through": "2025-12-31"
+      },
+      {
+        "runId": "fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1",
+        "smoke": false,
+        "valid": 51,
+        "invalid": 0,
+        "through": "2026-03-17"
       }
     ],
     "plannedAnnualDays": 251
@@ -161,6 +182,11 @@
       "path": "RedmiBook: claude-bench-fable5/archives/smoke.tar.gz",
       "sha256": "2157e66e70745ae601b082496ea557f4c1e5f0fd8ddf3e030b819e1ce5485944",
       "bytes": 385573
+    },
+    "blocked": {
+      "path": "RedmiBook: claude-bench-fable5/archives/final.tar.gz",
+      "sha256": "78cd98683efc3a98bb2220c5463b818b8172e4ae0b97610265bdda985168daaf",
+      "bytes": 11145245
     }
   },
   "sourceBundle": {
@@ -180,7 +206,9 @@
     "scriptSha256": {
       "launch": "d055c53ac1bfd5ef05107ca959fba3b16c56cd18ee5f1192eea44e35b5a73294",
       "observer": "d0fbf22299f623d80240404c857227ff11177fb6eb96a451c49e829cad5c87ef",
-      "courier": "e746583eaa84841645433ec7c381a8d8f2dfa7af226d76756da28481d685c4f2"
+      "courier": "e746583eaa84841645433ec7c381a8d8f2dfa7af226d76756da28481d685c4f2",
+      "resumedObserver": "10748a188621ba77191cc0b805a1079851b35ee99a53909cc0a48f27d021c865",
+      "resumedCourier": "507e6c6badc8ee97872f812afbd0e04a26f1e231965649e9180826779ed74854"
     },
     "allocationBytes": 6442450944,
     "freeSpaceReserveBytes": 4294967296
@@ -234,5 +262,16 @@
       "claude-fable-5": 6
     },
     "completeStreams": 6
+  },
+  "recovery": {
+    "file": "recovery.json",
+    "sha256": "d49a222172f8d2114bb3d1abd59b0c8dac16567ee183b96f926483a99e7c3b76",
+    "retainedAttempt": {
+      "date": "2026-03-12",
+      "attempt": 1,
+      "outcome": "interrupted"
+    },
+    "resumedAttempt": 2,
+    "committedDaysReexecuted": 0
   }
 }
