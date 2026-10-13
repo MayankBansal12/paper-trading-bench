@@ -1,0 +1,1676 @@
+{
+  "recordedAt": "2026-10-13T03:11:01.922197+00:00",
+  "cause": "Host restart left two locks owned by absent PID467552; supervisor stopped on the evaluation lock before another provider call. Same source/runtime; protocol guards unchanged.",
+  "priorStatus": "blocked",
+  "preservation": {
+    "checkedAt": "2026-10-13T02:59:23.540622+00:00",
+    "reason": "Host restart left two locks owned by absent PID467552; supervisor stopped on the evaluation lock before another provider call. Same source/runtime; protocol guards unchanged.",
+    "bootId": "e7af8f3d-b6e1-4cd1-89c2-63a21421a5c4",
+    "source": "543a96170ffa56777d5022264a2ead38379ee3ae",
+    "before": {
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-01.json": {
+        "sha256": "d86937b5348147c68e1e248772f7a6a18f24cb7f0254d4aa23933594d82a2780",
+        "bytes": 4302
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-02.json": {
+        "sha256": "6ea7f356ce1181d0b54ad6df7213477a7674a7a32598eec55c757f322e6ef529",
+        "bytes": 3805
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-03.json": {
+        "sha256": "1e63d03fd9cab22383bf09729281753f23c2428513fca9d6f033b5c7918d48c7",
+        "bytes": 3929
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-04.json": {
+        "sha256": "29f4f88bb4fc5191e2e58cdf5df92c40ce94491a8a5dc59bce1e20e58f06d617",
+        "bytes": 5047
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-07.json": {
+        "sha256": "658e681b2a9124a6cac5dafd79d6a9dfcf1d08c669cf8346ce2ba7c4a6a33fb6",
+        "bytes": 6405
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-08.json": {
+        "sha256": "1d789312d2394832c5c9bf7ae0f76d1a8012fe9f6dd54ac9f2ccd83cb33a6ae9",
+        "bytes": 4373
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-09.json": {
+        "sha256": "d8e39670eec7dff3ccd64cef1a5ee68d9491072338056a71596aa54c59373a81",
+        "bytes": 3270
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-10.json": {
+        "sha256": "9e57964ae78ba4a897da831030b8491543d85d8e9a17dcdb99021c4ad1a57940",
+        "bytes": 3903
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-11.json": {
+        "sha256": "7728127f00c033c9037a0961a9c5a2ed25bfa218b4e2d613a7842d54d4d497ac",
+        "bytes": 3028
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-14.json": {
+        "sha256": "a97fd0a85d779afa536d02484c95c576fb196809204c6d72759a30c39ba54ae7",
+        "bytes": 3762
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-15.json": {
+        "sha256": "99b5221aed68aeed86485e74fee5cd5f6a5728ec5e60b6acc6eec88338db7bbe",
+        "bytes": 2899
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-16.json": {
+        "sha256": "7be0af70cc421ba064a9324d84bb41f165eacd59538383d6ac32e7d9e2e37175",
+        "bytes": 2887
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-17.json": {
+        "sha256": "3c96ef71be0829f294ee3902c07d4f08ac5f832c5901987336ca1cc1d436b14c",
+        "bytes": 2878
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-21.json": {
+        "sha256": "d20cca9bcf7551bdb232138d4441230e4f7f88cbc0fa4f03ffe2e902fd9c8957",
+        "bytes": 2887
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-22.json": {
+        "sha256": "bfa0d463ffba7428cb950cd95ab26af4860fb393ae0e419f8cf0400dcf8938f1",
+        "bytes": 3133
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-23.json": {
+        "sha256": "891a1495eb3238ca31670ec9a19782cb4b3679af03521eb23e3209fc0be8f078",
+        "bytes": 2900
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-24.json": {
+        "sha256": "a54a56eb5a2ff987fa96f96c522cfaa90936bc9c5dfdd0ab89275e5b1b38cd38",
+        "bytes": 2900
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-25.json": {
+        "sha256": "3bec301ce923e849479c5da803486263f706e3b73e46978fa3bf2ae85be34fbc",
+        "bytes": 3151
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-28.json": {
+        "sha256": "b29a461a91a3c6e2bb5a2d7365837e59c6d68ca924ad9d6338df9aa0993dc645",
+        "bytes": 3259
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-29.json": {
+        "sha256": "7858e11449b588a7a310633325a5eeb26441d9ef13130d7e5e3c8773ead78a54",
+        "bytes": 2900
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-04-30.json": {
+        "sha256": "7ac0a8d464a316afd09416aa2fb4762a3385fbcd43c261010b2d6857c4fbf4ce",
+        "bytes": 3000
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-01.json": {
+        "sha256": "2db6a53718f8f06afb5f3e1c61e0d653e7d16a5272a40f460ecadd21f4b7e445",
+        "bytes": 4136
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-02.json": {
+        "sha256": "685ff50d8877195f3aa6e80c0a9c110134dda45db696bf6fa678d0de18daa2a9",
+        "bytes": 4592
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-05.json": {
+        "sha256": "0662f547c2b0d32fa5f89903af4236a53da18d16a325fa089667a2060b352b55",
+        "bytes": 3527
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-06.json": {
+        "sha256": "c0bce9f1cbdc03fa82016e1355c73ecc698dfa4401f04eb45f6e1964c7e19128",
+        "bytes": 3657
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-07.json": {
+        "sha256": "f73f01c27c3a863d744d78992bc08316f089ee76c36dbf7c3a7344ac1e348fbb",
+        "bytes": 3530
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-08.json": {
+        "sha256": "4bb5185fb5093c3089be10d046452b423fbcc4d2c924d00e556b18d5b25ac5ed",
+        "bytes": 3538
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-09.json": {
+        "sha256": "6e6502443d144198d79a33b28812e50d8c0959ed39ee4b5d5ec87c4851828634",
+        "bytes": 3774
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-12.json": {
+        "sha256": "3a445bbf42743f005462907ca7c25d0ce8f7ec6ba3239a6d007875fc5012a0ef",
+        "bytes": 3867
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-13.json": {
+        "sha256": "57f3b1b6a06c0a6f47319a4ecd9517578c36ebdbc31c8e9c74ae272f24e9caa4",
+        "bytes": 3504
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-14.json": {
+        "sha256": "dd3441916bfbcd51396963c97d3a1b9134fd4b629d33b785e4fedacd27f6d744",
+        "bytes": 3650
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-15.json": {
+        "sha256": "1bf524b0ba5a53763aefff3cceedba487941f73bafcd84d4f6b456cb1651e5ce",
+        "bytes": 4020
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-16.json": {
+        "sha256": "3f63dd4a5e181d3b4e9764e6b25bde0bb64acdfe833bc21983b84b5e3ae80f17",
+        "bytes": 4037
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-19.json": {
+        "sha256": "44ba551c3d626d409436a0a474d37125b9d3ad92a971720bac7ee00d457574be",
+        "bytes": 3793
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-20.json": {
+        "sha256": "f96d67a1e5747763f32243959a969d1a226c4bfcc5b89f806fd10af363c16ae5",
+        "bytes": 3669
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-21.json": {
+        "sha256": "44636fec0e0bcfd7e0c6e64a9f92bde14f644119b781d965fa4a481526ed2ab0",
+        "bytes": 3528
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-22.json": {
+        "sha256": "e3eb3711b3e8b984c6e4af0d23b80f8950532067aa46c7ecc8e91709888f36d8",
+        "bytes": 4021
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-23.json": {
+        "sha256": "9aa72344582ce4bbfeb50814417246a159852402240841a2fe4a575d55db6b00",
+        "bytes": 3656
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-27.json": {
+        "sha256": "19e9305bee873d6fa970019682f36313b064c2c01f440a13140458462d07b047",
+        "bytes": 3520
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-28.json": {
+        "sha256": "1dd4c4eb61b04fb6d2386b7a956591e1856dd14ceb6ea4ef34c778bb615e71d5",
+        "bytes": 3532
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-29.json": {
+        "sha256": "0611549425cde93211ef94edbaba671f0c1a8996f5b3039edde897c58074a98a",
+        "bytes": 3544
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-05-30.json": {
+        "sha256": "575d93e86b32a2def2cbedb6dd34cc7b6451072ee20149033cdc6da6acd52b6a",
+        "bytes": 3914
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-02.json": {
+        "sha256": "50676dbe5e46e345bfb323bf0e30326a7dcbca888add7555b2fb1a84620c38b9",
+        "bytes": 4937
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-03.json": {
+        "sha256": "3700ccfed3d24d53ca4cdab1d8bdf4a1ef6ac6c3cd859b6643246c8e4f845f93",
+        "bytes": 4981
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-04.json": {
+        "sha256": "6b602a6b9063109d7884bfd5e6fa8e546559d389412d315c9471560b07f16330",
+        "bytes": 5504
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-05.json": {
+        "sha256": "24a9fc563c53243bad0715e2c9abc5abe1ec2142de04be3beb7d32b3261ee41f",
+        "bytes": 4614
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-06.json": {
+        "sha256": "1d8f3da9cdf714016d93bc961247fcfcb2a3a7152eb167366ab6661f928ccbe4",
+        "bytes": 4745
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-09.json": {
+        "sha256": "b61d8a68af2effe834f26811f3f12aac74ba8623df732d3482a7a61830bc1933",
+        "bytes": 4736
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-10.json": {
+        "sha256": "3971bbd781381f7eda58c51824df940cacd54edfa98875a57b3720518cef4181",
+        "bytes": 4726
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-11.json": {
+        "sha256": "0cf879d18278b08c6a3afdc9a92cca55b82b5d0e9bfd6db955e11d9beca9a77f",
+        "bytes": 4598
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-12.json": {
+        "sha256": "7817f0995a0d4e697ad0433cda2d553965d0f3a9d7aa4f559b6b72930f7a3a05",
+        "bytes": 4457
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-13.json": {
+        "sha256": "f298000f64bfcc07e9099256427aeb60381e898a5425f3f312309f4d78e2471b",
+        "bytes": 5057
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-16.json": {
+        "sha256": "363aaf730189dc3583065f8dd635b53bdeae4d438e66afe23173187b601ef6db",
+        "bytes": 4314
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-17.json": {
+        "sha256": "93997556d56ea82d3db5754ff56ba835280cc6ad026275442aac8d21aba2e324",
+        "bytes": 4181
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-18.json": {
+        "sha256": "b8aa8b91def4759e1f5fe7d14d301da9de007522f662a66bf6c56c1d9c81e355",
+        "bytes": 4306
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-20.json": {
+        "sha256": "ddfb534616e8f39aaa531b2e38928ffeb8b221a57c4de10b3bae08ed83da7a2b",
+        "bytes": 4313
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-23.json": {
+        "sha256": "d4864976ca6e82c0af520ac4a0ce52d17b501b42684e6df797598c6d03909911",
+        "bytes": 4169
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-24.json": {
+        "sha256": "2c2d3e7692393104346754328ff98cbf047efec320c3c89807e62fde1634856c",
+        "bytes": 4170
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-25.json": {
+        "sha256": "d9fe64e9aa4637ac11b2d2cb273e900b7d2ef1888cb51f07febede410ba86d78",
+        "bytes": 4439
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-26.json": {
+        "sha256": "25090730094278132be7d88e3ce897bd88ca243593fd506a10e1a560ab5f880f",
+        "bytes": 4173
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-27.json": {
+        "sha256": "5a777ce1369b995a3e17b448ba854e6411e792fb379686ff8056d5ed46bae384",
+        "bytes": 4289
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/days/2025-06-30.json": {
+        "sha256": "d7c8bece01d584c1ee110b85344a223b2cd96bc73120704c5a8d1398fd0aa771",
+        "bytes": 4427
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/events.jsonl": {
+        "sha256": "16bd35da716c3fe2d7bb4893e03aa7611732ef1cb452ba83e4ced30db8d64590",
+        "bytes": 10038181
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/manifest.json": {
+        "sha256": "fe5fc12939f128eeba9c896c5d3da90a891f76c4cc3385832ab620e530856cb7",
+        "bytes": 7321
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2/runtime.json": {
+        "sha256": "6b852a90a2ff7bb0b4faa6d60ebb78927b99de74bb8891f78efed72447da4366",
+        "bytes": 942
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-01.json": {
+        "sha256": "f487530010444e243453a1df4a7c48ddcdd5580e8d1f88bcd2385111ac2b80b5",
+        "bytes": 4688
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-02.json": {
+        "sha256": "34e09a073fb3d97bc4e326f4868e06048db4f117674b5db49281197d6fc9fe20",
+        "bytes": 4128
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-03.json": {
+        "sha256": "37725b0f49520725d7cf4ee7c35f3e8188c977b2019a82fd825c5488f6cd3c29",
+        "bytes": 4241
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-07.json": {
+        "sha256": "aece176e9a289f03a56e30287b63f34dc2a11dfe52771ebee71818de2cba9b9d",
+        "bytes": 4250
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-08.json": {
+        "sha256": "7e532c6763b19ace899812191b771b337da7f87ad6b2c00ba28c44aa66c8fae7",
+        "bytes": 4251
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-09.json": {
+        "sha256": "c0f3cf8e3a0dc367c5fd3839ed98ef83cc64d898ab6360879dee0e8d1cd43f55",
+        "bytes": 4119
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-10.json": {
+        "sha256": "49f29784c1ea56e7f62dae4b04ce61635be0f496b6bd3aa652b230f30108c255",
+        "bytes": 4260
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-11.json": {
+        "sha256": "eada8af5a1a8786bfa58c72a28d53019bf1e57865f08645551446933ef76a11b",
+        "bytes": 4784
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-14.json": {
+        "sha256": "83bc81e9f191c37c718ab4f0a1b9c009155bf48be13cf57691b295a8c7ff0997",
+        "bytes": 3836
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-15.json": {
+        "sha256": "2376c6a8018b359f1feeb41884d12d86a35dfa863b178014099e5410bedfc24d",
+        "bytes": 3834
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-16.json": {
+        "sha256": "1473539fd0a4f57bd15953aac44a9f433140baa17bf78d4b5e9bc9059eafd513",
+        "bytes": 3820
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-17.json": {
+        "sha256": "751ebaa3e2670c97e595179fd6723b23bf4a2ccac744b81e326867a3d868c8f0",
+        "bytes": 4107
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-18.json": {
+        "sha256": "035ffd5f18b54f1fb990c61b111b5b1d391d826f52d2f1a4859d12df75a500e1",
+        "bytes": 3748
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-21.json": {
+        "sha256": "b10e1172402fbf6477c89509f60a5a0957039b74d55e392b1d9f9cdf81152e2c",
+        "bytes": 3722
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-22.json": {
+        "sha256": "0e90d322756261ae9d6bd19c1e1c2ee525217e0b2e91c860dd3d10bfbc1159f4",
+        "bytes": 3199
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-23.json": {
+        "sha256": "dd7099870d5203af4f9a2a67f3b142f08810c28e7a606d3ce9f7306d56a62c2d",
+        "bytes": 3451
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-24.json": {
+        "sha256": "93d3b396026652a2922712be079960ed1be206b62be10c2e55c2dbb959651176",
+        "bytes": 3213
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-25.json": {
+        "sha256": "0e881ea05af6b2fb2002fed59338d8ad420b06e3b8f2c0cfc7d831eafcefbbdc",
+        "bytes": 3725
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-28.json": {
+        "sha256": "5e240406ccc6664a31cb957c307145b1096490fceb10bd17965dd0d9c5062e6e",
+        "bytes": 3496
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-29.json": {
+        "sha256": "037da1393cc7ca8df7c43ea25445f18c6f4da2a2e57807c63ffe54ee96f413d0",
+        "bytes": 3734
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-30.json": {
+        "sha256": "2adcad5fab6d46a3d1b58b7c3647c24f4af891f303c2aab3f7e8d191ab589935",
+        "bytes": 3488
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-07-31.json": {
+        "sha256": "87a8500ec6060e94fd87f4ce730a0a4d9609f546001338e46c294362b887fa8d",
+        "bytes": 3620
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-01.json": {
+        "sha256": "5a2e7296d277c51fda024cf1111717ecb25b5f4e54bb98d72a4e5457bdcdda0b",
+        "bytes": 6109
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-04.json": {
+        "sha256": "5735e7f81fc0485440b15b027f115f68d3fc67b7d1751706a523ea3131f41520",
+        "bytes": 4141
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-05.json": {
+        "sha256": "3bd5509aeb571fb42c8966fde91aa231cfde01045262ac206b661f255798696a",
+        "bytes": 4263
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-06.json": {
+        "sha256": "4858b90db47e52cd1f9947ef43de47b8b6dd4e57037a93f9196ce21ec9df963d",
+        "bytes": 4157
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-07.json": {
+        "sha256": "c64850a710565dfd527deeb79ed04ccce0287c70a02040f504f4277fd0c299b6",
+        "bytes": 4399
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-08.json": {
+        "sha256": "6c39efec12ddea390d5fd4307c30131d930efa78f17673cf1a440c4a01f90977",
+        "bytes": 4295
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-11.json": {
+        "sha256": "202fc4137ef1635be198d990869cbfb5cafda60b9f2a79e548e1711cadf78735",
+        "bytes": 4402
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-12.json": {
+        "sha256": "0a426d7dc83451e253fc635b66372185ee48e1542f4a17865b452bf9e6ddb639",
+        "bytes": 4124
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-13.json": {
+        "sha256": "6c2584175ecb131c6057b2ff8688eb1a0c5d7b1b095abeed0da07ee4de0e6e14",
+        "bytes": 4139
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-14.json": {
+        "sha256": "fa846816b370a338b8d775affa6ba6866b5fae02245ff19f21f971112ce830ab",
+        "bytes": 4415
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-15.json": {
+        "sha256": "79698ba3756f636819b6127346edb0c3fbb4f9bc82bdebf322d36ca07c3fab64",
+        "bytes": 4526
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-18.json": {
+        "sha256": "46b0af502c21b77668ea585a75e257004542958a0e538b65305ebc91061aa34d",
+        "bytes": 4635
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-19.json": {
+        "sha256": "c46f89aaffb2d5589bfd59a49a9b55f6c03e14e13f118df3c1286202d7e20647",
+        "bytes": 4264
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-20.json": {
+        "sha256": "5cbb5e9fe10f31f5ecd2bf5691aad9d5a1f63bc27ebed0130d38594d101d9af0",
+        "bytes": 4660
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-21.json": {
+        "sha256": "a5477c989131e7b0b916fbd2a9ff4f2ac9988548a3e9de17b09eeab38e44fcb9",
+        "bytes": 4213
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-22.json": {
+        "sha256": "3163b6ab8cc3ade4c0baf9cde6ef54ceaba49246eef10ef3036bc391859ce2ff",
+        "bytes": 4080
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-25.json": {
+        "sha256": "3772046b8cc875f1745a59cbc12b8da2bf98f158cbd2e129723a1ef8e02addce",
+        "bytes": 3840
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-26.json": {
+        "sha256": "f1e01edd33b02325e5361bd6199eb71002da673301ebc6a00bb531c5685f075a",
+        "bytes": 3841
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-27.json": {
+        "sha256": "35def665e3cc285aeaaad71f05f694e48ce41d58627f330e34037a398c17d189",
+        "bytes": 3816
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-28.json": {
+        "sha256": "e1883eab636713f5ecb958f56d764f55cea7f5fd413154814bf8de863045629e",
+        "bytes": 3810
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-08-29.json": {
+        "sha256": "026a67ee3a75a8414bfc1434eb10fda6a3dd51e9e4702cee9223ea06d8cf1b24",
+        "bytes": 4195
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-02.json": {
+        "sha256": "7064ab3697e4b0f89c9ac1b19bfc9629943ac0cb81834cf3edce5e90fbda541c",
+        "bytes": 5056
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-03.json": {
+        "sha256": "d6110e41fc373e85525e418d24c80658c3c0a4e5ec07d2d76fc01bc5a50b1502",
+        "bytes": 3983
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-04.json": {
+        "sha256": "285bb4551005f55987c621f1ad6074d5ac168ab4cfcbbde2827a7f7fe2bf86b1",
+        "bytes": 4781
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-05.json": {
+        "sha256": "de32bf74939b0e74c5302214dbf3196c46ae7c0c79d61140155a5abdf3b61aeb",
+        "bytes": 4080
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-08.json": {
+        "sha256": "47144691fa94c0914af299aed7533a5141422fff5a4d3387eb3bfed2b5c76da6",
+        "bytes": 4228
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-09.json": {
+        "sha256": "0236a203786cdf7fa54635347940d3c432dcbc4b5e0c8684337573cccfa2b817",
+        "bytes": 3358
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-10.json": {
+        "sha256": "5d9f39d3ba490402c51fa2477676bc36f77908c6421152d7e86edbb4710a673c",
+        "bytes": 3213
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-11.json": {
+        "sha256": "4654e38e20f218d1687163f96d34c3604c250c6864d1bbaea018ba25dabb4cf5",
+        "bytes": 4388
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-12.json": {
+        "sha256": "17c612873552bb57b5e26949cdb4475e82a22c3e574b383edd618aa1b87105e6",
+        "bytes": 3677
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-15.json": {
+        "sha256": "e785500b927cc02fead0bd1771437373f8d538eef8cb50aee126d27974fef116",
+        "bytes": 3917
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-16.json": {
+        "sha256": "a88b39e4272381608d0f65c9ab21e530ba67da831181541252653f09b43db599",
+        "bytes": 3514
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-17.json": {
+        "sha256": "38ee45830404a792c3f9ef03f007142e53ca8ce719004b7c87dd5201974fba35",
+        "bytes": 3642
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-18.json": {
+        "sha256": "cdfa42ad14ee9d869f6398ee50b420cc9feffe7df537e7aab68ed4d7721f43c9",
+        "bytes": 3532
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-19.json": {
+        "sha256": "6ef60228e9b05ad80aeaa24b7df2336a5d845f5c3a1b95001d016a80841976c1",
+        "bytes": 3545
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-22.json": {
+        "sha256": "8f016ae6a5b086d6c626d237b9ae8cb999a0e36b8c455fe6ecdcad0b2611d211",
+        "bytes": 3796
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-23.json": {
+        "sha256": "322eb1d870bebec69ed0eefcde9e53025ccc61ef11fad147068b8b9069363a09",
+        "bytes": 3532
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-24.json": {
+        "sha256": "c5bcc91133cd2811ebb12948e973d98ef9dc7025f503f14f6bf529cf817f9c03",
+        "bytes": 3671
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-25.json": {
+        "sha256": "b40ae7e8c024cba7b8a5fb61cdcf0c97860683ef2699f21bc200fd5334ad237a",
+        "bytes": 3541
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-26.json": {
+        "sha256": "aac52bc0d5c7cd158fdca9d21cf4bdb9adc025edcf19e31dea32b7880fe7e453",
+        "bytes": 3651
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-29.json": {
+        "sha256": "76ac6bf4e21aa88a38e2fb96eaebfe131664794293eb924010948dd8579882ce",
+        "bytes": 3522
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/days/2025-09-30.json": {
+        "sha256": "70c26e5e271aaaec589dae40c3c06285ce7d4c5d2e3c096fd2066b79ffd7505e",
+        "bytes": 4746
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/events.jsonl": {
+        "sha256": "273c6002fe8a1f9f8bc1288c0ef3844013fd375ed196f9012ffe613504ee6d7b",
+        "bytes": 10153383
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/manifest.json": {
+        "sha256": "010a80eb0aba57343ee3c930bf78762b3974208548f391be7decc5ad49631fcb",
+        "bytes": 7321
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3/runtime.json": {
+        "sha256": "6b852a90a2ff7bb0b4faa6d60ebb78927b99de74bb8891f78efed72447da4366",
+        "bytes": 942
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-01.json": {
+        "sha256": "f50a265633ac7848918db596ac79a1bf72fdf791b6229347d4eebed0a9e142cc",
+        "bytes": 4296
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-02.json": {
+        "sha256": "dc5488dcce8e7c67052d86d234a7265bab4dbeb2a3a4b1bf3cf8661fb9f71ae0",
+        "bytes": 3797
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-03.json": {
+        "sha256": "5ee8043574b436ae9124a0004adc52bfad2029ede5f0caed059a145469030212",
+        "bytes": 4172
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-06.json": {
+        "sha256": "47fbd7903df2579a4762c973d902d8fc795e0999117c4ebf81c675f15c23ebf3",
+        "bytes": 3799
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-07.json": {
+        "sha256": "fdb3cc475184c424b3f8328db1fa9e29bebd152f25f95ab526c3b0ad1da27253",
+        "bytes": 4094
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-08.json": {
+        "sha256": "46f33e5249a7f3aba2b1c15e122c6c8a0eddd7e01b674eb78345355c1400d5e5",
+        "bytes": 3516
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-09.json": {
+        "sha256": "7dd60bbe41f87d0af7a76d347b4a3e20e48d6ba0e758e73f9555d325e111620b",
+        "bytes": 3648
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-10.json": {
+        "sha256": "683528c2e380294655e647a02931287b41110955bd8a751e1729104fdf87d621",
+        "bytes": 3644
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-13.json": {
+        "sha256": "bff9a1efde8b724b7015f7580cea5f4c312745fb92f6d6627e2eed410989fde1",
+        "bytes": 3749
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-14.json": {
+        "sha256": "83dcf5816d5efbcd731e10f9b09259def1ec5478b4636b51f5c2154f682c91df",
+        "bytes": 3517
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-15.json": {
+        "sha256": "ca50e33787ac5e58b5a323ebda7fbcdcf9654ac3a29b1ab72f852821b36369a4",
+        "bytes": 3515
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-16.json": {
+        "sha256": "f497a7f13f0ac1839188a9db581efdd1bad334e333835dc4c650e082c7a56c9f",
+        "bytes": 3502
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-17.json": {
+        "sha256": "3dd013aa54867f9e198515535c5f0711cc09bd1610af244b0df0b82abafe6759",
+        "bytes": 3507
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-20.json": {
+        "sha256": "21a64124dfa598320790d28eab61e55aee4a37f9955cda9a1364aec503fb7bb1",
+        "bytes": 3520
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-21.json": {
+        "sha256": "390c3ed054daeee518de80d7acfce383f089039fc6785aa2081ab88bb8cafacf",
+        "bytes": 3512
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-22.json": {
+        "sha256": "1d79e845f9004241d979834da2cb1e206651b9126ffee57ee8ea838a46175da8",
+        "bytes": 3512
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-23.json": {
+        "sha256": "aadfb0ece655a5c28e3a8cf0a9083c0f8a520ecd5f743595dd8957d0e009166c",
+        "bytes": 3502
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-24.json": {
+        "sha256": "111fecc59201c574a7c72177e1da61dbb9e0a469c26db6ad0fe8b647c9fba183",
+        "bytes": 3754
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-27.json": {
+        "sha256": "87e73d8c9aae75401208a0a6f279818847e74d082f95ceb9238b248112a26e65",
+        "bytes": 3516
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-28.json": {
+        "sha256": "1ad25e50e9e2a653cbb8f6ca5c1d9a019aab298e1b202ddafd200cec47acd002",
+        "bytes": 3646
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-29.json": {
+        "sha256": "76923b55cb8e2e4c6b8c338517afe6316b4c47fac7ffe3fdbc92de6272fff52c",
+        "bytes": 3635
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-30.json": {
+        "sha256": "f68899a85cb1bc6d488f176fce3cb2bb418860902bfef1d99766e5dcc2867ea5",
+        "bytes": 3502
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-10-31.json": {
+        "sha256": "9f2b657ac6f146afe25a452ddf8e72ae98cec25204886443663f2ea83bcf0ac9",
+        "bytes": 3850
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-03.json": {
+        "sha256": "bfef431110312dfda8430c401dfc82b2b01233fb960191215e0e15f4ddad7ee7",
+        "bytes": 4547
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-04.json": {
+        "sha256": "d3cef77905885d9e1bbfb8ea64021cc747b510805e41e3a36af1a8e460698ab3",
+        "bytes": 4270
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-05.json": {
+        "sha256": "bd3d468d47685dfe0009d3f65c4974494a9bd452d8d6f2f7d119294a509e89c1",
+        "bytes": 4132
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-06.json": {
+        "sha256": "cb6a12f902e61f0e93cf3f7667e5eb311738eadbe686c6345c05332344f522c2",
+        "bytes": 4114
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-07.json": {
+        "sha256": "72c7434d1f810f3b9beb63e7d07faa9b4ded2e88da41ab3e712c9ccebf17632a",
+        "bytes": 4510
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-10.json": {
+        "sha256": "46b18b47a9a0d348cea178622ebfbb80a5cf308b1c9a2042b6c989e76ce61ca4",
+        "bytes": 4516
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-11.json": {
+        "sha256": "c01b837f028de4626d0057be2594e50edac75498823dda93b7352ecd0f82c29f",
+        "bytes": 4139
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-12.json": {
+        "sha256": "43944ee848c233cc8f1bd65b06bd218f6b4760eb2424f022d0b8db5dad5d70e1",
+        "bytes": 4285
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-13.json": {
+        "sha256": "84f3678624784a4e99bb2ca7ca6cee2a2fcc45cc09533ea7f7f7914905dec974",
+        "bytes": 4281
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-14.json": {
+        "sha256": "c9330cf241d5ba4799f634a2d7cb05d152aa3d0ba753688de92535d85e8aadfc",
+        "bytes": 4765
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-17.json": {
+        "sha256": "63337be08805dce0cc178a0058a7bfc5d019c56dc95b0744fd13c2fd7e62d40f",
+        "bytes": 4499
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-18.json": {
+        "sha256": "5ac7dbd3a9f29bf077be6bac5aa4f8c8eb1c80f17903c77c7e30fd7f31fe2998",
+        "bytes": 4348
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-19.json": {
+        "sha256": "fc6d23dcb47aaee37160fb6976861af2022193de388097eac167455ad83d3793",
+        "bytes": 4254
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-20.json": {
+        "sha256": "9c3f70d3de48ca9530eb57c069abb918da16634641d59e54e25f560cca06f3ce",
+        "bytes": 4662
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-21.json": {
+        "sha256": "ada1394141ec16aa33da4e4391c45fdda6510a2648b816000e2b8bdeb5e0d25a",
+        "bytes": 4438
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-24.json": {
+        "sha256": "893d29e7472001836e92a9265d4e5ea20e7dbf175a0552b6ec0aabb2dd4ac83c",
+        "bytes": 3652
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-25.json": {
+        "sha256": "460b1d79c45dc919c9e3c7762e211c3d5222844a785cfa4ce46c59542a2ae0ea",
+        "bytes": 3523
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-26.json": {
+        "sha256": "d337a59d30475c292641e6f64029dd8d380f2ab3612a202c76e52486160522a7",
+        "bytes": 4100
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-11-28.json": {
+        "sha256": "361167ab3627751159f2d018e565b61d47a543da0e21caa46caede0b9ca65f11",
+        "bytes": 4192
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-01.json": {
+        "sha256": "3d58307f233f61ded6b55cce99d28452521b6a7b6e886494db52a0df58dae0f1",
+        "bytes": 4621
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-02.json": {
+        "sha256": "cc2aebae0a11004d8e7609063f176e13f139c933d7514c0c9ab3d2d45c46b4ee",
+        "bytes": 3532
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-03.json": {
+        "sha256": "1e30e1cda3d02e28382b8cf90dd2301efd4ee90e17ef2c32eb4d399f4a588edf",
+        "bytes": 5009
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-04.json": {
+        "sha256": "5e56ac9b1423136c48ef65c28c9bf0fffe32946051dd2837333cb5653c4237b6",
+        "bytes": 3924
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-05.json": {
+        "sha256": "1fc2b17f5b006de9aa356e380b680909381ea0dee81b2579948b7c522a6d2003",
+        "bytes": 3800
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-08.json": {
+        "sha256": "0a9615d861a88b747d27edb276436a9d456190e58fc0220d1b1cbb688a9ec11c",
+        "bytes": 4803
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-09.json": {
+        "sha256": "3d6e8dd894322ca70212f9c2e7084286f940ebcb6626bcd59a9ddf9c6ca1f658",
+        "bytes": 3668
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-10.json": {
+        "sha256": "1780fec0b04b07fa92f6483a63590a49d46694493feddbf42ab4e2e63e702a9b",
+        "bytes": 3671
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-11.json": {
+        "sha256": "c655b4f3c67c4c5f71f71e8c790ec77fd44724e3a0965ad8d84d280c301898a4",
+        "bytes": 3546
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-12.json": {
+        "sha256": "b63b78bbc81f923482aca199f7bc758a9dd9765c44e266a757654090c23d1faf",
+        "bytes": 3798
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-15.json": {
+        "sha256": "280dde92e83813f2c0d9e98f81441ca31a2ba6e4874bb8ef95fd4e42972357da",
+        "bytes": 4075
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-16.json": {
+        "sha256": "e1684aad8845be7d7ca098ff7aad9d69e059b4b4636e9e226152ea0c6c9d5d70",
+        "bytes": 3064
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-17.json": {
+        "sha256": "1dd9e759d2d76c72f7a1832d653b846628d69aa2018824c8767cf8d3e8eeedc1",
+        "bytes": 2370
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-18.json": {
+        "sha256": "b555c4ef36d38c56093b408919cedbffc4ce998d6c6a622029a11e7ce6b621f6",
+        "bytes": 2121
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-19.json": {
+        "sha256": "766a1c6c09a173080a0f1e2d50e863949525568defc726a5e4930cd5180be389",
+        "bytes": 1469
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-22.json": {
+        "sha256": "c82396250ad76ad20c245de4bcfd4effb6335402c986b3290eb37610252740f8",
+        "bytes": 2614
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-23.json": {
+        "sha256": "f19f16c3d7377ea54c88cb5e9bfd6f7dd5c851603eb87680da45312a3461e021",
+        "bytes": 2900
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-24.json": {
+        "sha256": "ff632f85c5419f38bdeeaadda939a5c073a3ad0c364fdf424b27574dc9f8afe1",
+        "bytes": 3184
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-26.json": {
+        "sha256": "7dc770da2a42238d8d670f7e06c2df77872f73503ed8788e05b157b08b3d4571",
+        "bytes": 2601
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-29.json": {
+        "sha256": "a080a1cd77a6eac9c86758b69f023132c08348ccfa82288a231d6490a7432630",
+        "bytes": 2853
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-30.json": {
+        "sha256": "f0ffb027b92d1ea945d08e9b897c9d9318145674bc214f3f8e65ab0870b1223e",
+        "bytes": 2604
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/days/2025-12-31.json": {
+        "sha256": "5af5c3322063e43f7d261337049a0690c86a25621b96400454beb93dda49483c",
+        "bytes": 2827
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/events.jsonl": {
+        "sha256": "7033468bbf8ca2ccedbdbf0f6134db9fe4fe42530740f64af58de1477d788542",
+        "bytes": 10366506
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/manifest.json": {
+        "sha256": "5486cf4d00e8b6e3e5d732dc7e2b4116a6ad0ec0a8bb4bc4ec15cb660a477452",
+        "bytes": 7321
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4/runtime.json": {
+        "sha256": "6b852a90a2ff7bb0b4faa6d60ebb78927b99de74bb8891f78efed72447da4366",
+        "bytes": 942
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-02.json": {
+        "sha256": "b432af7b591c651a9b43effdc3da3194236b5f9beb196c422177db47238cd239",
+        "bytes": 4672
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-05.json": {
+        "sha256": "51cef603431b97cd9411d71f53d281a4a94cc43d21aeb46880eccf5258137e04",
+        "bytes": 3808
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-06.json": {
+        "sha256": "50eab7f201325aa6e3f43aa7ae162eca933288b3d19a3b323996f4b3a32fddbd",
+        "bytes": 3827
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-07.json": {
+        "sha256": "0b8e94d0d1e92a6df29230bce0eedbf81f10294f2ab883f24bd16efc1657c65c",
+        "bytes": 4057
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-08.json": {
+        "sha256": "510baa2b15a117b0438d60d09ef86e9a2a4b2dc70e73b85ef8b18c3256e5fe2d",
+        "bytes": 3827
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-09.json": {
+        "sha256": "f2b176699b708f66463ce426303b5a4f292a21428788bdf64ea4424fb3086436",
+        "bytes": 4202
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-12.json": {
+        "sha256": "ade1468a6d28015ddc57f084da214c81bcbb34e51ea9065205dccb8795d768a0",
+        "bytes": 3804
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-13.json": {
+        "sha256": "8f6e069d1e35af131aa4dfbacd121c16cc02c5b783878c0d95360268f3c8f710",
+        "bytes": 3802
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-14.json": {
+        "sha256": "934437d4d6940608cbc23dc8b924bdbdf8972efb4ac181a88c350d968c444a74",
+        "bytes": 3822
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-15.json": {
+        "sha256": "bc287cf9c5c1f993a5856e5a8c37523bc7d605e906da01cc2fd371032eb980e7",
+        "bytes": 3826
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-16.json": {
+        "sha256": "428cc669db25b035b46a96592f1ed33ec8782710c4a240d40973889116832ab0",
+        "bytes": 3778
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-20.json": {
+        "sha256": "88020f0ac175cfad3298b6713c2ff8a4cb827ed3e6f69900462750a870e5f282",
+        "bytes": 3736
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-21.json": {
+        "sha256": "9efcfb6edb5f565a111a15eaee5506042a28c01c55da32c71674f8a5635e0e81",
+        "bytes": 3871
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-22.json": {
+        "sha256": "0d3214988c824fec1cd7e97693ff7d67e6038689b46c695c6940748334286996",
+        "bytes": 4037
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-23.json": {
+        "sha256": "6c00175f1dad6f973b913aa81f2f9e8241e9a23348d8cc09436d8c2c70d75e64",
+        "bytes": 3655
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-26.json": {
+        "sha256": "2740dee8512bfe1cf056ebc4d4a95f81e0361fe434c76120ca259ad662eb35b0",
+        "bytes": 3451
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-27.json": {
+        "sha256": "ad108d56bf90154b22c89bae445d2cb06a88ce1b628255992a3b33220dc5cb59",
+        "bytes": 3214
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-28.json": {
+        "sha256": "748fab9878e2d5da83c225cf7f1c4c02ef4c73496b6ba02ca16341b35e8a0873",
+        "bytes": 3343
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-29.json": {
+        "sha256": "33057d8a6017b3274dc771265b79c11e864c3e6a2b589f71cec85b0a891e852b",
+        "bytes": 3550
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-01-30.json": {
+        "sha256": "944d6a004f590c0fc2d740a0a99073f44272bd8981cc0b2e0a2f5eae6acb4edd",
+        "bytes": 3507
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-02.json": {
+        "sha256": "91fe31d90c88a3d855bf4ed83e59c25bd6771f1fc70bc2299211194c707c278b",
+        "bytes": 3709
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-03.json": {
+        "sha256": "59c9e0dc11c2016d3d9f52b325ee968a7c12b65eafe8b50f1b04a0860859b997",
+        "bytes": 3663
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-04.json": {
+        "sha256": "503ca0de1f4d2d70feed3e2e564341f9f62d301a570050682873ead562a6c30d",
+        "bytes": 3208
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-05.json": {
+        "sha256": "fe842f71ef63c31b01e977926ba36792276ae3964843e1b5cbc253edd5b63924",
+        "bytes": 3345
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-06.json": {
+        "sha256": "b765ed313502f926c1b877d311976fdbdb2b714f0874bb0cbf2f9c6a7760c032",
+        "bytes": 2821
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-09.json": {
+        "sha256": "d5cbaa28fd10b2e46c37ad754f562a84bb652da7679f733eb492134cc6bc31b4",
+        "bytes": 3237
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-10.json": {
+        "sha256": "8c903e4f790192b25674012f02490f62fcda0d4b51f4902aeecfd1f50ccb9ead",
+        "bytes": 2766
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-11.json": {
+        "sha256": "774e1578bb00e941de951e12b0b38c50417cd0de918359c4c5176d5716b31762",
+        "bytes": 2392
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-12.json": {
+        "sha256": "1c124ecaeaa61789471dfa494c7b4a6b22224e297430d847ab3830ce556f1728",
+        "bytes": 2486
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-13.json": {
+        "sha256": "4fff3202a0e4fb491ce2ade53b28a8d507971686cb029c0831345ac09c28e041",
+        "bytes": 2640
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-17.json": {
+        "sha256": "da67af592f973b20d7f4f1705a60445026936643fb58a5ba59c730b7b0902d6b",
+        "bytes": 2953
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-18.json": {
+        "sha256": "c58e4757db196d92b6eb6a8aecfb2a8c682efe064cf73bf94a67301ed8c4d475",
+        "bytes": 2093
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-19.json": {
+        "sha256": "0daef3c96a1ca05f5364349a708ffbaa3af4717b06fc9be86a4144539730f406",
+        "bytes": 2605
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-20.json": {
+        "sha256": "73d90acf7bb14886a00cc37ae6b35e70c6f168b8a8265af83b08795f02138e4f",
+        "bytes": 2400
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-23.json": {
+        "sha256": "02d79b6801d9cd4e9e64d2c515fa6b503c640c69ee2c1ad05146e150b4956912",
+        "bytes": 2400
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-24.json": {
+        "sha256": "e3efc6c6e5a45050a3d1da59f8f74b35cc8d0262250367150dc4e572ee4f4996",
+        "bytes": 2271
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-25.json": {
+        "sha256": "61768de4331b6fa6738fecbc2914907a99b285cf6011aa0212fd911cc86e968f",
+        "bytes": 2260
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-26.json": {
+        "sha256": "8a27f1948337d9fbaaab40e4bc8e491fa9c51c380144ff88a65987d0d5702692",
+        "bytes": 2625
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-02-27.json": {
+        "sha256": "e17a56f1832056585dfdc3eed671885a8e537fdda66191b0f4333c896dec1f7c",
+        "bytes": 2758
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-03-02.json": {
+        "sha256": "1416064e530cf7eaa631075286fef0769455e109cb2852c75fd9becafd89a76b",
+        "bytes": 2407
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-03-03.json": {
+        "sha256": "921932a6ba51f127f808deaef6bc5e765b065de76b47c6a4abaf5e01e599931b",
+        "bytes": 3126
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-03-04.json": {
+        "sha256": "c3a532f6d4db17447028bde1d0d989a4ee41cda05bf670ad77d96c83b32a8634",
+        "bytes": 3330
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-03-05.json": {
+        "sha256": "39ef69df8d44afa1eb971df29542eb6ef83a7b42c3421a2427ec6c82045340bd",
+        "bytes": 2839
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-03-06.json": {
+        "sha256": "12df1829c164c1e8e771d940497d06abe160f703c43e7f35f1eff3722141ed0b",
+        "bytes": 2962
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-03-09.json": {
+        "sha256": "1f237274bfc11366b70170c58dafb69df6f8873c50c63422eba9f9223389a013",
+        "bytes": 3047
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-03-10.json": {
+        "sha256": "2311841ada07717df74e369fb9c2d86b90b63713eac30c7eb87bc6c04a485506",
+        "bytes": 2279
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/days/2026-03-11.json": {
+        "sha256": "8dd35ecfd17fdf1631b11bd1fd86f5824f46cbb9b29e5ddc30c3899c4220c00a",
+        "bytes": 2531
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/events.jsonl": {
+        "sha256": "a37acd299de91fd79bcb8229991dbf030a2ae219f36d216179e5084e7f549700",
+        "bytes": 10232550
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/manifest.json": {
+        "sha256": "874d1c0a8a51cb1b9a7936b9cf22e8c503c8660198f6d74cf530dfa3efa00e3a",
+        "bytes": 7321
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/runtime.json": {
+        "sha256": "6b852a90a2ff7bb0b4faa6d60ebb78927b99de74bb8891f78efed72447da4366",
+        "bytes": 942
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-smoke/analysis.json": {
+        "sha256": "f1cb64b313b4e32effbab4c8b7827e883d8d2af6d635d9a6964c55906c9fc51e",
+        "bytes": 13761
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-smoke/days/2025-04-01.json": {
+        "sha256": "5f3df1609e270caa2c6a3b65cd52a6aeab63ca98b1406c32bba54b2128c0877d",
+        "bytes": 3576
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-smoke/days/2025-04-02.json": {
+        "sha256": "de926ae92484a0c883d42ef4746bc324520dc6654b567c1d9644de13f0b4ee50",
+        "bytes": 3179
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-smoke/days/2025-04-03.json": {
+        "sha256": "29470564112fc96f896bdf9b8760fd24836e42478714e85e74eec58844d9465b",
+        "bytes": 3307
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-smoke/events.jsonl": {
+        "sha256": "c1433175fe6ac073d9993649ba1bbe00d944a8e1da5184136919c7785706682e",
+        "bytes": 1762904
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-smoke/manifest.json": {
+        "sha256": "3278ebac96575c0821aec9619d26424c2d7369df25bc557c1ca95ab21f13e94d",
+        "bytes": 7146
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-smoke/review.md": {
+        "sha256": "88cde6403718c21c4a5680da3b8ea12e277971c17c5342a84aee5e997b12428e",
+        "bytes": 7740
+      },
+      "repo/results/studies/fable5-claude-redmi-v1-20261012-smoke/runtime.json": {
+        "sha256": "6b852a90a2ff7bb0b4faa6d60ebb78927b99de74bb8891f78efed72447da4366",
+        "bytes": 942
+      },
+      "repo/results/evaluations/fable5-claude-redmi-v1-20261012/manifest.json": {
+        "sha256": "6767fe3ff338e2989dc4d7e3eb6392fea881097b043d2bd9c1e8149a5a3d3bcd",
+        "bytes": 15096
+      },
+      "repo/results/evaluations/fable5-claude-redmi-v1-20261012/summary.json": {
+        "sha256": "aa0671485daf70e2522bdc0980a6e89b714512084635517b73b18d5e82bc83b3",
+        "bytes": 11032
+      }
+    },
+    "locks": [
+      {
+        "path": "repo/results/studies/fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1/.lock",
+        "sha256": "e73d0211952e2ebe511d79a9099f5fb1d2c92a0c215a889ae9d27f725652293a",
+        "content": "pid=467552 startedAt=2026-10-12T23:44:51.294Z\n",
+        "copy": "fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1.lock"
+      },
+      {
+        "path": "repo/results/evaluations/fable5-claude-redmi-v1-20261012/.lock",
+        "sha256": "fc06fda413fc7d1120b86ce31f9ff57e0349d58d08108afef7533ce4a2c616b7",
+        "content": "pid=467552 startedAt=2026-10-12T22:55:53.708Z\n",
+        "copy": "fable5-claude-redmi-v1-20261012.lock"
+      }
+    ],
+    "blockedArchive": {
+      "path": "archives/final.tar.gz",
+      "sha256": "78cd98683efc3a98bb2220c5463b818b8172e4ae0b97610265bdda985168daaf"
+    }
+  },
+  "activation": {
+    "activatedAt": "2026-10-13T03:06:36.621505+00:00",
+    "reason": "Host restart left two locks owned by absent PID467552; supervisor stopped on the evaluation lock before another provider call. Same source/runtime; protocol guards unchanged.",
+    "source": "543a96170ffa56777d5022264a2ead38379ee3ae",
+    "runtimeId": "2215d4523c30a8e14d6233a4092f7f2ac946e86b17c360dd17cae83d59e34f1c",
+    "verifyExit": 1,
+    "verifiedCoverage": {
+      "valid": 237,
+      "invalid": 0,
+      "remaining": 14
+    },
+    "beforeStateSha256": "08cfe09cec954f67ec3df4428958a9ee826456946d464a89eb5eab458f569203",
+    "beforeArtifactsUnchanged": 259,
+    "blockedArchiveUnchanged": true,
+    "observerDropinSha256": "93351a6c587acd53e55dd569b03e38f7aa5541b71a06d940ba3f078104e450dd",
+    "recordedAttemptToContinue": {
+      "date": "2026-03-12",
+      "interruptedAttempt": 1,
+      "nextAttempt": 2
+    },
+    "benchmarkSourceUnchanged": true,
+    "afterStateSha256": "e9772024d8adcece80a39acb6ccb2bdd6e80c8904f45b76513a862a70b38ea94"
+  },
+  "afterResume": {
+    "checkedAt": "2026-10-13T03:10:25.053104+00:00",
+    "source": "543a96170ffa56777d5022264a2ead38379ee3ae",
+    "status": "running",
+    "phase": "annual",
+    "checks": {
+      "originalDaysUnchanged": 240,
+      "originalEventPrefixesUnchanged": 5,
+      "originalIdentitiesUnchanged": 11
+    },
+    "derivedFiles": [
+      {
+        "path": "repo/results/studies/fable5-claude-redmi-v1-20261012-smoke/analysis.json",
+        "unchanged": true
+      },
+      {
+        "path": "repo/results/studies/fable5-claude-redmi-v1-20261012-smoke/review.md",
+        "unchanged": true
+      },
+      {
+        "path": "repo/results/evaluations/fable5-claude-redmi-v1-20261012/summary.json",
+        "unchanged": true
+      }
+    ],
+    "blockedArchiveUnchanged": true,
+    "runs": [
+      {
+        "runId": "fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2",
+        "smoke": false,
+        "valid": 62,
+        "invalid": 0,
+        "through": "2025-06-30"
+      },
+      {
+        "runId": "fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3",
+        "smoke": false,
+        "valid": 64,
+        "invalid": 0,
+        "through": "2025-09-30"
+      },
+      {
+        "runId": "fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4",
+        "smoke": false,
+        "valid": 64,
+        "invalid": 0,
+        "through": "2025-12-31"
+      },
+      {
+        "runId": "fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1",
+        "smoke": false,
+        "valid": 51,
+        "invalid": 0,
+        "through": "2026-03-17"
+      },
+      {
+        "runId": "fable5-claude-redmi-v1-20261012-smoke",
+        "smoke": true,
+        "valid": 3,
+        "invalid": 0,
+        "through": "2025-04-03"
+      }
+    ],
+    "march12": [
+      {
+        "kind": "begin",
+        "attempt": 1,
+        "eventHash": "c224c270f00a1ef9a3c6a4dc894a345a5b053bde9246789a1d4c1e3ac8fdafac",
+        "outcome": null,
+        "reason": null
+      },
+      {
+        "kind": "failed",
+        "attempt": 1,
+        "eventHash": "d52d0234797abecc1ee0e3bbda32d181ce9e245aef0f5f33e34b6cd1f685f032",
+        "outcome": null,
+        "reason": "Interrupted before complete integrity audit; submission cannot execute"
+      },
+      {
+        "kind": "begin",
+        "attempt": 2,
+        "eventHash": "c42e669b1d84129f03a69c901075d8aaebdd09532db67ecb35f1ea23d018516e",
+        "outcome": null,
+        "reason": null
+      },
+      {
+        "kind": "submission",
+        "attempt": 2,
+        "eventHash": "0f62937ac5409352adacba1f8fd49d3bd888635f04152dd6f8aacdf1478c1435",
+        "outcome": null,
+        "reason": null
+      },
+      {
+        "kind": "result",
+        "attempt": 2,
+        "eventHash": "d76bfd277d214439b3bf27016beab63816e89baa2a5a3510ae986466e209c09d",
+        "outcome": "completed",
+        "reason": null
+      }
+    ],
+    "runtimePin": "2215d4523c30a8e14d6233a4092f7f2ac946e86b17c360dd17cae83d59e34f1c",
+    "scope": "Read-only live progress and original-byte-prefix preservation; not final runtime replay."
+  },
+  "pinnedReadOnlyReplay": {
+    "exitCode": 1,
+    "interpretation": "Exit 1 means incomplete coverage; all four quarter errors are null. No inference during verification.",
+    "report": {
+      "version": "independent-quarters-apr2025-mar2026-v5-quota-pause",
+      "evalId": "fable5-claude-redmi-v1-20261012",
+      "start": "2025-04-01",
+      "end": "2026-03-31",
+      "status": "incomplete",
+      "interpretation": "Four independent quarterly portfolios per model. Dollar outcomes are summed; mean quarterly TWR is not an annual compounded return. Independent account balances must not be plotted as one equity curve. These environment results do not establish scored NDX membership eligibility.",
+      "models": [
+        {
+          "model": "claude-code/anthropic/claude-fable-5",
+          "complete": false,
+          "completedQuarters": 3,
+          "accountedSessions": 237,
+          "validDays": 237,
+          "invalidDays": 0,
+          "retriedDays": 0,
+          "plannedContributions": 600000,
+          "accountedContributions": 600000,
+          "year": null
+        }
+      ],
+      "quarters": [
+        {
+          "runId": "fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q2",
+          "model": "claude-code/anthropic/claude-fable-5",
+          "label": "2025-Q2",
+          "start": "2025-04-01",
+          "end": "2025-06-30",
+          "status": "completed",
+          "summary": {
+            "protocol": "v12-portfolio-journal-submit",
+            "kind": "environment",
+            "status": "completed",
+            "failure": null,
+            "committedDays": 62,
+            "validDays": 62,
+            "consecutiveInvalidDays": 0,
+            "maxConsecutiveInvalidDays": 0,
+            "stopped": false,
+            "totalDays": 62,
+            "attemptedDays": 62,
+            "retriedDays": 0,
+            "invalidDays": 0,
+            "unattemptedDays": 0,
+            "invalidSessions": [],
+            "portfolio": {
+              "cash": 4676.42,
+              "holdings": {
+                "COST": {
+                  "units": 12.88762,
+                  "avgCost": 1008.72,
+                  "lastClose": 989.9400024414062,
+                  "value": 12757.97
+                },
+                "NVDA": {
+                  "units": 299.759155,
+                  "avgCost": 118.36,
+                  "lastClose": 157.99000549316406,
+                  "value": 47358.95
+                },
+                "AMZN": {
+                  "units": 92.346926,
+                  "avgCost": 179.76,
+                  "lastClose": 219.38999938964844,
+                  "value": 20259.99
+                },
+                "GOOGL": {
+                  "units": 110.708914,
+                  "avgCost": 154.46,
+                  "lastClose": 176.22999572753906,
+                  "value": 19510.23
+                },
+                "MSFT": {
+                  "units": 44.771436,
+                  "avgCost": 404.28,
+                  "lastClose": 497.4100036621094,
+                  "value": 22269.76
+                },
+                "META": {
+                  "units": 17.150986,
+                  "avgCost": 553.9,
+                  "lastClose": 738.0900268554688,
+                  "value": 12658.97
+                },
+                "AVGO": {
+                  "units": 72.472429,
+                  "avgCost": 227.68,
+                  "lastClose": 275.6499938964844,
+                  "value": 19977.02
+                },
+                "NFLX": {
+                  "units": 5.278627,
+                  "avgCost": 1136.66,
+                  "lastClose": 1339.1299438476562,
+                  "value": 7068.77
+                },
+                "CRWD": {
+                  "units": 17.212765,
+                  "avgCost": 464.77,
+                  "lastClose": 509.30999755859375,
+                  "value": 8766.63
+                },
+                "PLTR": {
+                  "units": 22.825008,
+                  "avgCost": 131.43,
+                  "lastClose": 136.32000732421875,
+                  "value": 3111.51
+                }
+              },
+              "holdingsValue": 173739.8,
+              "netWorth": 178416.22
+            },
+            "fills": 59,
+            "rejectedOrders": 0,
+            "journalEntries": 62,
+            "eventRoot": "8845dad576b01e7d101a22be4d6a256b1c78b954d8939ab4e11d73ca0a68d972",
+            "commitRoot": "d178559c7d12793980bebb0ada618b3be2f0224da6cd54a9d52cc15a55fe1003",
+            "attempts": 62,
+            "failures": 0,
+            "usageUnavailableAttempts": 62
+          },
+          "error": null,
+          "metrics": {
+            "startingCapital": 50000,
+            "endingNetWorth": 178416.22,
+            "totalContributions": 150000,
+            "netProfit": 28416.22,
+            "timeWeightedReturnPct": 25.4616,
+            "totalReturnPct": 25.4616,
+            "maxDrawdownPct": -10.2149,
+            "dailyVolatilityPct": 1.7196,
+            "annualizedVolatilityPct": 27.2979,
+            "sharpe": 3.5163,
+            "avgTurnoverPct": 4.9072,
+            "tradeCount": 59,
+            "failedOrderCount": 0,
+            "boundedStopCount": 0,
+            "daysRun": 62
+          }
+        },
+        {
+          "runId": "fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q3",
+          "model": "claude-code/anthropic/claude-fable-5",
+          "label": "2025-Q3",
+          "start": "2025-07-01",
+          "end": "2025-09-30",
+          "status": "completed",
+          "summary": {
+            "protocol": "v12-portfolio-journal-submit",
+            "kind": "environment",
+            "status": "completed",
+            "failure": null,
+            "committedDays": 64,
+            "validDays": 64,
+            "consecutiveInvalidDays": 0,
+            "maxConsecutiveInvalidDays": 0,
+            "stopped": false,
+            "totalDays": 64,
+            "attemptedDays": 64,
+            "retriedDays": 0,
+            "invalidDays": 0,
+            "unattemptedDays": 0,
+            "invalidSessions": [],
+            "portfolio": {
+              "cash": 19225.91,
+              "holdings": {
+                "MSFT": {
+                  "units": 22.293186,
+                  "avgCost": 515.85,
+                  "lastClose": 517.9500122070312,
+                  "value": 11546.76
+                },
+                "META": {
+                  "units": 22.237763,
+                  "avgCost": 741.98,
+                  "lastClose": 734.3800048828125,
+                  "value": 16330.97
+                },
+                "DASH": {
+                  "units": 12.115358,
+                  "avgCost": 247.62,
+                  "lastClose": 271.989990234375,
+                  "value": 3295.26
+                },
+                "GOOGL": {
+                  "units": 135.137128,
+                  "avgCost": 214.6,
+                  "lastClose": 243.10000610351562,
+                  "value": 32851.84
+                },
+                "MELI": {
+                  "units": 5.415877,
+                  "avgCost": 2400.35,
+                  "lastClose": 2336.93994140625,
+                  "value": 12656.58
+                },
+                "MU": {
+                  "units": 125.173265,
+                  "avgCost": 127.82,
+                  "lastClose": 167.32000732421875,
+                  "value": 20943.99
+                },
+                "NVDA": {
+                  "units": 66.785426,
+                  "avgCost": 179.68,
+                  "lastClose": 186.5800018310547,
+                  "value": 12460.82
+                },
+                "PLTR": {
+                  "units": 83.808276,
+                  "avgCost": 178.98,
+                  "lastClose": 182.4199981689453,
+                  "value": 15288.31
+                },
+                "CRWD": {
+                  "units": 30.837557,
+                  "avgCost": 486.42,
+                  "lastClose": 490.3800048828125,
+                  "value": 15122.12
+                }
+              },
+              "holdingsValue": 140496.65,
+              "netWorth": 159722.56
+            },
+            "fills": 50,
+            "rejectedOrders": 0,
+            "journalEntries": 64,
+            "eventRoot": "dde6f45af03996b6cbe447a564822d4327190dba251843dba4e49efac4413866",
+            "commitRoot": "5ce36ad658ba69f9eca4677c7128b138a35df583341f54826c73da02ee296235",
+            "attempts": 64,
+            "failures": 0,
+            "usageUnavailableAttempts": 64
+          },
+          "error": null,
+          "metrics": {
+            "startingCapital": 50000,
+            "endingNetWorth": 159722.56,
+            "totalContributions": 150000,
+            "netProfit": 9722.56,
+            "timeWeightedReturnPct": 9.6416,
+            "totalReturnPct": 9.6416,
+            "maxDrawdownPct": -6.1952,
+            "dailyVolatilityPct": 1.0528,
+            "annualizedVolatilityPct": 16.7131,
+            "sharpe": 2.2525,
+            "avgTurnoverPct": 5.0915,
+            "tradeCount": 50,
+            "failedOrderCount": 0,
+            "boundedStopCount": 0,
+            "daysRun": 64
+          }
+        },
+        {
+          "runId": "fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2025-Q4",
+          "model": "claude-code/anthropic/claude-fable-5",
+          "label": "2025-Q4",
+          "start": "2025-10-01",
+          "end": "2025-12-31",
+          "status": "completed",
+          "summary": {
+            "protocol": "v12-portfolio-journal-submit",
+            "kind": "environment",
+            "status": "completed",
+            "failure": null,
+            "committedDays": 64,
+            "validDays": 64,
+            "consecutiveInvalidDays": 0,
+            "maxConsecutiveInvalidDays": 0,
+            "stopped": false,
+            "totalDays": 64,
+            "attemptedDays": 64,
+            "retriedDays": 0,
+            "invalidDays": 0,
+            "unattemptedDays": 0,
+            "invalidSessions": [],
+            "portfolio": {
+              "cash": 39366.15,
+              "holdings": {
+                "NVDA": {
+                  "units": 190.58575,
+                  "avgCost": 183.64,
+                  "lastClose": 186.5,
+                  "value": 35544.24
+                },
+                "MSFT": {
+                  "units": 30.856589,
+                  "avgCost": 486.12,
+                  "lastClose": 483.6199951171875,
+                  "value": 14922.86
+                },
+                "MU": {
+                  "units": 46.906026,
+                  "avgCost": 277.15,
+                  "lastClose": 285.4100036621094,
+                  "value": 13387.45
+                },
+                "GOOGL": {
+                  "units": 73.720989,
+                  "avgCost": 311.99,
+                  "lastClose": 313,
+                  "value": 23074.67
+                },
+                "AMZN": {
+                  "units": 99.833044,
+                  "avgCost": 230.38,
+                  "lastClose": 230.82000732421875,
+                  "value": 23043.46
+                }
+              },
+              "holdingsValue": 109972.68,
+              "netWorth": 149338.83
+            },
+            "fills": 53,
+            "rejectedOrders": 0,
+            "journalEntries": 64,
+            "eventRoot": "da17bf24b0b94072e13cf5d778ed2e20891f6aa15b0f68b387d6d93537f303db",
+            "commitRoot": "1d4a7acfff977affa243c2192c9f0bf0547018cc7ac8016105411f42b4f096aa",
+            "attempts": 64,
+            "failures": 0,
+            "usageUnavailableAttempts": 64
+          },
+          "error": null,
+          "metrics": {
+            "startingCapital": 50000,
+            "endingNetWorth": 149338.83,
+            "totalContributions": 150000,
+            "netProfit": -661.17,
+            "timeWeightedReturnPct": 4.4032,
+            "totalReturnPct": 4.4032,
+            "maxDrawdownPct": -9.8252,
+            "dailyVolatilityPct": 1.6736,
+            "annualizedVolatilityPct": 26.5668,
+            "sharpe": 0.7701,
+            "avgTurnoverPct": 5.6553,
+            "tradeCount": 53,
+            "failedOrderCount": 0,
+            "boundedStopCount": 0,
+            "daysRun": 64
+          }
+        },
+        {
+          "runId": "fable5-claude-redmi-v1-20261012-claude-code-anthropic-cla-4e3d893dfb37-2026-Q1",
+          "model": "claude-code/anthropic/claude-fable-5",
+          "label": "2026-Q1",
+          "start": "2026-01-01",
+          "end": "2026-03-31",
+          "status": "incomplete",
+          "summary": {
+            "protocol": "v12-portfolio-journal-submit",
+            "kind": "environment",
+            "status": "incomplete",
+            "failure": "Unfinished attempt requires recovery",
+            "committedDays": 47,
+            "validDays": 47,
+            "consecutiveInvalidDays": 0,
+            "maxConsecutiveInvalidDays": 0,
+            "stopped": false,
+            "totalDays": 61,
+            "attemptedDays": 48,
+            "retriedDays": 0,
+            "invalidDays": 0,
+            "unattemptedDays": 13,
+            "invalidSessions": [],
+            "portfolio": {
+              "cash": 99397.31,
+              "holdings": {
+                "NVDA": {
+                  "units": 60.702333,
+                  "avgCost": 189.45,
+                  "lastClose": 186.02999877929688,
+                  "value": 11292.45
+                },
+                "AAPL": {
+                  "units": 69.48118,
+                  "avgCost": 273.45,
+                  "lastClose": 260.80999755859375,
+                  "value": 18121.39
+                },
+                "VRTX": {
+                  "units": 14.775273,
+                  "avgCost": 473.77,
+                  "lastClose": 492.3800048828125,
+                  "value": 7275.05
+                },
+                "AMGN": {
+                  "units": 21.165714,
+                  "avgCost": 377.97,
+                  "lastClose": 377.6400146484375,
+                  "value": 7993.02
+                }
+              },
+              "holdingsValue": 44681.91,
+              "netWorth": 144079.22
+            },
+            "fills": 41,
+            "rejectedOrders": 0,
+            "journalEntries": 47,
+            "eventRoot": "2dde6eaa2b9fe003301b0c5e25ad86f5193baf53927c3e98a07c5ec268272334",
+            "commitRoot": "3ec53d7fba812262445703c7ee42aff8a5b13959e0aae8abffad748f9ccc3722",
+            "attempts": 48,
+            "failures": 0,
+            "usageUnavailableAttempts": 47
+          },
+          "error": null,
+          "metrics": {
+            "startingCapital": 50000,
+            "endingNetWorth": 144079.22,
+            "totalContributions": 150000,
+            "netProfit": -5920.78,
+            "timeWeightedReturnPct": -5.1931,
+            "totalReturnPct": -5.1931,
+            "maxDrawdownPct": -8.4133,
+            "dailyVolatilityPct": 0.7857,
+            "annualizedVolatilityPct": 12.4727,
+            "sharpe": -2.23,
+            "avgTurnoverPct": 6.4763,
+            "tradeCount": 41,
+            "failedOrderCount": 0,
+            "boundedStopCount": 0,
+            "daysRun": 47
+          }
+        }
+      ]
+    },
+    "reportSha256": "5c47a6ca60de08b6432995cc6ff4f3fce00c87a6ae07539c19bdf97bb9e15ceb"
+  },
+  "postBootOfflineQualification": {
+    "runtimeId": "2215d4523c30a8e14d6233a4092f7f2ac946e86b17c360dd17cae83d59e34f1c",
+    "scenarios": [
+      {
+        "scenario": "success",
+        "outcome": "completed",
+        "requestsToStub": 2,
+        "providerRequests": 0,
+        "replayPassed": true,
+        "passed": true
+      },
+      {
+        "scenario": "correction",
+        "outcome": "completed",
+        "requestsToStub": 2,
+        "providerRequests": 0,
+        "replayPassed": true,
+        "passed": true
+      },
+      {
+        "scenario": "quota",
+        "outcome": "harness_error",
+        "requestsToStub": 1,
+        "providerRequests": 0,
+        "replayPassed": false,
+        "passed": true
+      },
+      {
+        "scenario": "watchdog",
+        "outcome": "budget_cutoff",
+        "requestsToStub": 1,
+        "providerRequests": 0,
+        "replayPassed": false,
+        "passed": true
+      }
+    ],
+    "providerRequests": 0,
+    "summarySha256": "b738bce0891ba7af8c0369180bd398145bf382b695b3cdb99e79efe9280e7ee2"
+  },
+  "blockedAudit": {
+    "path": "RedmiBook: claude-bench-fable5/archives/final.tar.gz",
+    "sha256": "78cd98683efc3a98bb2220c5463b818b8172e4ae0b97610265bdda985168daaf",
+    "bytes": 11145245
+  },
+  "nextAuditLocation": "RedmiBook: claude-bench-fable5/archives/final-resume-20261013.tar.gz",
+  "operations": {
+    "courier": "enabled; five-minute read-only status/evidence polling",
+    "sourceAndRuntimeUnchanged": true,
+    "attemptPolicyUnchanged": true,
+    "originalBlockedSnapshotRetained": true,
+    "failedActivationPreflight": {
+      "reason": "Expected empty stderr; pinned CLI correctly printed the evaluation directory. Assertion corrected to match that exact directory; no state transition or inference occurred on that failed script invocation.",
+      "logSha256": "edfb5414a0d79a5df95ed3eb09ffc8edbdc0d6b14ffa25f08237298a0b4067ed"
+    }
+  }
+}

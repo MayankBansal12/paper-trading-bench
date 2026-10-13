@@ -32,11 +32,13 @@ client versions; catalog presence does not prove current entitlement.
 | Sonnet 5 | `claude-code/anthropic/claude-sonnet-5` | Claude Code 2.1.274 | — |
 | Opus 5 | `claude-code/anthropic/claude-opus-5` | Claude Code 2.1.274 | — |
 | Opus 5.5 | `claude-code/anthropic/claude-opus-5-5` | Claude Code 2.1.280 | — |
+| Fable 5 | `claude-code/anthropic/claude-fable-5` | Claude Code 2.1.296 | — |
 | Fable 5.1 | `claude-code/anthropic/claude-fable-5-1` | Claude Code 2.1.296 | — |
 
-Fable 5.1 uses the captured native 2.1.296 request format: adaptive thinking,
-a 64,000-token output cap and an empty system message carrying medium effort.
-Its client may remove `thinking.display` after a provider rejection; the model and
+Fable 5 and 5.1 use the captured native 2.1.296 request format: adaptive thinking,
+a 64,000-token output cap and medium effort. The client may include an empty
+system message carrying that same effort.
+The client may remove `thinking.display` after a provider rejection; the model and
 effort checks remain exact. This is a new cohort, not a runtime upgrade of old runs.
 
 Pi and Claude use medium effort, enforced by their gateways. Some historical

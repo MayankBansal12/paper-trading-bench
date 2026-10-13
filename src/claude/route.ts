@@ -22,12 +22,16 @@ export const CLAUDE_OPUS55_VERSION = "2.1.280";
 export const CLAUDE_FABLE51_MODEL_ID = "claude-code/anthropic/claude-fable-5-1";
 export const CLAUDE_FABLE51_MODEL = "claude-fable-5-1";
 export const CLAUDE_FABLE51_VERSION = "2.1.296";
+export const CLAUDE_FABLE5_MODEL_ID = "claude-code/anthropic/claude-fable-5";
+export const CLAUDE_FABLE5_MODEL = "claude-fable-5";
+export const CLAUDE_FABLE5_VERSION = "2.1.296";
 const PREFIX = "claude-code/anthropic/";
 const CLIENT_VERSIONS: Readonly<Record<string, string>> = Object.freeze({
   [CLAUDE_MODEL_ID]: CLAUDE_VERSION,
   [CLAUDE_OPUS_MODEL_ID]: CLAUDE_VERSION,
   [CLAUDE_OPUS55_MODEL_ID]: CLAUDE_OPUS55_VERSION,
   [CLAUDE_FABLE51_MODEL_ID]: CLAUDE_FABLE51_VERSION,
+  [CLAUDE_FABLE5_MODEL_ID]: CLAUDE_FABLE5_VERSION,
 });
 export function isClaudeModel(model?: string): boolean {
   return model !== undefined && Object.hasOwn(CLIENT_VERSIONS, model);
